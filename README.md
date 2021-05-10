@@ -15,6 +15,11 @@ LabelImage 是一款用于深度学习分割模型训练的图像标注工具（
 #### 直接在线访问 <a href="https://rachelcao277.github.io/LabelImage" target="_blank"><b>LabelImage</b></a> （_建议使用Chrome浏览器）_
 <br/>
 
+# 后端API
+<br/>
+<a href="./backend.md">这里</a>
+<br/>
+
 # 功能清单
 - [x] 上传多个文件，可切换不同图片
 - [x] 生成与图片名一致的json文件 （在单个图片标注完成点击保存按钮）

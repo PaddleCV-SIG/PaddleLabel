@@ -1,6 +1,6 @@
 # APIs
 
-## 选择图片后，上传文件/目录至PaddleX的路径中
+## 选择图片后，上传文件/目录至标注软件路径中
 
 - Path: /upload
 - Method: POST
@@ -109,6 +109,79 @@
 ```json
 {
     "code": 0,
+    "data": "success"
+}
+```
+
+## 标签管理
+
+### 读取所有标签
+
+- Path: /tag/{dataset_id}
+- Method: GET
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1",
+            "color": "#FFF000"
+        }
+    ]
+}
+```
+
+### 添加标签
+
+- Path: /tag/{dataset_id}/add
+- Method: POST
+- Data:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1",
+            "color": "#FFF000"
+        }
+    ]
+}
+```
+
+- Return: 
+
+```json
+{
+    "code": 0, // 0: 成功. 1: 标签已存在
+    "data": "success"
+}
+```
+
+### 删除标签
+
+- Path: /tag/{dataset_id}/delete
+- Method: POST
+- Data:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1"
+        }
+    ]
+}
+```
+
+- Return:
+
+```json
+{
+    "code": 0, // 0: 成功. 1: 资源不存在
     "data": "success"
 }
 ```

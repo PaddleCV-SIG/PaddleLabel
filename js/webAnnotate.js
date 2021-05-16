@@ -1,5 +1,5 @@
 /*
-    Canvas handle 主函数
+	Canvas handle 主函数
  */
 
 class LabelImage {
@@ -63,9 +63,6 @@ class LabelImage {
 
 		// 是否全屏
 		this.isFullScreen = false;
-
-		// 是否移动图像标注圆点
-		this.isDrogCircle = false;
 
 		// 当前点击圆点index
 		this.snapCircleIndex = 0;
@@ -146,7 +143,7 @@ class LabelImage {
 			// 标签管理工具
 			tagsOn: false,
 			// 十字线开关
-			crossOn: false,
+			crossOn: true,
 			// 标注结果显示
 			labelOn: true,
 		};
@@ -158,17 +155,17 @@ class LabelImage {
 		let _nodes = this.Nodes;
 		_nodes.scaleRect = document.createElement('div');
 		_nodes.scaleRect.className = "scaleWindow";
-		Object.assign(_nodes.scaleRect.style, {position: "absolute", border: "1px solid red", boxSizing: "border-box"});
+		Object.assign(_nodes.scaleRect.style, { position: "absolute", border: "1px solid red", boxSizing: "border-box" });
 		_nodes.scaleCanvas.appendChild(_nodes.scaleRect);
 		_nodes.canvas.addEventListener('mousedown', this.CanvasMouseDown);
 		_nodes.canvas.addEventListener('mousewheel', this.MouseWheel);
 		_nodes.canvas.addEventListener("DOMMouseScroll", this.MouseWheel); // 兼容Firefox 滚动条事件
 		_nodes.canvas.addEventListener('contextmenu', LabelImage.NoRightMenu.bind(this));
 		_nodes.scaleCanvas.addEventListener('click', this.ScaleCanvasClick);
-		_nodes.crossLine.addEventListener('click', this.CrossHairSwitch);
-		_nodes.labelShower.addEventListener('click', this.IsShowLabels);
-		_nodes.screenShot.addEventListener('click', this.ScreenShot);
-		_nodes.screenFull.addEventListener('click', this.IsScreenFull);
+		// _nodes.crossLine.addEventListener('click', this.CrossHairSwitch);
+		// _nodes.labelShower.addEventListener('click', this.IsShowLabels);
+		// _nodes.screenShot.addEventListener('click', this.ScreenShot);
+		// _nodes.screenFull.addEventListener('click', this.IsScreenFull);
 		_nodes.historyGroup.addEventListener('click', this.HistoryClick);
 		document.addEventListener('fullscreenchange', this.ScreenViewChange);
 		document.addEventListener('webkitfullscreenchange', this.ScreenViewChange);
@@ -176,12 +173,12 @@ class LabelImage {
 		document.addEventListener('msfullscreenchange', this.ScreenViewChange);
 		_nodes.canvas.addEventListener('mousemove', this.CanvasMouseMove);
 		_nodes.resultGroup.addEventListener('mouseover', this.ResultListOperation);
-		_nodes.toolTagsManager.addEventListener('click', this.ManageLabels)
+		// _nodes.toolTagsManager.addEventListener('click', this.ManageLabels)
 	};
 
 	//----设置图片并初始化画板信息
 	// tip: point
-	SetImage = (src, memory=false) => {
+	SetImage = (src, memory = false) => {
 		let _nodes = this.Nodes;
 		_nodes.image = new Image();
 		_nodes.image.crossOrigin = 'anonymous';
@@ -204,10 +201,10 @@ class LabelImage {
 			}
 
 			//初始化上一张图片标注数据
-			for (let i=this.Nodes.resultGroup.children.length-1; i>=0; i--) {
+			for (let i = this.Nodes.resultGroup.children.length - 1; i >= 0; i--) {
 				this.Nodes.resultGroup.removeChild(this.Nodes.resultGroup.children[i]);
 			}
-			for (let i=this.Nodes.historyGroup.children.length-1; i>=0; i--) {
+			for (let i = this.Nodes.historyGroup.children.length - 1; i >= 0; i--) {
 				this.Nodes.historyGroup.removeChild(this.Nodes.historyGroup.children[i]);
 			}
 			document.querySelector('.resultLength').innerHTML = "0";
@@ -253,7 +250,7 @@ class LabelImage {
 				this.Arrays.imageAnnotateMemory = memory;
 				this.ReplaceAnnotateShow();
 				this.RepaintResultList();
-				this.Arrays.imageAnnotateMemory.forEach((memory,index) => {
+				this.Arrays.imageAnnotateMemory.forEach((memory, index) => {
 					this.RecordOperation('add', '绘制', index, JSON.stringify(memory));
 				});
 			}
@@ -277,7 +274,7 @@ class LabelImage {
 
 		// 清空标注结果列表中classList
 		let resultList = this.Nodes.resultGroup.getElementsByClassName("result_list");
-		for (let i=0; i<resultList.length; i++) {
+		for (let i = 0; i < resultList.length; i++) {
 			resultList[i].classList.remove("active");
 		}
 		this.Arrays.resultIndex = 0;
@@ -290,7 +287,7 @@ class LabelImage {
 		_nodes.ctx.clearRect(0, 0, this.cWidth, this.cHeight);
 		_nodes.sCtx.clearRect(0, 0, this.sWidth, this.sWidth * this.iHeight / this.iHeight);
 
-		_nodes.ctx.drawImage(_nodes.bCanvas, -this.x/this.scale, -this.y/this.scale, this.cWidth/this.scale, this.cHeight/this.scale, 0, 0, this.cWidth, this.cHeight);
+		_nodes.ctx.drawImage(_nodes.bCanvas, -this.x / this.scale, -this.y / this.scale, this.cWidth / this.scale, this.cHeight / this.scale, 0, 0, this.cWidth, this.cHeight);
 		_nodes.sCtx.drawImage(_nodes.bCanvas, 0, 0, this.iWidth, this.iHeight, 0, 0, this.sWidth, this.sHeight);
 
 		// 将缩略图方框区域绘制到画布
@@ -321,7 +318,7 @@ class LabelImage {
 				top = 0;
 			}
 		}
-		else if (top <= 0){
+		else if (top <= 0) {
 			height += top;
 			top = 0;
 		}
@@ -386,13 +383,13 @@ class LabelImage {
 		let _arrays = this.Arrays;
 		this.GetMouseInCanvasLocation(e);
 		if (_arrays.resultIndex !== 0) {
-			let imageIndexShow = _arrays.imageAnnotateShower[_arrays.resultIndex-1].content;
+			let imageIndexShow = _arrays.imageAnnotateShower[_arrays.resultIndex - 1].content;
 			if (imageIndexShow.length > 0) {
-				for (let i=0; i<imageIndexShow.length; i++) {
+				for (let i = 0; i < imageIndexShow.length; i++) {
 					// 使用勾股定理计算鼠标当前位置是否处于当前点上
 					let distanceFromCenter = Math.sqrt(Math.pow(imageIndexShow[i].x - this.mouseX, 2) + Math.pow(imageIndexShow[i].y - this.mouseY, 2));
 					// 改变圆点颜色动画
-					if (distanceFromCenter <= this.radius){
+					if (distanceFromCenter <= this.radius) {
 						_nodes.canvas.style.cursor = "grabbing";
 						return;
 					}
@@ -410,81 +407,72 @@ class LabelImage {
 		let _arrays = this.Arrays;
 		this.GetMouseInCanvasLocation(e);
 		if (e.button === 0) {
-			this.isDrogCircle = false;
 			if (_arrays.resultIndex !== 0) {
-				let imageIndex = _arrays.imageAnnotateShower[_arrays.resultIndex-1].content;
+				let imageIndex = _arrays.imageAnnotateShower[_arrays.resultIndex - 1].content;
 				if (imageIndex.length > 0) {
-					for (let i=0; i<imageIndex.length; i++) {
+					for (let i = 0; i < imageIndex.length; i++) {
 						// 使用勾股定理计算鼠标当前位置是否处于当前点上
 						let distanceFromCenter = Math.sqrt(Math.pow(imageIndex[i].x - this.mouseX, 2) + Math.pow(imageIndex[i].y - this.mouseY, 2));
-						if (distanceFromCenter <= this.radius){
-							this.isDrogCircle = true;
+						if (distanceFromCenter <= this.radius) {
 							this.snapCircleIndex = i;
-							if (_arrays.imageAnnotateShower[_arrays.resultIndex-1].contentType === "rect") {
+							if (_arrays.imageAnnotateShower[_arrays.resultIndex - 1].contentType === "rect") {
 								this.Nodes.canvas.addEventListener('mousemove', this.DragRectCircleRepaintRect);
 								this.Nodes.canvas.addEventListener('mouseup', this.RemoveDragRectCircle);
 							}
-							else if (_arrays.imageAnnotateShower[_arrays.resultIndex-1].contentType === "polygon") {
+							else if (_arrays.imageAnnotateShower[_arrays.resultIndex - 1].contentType === "polygon") {
 								this.Nodes.canvas.addEventListener('mousemove', this.CircleDrag);
 								this.Nodes.canvas.addEventListener('mouseup', this.RemoveCircleDrag);
 							}
 							return;
 						}
-						else {
-							this.isDrogCircle = false;
-						}
 					}
 				}
 			}
-			if (!this.isDrogCircle){
-				if (this.Features.dragOn) {
-					// 是否开启拖拽模式
-					let prevP = this.CalculateChange(e, _nodes.canvas);
-					this.prevX = prevP.x;
-					this.prevY = prevP.y;
-					_nodes.canvas.addEventListener('mousemove', this.ImageDrag);
-					_nodes.canvas.addEventListener('mouseup', this.RemoveImageDrag);
+			if (this.Features.dragOn) {
+				// 是否开启拖拽模式
+				let prevP = this.CalculateChange(e, _nodes.canvas);
+				this.prevX = prevP.x;
+				this.prevY = prevP.y;
+				_nodes.canvas.addEventListener('mousemove', this.ImageDrag);
+				_nodes.canvas.addEventListener('mouseup', this.RemoveImageDrag);
+			}
+			else if (this.Features.rectOn) {
+				// 是否开启绘制矩形功能
+				if (this.Arrays.resultIndex === 0) {
+					_nodes.ctx.lineWidth = 1;
+					_nodes.ctx.strokeStyle = "#ff0000";
+					_nodes.ctx.fillStyle = "rgba(255,0,0," + this.opacity + ")";
+					this.rectX = this.mouseX;
+					this.rectY = this.mouseY;
+					this.Nodes.canvas.addEventListener('mousemove', this.MouseMoveDrawRect);
+					this.Nodes.canvas.addEventListener('mouseup', this.MouseUpRemoveDrawRect);
 				}
-				else if (this.Features.rectOn) {
-					// 是否开启绘制矩形功能
-					if (this.Arrays.resultIndex === 0) {
-						_nodes.ctx.lineWidth = 1;
-						_nodes.ctx.strokeStyle = "#ff0000";
-						_nodes.ctx.fillStyle = "rgba(255,0,0,"+ this.opacity +")";
-						this.rectX = this.mouseX;
-						this.rectY = this.mouseY;
-						this.Nodes.canvas.addEventListener('mousemove', this.MouseMoveDrawRect);
-						this.Nodes.canvas.addEventListener('mouseup', this.MouseUpRemoveDrawRect);
-					}
-				}
-				else if (this.Features.polygonOn) {
-					// 是否开启绘制多边形功能
-					let resultList = _nodes.resultGroup.getElementsByClassName("result_list");
-					let isActive = false;
-					for (let i=0; i<resultList.length; i++) {
-						// 循环结果列表判断是否点击某一个结果，若是，则改变焦点
-						if (resultList[i].className.indexOf("active") > -1) {
-							_arrays.resultIndex = resultList[i].id;
-							isActive = true;
-						}
-					}
-					if (!isActive) {
-						_arrays.resultIndex = 0;
-					}
-					if (_arrays.resultIndex === 0) {
-						// 未选定标签结果，创建新标签
-						this.CreateNewResultList(this.mouseX, this.mouseY, "polygon");
-					}
-					if (!this.isDrogCircle) {
-						let index = _arrays.resultIndex - 1;
-						// 保存坐标点
-						_arrays.imageAnnotateShower[index].content.push({x: this.mouseX, y: this.mouseY});
-						this.CalcRectMask(_arrays.imageAnnotateShower[index].content);
-						this.ReplaceAnnotateMemory();
-						this.DrawSavedAnnotateInfoToShow();
-						this.RecordOperation('addPoint', '添加坐标点', index, JSON.stringify(_arrays.imageAnnotateMemory[index]));
+			}
+			else if (this.Features.polygonOn) {
+				// 是否开启绘制多边形功能
+				let resultList = _nodes.resultGroup.getElementsByClassName("result_list");
+				let isActive = false;
+				for (let i = 0; i < resultList.length; i++) {
+					// 循环结果列表判断是否点击某一个结果，若是，则改变焦点
+					if (resultList[i].className.indexOf("active") > -1) {
+						_arrays.resultIndex = resultList[i].id;
+						isActive = true;
 					}
 				}
+				if (!isActive) {
+					_arrays.resultIndex = 0;
+				}
+				if (_arrays.resultIndex === 0) {
+					// 未选定标签结果，创建新标签
+					this.CreateNewResultList(this.mouseX, this.mouseY, "polygon");
+				}
+				let index = _arrays.resultIndex - 1;
+				// 保存坐标点
+				_arrays.imageAnnotateShower[index].content.push({ x: this.mouseX, y: this.mouseY });
+				this.CalcRectMask(_arrays.imageAnnotateShower[index].content);
+				this.ReplaceAnnotateMemory();
+				this.DrawSavedAnnotateInfoToShow();
+				this.RecordOperation('addPoint', '添加坐标点', index, JSON.stringify(_arrays.imageAnnotateMemory[index]));
 			}
 		}
 		else if (e.button === 2) {
@@ -505,14 +493,14 @@ class LabelImage {
 				xMax = arrays[0].x,
 				yMin = arrays[0].y,
 				yMax = arrays[0].y
-			;
+				;
 			arrays.forEach((item) => {
 				xMin = xMin < item.x ? xMin : item.x;
 				xMax = xMax > item.x ? xMax : item.x;
 				yMin = yMin < item.y ? yMin : item.y;
 				yMax = yMax > item.y ? yMax : item.y;
 			});
-			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].rectMask = {
+			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].rectMask = {
 				"xMin": xMin,
 				"yMin": yMin,
 				"width": xMax - xMin,
@@ -521,15 +509,15 @@ class LabelImage {
 			// 计算已创建的标签居中显示
 			let labelX = (xMax - xMin) / 2 + xMin;
 			let labelY = (yMax - yMin) / 2 + yMin;
-			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].labelLocation.x = labelX;
-			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].labelLocation.y = labelY;
+			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].labelLocation.x = labelX;
+			this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].labelLocation.y = labelY;
 		}
 	};
 
 	//----绘制矩形的方法
 	DrawRect = (ctx, x, y, width, height, color, rgb) => {
 		ctx.strokeStyle = color;
-		ctx.fillStyle = "rgba("+ rgb +"," + this.opacity + ")";
+		ctx.fillStyle = "rgba(" + rgb + "," + this.opacity + ")";
 		ctx.strokeRect(x, y, width, height);
 		ctx.fillRect(x, y, width, height);
 	};
@@ -538,11 +526,11 @@ class LabelImage {
 	DrawCircle = (ctx, x, y, color) => {
 		ctx.beginPath();
 		ctx.fillStyle = "#000";
-		ctx.arc(x, y, this.radius, 0, 2*Math.PI);
+		ctx.arc(x, y, this.radius, 0, 2 * Math.PI);
 		ctx.fill();
 		ctx.beginPath();
 		ctx.fillStyle = color;
-		ctx.arc(x, y, this.radius/3, 0, 2*Math.PI);
+		ctx.arc(x, y, this.radius / 3, 0, 2 * Math.PI);
 		ctx.fill();
 	};
 
@@ -551,9 +539,9 @@ class LabelImage {
 		ctx.font = "12px Verdana";
 		let txtWidth = ctx.measureText(name).width;
 		ctx.fillStyle = "rgba(255,255,255, 0.7)";
-		ctx.fillRect(x - txtWidth/2 -8, y - 10, txtWidth + 16, 20);
+		ctx.fillRect(x - txtWidth / 2 - 8, y - 10, txtWidth + 16, 20);
 		ctx.fillStyle = color;
-		ctx.fillText(name, x - txtWidth/2, y + 4);
+		ctx.fillText(name, x - txtWidth / 2, y + 4);
 	};
 
 	//----绘制已保存的标定信息（在数据操作更新时渲染）绘至数据展示画板
@@ -561,8 +549,8 @@ class LabelImage {
 		let _arrays = this.Arrays;
 		let _nodes = this.Nodes;
 		_nodes.ctx.clearRect(0, 0, this.cWidth, this.cHeight);
-		_nodes.ctx.drawImage(_nodes.bCanvas, -this.x/this.scale, -this.y/this.scale, this.cWidth/this.scale, this.cHeight/this.scale, 0, 0, this.cWidth, this.cHeight);
-		_nodes.ctx.setLineDash([0,0]);
+		_nodes.ctx.drawImage(_nodes.bCanvas, -this.x / this.scale, -this.y / this.scale, this.cWidth / this.scale, this.cHeight / this.scale, 0, 0, this.cWidth, this.cHeight);
+		_nodes.ctx.setLineDash([0, 0]);
 		_arrays.imageAnnotateShower.forEach((item, index) => {
 			if (item.contentType === "polygon") {
 				// 绘制闭合线条
@@ -572,15 +560,15 @@ class LabelImage {
 				item.content.forEach((line) => {
 					_nodes.ctx.lineTo(line.x, line.y);
 				});
-				_nodes.ctx.fillStyle = "rgba("+ item.labels.labelColorRGB +"," + this.opacity + ")";
+				_nodes.ctx.fillStyle = "rgba(" + item.labels.labelColorRGB + "," + this.opacity + ")";
 				_nodes.ctx.fill();
-				_nodes.ctx.strokeStyle = "rgba("+ item.labels.labelColorRGB +"," + this.opacity + ")";
+				_nodes.ctx.strokeStyle = "rgba(" + item.labels.labelColorRGB + "," + this.opacity + ")";
 				_nodes.ctx.stroke();
 			}
 			else if (item.contentType === "rect") {
 				this.DrawRect(_nodes.ctx, item.rectMask.xMin, item.rectMask.yMin, item.rectMask.width, item.rectMask.height, item.labels.labelColor, item.labels.labelColorRGB);
 			}
-			if (_arrays.resultIndex !== 0 && _arrays.resultIndex-1 === index) {
+			if (_arrays.resultIndex !== 0 && _arrays.resultIndex - 1 === index) {
 				item.content.forEach((circle) => {
 					// 绘制圆点
 					this.DrawCircle(_nodes.ctx, circle.x, circle.y, "#20c3f9");
@@ -591,7 +579,7 @@ class LabelImage {
 				this.DrawRectLabel(_nodes.ctx, item.labelLocation.x, item.labelLocation.y, item.labels.labelColor, item.labels.labelName, index + 1);
 			}
 			// 绘制矩形蒙层
-			if (resultIndex && resultIndex-1 === index) {
+			if (resultIndex && resultIndex - 1 === index) {
 				_nodes.ctx.beginPath();
 				_nodes.ctx.lineWidth = 2;
 				_nodes.ctx.strokeStyle = "#fffd4d";
@@ -610,7 +598,7 @@ class LabelImage {
 		_nodes.bCtx.clearRect(0, 0, this.iWidth, this.iHeight);
 		_nodes.bCtx.drawImage(_nodes.image, 0, 0, this.iWidth, this.iHeight);
 		if (isRender) {
-			_arrays.imageAnnotateMemory.forEach( (item, index) => {
+			_arrays.imageAnnotateMemory.forEach((item, index) => {
 				if (item.contentType === "polygon") {
 					// 绘制闭合线条
 					_nodes.bCtx.beginPath();
@@ -619,15 +607,15 @@ class LabelImage {
 					item.content.forEach((line) => {
 						_nodes.bCtx.lineTo(line.x, line.y);
 					});
-					_nodes.bCtx.fillStyle = "rgba("+ item.labels.labelColorRGB +"," + this.opacity + ")";
+					_nodes.bCtx.fillStyle = "rgba(" + item.labels.labelColorRGB + "," + this.opacity + ")";
 					_nodes.bCtx.fill();
-					_nodes.bCtx.strokeStyle = "rgba("+ item.labels.labelColorRGB +"," + this.opacity + ")";
+					_nodes.bCtx.strokeStyle = "rgba(" + item.labels.labelColorRGB + "," + this.opacity + ")";
 					_nodes.bCtx.stroke();
 				}
 				else if (item.contentType === "rect") {
 					this.DrawRect(_nodes.bCtx, item.rectMask.xMin, item.rectMask.yMin, item.rectMask.width, item.rectMask.height, item.labels.labelColor, item.labels.labelColorRGB);
 				}
-				if (_arrays.resultIndex !== 0 && _arrays.resultIndex-1 === index) {
+				if (_arrays.resultIndex !== 0 && _arrays.resultIndex - 1 === index) {
 					item.content.forEach((circle) => {
 						// 绘制圆点
 						this.DrawCircle(_nodes.bCtx, circle.x, circle.y, "#20c3f9");
@@ -647,7 +635,7 @@ class LabelImage {
 	//----圆点拖拽事件，并且重新绘制边缘轨迹点
 	CircleDrag = (e) => {
 		this.GetMouseInCanvasLocation(e);
-		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].content;
+		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].content;
 		imageIndex[this.snapCircleIndex].x = this.mouseX;
 		imageIndex[this.snapCircleIndex].y = this.mouseY;
 		this.DrawSavedAnnotateInfoToShow();
@@ -694,9 +682,9 @@ class LabelImage {
 		this.GetMouseInCanvasLocation(e);
 		this.DrawSavedAnnotateInfoToShow();
 		this.Nodes.ctx.strokeStyle = "#ff0000";
-		this.Nodes.ctx.fillStyle = "rgba(255,0,0,"+ this.opacity +")";
-		this.Nodes.ctx.strokeRect(this.rectX, this.rectY, this.mouseX-this.rectX, this.mouseY-this.rectY);
-		this.Nodes.ctx.fillRect(this.rectX, this.rectY, this.mouseX-this.rectX, this.mouseY-this.rectY);
+		this.Nodes.ctx.fillStyle = "rgba(255,0,0," + this.opacity + ")";
+		this.Nodes.ctx.strokeRect(this.rectX, this.rectY, this.mouseX - this.rectX, this.mouseY - this.rectY);
+		this.Nodes.ctx.fillRect(this.rectX, this.rectY, this.mouseX - this.rectX, this.mouseY - this.rectY);
 	};
 
 	//----绘制矩形时鼠标抬起后移除监听函数
@@ -740,8 +728,8 @@ class LabelImage {
 	//----拖拽矩形圆点时重新绘制矩形事件
 	DragRectCircleRepaintRect = (e) => {
 		this.GetMouseInCanvasLocation(e);
-		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].content;
-		this.Nodes.ctx.fillStyle = "rgba("+ this.Arrays.imageAnnotateShower[this.Arrays.resultIndex-1].labels.labelColorRGB +","+ this.opacity +")";
+		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].content;
+		this.Nodes.ctx.fillStyle = "rgba(" + this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].labels.labelColorRGB + "," + this.opacity + ")";
 		imageIndex[this.snapCircleIndex].x = this.mouseX;
 		imageIndex[this.snapCircleIndex].y = this.mouseY;
 		this.DragRectCircleChangeLocation(imageIndex, this.snapCircleIndex);
@@ -776,12 +764,12 @@ class LabelImage {
 				let resultListBody = document.createElement('div');
 				resultListBody.className = "result_list";
 				resultListBody.id = _index;
-				resultListBody.innerHTML = '<span class="result_no">'+ _index +'</span>' +
-					'<span class="result_color" style="background: '+ item.labels.labelColor +';"></span>' +
-					'<input class="result_Name" value="'+ item.labels.labelName +'" disabled>' +
+				resultListBody.innerHTML = '<span class="result_no">' + _index + '</span>' +
+					'<span class="result_color" style="background: ' + item.labels.labelColor + ';"></span>' +
+					'<input class="result_Name" value="' + item.labels.labelName + '" disabled>' +
 					'<i class="editLabelName icon-pencil"></i>' +
 					'<i class="deleteLabel icon-trash"></i>' +
-					'<i class="isShowLabel '+ eyeIconClass +'"></i>';
+					'<i class="isShowLabel ' + eyeIconClass + '"></i>';
 				this.Nodes.resultGroup.appendChild(resultListBody);
 			});
 			document.querySelector('.resultLength').innerHTML = _index;
@@ -792,22 +780,22 @@ class LabelImage {
 	CreateNewResultList = (lx, ly, contentType) => {
 		let _nodes = this.Nodes;
 		let _arrays = this.Arrays;
-		let eyeIconClass = _nodes.labelShower.children[0].checked ? "icon-eye-open" : "icon-eye-close";
+		let eyeIconClass = _nodes.labelShower ? "icon-eye-open" : "icon-eye-close";
 		let resultLength = document.querySelectorAll('.result_list').length + 1;
 		let resultListBody = document.createElement('div');
 		resultListBody.className = "result_list active";
 		resultListBody.id = resultLength;
-		resultListBody.innerHTML = '<span class="result_no">'+ resultLength +'</span>' +
+		resultListBody.innerHTML = '<span class="result_no">' + resultLength + '</span>' +
 			'<span class="result_color"></span>' +
 			'<input class="result_Name" value="未命名" disabled>' +
 			'<i class="editLabelName icon-pencil"></i>' +
 			'<i class="deleteLabel icon-trash"></i>' +
-			'<i class="isShowLabel '+ eyeIconClass +'"></i>';
+			'<i class="isShowLabel ' + eyeIconClass + '"></i>';
 		_nodes.resultGroup.appendChild(resultListBody);
 
 		// 轮询获取当前ResultIndex;
 		let resultList = _nodes.resultGroup.getElementsByClassName("result_list");
-		for (let i=0; i<resultList.length; i++) {
+		for (let i = 0; i < resultList.length; i++) {
 			if (resultList[i].className.indexOf("active") > -1) {
 				_arrays.resultIndex = resultList[i].id;
 			}
@@ -822,16 +810,16 @@ class LabelImage {
 			};
 			this.Arrays.imageAnnotateShower.push({
 				content: [
-					{x: this.rectX, y: this.rectY},
-					{x: this.mouseX, y: this.rectY},
-					{x: this.mouseX, y: this.mouseY},
-					{x: this.rectX, y: this.mouseY},
+					{ x: this.rectX, y: this.rectY },
+					{ x: this.mouseX, y: this.rectY },
+					{ x: this.mouseX, y: this.mouseY },
+					{ x: this.rectX, y: this.mouseY },
 				],
 				labels: {
 					labelName: "未命名",
 					labelColor: "red",
 					labelColorRGB: "255,0,0",
-					visibility: _nodes.labelShower.children[0].checked,
+					visibility: _nodes.labelShower,
 				},
 				labelLocation: this.ComputerLabelLocation(rectMask),
 				rectMask,
@@ -842,11 +830,11 @@ class LabelImage {
 		else if (contentType === "polygon") {
 			this.Arrays.imageAnnotateShower.push(
 				{
-					"labels":{
+					"labels": {
 						labelName: "未命名",
 						labelColor: "red",
 						labelColorRGB: "255,0,0",
-						visibility: _nodes.labelShower.children[0].checked,
+						visibility: _nodes.labelShower,
 					},
 					"labelLocation": {
 						x: lx,
@@ -873,16 +861,16 @@ class LabelImage {
 	ResultListOperation = () => {
 		let _self = this;
 		let resultList = this.Nodes.resultGroup.getElementsByClassName("result_list");
-		for (let i=0; i<resultList.length; i++) {
+		for (let i = 0; i < resultList.length; i++) {
 			resultList[i].index = i;
-			resultList[i].onmouseover = function() {
+			resultList[i].onmouseover = function () {
 				let hoverIndex = resultList[this.index].id;
 				_self.DrawSavedAnnotateInfoToShow(hoverIndex);
 			};
-			resultList[i].onmouseout = function() {
+			resultList[i].onmouseout = function () {
 				_self.DrawSavedAnnotateInfoToShow();
 			};
-			resultList[i].onclick = function(event) {
+			resultList[i].onclick = function (event) {
 				let target = event.target;
 				let pageY = event.pageY - 35;
 				switch (target.classList[0]) {
@@ -893,7 +881,7 @@ class LabelImage {
 						_self.getCreatedLabels(resultList[i], pageY, i);
 						break;
 					case "result_Name":
-						for (let j=0; j<resultList.length; j++) {
+						for (let j = 0; j < resultList.length; j++) {
 							resultList[j].classList.remove('active');
 						}
 						resultList[this.index].classList.add('active');
@@ -901,7 +889,7 @@ class LabelImage {
 						_self.DrawSavedAnnotateInfoToShow();
 						break;
 					case "isShowLabel":
-						if(target.classList.value.indexOf('icon-eye-open') > -1) {
+						if (target.classList.value.indexOf('icon-eye-open') > -1) {
 							target.className = "isShowLabel icon-eye-close";
 							_self.Arrays.imageAnnotateShower[this.index].labels.visibility = false;
 						}
@@ -942,15 +930,15 @@ class LabelImage {
 				labelLi.style.color = item.labelColor;
 				labelLi.style.borderColor = item.labelColor;
 				fragment.appendChild(labelLi);
-				labelLi.onmouseover = function() {
+				labelLi.onmouseover = function () {
 					labelLi.style.color = "#fff";
 					labelLi.style.background = item.labelColor;
 				};
-				labelLi.onmouseleave = function() {
+				labelLi.onmouseleave = function () {
 					labelLi.style.color = item.labelColor;
 					labelLi.style.background = "transparent";
 				};
-				labelLi.onclick = function() {
+				labelLi.onclick = function () {
 					_self.Arrays.imageAnnotateShower[resultIndex].labels.labelName = item.labelName;
 					_self.Arrays.imageAnnotateShower[resultIndex].labels.labelColor = item.labelColor;
 					_self.Arrays.imageAnnotateShower[resultIndex].labels.labelColorRGB = item.labelColorR + "," + item.labelColorG + "," + item.labelColorB;
@@ -971,13 +959,13 @@ class LabelImage {
 			resultSelectLabel.classList.remove("blur");
 			resultSelectLabel.classList.add("focus");
 			resultSelectLabel.style.top = pageY + "px";
-		}else {
+		} else {
 			resultSelectLabel.classList.remove("focus");
 			resultSelectLabel.classList.add("blur");
 		}
 
 		// 关闭标签管理
-		closeLabel.onclick = function() {
+		closeLabel.onclick = function () {
 			resultSelectLabel.classList.remove("focus");
 			resultSelectLabel.classList.add("blur");
 		}
@@ -1004,7 +992,7 @@ class LabelImage {
 		let flag = false;
 		let flagIndex = 0;
 		let labels = !localStorage.getItem("labels") ? [] : JSON.parse(localStorage.getItem("labels"));
-		if (labels.length > 0 ) {
+		if (labels.length > 0) {
 			eachLabels(labels)
 		}
 		else {
@@ -1027,15 +1015,15 @@ class LabelImage {
 				labelLi.style.borderColor = item.labelColor;
 				fragment.appendChild(labelLi);
 
-				labelLi.onmouseover = function() {
+				labelLi.onmouseover = function () {
 					labelLi.style.color = "#fff";
 					labelLi.style.background = item.labelColor;
 				};
-				labelLi.onmouseleave = function() {
+				labelLi.onmouseleave = function () {
 					labelLi.style.color = item.labelColor;
 					labelLi.style.background = "transparent";
 				};
-				labelLi.onclick = function() {
+				labelLi.onclick = function () {
 					addLabelName.value = item.labelName;
 					colorPicker.style.background = item.labelColor;
 					input.value = item.labelColor;
@@ -1051,7 +1039,7 @@ class LabelImage {
 		}
 
 		// 添加标签事件
-		labelManageCreate.onclick = function() {
+		labelManageCreate.onclick = function () {
 			flag = false;
 			labelManageTitle.innerText = "创建标签";
 			addLabelName.value = "";
@@ -1059,14 +1047,14 @@ class LabelImage {
 			labelManageCreateInfo.style.display = "block";
 			removeLabel.style.display = "none";
 		};
-		closeAdd.onclick = function() {
+		closeAdd.onclick = function () {
 			labelManageInfo.style.display = "block";
 			labelManageCreateInfo.style.display = "none";
 			eachLabels(labels)
 		};
 
-		removeLabel.onclick = function() {
-			if (confirm('确定删除 "'+ addLabelName.value +'" 标签吗？')) {
+		removeLabel.onclick = function () {
+			if (confirm('确定删除 "' + addLabelName.value + '" 标签吗？')) {
 				labelManageInfo.style.display = "block";
 				labelManageCreateInfo.style.display = "none";
 				labels.splice(flagIndex, 1);
@@ -1075,12 +1063,12 @@ class LabelImage {
 			}
 		};
 
-		colorPicker.onclick = function() {
+		colorPicker.onclick = function () {
 			let colorDiv = document.querySelector('.colorDiv');
 			if (!colorDiv) {
 				Colorpicker.create({
-					bindClass:'colorPicker',
-					change: function(elem,hex,rgb){
+					bindClass: 'colorPicker',
+					change: function (elem, hex, rgb) {
 						elem.style.backgroundColor = hex;
 						input.value = hex;
 						input.setAttribute('data-r', rgb.r);
@@ -1093,8 +1081,8 @@ class LabelImage {
 		};
 
 
-		addLabel.onclick = function() {
-			if (!!addLabelName.value){
+		addLabel.onclick = function () {
+			if (!!addLabelName.value) {
 				if (flag) {
 					labels[flagIndex].labelName = addLabelName.value;
 					labels[flagIndex].labelColor = addLabelColor.value;
@@ -1131,12 +1119,12 @@ class LabelImage {
 		if (labelManage.className.indexOf("focus") === -1) {
 			labelManage.classList.remove("blur");
 			labelManage.classList.add("focus");
-		}else {
+		} else {
 			labelManage.classList.remove("focus");
 			labelManage.classList.add("blur");
 		}
 
-		labelSearch.onchange = function(e) {
+		labelSearch.onchange = function (e) {
 			let filterLabel = labels.filter(label => {
 				return label.labelName.indexOf(e.currentTarget.value) > -1;
 			});
@@ -1144,7 +1132,7 @@ class LabelImage {
 		};
 
 		// 关闭标签管理
-		closeLabel.onclick = function() {
+		closeLabel.onclick = function () {
 			labelManage.classList.remove("focus");
 			labelManage.classList.add("blur");
 		}
@@ -1164,7 +1152,7 @@ class LabelImage {
 		let history = this.Arrays.history;
 		let historyNodes = this.Nodes.historyGroup.children;
 		let prevIndex = -1;
-		for (let i=0; i<historyNodes.length; i++) {
+		for (let i = 0; i < historyNodes.length; i++) {
 			if (historyNodes[i].classList.value.indexOf('active') > -1) {
 				prevIndex = i;
 				break;
@@ -1173,10 +1161,10 @@ class LabelImage {
 		// 移除上一个历史记录列表焦点
 		prevIndex !== -1 && historyNodes[prevIndex].classList.remove('active');
 		this.Arrays.imageAnnotateMemory.splice(0, this.Arrays.imageAnnotateMemory.length);
-		for (let i=history.length-1; i>index; i--) {
+		for (let i = history.length - 1; i > index; i--) {
 			historyNodes[i].classList.add('record');
 		}
-		for (let i=0; i<=index; i++) {
+		for (let i = 0; i <= index; i++) {
 			historyNodes[i].classList.remove('record');
 			this.HistoryTypeOperation(history[i].type, history[i].index, history[i].content);
 		}
@@ -1227,8 +1215,8 @@ class LabelImage {
 	//----将历史记录渲染到页面上
 	RenderHistory = (type, desc, index) => {
 		let children = this.Nodes.historyGroup.children;
-		children.length > 0 && children[index-1].classList.remove('active');
-		for (let i=children.length -1; i>=0; i--) {
+		children.length > 0 && children[index - 1].classList.remove('active');
+		for (let i = children.length - 1; i >= 0; i--) {
 			children[i].classList.value.indexOf('record') > -1 && this.Nodes.historyGroup.removeChild(children[i]);
 		}
 		let history = document.createElement('p');
@@ -1270,8 +1258,8 @@ class LabelImage {
 	//----屏幕快照事件
 	ScreenShot = () => {
 		let imgData = this.Nodes.bCanvas.toDataURL('image/jpeg');
-		let windowOpen = window.open('about:blank','image from canvas');
-		windowOpen.document.write("<img alt='' src='"+ imgData +"'>");
+		let windowOpen = window.open('about:blank', 'image from canvas');
+		windowOpen.document.write("<img alt='' src='" + imgData + "'>");
 	};
 
 	//----全屏显示事件
@@ -1427,14 +1415,14 @@ class LabelImage {
 	GetMouseInImageLocation = (location) => {
 		let prevP = this.CalculateChange(location, this.Nodes.canvas);
 		// 鼠标点击在当前图像的位置
-		this.ix = Math.floor((prevP.x -this.x) / this.scale);
+		this.ix = Math.floor((prevP.x - this.x) / this.scale);
 		if (this.ix < 0) {
 			this.ix = 0;
 		}
 		else if (this.ix > this.iWidth) {
 			this.ix = this.iWidth;
 		}
-		this.iy = Math.floor((prevP.y -this.y) / this.scale);
+		this.iy = Math.floor((prevP.y - this.y) / this.scale);
 		if (this.iy < 0) {
 			this.iy = 0;
 		}
@@ -1450,7 +1438,7 @@ class LabelImage {
 		const containerHeight = container.clientHeight;
 		const x = typeof e.pageX === "number" ? e.pageX : e.touches[0].pageX;
 		const y = typeof e.pageY === "number" ? e.pageY : e.touches[0].pageY;
-		let left = x- (container.getBoundingClientRect().left + window.pageXOffset);
+		let left = x - (container.getBoundingClientRect().left + window.pageXOffset);
 		let top = y - (container.getBoundingClientRect().top + window.pageYOffset);
 
 		if (left < 0) {
@@ -1477,13 +1465,13 @@ class LabelImage {
 	ComputerLabelLocation = (rectMask) => {
 		let x = rectMask.width / 2 + rectMask.xMin;
 		let y = rectMask.height / 2 + rectMask.yMin;
-		return {x, y}
+		return { x, y }
 	};
 
 	//----按缩放程度修改数据存储面板数据
 	ReplaceAnnotateMemory = () => {
 		this.Arrays.imageAnnotateMemory.splice(0, this.Arrays.imageAnnotateMemory.length);
-		this.Arrays.imageAnnotateShower.map((item)=> {
+		this.Arrays.imageAnnotateShower.map((item) => {
 			let content = [];
 			item.content.forEach(contents => {
 				content.push({
@@ -1509,7 +1497,7 @@ class LabelImage {
 	//----按缩放程度修改数据展示面板数据
 	ReplaceAnnotateShow = () => {
 		this.Arrays.imageAnnotateShower.splice(0, this.Arrays.imageAnnotateShower.length);
-		this.Arrays.imageAnnotateMemory.map((item, index)=> {
+		this.Arrays.imageAnnotateMemory.map((item, index) => {
 			let content = [];
 			item.content.forEach(contents => {
 				content.push({

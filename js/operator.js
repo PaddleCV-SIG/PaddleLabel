@@ -63,6 +63,9 @@ tool.addEventListener('click', function(e) {
 		case e.target.className.indexOf('toolPolygon') > -1:  // 多边形
 			annotate.SetFeatures('polygonOn', true);
 			break;
+		case e.target.className.indexOf('toolMask') > -1:  // 多边形
+			annotate.SetFeatures('polygonOn', true);
+			break;
 		case e.target.className.indexOf('toolTagsManager') > -1:  // 标签管理工具
 			annotate.SetFeatures('tagsOn', true);
 			break;

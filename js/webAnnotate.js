@@ -75,6 +75,8 @@ class LabelImage {
 
 		// 历史记录下标
 		this.historyIndex = 0;
+		// 当前默认绘制图形
+		this.defaultDraw = 'rectOn';
 
 		this.Arrays = {
 
@@ -140,6 +142,8 @@ class LabelImage {
 			rectOn: false,
 			// 多边形标注开关
 			polygonOn: false,
+			// 掩膜标注开关
+			maskOn: false,
 			// 标签管理工具
 			tagsOn: false,
 			// 十字线开关
@@ -279,6 +283,7 @@ class LabelImage {
 		}
 		this.Arrays.resultIndex = 0;
 		this.DrawSavedAnnotateInfoToShow(this.Arrays.resultIndex);
+		this.defaultDraw = f;
 	};
 
 	//----更新画板数据, 将存储面板数据绘制到展示面板已经缩略图面板
@@ -428,6 +433,7 @@ class LabelImage {
 					}
 				}
 			}
+
 			if (this.Features.dragOn) {
 				// 是否开启拖拽模式
 				let prevP = this.CalculateChange(e, _nodes.canvas);
@@ -435,9 +441,33 @@ class LabelImage {
 				this.prevY = prevP.y;
 				_nodes.canvas.addEventListener('mousemove', this.ImageDrag);
 				_nodes.canvas.addEventListener('mouseup', this.RemoveImageDrag);
+				return;
 			}
-			else if (this.Features.rectOn) {
+			if (this.Features.rectOn) {
 				// 是否开启绘制矩形功能
+				this.SetFeatures('rectOn', true);
+				// 判断是否点击了某标注结果
+				let clicked = false;
+				for (let i = 0; i < _arrays.imageAnnotateShower.length; i++) {
+					// 对于每个多边形
+					let polygonPoints = _arrays.imageAnnotateShower[i].content;
+					let point = {
+						x: this.mouseX,
+						y: this.mouseY
+					};
+					console.log("开始判断是否点击了标注结果");
+					if (this.InsidePolygon(point, polygonPoints)) {
+						console.log("点击了" + i + "号标注结果");
+						_arrays.resultIndex = i + 1;
+						this.DrawSavedAnnotateInfoToShow();
+						clicked = true;
+						break;
+					}
+				}
+				if(clicked) {
+					
+				}
+				console.log("没有点击标注结果");
 				if (this.Arrays.resultIndex === 0) {
 					_nodes.ctx.lineWidth = 1;
 					_nodes.ctx.strokeStyle = "#ff0000";
@@ -447,8 +477,9 @@ class LabelImage {
 					this.Nodes.canvas.addEventListener('mousemove', this.MouseMoveDrawRect);
 					this.Nodes.canvas.addEventListener('mouseup', this.MouseUpRemoveDrawRect);
 				}
+				return;
 			}
-			else if (this.Features.polygonOn) {
+			if (this.Features.polygonOn) {
 				// 是否开启绘制多边形功能
 				let resultList = _nodes.resultGroup.getElementsByClassName("result_list");
 				let isActive = false;
@@ -473,6 +504,11 @@ class LabelImage {
 				this.ReplaceAnnotateMemory();
 				this.DrawSavedAnnotateInfoToShow();
 				this.RecordOperation('addPoint', '添加坐标点', index, JSON.stringify(_arrays.imageAnnotateMemory[index]));
+				return;
+			}
+			if (this.Features.maskOn) {
+				// 是否开启掩膜标注功能
+
 			}
 		}
 		else if (e.button === 2) {
@@ -484,6 +520,27 @@ class LabelImage {
 			_nodes.canvas.addEventListener('mouseup', this.RemoveImageDrag);
 		}
 	};
+
+	//----判断点是否在多边形内: https://blog.csdn.net/hjh2005/article/details/9246967
+	InsidePolygon = (point, polyPoints) => {
+		let crossLineNum = 0;
+		for (let j = 0, k = 1; j < polyPoints.length; j++, k++) {
+			if (k == polyPoints.length) {
+				k = 0;
+			}
+			let startPoint = polyPoints[j], endPoint = polyPoints[k];
+			// 只取点左侧线判断
+			if (startPoint.x > point.x && endPoint.x > point.x) {
+				continue;
+			}
+			if ((startPoint.y > point.y && endPoint.y < point.y)
+				|| startPoint.y < point.y && endPoint.y >= point.y) {
+				crossLineNum++;
+			}
+		}
+		// 点左侧与奇数条边相交，则在此多边形内
+		return crossLineNum % 2 == 1;
+	}
 
 	//----通过已保存的坐标点计算矩形蒙层位置与大小，以及标签位置, 添加至数组列表中
 	CalcRectMask = (arrays) => {
@@ -651,6 +708,29 @@ class LabelImage {
 		this.DrawSavedAnnotateInfoToShow();
 		this.ReplaceAnnotateMemory();
 		this.RecordOperation('modify', '拖拽更新多边形边缘点', index, JSON.stringify(this.Arrays.imageAnnotateMemory[index]));
+	};
+	
+	//----矩形拖拽事件
+	RectDrag = (e) => {
+		let _nodes = this.Nodes;
+		let p = this.CalculateChange(e, _nodes.canvas);
+		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].content;
+		for(let point of imageIndex) {
+			point.x -= p.x;
+			point.y -= p.y;
+		}
+		this.DrawSavedAnnotateInfoToShow();
+	};
+	//----矩形拖拽事件
+	RemoveRectDrag = (e) => {
+		let _nodes = this.Nodes;
+		let p = this.CalculateChange(e, _nodes.canvas);
+		let imageIndex = this.Arrays.imageAnnotateShower[this.Arrays.resultIndex - 1].content;
+		for(let point of imageIndex) {
+			point.x -= p.x;
+			point.y -= p.y;
+		}
+		this.DrawSavedAnnotateInfoToShow();
 	};
 
 	//----图片拖拽事件函数

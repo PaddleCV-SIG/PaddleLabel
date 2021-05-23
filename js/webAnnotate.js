@@ -469,6 +469,7 @@ class LabelImage {
 				}
 				console.log("没有点击标注结果");
 				if (this.Arrays.resultIndex === 0) {
+					console.log("result index");
 					_nodes.ctx.lineWidth = 1;
 					_nodes.ctx.strokeStyle = "#ff0000";
 					_nodes.ctx.fillStyle = "rgba(255,0,0," + this.opacity + ")";
@@ -480,6 +481,7 @@ class LabelImage {
 				return;
 			}
 			if (this.Features.polygonOn) {
+				console.log("开启绘制多边形");
 				// 是否开启绘制多边形功能
 				let resultList = _nodes.resultGroup.getElementsByClassName("result_list");
 				let isActive = false;
@@ -763,6 +765,7 @@ class LabelImage {
 		this.DrawSavedAnnotateInfoToShow();
 		this.Nodes.ctx.strokeStyle = "#ff0000";
 		this.Nodes.ctx.fillStyle = "rgba(255,0,0," + this.opacity + ")";
+		console.log(`${this.rectX}, ${this.rectY}, ${this.mouseX}, ${this.mouseY}`);
 		this.Nodes.ctx.strokeRect(this.rectX, this.rectY, this.mouseX - this.rectX, this.mouseY - this.rectY);
 		this.Nodes.ctx.fillRect(this.rectX, this.rectY, this.mouseX - this.rectX, this.mouseY - this.rectY);
 	};
@@ -1487,6 +1490,7 @@ class LabelImage {
 
 	//----获取更新鼠标在当前展示画板中的位置
 	GetMouseInCanvasLocation = (e) => {
+		console.log(`${this.x}, ${this.y}, ${e.layerX}, ${e.offsetX}, ${e.layerY}, ${e.offsetY}`);
 		this.mouseX = this.XPointReplace(e.layerX || e.offsetX);
 		this.mouseY = this.YPointReplace(e.layerY || e.offsetY);
 	};

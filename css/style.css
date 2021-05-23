@@ -10,6 +10,7 @@ body,html{
     overflow-y: hidden;
     overflow-x: hidden;
     height: 100%;
+    background-color: #F5F7F9;
 }
 /*遮罩层*/
 .mask_box{ position:absolute; top:0; left:0; width:100%; height:100%; background:#333;filter:alpha(opacity=30); /*IE滤镜，透明度50%*/
@@ -127,10 +128,7 @@ body,html{
      */
 .toolHead {
     width: 100%;
-    background: -webkit-linear-gradient(left, #2b334a, #27405d);/* Safari 5.1 - 6.0 */
-    background: -o-linear-gradient(right, #2b334a, #27405d);/* Opera 11.1 - 12.0 */
-    background: -moz-linear-gradient(right, #2b334a, #27405d);/* Firefox 3.6 - 15 */
-    background: linear-gradient(to right, #2b334a, #27405d);/* 标准的语法 */
+    background-color: #393A3D;
     height: 60px;
     position: relative;
 }
@@ -141,33 +139,30 @@ body,html{
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     position: relative;
-    font-size: 25px;
+    font-size: 18px;
     color: #FFF;
-}
-.toolMuster .logoGroup {
-    float: right;
-}
-.toolMuster .logoGroup .logo {
-    width: 135px;
-    height: 42px;
-    background: url("../images/logo.png") no-repeat 0 0;
-    -webkit-background-size: 100%;
-    background-size: 100%;
-    position: absolute;
-    top: 9px;
-    right: 9px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
 }
 .toolMuster .buttonGroup {
     display: inline-block;
     margin: 0 -17px;
-    padding: 14px 0 14px 50px;
+    padding: 16px 0 16px 50px;
     vertical-align: top;
 }
 .toolMuster .buttonGroupBorder {
     width: 20%;
+}
+.toolMuster .logoGroup {
+    padding: 13px 0 13px 50px;
+}
+.toolMuster .logoGroup .logo {
+    width: 100px;
+    height: 42px;
+    background: url("../images/logo.png") no-repeat 0 0;
+    -webkit-background-size: 100%;
+    background-size: 100%;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 .buttonGroup .pageControl {
     width: 100%;
@@ -348,12 +343,21 @@ body,html{
 /*
   canvasMain 标注画板主体内容
  */
+.canvasMainContainer {
+    padding-top: 40px;
+    padding-left: 10%;
+    padding-right: 10%;
+    flex-direction: column;
+    flex: auto;
+    display: flex;
+    background-color: #F5F7F9;
+}
 .canvasMain {
     width: 100%;
     flex: auto;
     height: 0;
     display: flex;
-    background: #434343;
+    background: #F5F7F9;
     position: relative;
 }
 .canvasMain .toolFeatures {
@@ -475,11 +479,18 @@ body,html{
     width: 0;
     height: 100%;
     position: relative;
+    background-color: #FFF;
+    overflow: hidden;
 }
 .canvasContent #canvas {
     cursor: crosshair;
     width: 100%;
-    height: 100%;
+    height: 530px;
+    background-color: #FFF !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 .canvasContent .scaleBox {
     position: absolute;
@@ -503,9 +514,11 @@ body,html{
     color: #fff;
 }
 .canvasMain .commentResult {
+    color: #393A3D;
+    margin: 0 20px 10px 0;
     width: 300px;
     height: 100%;
-    background: #293245;
+    background: #FFF;
     border-left: 1px solid #293245;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -525,7 +538,6 @@ body,html{
 }
 .commentResult .resultArea .title {
     width: 100%;
-    color: #fff;
     height: 36px;
     line-height: 36px;
     font-size: 12px;
@@ -543,7 +555,6 @@ body,html{
     padding-left: 10px;
     padding-right: 10px;
     position: relative;
-    color: #fff;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;

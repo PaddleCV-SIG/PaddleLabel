@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>图像标注工具</title>
     <link rel="Shortcut Icon" type="image/x-icon" href="favicon.ico">
@@ -12,45 +13,49 @@
     <link rel="stylesheet" href="./css/font-awesome.min.css">
     <link rel="stylesheet" href="./css/switch.css">
 </head>
+
 <body>
-<div id='preloader'>
-    <div class='loader' hidden>
-        <img src='images/loader.gif' alt>
+    <div id='preloader'>
+        <div class='loader' hidden>
+            <img src='images/loader.gif' alt>
+        </div>
     </div>
-</div>
-<div class="LabelImage">
-    <div class="toolHead">
-        <div class="toolMuster">
-            <div class="buttonGroup">
-                <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
-                <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)" hidden>
-            </div>
-            <div class="buttonGroup">
-                <div class="pageControl">
-                    <div class="pagePrev pageSwitch" title="上一张"></div>
-                    <!-- <div class="pageInfo inline-block">
+    <div class="LabelImage">
+        <div class="toolHead">
+            <div class="toolMuster">
+                <div class="buttonGroup logoGroup">
+                    <div class="logo"></div>
+                </div>
+                <div class="buttonGroup">
+                    <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
+                    <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)" hidden>
+                </div>
+                <div class="buttonGroup">
+                    <div class="pageControl">
+                        <div class="pagePrev pageSwitch" title="上一张"></div>
+                        <!-- <div class="pageInfo inline-block">
                         <p class="pageName" title="图片名称">File Name</p>
                         <p class="nameProcess" title="图片位置"><span class="processIndex">0</span> / <span class="processSum">0</span></p>
                     </div> -->
-                    <div class="pageNext pageSwitch" title="下一张"></div>
+                        <div class="pageNext pageSwitch" title="下一张"></div>
+                    </div>
                 </div>
-            </div>
-            <!-- <div class="assistFeatures">
+                <!-- <div class="assistFeatures">
                 <p class="saveJson" title="生出Json并保存到本地"></p>
             </div> -->
-            <div id="tools" class="buttonGroup buttonGroupBorder">
-                <div class="toolSet toolRect" title="矩形工具">矩形框标注</div>
-                <div class="toolSet toolPolygon" title="多边形工具">多边形工具</div>
-                <div class="toolSet toolDrag focus" title="图片拖拽">图片拖拽</div>
-            </div>
-            <div id="tools" class="buttonGroup buttonGroupBorder">
-                <div class="toolSet toolDrag focus" title="四宫格标注">四宫格标注</div>
-                <div class="toolSet" title="九宫格标注">九宫格标注</div>
-            </div>
-            <div id="tools" class="buttonGroup">
-                <div class="toolSet toolMask" title="掩膜标注">掩膜标注</div>
-            </div>
-            <!-- <div class="assistTool">
+                <div id="tools" class="buttonGroup buttonGroupBorder">
+                    <div class="toolSet toolRect" title="矩形工具">矩形框标注</div>
+                    <div class="toolSet toolPolygon" title="多边形工具">多边形工具</div>
+                    <div class="toolSet toolDrag focus" title="图片拖拽">图片拖拽</div>
+                </div>
+                <div id="tools" class="buttonGroup buttonGroupBorder">
+                    <div class="toolSet toolDrag" onclick="resize(2)" title="四宫格标注">四宫格标注</div>
+                    <div class="toolSet" onclick="resize(3)" title="九宫格标注">九宫格标注</div>
+                </div>
+                <div id="tools" class="buttonGroup">
+                    <div class="toolSet toolMask" title="掩膜标注">掩膜标注</div>
+                </div>
+                <!-- <div class="assistTool">
                 <div class="generalFeatures">
                     <p class="featureList crossLine" title="十字线开关">
                         <input class="mui-switch mui-switch-anim" type="checkbox">
@@ -70,98 +75,101 @@
                     </p>
                 </div>
             </div> -->
-            <div class="logoGroup">
-                <div class="logo"></div>
             </div>
+        </div>
+
+        <div class="canvasMainContainer">
+            <div class="canvasMain">
+                <div class="commentResult">
+                    <!--  标签管理  -->
+                    <div class="labelManage">
+                        <div class="labelManage-Info">
+                            <div class="labelManage-menu">
+                                <div class="labelManage-search"><input type="text" class="labelSearch-input"
+                                        placeholder="按回车搜索" /></div>
+                                <div class="labelManage-createLabel"><button
+                                        class="button btn-primary labelManage-createButton">创建</button></div>
+                            </div>
+                            <div class="labelManage-subList">标签列表：</div>
+                            <div class="labelManage-group">
+                                <p class="labelTip" hidden>请先创建标签</p>
+                                <ul class="labelManage-ul">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="labelManage-create" hidden>
+                            <div class="labelManage-Title">创建标签</div>
+                            <div class="labelCreate labelCreate-name">
+                                <label>标签名称：</label>
+                                <input type="text" class="labelCreate-nameInput">
+                            </div>
+                            <div class="labelCreate labelCreate-color">
+                                <label>标签颜色：</label>
+                                <span class="colorPicker" id="colorPicker"></span>
+                                <input class="colorHex" id="colorHex" value="#ff0000" data-r="255" data-g="0" data-b="0"
+                                    readonly>
+                            </div>
+                            <div class="labelCreate">
+                                <button class="button btn-error removeLabel" title="删除标签">删除</button>
+                            </div>
+                            <div class="labelCreateButtons">
+                                <button class="button btn-success addLabel">确定</button>
+                                <button class="button btn-default closeAdd">取消</button>
+                            </div>
+                        </div>
+                        <div class="closeLabelManage"><span class="icon-remove-sign"></span></div>
+                    </div>
+                    <div class="resultArea">
+                        <p class="title">标注结果 (<span class="resultLength">0</span>)</p>
+                        <div class="resultList_head">
+                            <div class="headChildren">
+                                <p class="headName">名称</p>
+                                <p class="headEdit">修改</p>
+                                <p class="headDelete">删除</p>
+                                <p class="headDisplay">显/隐</p>
+                            </div>
+                        </div>
+                        <div class="resultGroup">
+                        </div>
+                        <!--    选择标签操作    -->
+                        <div class="resultSelectLabel">
+                            <p class="selectLabelTip" hidden>请先创建标签</p>
+                            <ul class="selectLabel-ul">
+                            </ul>
+                            <div class="closeLabelManage"><span class="icon-remove-sign"></span></div>
+                        </div>
+                    </div>
+                    <div class="historyContent">
+                        <p class="title">历史记录</p>
+                        <div class="historyGroup">
+                        </div>
+                    </div>
+                    <div class="tabBtn focus"><span class="icon-double-angle-right"></span></div>
+                </div>
+                <div class="canvasContent">
+                    <canvas id="canvas"></canvas>
+                    <div class="scaleBox">
+                        <div class="scaleCanvas"></div>
+                        <div class="scalePanel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mask_box" hidden></div>
+        <div class="loading_box" hidden id="loading">
+            <div class="loaderSpinner">
+                <span class="icon-spinner"></span>
+            </div>
+            <b class="closes"></b>
         </div>
     </div>
 
-    <div class="canvasMain">
-        <div class="canvasContent">
-            <canvas id="canvas"></canvas>
-            <div class="scaleBox">
-                <div class="scaleCanvas"></div>
-                <div class="scalePanel"></div>
-            </div>
-        </div>
-        <div class="commentResult">
-            <!--  标签管理  -->
-            <div class="labelManage">
-                <div class="labelManage-Info">
-                    <div class="labelManage-menu">
-                        <div class="labelManage-search"><input type="text" class="labelSearch-input" placeholder="按回车搜索"/></div>
-                        <div class="labelManage-createLabel"><button class="button btn-primary labelManage-createButton">创建</button></div>
-                    </div>
-                    <div class="labelManage-subList">标签列表：</div>
-                    <div class="labelManage-group">
-                        <p class="labelTip" hidden>请先创建标签</p>
-                        <ul class="labelManage-ul">
-                        </ul>
-                    </div>
-                </div >
-                <div class="labelManage-create" hidden>
-                    <div class="labelManage-Title">创建标签</div>
-                    <div class="labelCreate labelCreate-name">
-                        <label>标签名称：</label>
-                        <input type="text" class="labelCreate-nameInput">
-                    </div>
-                    <div class="labelCreate labelCreate-color">
-                        <label>标签颜色：</label>
-                        <span class="colorPicker" id="colorPicker"></span>
-                        <input class="colorHex" id="colorHex" value="#ff0000" data-r="255" data-g="0" data-b="0" readonly>
-                    </div>
-                    <div class="labelCreate">
-                        <button class="button btn-error removeLabel" title="删除标签">删除</button>
-                    </div>
-                    <div class="labelCreateButtons">
-                        <button class="button btn-success addLabel">确定</button>
-                        <button class="button btn-default closeAdd">取消</button>
-                    </div>
-                </div>
-                <div class="closeLabelManage"><span class="icon-remove-sign"></span></div>
-            </div>
-            <div class="resultArea">
-                <p class="title">标注结果 (<span class="resultLength">0</span>)</p>
-                <div class="resultList_head">
-                    <div class="headChildren">
-                        <p class="headName">名称</p>
-                        <p class="headEdit">修改</p>
-                        <p class="headDelete">删除</p>
-                        <p class="headDisplay">显/隐</p>
-                    </div>
-                </div>
-                <div class="resultGroup">
-                </div>
-                <!--    选择标签操作    -->
-                <div class="resultSelectLabel">
-                    <p class="selectLabelTip" hidden>请先创建标签</p>
-                    <ul class="selectLabel-ul">
-                    </ul>
-                    <div class="closeLabelManage"><span class="icon-remove-sign"></span></div>
-                </div>
-            </div>
-            <div class="historyContent">
-                <p class="title">历史记录</p>
-                <div class="historyGroup">
-                </div>
-            </div>
-            <div class="tabBtn focus"><span class="icon-double-angle-right"></span></div>
-        </div>
-    </div>
-
-    <div class="mask_box" hidden></div>
-    <div class="loading_box" hidden id="loading">
-        <div class="loaderSpinner">
-            <span class="icon-spinner"></span>
-        </div>
-        <b class="closes"></b>
-    </div>
-</div>
-
-<script src="./js/preloader.js"></script>
-<script src="./colorPicker/colorPicker.js"></script>
-<script src="./js/webAnnotate.js"></script>
-<script src="./js/operator.js"></script>
+    <script src="./js/preloader.js"></script>
+    <script src="./colorPicker/colorPicker.js"></script>
+    <script src="./js/webAnnotate.js"></script>
+    <script src="./js/operator.js"></script>
 
 </body>
+
 </html>

@@ -165,3 +165,11 @@ function openBox (e, isOpen) {
 		el.style.display = "none";
 	}
 }
+
+// 倍数缩放
+function resize (newScale) {
+	let newX = annotate.x * newScale / annotate.scale;
+	let newY = annotate.y * newScale / annotate.scale;
+	annotate.scale = newScale;
+	annotate.SetXY(newX, newY);
+}

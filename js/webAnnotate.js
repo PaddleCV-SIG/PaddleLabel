@@ -23,7 +23,7 @@ class LabelImage {
 		// 最小缩放比例
 		this.minScale = 0.2;
 		// 最大缩放比例
-		this.maxScale = 8;
+		this.maxScale = 9;
 		// 图片在画板中的横坐标
 		this.x = 0;
 		// 图片在画板中的纵坐标

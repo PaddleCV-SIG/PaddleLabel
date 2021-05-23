@@ -27,10 +27,6 @@
                     <div class="logo"></div>
                 </div>
                 <div class="buttonGroup">
-                    <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
-                    <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)" hidden>
-                </div>
-                <div class="buttonGroup">
                     <div class="pageControl">
                         <div class="pagePrev pageSwitch" title="上一张"></div>
                         <!-- <div class="pageInfo inline-block">
@@ -81,6 +77,19 @@
         <div class="canvasMainContainer">
             <div class="canvasMain">
                 <div class="commentResult">
+                    <!-- 按钮组 -->
+                    <div class="buttonGroup">
+                        <div class="button">
+                            <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
+                            <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)" hidden>
+                        </div>
+                        <div class="button">
+                            <p class="convert" title="格式转换">格式转换</p>
+                        </div>
+                        <div class="button">
+                            <p class="importPaddleX" title="数据导入PaddleX">数据导入PaddleX</p>
+                        </div>
+                    </div>
                     <!--  标签管理  -->
                     <div class="labelManage">
                         <div class="labelManage-Info">

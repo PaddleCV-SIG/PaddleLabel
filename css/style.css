@@ -377,16 +377,6 @@ body,html{
     font-size: 12px;
     text-align: center;
 }
-.toolFeatures .openFolder {
-    width: 30px;
-    height: 30px;
-    margin: 20px auto 0;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    background: url(../images/folder.png) no-repeat 0 0;
-    cursor: pointer;
-}
 .toolFeatures .saveJson {
     width: 24px;
     height: 24px;
@@ -484,7 +474,7 @@ body,html{
 }
 .canvasContent #canvas {
     cursor: crosshair;
-    width: 100%;
+    width: 1190px;
     height: 530px;
     background-color: #FFF !important;
     position: absolute;
@@ -527,6 +517,30 @@ body,html{
     border-bottom-left-radius: 5px;
     display: flex;
     flex-direction: column;
+}
+.commentResult .buttonGroup {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.buttonGroup .button {
+
+}
+.button .openFolder {
+    width: 30px;
+    height: 30px;
+    margin: 20px auto 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: url(../images/folder.png) no-repeat 0 0;
+    cursor: pointer;
+}
+.button .openFolderInput {
+    
 }
 .commentResult .resultArea {
     position: relative;

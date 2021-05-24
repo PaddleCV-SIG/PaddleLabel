@@ -608,6 +608,7 @@ class LabelImage {
 		let _arrays = this.Arrays;
 		let _nodes = this.Nodes;
 		_nodes.ctx.clearRect(0, 0, this.cWidth, this.cHeight);
+		// console.log(`${_nodes.bCanvas}, ${-this.x/this.scale}, ${-this.y/this.scale}, ${this.cWidth/this.scale}, ${this.cHeight/this.scale}, 0, 0, ${this.cWidth}, ${this.cHeight}`);
 		_nodes.ctx.drawImage(_nodes.bCanvas, -this.x / this.scale, -this.y / this.scale, this.cWidth / this.scale, this.cHeight / this.scale, 0, 0, this.cWidth, this.cHeight);
 		_nodes.ctx.setLineDash([0, 0]);
 		_arrays.imageAnnotateShower.forEach((item, index) => {
@@ -1479,6 +1480,7 @@ class LabelImage {
 	};
 	//----X坐标点装换， 防止绘制到图片外
 	XPointReplace = (x) => {
+		// console.log(`${x}, ${this.x}`)
 		if (x < this.x) {
 			x = this.x
 		}
@@ -1490,9 +1492,8 @@ class LabelImage {
 
 	//----获取更新鼠标在当前展示画板中的位置
 	GetMouseInCanvasLocation = (e) => {
-		console.log(`${this.x}, ${this.y}, ${e.layerX}, ${e.offsetX}, ${e.layerY}, ${e.offsetY}`);
-		this.mouseX = this.XPointReplace(e.layerX || e.offsetX);
-		this.mouseY = this.YPointReplace(e.layerY || e.offsetY);
+		this.mouseX = this.XPointReplace(e.offsetX);
+		this.mouseY = this.YPointReplace(e.offsetY);
 	};
 
 	//----获取鼠标当前相对所在存储面板图片中的位置

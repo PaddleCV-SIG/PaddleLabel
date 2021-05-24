@@ -474,7 +474,7 @@ body,html{
 }
 .canvasContent #canvas {
     cursor: crosshair;
-    width: 1190px;
+    width: 790px;
     height: 530px;
     background-color: #FFF !important;
     position: absolute;

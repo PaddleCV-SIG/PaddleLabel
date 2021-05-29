@@ -174,3 +174,9 @@ function resize (newScale) {
 	annotate.scale = newScale;
 	annotate.SetXY(newX, newY);
 }
+
+// 编辑标签
+function toolTagsManager() {
+	console.log("toolTagsManager");
+	annotate.SetFeatures('tagsOn', true);
+}

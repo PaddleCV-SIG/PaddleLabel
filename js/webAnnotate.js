@@ -177,7 +177,7 @@ class LabelImage {
 		document.addEventListener('msfullscreenchange', this.ScreenViewChange);
 		_nodes.canvas.addEventListener('mousemove', this.CanvasMouseMove);
 		_nodes.resultGroup.addEventListener('mouseover', this.ResultListOperation);
-		// _nodes.toolTagsManager.addEventListener('click', this.ManageLabels)
+		_nodes.toolTagsManager.addEventListener('click', this.ManageLabels)
 	};
 
 	//----设置图片并初始化画板信息

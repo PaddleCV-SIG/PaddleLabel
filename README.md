@@ -11,9 +11,20 @@
 # 描述
 LabelImage 是一款用于深度学习分割模型训练的图像标注工具（生成.json文件），可以对你将要训练的模型提供帮助。
 <br/>
-使用`JavaScript Canvas`技术栈 
-#### 直接在线访问 <a href="https://rachelcao277.github.io/LabelImage" target="_blank"><b>LabelImage</b></a> （_建议使用Chrome浏览器）_
+使用方式：
 <br/>
+
+```bash
+git clone git@github.com:PaddleCV-SIG/label_image.git
+cd label_image
+# For Python2
+python -m SimpleHTTPServer 8080
+# For Python3
+python -m http.server 8080
+```
+
+然后打开浏览器访问 http://localhost:8080
+
 
 # 后端API
 <br/>

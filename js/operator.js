@@ -18,7 +18,7 @@ const annotate = new LabelImage({
 	resultGroup: resultGroup,
 	// crossLine: document.querySelector('.crossLine'),
 	// 标注结果显示开关
-	labelShower: false,
+	labelShower: true,
 	screenShot: document.querySelector('.screenShot'),
 	screenFull: document.querySelector('.screenFull'),
 	colorHex: document.querySelector('#colorHex'),
@@ -43,7 +43,7 @@ initImage();
 // 初始化图片状态
 function initImage() {
 	selectImage(0);
-	// processSum.innerText = imgSum;
+	processSum.innerText = imgSum;
 }
 
 //切换操作选项卡
@@ -61,6 +61,7 @@ tool.addEventListener('click', function(e) {
 			annotate.SetFeatures('rectOn', true);
 			break;
 		case e.target.className.indexOf('toolPolygon') > -1:  // 多边形
+		console.log("多边形开始");
 			annotate.SetFeatures('polygonOn', true);
 			break;
 		case e.target.className.indexOf('toolMask') > -1:  // 多边形
@@ -76,6 +77,7 @@ tool.addEventListener('click', function(e) {
 
 // 获取下一张图片
 nextBtn.onclick = function() {
+	console.log(annotate.Arrays.imageAnnotateMemory);
 	annotate.Arrays.imageAnnotateMemory.length > 0 && localStorage.setItem(taskName.textContent, JSON.stringify(annotate.Arrays.imageAnnotateMemory));  // 保存已标定的图片信息
 	if (imgIndex >= imgSum) {
 		imgIndex = 1;
@@ -107,7 +109,7 @@ document.querySelector('.openFolder').addEventListener('click', function() {
 function changeFolder(e) {
 	imgFiles = e.files;
 	imgSum = imgFiles.length;
-	// processSum.innerText = imgSum;
+	processSum.innerText = imgSum;
 	imgIndex = 1;
 	selectImage(0);
 }
@@ -118,18 +120,17 @@ function getInitImage(index) {
 
 function selectImage(index) {
 	openBox('#loading', true);
-	// processIndex.innerText = imgIndex;
-	// taskName.innerText = imgFiles[index].name || imgFiles[index].split('/')[3];
-	let taskName = getInitImage(index);
-	let content = localStorage.getItem(taskName);
+	processIndex.innerText = imgIndex;
+	taskName.innerText = getInitImage(index);
+	let content = localStorage.getItem(taskName.textContent);
 	let img = imgFiles[index].name ? window.URL.createObjectURL(imgFiles[index]) : imgFiles[index];
 	content ? annotate.SetImage(img, JSON.parse(content)) : annotate.SetImage(img);
 }
 
-// document.querySelector('.saveJson').addEventListener('click', function() {
-	// let filename = taskName.textContent.split('.')[0] + '.json';
-	// annotate.Arrays.imageAnnotateMemory.length > 0 ? saveJson(annotate.Arrays.imageAnnotateMemory, filename): alert('当前图片未有有效的标定数据');
-// });
+document.querySelector('.saveJson').addEventListener('click', function() {
+	let filename = taskName.textContent.split('.')[0] + '.json';
+	annotate.Arrays.imageAnnotateMemory.length > 0 ? saveJson(annotate.Arrays.imageAnnotateMemory, filename): alert('当前图片未有有效的标定数据');
+});
 
 function saveJson(data, filename) {
 	if (!data) {

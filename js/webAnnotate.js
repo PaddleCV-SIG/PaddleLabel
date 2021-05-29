@@ -459,7 +459,7 @@ class LabelImage {
 					if (this.InsidePolygon(point, polygonPoints)) {
 						console.log("点击了" + i + "号标注结果");
 						_arrays.resultIndex = i + 1;
-						this.DrawSavedAnnotateInfoToShow();
+						this.selectAnnotation(i);
 						clicked = true;
 						break;
 					}
@@ -956,7 +956,8 @@ class LabelImage {
 			};
 			resultList[i].onclick = function (event) {
 				let target = event.target;
-				let pageY = event.pageY - 35;
+				let pageY = event.pageY + 21;
+				console.log(event);
 				switch (target.classList[0]) {
 					case "deleteLabel":
 						_self.DeleteSomeResultLabel(i);
@@ -965,12 +966,7 @@ class LabelImage {
 						_self.getCreatedLabels(resultList[i], pageY, i);
 						break;
 					case "result_Name":
-						for (let j = 0; j < resultList.length; j++) {
-							resultList[j].classList.remove('active');
-						}
-						resultList[this.index].classList.add('active');
-						_self.Arrays.resultIndex = this.index + 1;
-						_self.DrawSavedAnnotateInfoToShow();
+						_self.selectAnnotation(i);
 						break;
 					case "isShowLabel":
 						if (target.classList.value.indexOf('icon-eye-open') > -1) {
@@ -989,6 +985,16 @@ class LabelImage {
 			};
 		}
 	};
+
+	selectAnnotation = (i) => {
+		let resultList = this.Nodes.resultGroup.getElementsByClassName("result_list");
+		for (let j = 0; j < resultList.length; j++) {
+			resultList[j].classList.remove('active');
+		}
+		resultList[i].classList.add('active');
+		this.Arrays.resultIndex = i + 1;
+		this.DrawSavedAnnotateInfoToShow();
+	}
 
 	//----获取已经创建的标签列表
 	getCreatedLabels = (node, pageY, resultIndex) => {

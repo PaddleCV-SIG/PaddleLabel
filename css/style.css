@@ -490,11 +490,11 @@ body,html{
     margin: 0 20px 10px 0;
     width: 265px;
     height: 100%;
-    background: #FFF;
     display: flex;
     flex-direction: column;
 }
 .commentResult .buttonGroup {
+    background: #FFF;
     position: relative;
     width: 100%;
     flex: 1;
@@ -502,6 +502,7 @@ body,html{
     display: flex;
     flex-direction: column;
     min-height: 200px;
+    margin-bottom: 20px;
 }
 .commentResult .buttonGroup .button {
     display: inline-block;
@@ -532,11 +533,13 @@ body,html{
     
 }
 .commentResult .resultArea {
+    background: #FFF;
     width: 100%;
     flex: 1;
     height: 0;
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
 }
 .commentResult .resultArea .title {
     width: 100%;
@@ -789,6 +792,7 @@ body,html{
     }
 }
 .commentResult .historyContent {
+    background-color: #fff;
     width: 100%;
     height: 0;
     flex: 1;

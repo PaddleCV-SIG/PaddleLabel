@@ -81,38 +81,6 @@ body,html{
     display: inline-block;
     vertical-align: top;
 }
-.button {
-    display: inline-block;
-    vertical-align: top;
-    border: 1px solid transparent;
-    width: 55px;
-    height: 30px;
-    line-height: 30px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-.button.btn-primary {
-    background: #428bca;
-    color: #fff;
-}
-.button.btn-success {
-    background: #00ca6b;
-    color: #fff;
-}
-.button.btn-default {
-    background: #fff;
-    color: #333;
-    border: 1px solid #333;
-}
-.button.btn-error {
-    background: #ca2700;
-    color: #fff;
-}
 .removeLabel {
     margin-left: 10px;
 }
@@ -143,15 +111,17 @@ body,html{
     color: #FFF;
 }
 .toolMuster .buttonGroup {
+    width: 90%;
     display: inline-block;
     margin: 0 -17px;
-    padding: 16px 0 16px 50px;
+    padding: 0 0 0 53px;
     vertical-align: top;
 }
-.toolMuster .buttonGroupBorder {
-    width: 20%;
+.toolMuster .buttonGroup .toolSet {
+    width: 10%;
 }
 .toolMuster .logoGroup {
+    display: inline-block;
     padding: 13px 0 13px 50px;
 }
 .toolMuster .logoGroup .logo {
@@ -164,14 +134,20 @@ body,html{
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
+.buttonGroup #tools {
+    display: inline-block;
+    width: 89%;
+}
 .buttonGroup .pageControl {
-    width: 100%;
+    width: 10%;
     height: 60px;
     text-align: center;
+    position: relative;
+    float: left;
 }
 .pageControl .pageSwitch{
     width: 70px;
-    height: 36px;
+    height: 60px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
@@ -179,22 +155,23 @@ body,html{
     cursor: pointer;
 }
 .pageControl .pagePrev {
-    background: url(../images/toolIcons.png) no-repeat 0 -192px;
+    background: url(../images/toolIcons.png) no-repeat 0 -180px;
 }
 .pageControl .pageNext {
-    background: url(../images/toolIcons.png) no-repeat 0 -288px;
+    background: url(../images/toolIcons.png) no-repeat 0 -276px;
 }
 .pageControl .pagePrev:hover {
-    background: url(../images/toolIcons.png) no-repeat -96px -192px;
+    background: url(../images/toolIcons.png) no-repeat -96px -180px;
 }
 .pageControl .pageNext:hover {
-    background: url(../images/toolIcons.png) no-repeat -96px -288px;
+    background: url(../images/toolIcons.png) no-repeat -96px -276px;
 }
 .buttonGroup .toolSet {
     display: inline-block;
     width: auto;
     cursor: pointer;
-    height: 100%;
+    height: 60px;
+    line-height: 60px;
 }
 
 .pageControl .pageInfo {
@@ -351,6 +328,12 @@ body,html{
     flex: auto;
     display: flex;
     background-color: #F5F7F9;
+    height: 600px;
+    min-height: 600px;
+    max-height: 600px;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 .canvasMain {
     width: 100%;
@@ -358,7 +341,6 @@ body,html{
     height: 0;
     display: flex;
     background: #F5F7F9;
-    position: relative;
 }
 .canvasMain .toolFeatures {
     background: #21293c;
@@ -487,8 +469,8 @@ body,html{
     left: 0;
     bottom: 0;
     padding: 6px 6px 0 6px;
-    background: #293245;
-    border: 1px solid #3c5167;
+    background: #393A3D;
+    border: 1px solid #393A3D;
 }
 .canvasContent .scaleBox .scaleCanvas {
     position: relative;
@@ -506,15 +488,9 @@ body,html{
 .canvasMain .commentResult {
     color: #393A3D;
     margin: 0 20px 10px 0;
-    width: 300px;
+    width: 265px;
     height: 100%;
     background: #FFF;
-    border-left: 1px solid #293245;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
     display: flex;
     flex-direction: column;
 }
@@ -525,25 +501,37 @@ body,html{
     height: 0;
     display: flex;
     flex-direction: column;
+    min-height: 200px;
 }
-.buttonGroup .button {
-
-}
-.button .openFolder {
-    width: 30px;
-    height: 30px;
-    margin: 20px auto 0;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    background: url(../images/folder.png) no-repeat 0 0;
+.commentResult .buttonGroup .button {
+    display: inline-block;
+    width: 100%;
+    font-size: 17px;
+    color: #393A3D;
+    background-color: #fff;
     cursor: pointer;
+}
+.commentResult .buttonGroup .buttonInner {
+    height: 45px;
+    line-height: 45px;
+    margin: 0 20px;
+    border-bottom: 2px solid #d4d4d4;
+}
+.commentResult .buttonGroup .buttonActive {
+    background-color: #393A3D;
+    color: #fff;
+}
+.commentResult .buttonGroup .buttonActive .buttonInner {
+    border-bottom: none;
+    border-bottom: 2px solid #393A3D;
+}
+.commentResult .buttonGroup .button .openFolder {
+    width: 100%;
 }
 .button .openFolderInput {
     
 }
 .commentResult .resultArea {
-    position: relative;
     width: 100%;
     flex: 1;
     height: 0;
@@ -559,7 +547,8 @@ body,html{
     -webkit-box-shadow: 0 1px 3px 0 #3c5167;
     -moz-box-shadow: 0 1px 3px 0 #3c5167;
     box-shadow: 0 1px 3px 0 #3c5167;
-    background: #212d3f;
+    background: #393A3D;
+    color: #FFF;
 }
 .commentResult .resultArea .resultList_head {
     width: 100%;
@@ -576,7 +565,7 @@ body,html{
 .resultList_head .headChildren {
     width: 100%;
     height: 30px;
-    border-bottom: 1px solid #3c5167;
+    border-bottom: 1px solid #393A3D;
 }
 .resultList_head .headChildren .headName {
     display: inherit;
@@ -607,7 +596,7 @@ body,html{
     width: 100%;
     height: 28px;
     line-height: 28px;
-    color: #999;
+    color: #FFF;
     position: relative;
 }
 .resultGroup .result_list .result_no {
@@ -616,6 +605,7 @@ body,html{
     vertical-align: top;
     text-align: center;
     font-size: 12px;
+    color: #393A3D;
 }
 .resultGroup .result_list .result_color {
     width: 10px;
@@ -630,10 +620,9 @@ body,html{
     cursor: pointer;
 }
 .resultGroup .result_list .result_Name {
-    width: 220px;
     font-size: 12px;
     line-height: 28px;
-    color: #fff;
+    color: #393A3D;
     display: inline-block;
     vertical-align: top;
     border: 0;
@@ -649,7 +638,7 @@ body,html{
     font-size: 12px;
     height: 28px;
     line-height: 28px;
-    color: #fff;
+    color: #393A3D;
     top: 0;
     cursor: pointer;
 }
@@ -663,15 +652,23 @@ body,html{
     right: 18px;
 }
 .resultGroup .result_list.active {
-    background: #212b3e;
+    background: #393A3D;
+}
+.resultGroup .result_list:hover .result_Name,
+.resultGroup .result_list:hover .result_no,
+.resultGroup .result_list:hover i,
+.resultGroup .active .result_Name,
+.resultGroup .active .result_no,
+.resultGroup .active i {
+    color: #FFF;
 }
 .resultGroup .result_list:hover {
-    background: rgba(33, 43, 62, 0.6);
+    background: #75777e;
 }
 .commentResult .resultArea .resultSelectLabel {
     position: absolute;
     top: 80px;
-    right: 42px;
+    left: 216px;
     width: 200px;
     height: 220px;
     padding: 24px 6px 8px;
@@ -808,7 +805,7 @@ body,html{
     -webkit-box-shadow: 0 1px 3px 0 #3c5167;
     -moz-box-shadow: 0 1px 3px 0 #3c5167;
     box-shadow: 0 1px 3px 0 #3c5167;
-    background: #212d3f;
+    background: #393A3D;
 }
 .commentResult .historyContent .historyGroup {
     flex: auto;
@@ -818,17 +815,19 @@ body,html{
     height: 0;
 }
 .commentResult .historyContent .historyGroup p {
-    color: #f1f1f1;
+    color: #393A3D;
     line-height: 1.8;
     font-size: 12px;
     padding: 0 10px;
     box-sizing: border-box;
 }
 .commentResult .historyContent .historyGroup p:hover {
-    background: rgba(33, 43, 62, 0.6);
+    color: #FFF;
+    background: rgba(57, 58, 61, 0.6);
 }
 .commentResult .historyContent .historyGroup p.active {
-    background: #212b3e;
+    color: #FFF;
+    background: #393A3D;
 }
 .commentResult .historyContent .historyGroup p.record {
     color: #999999;

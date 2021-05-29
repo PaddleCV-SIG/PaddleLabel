@@ -23,33 +23,30 @@
     <div class="LabelImage">
         <div class="toolHead">
             <div class="toolMuster">
-                <div class="buttonGroup logoGroup">
+                <div class="logoGroup">
                     <div class="logo"></div>
                 </div>
                 <div class="buttonGroup">
                     <div class="pageControl">
                         <div class="pagePrev pageSwitch" title="上一张"></div>
-                        <!-- <div class="pageInfo inline-block">
-                        <p class="pageName" title="图片名称">File Name</p>
-                        <p class="nameProcess" title="图片位置"><span class="processIndex">0</span> / <span class="processSum">0</span></p>
-                    </div> -->
                         <div class="pageNext pageSwitch" title="下一张"></div>
+                        <p class="pageName" title="图片名称" style="display: none;">File Name</p>
+                        <div class="pageInfo inline-block" style="display: none;">
+                            <p class="nameProcess" title="图片位置"><span class="processIndex">0</span> / <span
+                                    class="processSum">0</span></p>
+                        </div>
                     </div>
-                </div>
-                <!-- <div class="assistFeatures">
-                <p class="saveJson" title="生出Json并保存到本地"></p>
-            </div> -->
-                <div id="tools" class="buttonGroup buttonGroupBorder">
-                    <div class="toolSet toolRect" title="矩形工具">矩形框标注</div>
-                    <div class="toolSet toolPolygon" title="多边形工具">多边形工具</div>
-                    <div class="toolSet toolDrag focus" title="图片拖拽">图片拖拽</div>
-                </div>
-                <div id="tools" class="buttonGroup buttonGroupBorder">
-                    <div class="toolSet toolDrag" onclick="resize(2)" title="四宫格标注">四宫格标注</div>
-                    <div class="toolSet" onclick="resize(3)" title="九宫格标注">九宫格标注</div>
-                </div>
-                <div id="tools" class="buttonGroup">
-                    <div class="toolSet toolMask" title="掩膜标注">掩膜标注</div>
+                    <div class="assistFeatures" style="display: none;">
+                        <p class="saveJson" title="生出Json并保存到本地"></p>
+                    </div>
+                    <div id="tools">
+                        <div class="toolSet toolRect" title="矩形工具">矩形框标注</div>
+                        <div class="toolSet toolPolygon" title="多边形工具">多边形工具</div>
+                        <div class="toolSet toolDrag focus" title="图片拖拽">图片拖拽</div>
+                        <div class="toolSet toolDrag" onclick="resize(2)" title="四宫格标注">四宫格标注</div>
+                        <div class="toolSet" onclick="resize(3)" title="九宫格标注">九宫格标注</div>
+                        <div class="toolSet toolMask" title="掩膜标注">掩膜标注</div>
+                    </div>
                 </div>
                 <!-- <div class="assistTool">
                 <div class="generalFeatures">
@@ -79,15 +76,22 @@
                 <div class="commentResult">
                     <!-- 按钮组 -->
                     <div class="buttonGroup">
-                        <div class="button">
-                            <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
-                            <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)" hidden>
+                        <div class="button buttonActive">
+                            <div class="buttonInner">
+                                <p class="openFolderText openFolder" title="打开图像路径">打开图像路径</p>
+                                <input class="openFolderInput" type="file" multiple onchange="changeFolder(this)"
+                                    hidden>
+                            </div>
                         </div>
                         <div class="button">
-                            <p class="convert" title="格式转换">格式转换</p>
+                            <div class="buttonInner">
+                                <p class="convert" title="格式转换">格式转换</p>
+                            </div>
                         </div>
                         <div class="button">
-                            <p class="importPaddleX" title="数据导入PaddleX">数据导入PaddleX</p>
+                            <div class="buttonInner">
+                                <p class="importPaddleX" title="数据导入PaddleX">数据导入PaddleX</p>
+                            </div>
                         </div>
                     </div>
                     <!--  标签管理  -->

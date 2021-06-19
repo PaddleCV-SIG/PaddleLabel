@@ -25,6 +25,19 @@
 - Path: /get/picture/{dataset_id}/{pic_id}
 - Method: GET
 - Return: 二进制图片
+```json
+{
+   "code": 0,
+   "data": [
+      {
+         "dataset_id": dataset_id,
+         "pic_id": pic_id,
+         "data": image
+      }
+   ]
+}
+```
+
 
 ## 获取已有标注信息
 
@@ -68,40 +81,42 @@
 
 ## 添加/修改标注信息
 
-- Path: /set/annotation/{dataset_id}/{pic_id}
+- Path: /set/annotation?dataset_id}/{pic_id}
 - Method: POST
 - Data:
 
 ```json
-[
-    {
+{
+    'datas':[
+      {
         "content": [
-            {
-                "x": 329.05296950240773,
-                "y": 130.97913322632422
-            },
-            //...
+          {
+            "x": 329.05296950240773,
+            "y": 130.97913322632422
+          },
+          //...
         ],
         "rectMask": {
-            "xMin": 329.05296950240773,
-            "yMin": 130.97913322632422,
-            "width": 187.4799357945425,
-            "height": 165.6500802568218
+          "xMin": 329.05296950240773,
+          "yMin": 130.97913322632422,
+          "width": 187.4799357945425,
+          "height": 165.6500802568218
         },
         "labels": {
-            "labelName": "未命名",
-            "labelColor": "red",
-            "labelColorRGB": "255,0,0",
-            "visibility": false
+          "labelName": "未命名",
+          "labelColor": "red",
+          "labelColorRGB": "255,0,0",
+          "visibility": false
         },
         "labelLocation": {
-            "x": 422.792937399679,
-            "y": 213.80417335473513
+          "x": 422.792937399679,
+          "y": 213.80417335473513
         },
         "contentType": "rect"
-    },
-    //...
-]
+      },
+      //...
+    ]
+}
 ```
 
 - Return:

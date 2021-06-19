@@ -202,7 +202,7 @@ html {
   color: #fff;
 }
 .toolMuster .buttonGroup {
-  width: 90%;
+  width: 87%;
   display: inline-block;
   margin: 0 -17px;
   padding: 0 0 0 53px;
@@ -214,6 +214,7 @@ html {
 .toolMuster .logoGroup {
   display: inline-block;
   padding: 13px 0 13px 50px;
+  width: 7%;
 }
 .toolMuster .logoGroup .logo {
   width: 100px;
@@ -237,8 +238,8 @@ html {
   float: left;
 }
 .pageControl .pageSwitch {
-  width: 70px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;

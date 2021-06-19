@@ -11,6 +11,8 @@
 # 描述
 LabelImage 是一款用于深度学习分割模型训练的图像标注工具（生成.json文件），可以对你将要训练的模型提供帮助。
 <br/>
+[在线演示](https://paddlecv-sig.github.io/label_image/)
+
 本地运行：
 <br/>
 
@@ -33,7 +35,6 @@ python -m http.server 8080
 建议使用Visual Studio Code进行开发，并安装Prettier扩展。
 
 # 后端API
-<br/>
 <a href="./backend.md">这里</a>
 <br/>
 

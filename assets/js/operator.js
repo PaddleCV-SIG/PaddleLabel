@@ -33,9 +33,9 @@ const taskName = document.querySelector('.pageName');                   // 标�
 const processIndex = document.querySelector('.processIndex');           // 当前标注进度
 const processSum = document.querySelector('.processSum');               // 当前标注任务总数
 
-let imgFiles = [ './images/example/football.jpg', './images/example/person.jpg', './images/example/band.jpg',
-'./images/example/street.jpg', './images/example/dog.jpeg', './images/example/cat.jpg', './images/example/dogs.jpg',
-'./images/example/furniture.jpg', './images/example/basketball.jpg', './images/example/alley.jpg'];    //选择上传的文件数据集
+let imgFiles = [ './assets/images/example/football.jpg', './assets/images/example/person.jpg', './assets/images/example/band.jpg',
+'./assets/images/example/street.jpg', './assets/images/example/dog.jpeg', './assets/images/example/cat.jpg', './assets/images/example/dogs.jpg',
+'./assets/images/example/furniture.jpg', './assets/images/example/basketball.jpg', './assets/images/example/alley.jpg'];    //选择上传的文件数据集
 let imgIndex = 1;       //标定图片默认下标;
 let imgSum = 10;        // 选择图片总数;
 
@@ -101,10 +101,6 @@ prevBtn.onclick = function() {
 		selectImage(imgIndex - 1);
 	}
 };
-
-document.querySelector('.openFolder').addEventListener('click', function() {
-	document.querySelector('.openFolderInput').click()
-});
 
 function changeFolder(e) {
 	imgFiles = e.files;

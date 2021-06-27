@@ -4,6 +4,15 @@
 const http = axios.create({
   baseURL: "http://localhost:9528",
 });
+
+function getLabels() {
+  return http.get("/tag/default");
+}
+
+function getLabels() {
+  return http.get("/tag/default/add");
+}
+
 class LabelImage {
   constructor(options) {
     // 画布宽度
@@ -1273,7 +1282,7 @@ class LabelImage {
   };
 
   //----标签管理
-  ManageLabels = () => {
+  ManageLabels = async () => {
     let labelSearch = document.querySelector(".labelSearch-input"); // 标签搜索
     let labelManage = document.querySelector(".labelManage"); // 标签管理父节点
     let closeLabel = labelManage.querySelector(".closeLabelManage"); // 关闭标签管理窗口节点
@@ -1296,44 +1305,44 @@ class LabelImage {
     let labelManageTitle = document.querySelector(".labelManage-Title");
     let flag = false;
     let flagIndex = 0;
-    let labels = !localStorage.getItem("labels")
-      ? []
-      : JSON.parse(localStorage.getItem("labels"));
-    if (labels.length > 0) {
+    let labelsResponse = await getLabels();
+    let labels = [];
+    if (labelsResponse.data.data && labelsResponse.data.data.length > 0) {
+      labels = labelsResponse.data.data;
       eachLabels(labels);
     } else {
       labelTip.style.display = "block";
     }
-    function eachLabels() {
-      let labelList = http.get("/")
+    function eachLabels(labelList) {
       //加载标签数据
       labelTip.style.display = "none";
       labelManegeUL.innerHTML = "";
       let fragment = document.createDocumentFragment();
       labelList.forEach((item, index) => {
+        console.log(item);
         let labelLi = document.createElement("li");
-        labelLi.innerText = item.labelName;
-        labelLi.value = item.labelColor;
-        labelLi.setAttribute("data-index", index);
-        labelLi.setAttribute("data-r", item.labelColorR);
-        labelLi.setAttribute("data-g", item.labelColorG);
-        labelLi.setAttribute("data-b", item.labelColorB);
-        labelLi.style.color = item.labelColor;
-        labelLi.style.borderColor = item.labelColor;
+        labelLi.innerText = item.name;
+        labelLi.value = item.name;
+        // labelLi.setAttribute("data-index", index);
+        // labelLi.setAttribute("data-r", item.labelColorR);
+        // labelLi.setAttribute("data-g", item.labelColorG);
+        // labelLi.setAttribute("data-b", item.labelColorB);
+        labelLi.style.color = item.color;
+        labelLi.style.borderColor = item.color;
         fragment.appendChild(labelLi);
 
         labelLi.onmouseover = function () {
           labelLi.style.color = "#fff";
-          labelLi.style.background = item.labelColor;
+          labelLi.style.background = item.color;
         };
         labelLi.onmouseleave = function () {
-          labelLi.style.color = item.labelColor;
+          labelLi.style.color = item.color;
           labelLi.style.background = "transparent";
         };
         labelLi.onclick = function () {
-          addLabelName.value = item.labelName;
-          colorPicker.style.background = item.labelColor;
-          input.value = item.labelColor;
+          addLabelName.value = item.name;
+          colorPicker.style.background = item.color;
+          input.value = item.color;
           flag = true;
           flagIndex = index;
           labelManageTitle.innerText = "编辑标签";
@@ -1344,7 +1353,6 @@ class LabelImage {
       });
       labelManegeUL.appendChild(fragment);
     }
-
     // 添加标签事件
     labelManageCreate.onclick = function () {
       flag = false;

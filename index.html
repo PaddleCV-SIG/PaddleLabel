@@ -93,7 +93,12 @@
           <div class="commentResult">
             <!-- 按钮组 -->
             <div class="buttonGroup">
-              <div class="button buttonActive">
+              <div class="button buttonActive" onclick="toolTagsManager()">
+                <div class="buttonInner">
+                  <p class="toolTagsManager" title="标签管理">标签管理</p>
+                </div>
+              </div>
+              <!-- <div class="button ">
                 <div class="buttonInner">
                   <p class="openFolderText openFolder" title="打开图像路径">
                     打开图像路径
@@ -106,24 +111,19 @@
                     hidden
                   />
                 </div>
-              </div>
+              </div> -->
               <div class="button">
                 <div class="buttonInner">
                   <p class="convert" title="格式转换">格式转换</p>
                 </div>
               </div>
-              <div class="button">
+              <!-- <div class="button">
                 <div class="buttonInner">
                   <p class="importPaddleX" title="数据导入PaddleX">
                     数据导入PaddleX
                   </p>
                 </div>
-              </div>
-              <div class="button" onclick="toolTagsManager()">
-                <div class="buttonInner">
-                  <p class="toolTagsManager" title="标签管理">标签管理</p>
-                </div>
-              </div>
+              </div> -->
             </div>
             <!--  标签管理  -->
             <div class="labelManage">
@@ -230,6 +230,7 @@
       </div>
     </div>
 
+    <script src="./js/axios.min.js"></script>
     <script src="./js/preloader.js"></script>
     <script src="./colorPicker/colorPicker.js"></script>
     <script src="./js/webAnnotate.js"></script>

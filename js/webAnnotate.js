@@ -1,7 +1,7 @@
 /*
 	Canvas handle 主函数
  */
-
+const axios = require('axios');
 class LabelImage {
 	constructor(options) {
 		// 画布宽度
@@ -1088,7 +1088,7 @@ class LabelImage {
 		else {
 			labelTip.style.display = "block";
 		}
-		function eachLabels(labelList) {
+		function eachLabels() {
 			//加载标签数据
 			labelTip.style.display = "none";
 			labelManegeUL.innerHTML = "";

@@ -1,8 +1,9 @@
-from flask import Flask, request  # ,json, jsonify, Response
+from flask import Flask, request, send_from_directory # ,json, jsonify, Response
 from flask_cors import CORS, cross_origin
 import numpy as np
 import cv2, json
 import base64
+import os
 
 
 class FlaskServer:
@@ -47,6 +48,22 @@ class FlaskServer:
         app.config['SECRET_KEY'] = 'LabelImage FOR Paddle'
         app.config['CORS_HEADERS'] = 'Content-Type'
         cors = CORS(app, resources={r"/foo": {"origins": "*"}})
+        root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+        @app.route('/', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def index():
+            return send_from_directory(root, 'index.html')
+        
+        @app.route('/favicon.ico', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def favicon(path):
+            return send_from_directory(root, "favicon.ico")
+
+        @app.route('/assets/<path:path>', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def assets(path):
+            return send_from_directory(root + "/assets", path)
 
         @app.route('/upload', methods=['POST'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])

@@ -1,4 +1,4 @@
-from flask import Flask, request  # ,json, jsonify, Response
+from flask import Flask, request, send_from_directory  # ,json, jsonify, Response
 from flask_cors import CORS, cross_origin
 import numpy as np
 import cv2, json
@@ -83,6 +83,22 @@ class FlaskServer:
         app.config['SECRET_KEY'] = 'LabelImage FOR Paddle'
         app.config['CORS_HEADERS'] = 'Content-Type'
         cors = CORS(app, resources={r"/foo": {"origins": "*"}})
+        root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+        @app.route('/', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def index():
+            return send_from_directory(root, 'index.html')
+        
+        @app.route('/favicon.ico', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def favicon():
+            return send_from_directory(root, "favicon.ico")
+
+        @app.route('/assets/<path:path>', methods=['GET'])
+        @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+        def assets(path):
+            return send_from_directory(root + "/assets", path)
 
         @app.route('/upload/<labeltype>/<dataset_id>', methods=['POST'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
@@ -96,22 +112,23 @@ class FlaskServer:
             # for file in exist_data:
             #     print('delete file {}'.format(file))
             #     os.remove(os.path.join(self.datasavepath, file))
-            image_path_list = json.loads(self.reader_request('pics_path_list'))['data']
+            image_path = json.loads(request.get_data(as_text=True))['pics_path_list']
+            
             dataset_name = self.dataset_config_file(dataset_id)
             path = os.path.join(self.datasavepath, dataset_name)
             pre_data = {
                 'label_type': labeltype, # 标注类型
                 'dataset_id': dataset_id, # 数据集id
-                'image_num': len(image_path_list), # 图片数量
-                'image_path_list': image_path_list
+                'image_num': len(image_path), # 图片数量
+                'image_path_list': image_path
             }
             yaml.dump(pre_data)
             self.write_yamlfile(path, pre_data)
-            self.init_annotion_sets(dataset_id, image_path_list)
+            self.init_annotion_sets(dataset_id, image_path)
             result = {
                 "code": 0,
                 "data": {
-                    "size": len(image_path_list),  # 有效图片总数
+                    "size": len(image_path),  # 有效图片总数
                     "id": dataset_id,  # 数据集ID
                     "message": "success"
                 }

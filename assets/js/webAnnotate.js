@@ -1,20 +1,13 @@
 /*
 	Canvas handle 主函数
  */
-const http = axios.create({
-  baseURL: "http://localhost:9528",
-});
-
-function getLabels() {
-  return http.get("/tag/default");
-}
-
-function getLabels() {
-  return http.get("/tag/default/add");
-}
 
 class LabelImage {
   constructor(options) {
+    // Dataset ID
+    this.dataset_id = options.dataset_id,
+    // 后端请求工具
+    this.Backend = options.Backend,
     // 画布宽度
     this.cWidth = options.canvas.clientWidth;
     // 画布高度
@@ -164,7 +157,7 @@ class LabelImage {
   }
 
   //----初始化节点参数，绑定各自事件
-  Initial = () => {
+  Initial = async () => {
     let _nodes = this.Nodes;
     _nodes.scaleRect = document.createElement("div");
     _nodes.scaleRect.className = "scaleWindow";
@@ -1305,13 +1298,16 @@ class LabelImage {
     let labelManageTitle = document.querySelector(".labelManage-Title");
     let flag = false;
     let flagIndex = 0;
-    let labelsResponse = await getLabels();
     let labels = [];
-    if (labelsResponse.data.data && labelsResponse.data.data.length > 0) {
-      labels = labelsResponse.data.data;
-      eachLabels(labels);
-    } else {
-      labelTip.style.display = "block";
+    drawLabels();
+    async function drawLabels() {
+      let labelsResponse = await Backend.getTags();
+      if (labelsResponse.data.data && labelsResponse.data.data.length > 0) {
+        labels = labelsResponse.data.data;
+        eachLabels(labels);
+      } else {
+        labelTip.style.display = "block";
+      }
     }
     function eachLabels(labelList) {
       //加载标签数据
@@ -1395,15 +1391,14 @@ class LabelImage {
       }
     };
 
-    addLabel.onclick = function () {
+    addLabel.onclick = async function () {
       if (!!addLabelName.value) {
         if (flag) {
-          labels[flagIndex].labelName = addLabelName.value;
-          labels[flagIndex].labelColor = addLabelColor.value;
-          labels[flagIndex].labelColorR = addLabelColor.getAttribute("data-r");
-          labels[flagIndex].labelColorG = addLabelColor.getAttribute("data-g");
-          labels[flagIndex].labelColorB = addLabelColor.getAttribute("data-b");
-          localStorage.setItem("labels", JSON.stringify(labels));
+          const res = await Backend.addTag(
+            addLabelName.value,
+            addLabelColor.value
+          );
+          console.log(res);
           alert("修改成功");
           labelManageInfo.style.display = "block";
           labelManageCreateInfo.style.display = "none";
@@ -1412,9 +1407,9 @@ class LabelImage {
           let createData = {
             labelName: addLabelName.value,
             labelColor: addLabelColor.value,
-            labelColorR: addLabelColor.getAttribute("data-r"),
-            labelColorG: addLabelColor.getAttribute("data-g"),
-            labelColorB: addLabelColor.getAttribute("data-b"),
+            // labelColorR: addLabelColor.getAttribute("data-r"),
+            // labelColorG: addLabelColor.getAttribute("data-g"),
+            // labelColorB: addLabelColor.getAttribute("data-b"),
           };
           labels.push(createData);
           localStorage.setItem("labels", JSON.stringify(labels));
@@ -1437,7 +1432,7 @@ class LabelImage {
 
     labelSearch.onchange = function (e) {
       let filterLabel = labels.filter((label) => {
-        return label.labelName.indexOf(e.currentTarget.value) > -1;
+        return label.name.indexOf(e.currentTarget.value) > -1;
       });
       eachLabels(filterLabel);
     };

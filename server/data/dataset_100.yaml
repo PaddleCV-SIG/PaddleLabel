@@ -1,0 +1,13 @@
+dataset_id: '100'
+image_num: 9
+image_path_list:
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+- C:\Users\reatr\Desktop\test.jpg
+label_type: det

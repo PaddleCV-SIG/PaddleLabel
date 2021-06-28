@@ -1364,13 +1364,13 @@ class LabelImage {
       eachLabels(labels);
     };
 
-    removeLabel.onclick = function () {
+    removeLabel.onclick = async function () {
       if (confirm('确定删除 "' + addLabelName.value + '" 标签吗？')) {
         labelManageInfo.style.display = "block";
         labelManageCreateInfo.style.display = "none";
-        labels.splice(flagIndex, 1);
-        localStorage.setItem("labels", JSON.stringify(labels));
-        eachLabels(labels);
+        const res = await Backend.deleteTag(addLabelName.value, addLabelColor.value);
+        console.log(res);
+        drawLabels();
       }
     };
 
@@ -1402,19 +1402,13 @@ class LabelImage {
           alert("修改成功");
           labelManageInfo.style.display = "block";
           labelManageCreateInfo.style.display = "none";
-          eachLabels();
+          drawLabels();
         } else {
-          let createData = {
-            labelName: addLabelName.value,
-            labelColor: addLabelColor.value,
-            // labelColorR: addLabelColor.getAttribute("data-r"),
-            // labelColorG: addLabelColor.getAttribute("data-g"),
-            // labelColorB: addLabelColor.getAttribute("data-b"),
-          };
-          labels.push(createData);
-          localStorage.setItem("labels", JSON.stringify(labels));
+          const res = await Backend.addTag(addLabelName.value, addLabelColor.value);
+          console.log(res);
           addLabelName.value = "";
           alert("添加成功");
+          drawLabels();
         }
       } else {
         alert("请填写标签名称");

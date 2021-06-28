@@ -50,22 +50,34 @@ let imgSum = 10; // 选择图片总数;
 const http = axios.create({
   baseURL: "http://localhost:627",
 });
-Backend = {
+const Backend = {
   getTags: async () => {
-    return http.get(`/tag/${this.dataset_id}`);
+    return http.get(`/tag`);
   },
   addTag: async (name, color) => {
-    return http.get(`/tag/${this.dataset_id}/add`);
+    return http.post(`/tag/add`, {
+		name: name,
+		color: color
+	});
   },
-  uploadDataset: async (label_type, dataset_id, path) => {
-    return http.post(`/upload/${label_type}/${dataset_id}`, {
-      pics_path_list: path,
+  deleteTag: async (name, color) => {
+    return http.post(`/tag/delete`, {
+		name: name,
+		color: color
+	});
+  },
+  uploadDataset: async (label_type, path) => {
+    return http.post(`/upload/${label_type}/${annotate.dataset_id}`, {
+      pics_path: path,
     });
   },
+  getPic: async (pic_id) => {
+	  return http.get(`/get/picture/${annotate.dataset_id}/${pic_id}`);
+  }
 };
 
 // 获取URL参数
-UrlParamHash = () => {
+const UrlParamHash = () => {
   const url = window.location.toString();
   var params = [],
     h;
@@ -79,7 +91,7 @@ UrlParamHash = () => {
   return params;
 };
 // 初始化数据集
-InitDataset = async () => {
+const InitDataset = async () => {
   let params = UrlParamHash();
   let type = params["type"];
   let path = params["path"];
@@ -175,6 +187,7 @@ function getInitImage(index) {
 
 function selectImage(index) {
   openBox("#loading", true);
+  let pic = Backend.getPic()
   processIndex.innerText = imgIndex;
   taskName.innerText = getInitImage(index);
   let content = localStorage.getItem(taskName.textContent);

@@ -112,7 +112,8 @@ class FlaskServer:
             # for file in exist_data:
             #     print('delete file {}'.format(file))
             #     os.remove(os.path.join(self.datasavepath, file))
-            image_path = json.loads(request.get_data(as_text=True))['pics_path_list']
+            pics_path = json.loads(request.get_data(as_text=True))['pics_path']
+            image_path = os.path.join(pics_path, 'JPEGImages')
             
             dataset_name = self.dataset_config_file(dataset_id)
             path = os.path.join(self.datasavepath, dataset_name)
@@ -120,7 +121,7 @@ class FlaskServer:
                 'label_type': labeltype, # 标注类型
                 'dataset_id': dataset_id, # 数据集id
                 'image_num': len(image_path), # 图片数量
-                'image_path_list': image_path
+                'image_path': image_path
             }
             yaml.dump(pre_data)
             self.write_yamlfile(path, pre_data)
@@ -160,8 +161,9 @@ class FlaskServer:
             '''
             pic_id = int(pic_id)
             data = self.reader_yamlfile(os.path.join(self.datasavepath,self.dataset_config_file(dataset_id)))
+            image_path = os.path.join(data['image_path'], pic_id)
             try:
-                image = self.cv2_to_base64(cv2.imread(data['image_path_list'][pic_id]))
+                image = self.cv2_to_base64(cv2.imread(image_path))
             except:
                 image = None
 
@@ -240,8 +242,9 @@ class FlaskServer:
             '''
             add tags
             '''
-            name = self.reader_request('name')
-            color = self.reader_request('color')
+            req = json.loads(request.get_data(as_text=True))
+            name = req['name']
+            color = req['color']
             self.tags.append({
                     "name": name,
                     "color": color
@@ -258,8 +261,9 @@ class FlaskServer:
             '''
             delete tags
             '''
-            name = self.reader_request('name')
-            color = self.reader_request('color')
+            req = json.loads(request.get_data(as_text=True))
+            name = req['name']
+            color = req['color']
             len_del = len(self.tags)
             for i in range(len(self.tags)):
                 if self.tags[i]['name'] == name:

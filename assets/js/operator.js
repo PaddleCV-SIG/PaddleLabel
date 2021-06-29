@@ -44,15 +44,19 @@ const Backend = {
     return http.get(`/tag`);
   },
   addTag: async (name, color) => {
+    let rgb = hexToRgb(color);
     return http.post(`/tag/add`, {
-      name: name,
-      color: color
+      labelName: name,
+      labelColor: color,
+      labelColorR: rgb.r,
+      labelColorG: rgb.g,
+      labelColorB: rgb.b,
     });
   },
   deleteTag: async (name, color) => {
     return http.post(`/tag/delete`, {
-      name: name,
-      color: color
+      labelName: name,
+      labelColor: color
     });
   },
   uploadDataset: async (label_type, path) => {
@@ -86,6 +90,15 @@ const UrlParamHash = () => {
     console.log(h);
   }
   return params;
+};
+// 16进制转RGB
+const hexToRgb = (hex) => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 };
 // 初始化数据集
 const InitDataset = async () => {

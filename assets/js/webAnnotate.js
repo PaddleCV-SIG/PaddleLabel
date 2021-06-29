@@ -1201,7 +1201,7 @@ class LabelImage {
   };
 
   //----获取已经创建的标签列表
-  getCreatedLabels = (node, pageY, resultIndex) => {
+  getCreatedLabels = async (node, pageY, resultIndex) => {
     let _self = this;
     let resultSelectLabel = document.querySelector(".resultSelectLabel");
     let selectLabelUL = resultSelectLabel.querySelector(".selectLabel-ul"); //标签选择UL
@@ -1209,9 +1209,8 @@ class LabelImage {
     let selectLabelTip = resultSelectLabel.querySelector(".selectLabelTip");
     //加载标签数据
     selectLabelUL.innerHTML = "";
-    let labels = !localStorage.getItem("labels")
-      ? []
-      : JSON.parse(localStorage.getItem("labels"));
+    let labels = await Backend.getTags();
+    labels = labels.data.data;
     if (labels.length > 0) {
       selectLabelTip.style.display = "none";
       let fragment = document.createDocumentFragment();
@@ -1317,28 +1316,28 @@ class LabelImage {
       labelList.forEach((item, index) => {
         console.log(item);
         let labelLi = document.createElement("li");
-        labelLi.innerText = item.name;
-        labelLi.value = item.name;
-        // labelLi.setAttribute("data-index", index);
-        // labelLi.setAttribute("data-r", item.labelColorR);
-        // labelLi.setAttribute("data-g", item.labelColorG);
-        // labelLi.setAttribute("data-b", item.labelColorB);
-        labelLi.style.color = item.color;
-        labelLi.style.borderColor = item.color;
+        labelLi.innerText = item.labelName;
+        labelLi.value = item.labelName;
+        labelLi.setAttribute("data-index", index);
+        labelLi.setAttribute("data-r", item.labelColorR);
+        labelLi.setAttribute("data-g", item.labelColorG);
+        labelLi.setAttribute("data-b", item.labelColorB);
+        labelLi.style.color = item.labelColor;
+        labelLi.style.borderColor = item.labelColor;
         fragment.appendChild(labelLi);
 
         labelLi.onmouseover = function () {
           labelLi.style.color = "#fff";
-          labelLi.style.background = item.color;
+          labelLi.style.background = item.labelColor;
         };
         labelLi.onmouseleave = function () {
-          labelLi.style.color = item.color;
+          labelLi.style.color = item.labelColor;
           labelLi.style.background = "transparent";
         };
         labelLi.onclick = function () {
-          addLabelName.value = item.name;
-          colorPicker.style.background = item.color;
-          input.value = item.color;
+          addLabelName.value = item.labelName;
+          colorPicker.style.background = item.labelColor;
+          input.value = item.labelColor;
           flag = true;
           flagIndex = index;
           labelManageTitle.innerText = "编辑标签";

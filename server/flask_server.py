@@ -237,11 +237,11 @@ class FlaskServer:
             add tags
             '''
             req = json.loads(request.get_data(as_text=True))
-            name = req['name']
-            color = req['color']
+            name = req['labelName']
+            color = req['labelColor']
             self.tags.append({
-                    "name": name,
-                    "color": color
+                    "labelName": name,
+                    "labelColor": color
             })
             result = {
                 "code": 0,
@@ -256,11 +256,11 @@ class FlaskServer:
             delete tags
             '''
             req = json.loads(request.get_data(as_text=True))
-            name = req['name']
-            color = req['color']
+            name = req['labelName']
+            color = req['labelColor']
             len_del = len(self.tags)
             for i in range(len(self.tags)):
-                if self.tags[i]['name'] == name:
+                if self.tags[i]['labelName'] == name:
                     del self.tags[i]
                     break
             if (len(self.tags) - len_del)<0:

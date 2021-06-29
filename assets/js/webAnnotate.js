@@ -913,7 +913,7 @@ class LabelImage {
     this.DrawSavedAnnotateInfoToShow();
     this.Nodes.ctx.strokeStyle = "#ff0000";
     this.Nodes.ctx.fillStyle = "rgba(255,0,0," + this.opacity + ")";
-    console.log(`${this.rectX}, ${this.rectY}, ${this.mouseX}, ${this.mouseY}`);
+    // console.log(`${this.rectX}, ${this.rectY}, ${this.mouseX}, ${this.mouseY}`);
     this.Nodes.ctx.strokeRect(
       this.rectX,
       this.rectY,

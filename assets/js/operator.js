@@ -71,8 +71,11 @@ const Backend = {
       pics_path: path,
     });
   },
-  getPic: async (pic_id) => {
-	  return http.get(`/get/picture/${annotate.dataset_id}/${pic_id}`);
+  getPicURL: (pic_name) => {
+    return `/get/picture/${annotate.dataset_id}/${pic_name}`;
+  },
+  getPic: async (pic_name) => {
+	  return http.get(Backend.getPicURL(pic_name));
   }
 };
 
@@ -82,7 +85,6 @@ const UrlParamHash = () => {
   var params = [],
     h;
   var hash = url.slice(url.indexOf("?") + 1).split("&");
-  console.log(hash);
   for (var i = 0; i < hash.length; i++) {
     h = hash[i].split("=");
     params[h[0]] = h[1];
@@ -96,15 +98,15 @@ const InitDataset = async () => {
   let type = params["type"];
   let path = params["path"];
   let dataset_id = params["dataset_id"];
-  let dataset_info = await Backend.uploadDataset(type, dataset_id, path);
-  let res = dataset_info.data.data;
-  imgSum = res.size;
   annotate.dataset_id = dataset_id;
+  let dataset_info = await Backend.uploadDataset(type, path, dataset_id);
+  imgFiles = dataset_info.data.data.image_names;
+  imgSum = imgFiles.size;
+  initImage();
 };
 // 初始化数据集
 InitDataset();
 
-initImage();
 // 初始化图片状态
 function initImage() {
   selectImage(0);
@@ -185,18 +187,12 @@ function getInitImage(index) {
   return imgFiles[index].name || imgFiles[index].split("/")[3];
 }
 
-function selectImage(index) {
+async function selectImage(index) {
   openBox("#loading", true);
-  let pic = Backend.getPic()
   processIndex.innerText = imgIndex;
   taskName.innerText = getInitImage(index);
-  let content = localStorage.getItem(taskName.textContent);
-  let img = imgFiles[index].name
-    ? window.URL.createObjectURL(imgFiles[index])
-    : imgFiles[index];
-  content
-    ? annotate.SetImage(img, JSON.parse(content))
-    : annotate.SetImage(img);
+  let imgURL = Backend.getPicURL(imgFiles[index]);
+  annotate.SetImage(imgURL);
 }
 
 document.querySelector(".saveJson").addEventListener("click", function () {

@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory  # ,json, jsonify, Response
+from flask import Flask, request, send_from_directory, send_file  # ,json, jsonify, Response
 from flask_cors import CORS, cross_origin
 import numpy as np
 import cv2, json
@@ -114,13 +114,20 @@ class FlaskServer:
             #     os.remove(os.path.join(self.datasavepath, file))
             pics_path = json.loads(request.get_data(as_text=True))['pics_path']
             image_path = os.path.join(pics_path, 'JPEGImages')
+            image_names = []
+
+            for filename in os.listdir(image_path):
+                if filename.endswith(".jpg") or filename.endswith(".png"):
+                    image_names.append(filename)
+                else:
+                    continue
             
             dataset_name = self.dataset_config_file(dataset_id)
             path = os.path.join(self.datasavepath, dataset_name)
             pre_data = {
                 'label_type': labeltype, # 标注类型
                 'dataset_id': dataset_id, # 数据集id
-                'image_num': len(image_path), # 图片数量
+                'image_num': len(image_names), # 图片数量
                 'image_path': image_path
             }
             yaml.dump(pre_data)
@@ -131,6 +138,7 @@ class FlaskServer:
                 "data": {
                     "size": len(image_path),  # 有效图片总数
                     "id": dataset_id,  # 数据集ID
+                    "image_names": image_names, # 图片文件名
                     "message": "success"
                 }
             }
@@ -152,32 +160,23 @@ class FlaskServer:
             }
             return json.dumps(result, ensure_ascii=False)  # 返回json
 
-        @app.route('/get/picture/<dataset_id>/<pic_id>', methods=['GET'])
+        @app.route('/get/picture/<dataset_id>/<pic_name>', methods=['GET'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
-        def get_picture(dataset_id,pic_id):
+        def get_picture(dataset_id,pic_name):
             '''
-            get image path by dataset_id + pic_id
+            get image path by dataset_id + pic_name
             前端请求后把对应的图片转成base64编码传过去
             '''
-            pic_id = int(pic_id)
             data = self.reader_yamlfile(os.path.join(self.datasavepath,self.dataset_config_file(dataset_id)))
-            image_path = os.path.join(data['image_path'], pic_id)
+            image_path = os.path.join(data['image_path'], pic_name)
             try:
-                image = self.cv2_to_base64(cv2.imread(image_path))
+                return send_file(image_path, mimetype='image/jpeg')
             except:
-                image = None
-
-            # self.reader_yamlfile(os.path.join(self.datasavepath,'dataset_' + str(dataset_id) + '.yaml'))
-            result = {
-                "code": 0,
-                "data": [
-                    {
-                        "pic_id": pic_id,
-                        "data": image
-                    }
-                ]
-            }
-            return json.dumps(result, ensure_ascii=False)  # 返回json
+                result = {
+                    "code": 1,
+                    "message": "Failed to get img!"
+                }
+                return json.dumps(result, ensure_ascii=False)  # 返回json
 
         @app.route('/set/annotation/<dataset_id>/<pic_id>', methods=['POST'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'image/x-png'])

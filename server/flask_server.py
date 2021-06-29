@@ -58,16 +58,13 @@ class FlaskServer:
     def annotation_config_file(self,dataset_id):
         return 'dataset_' + str(dataset_id) + '_annotation.yaml'
 
-    def init_annotion_sets(self,dataset_id,image_path_list):
+    def init_annotion_sets(self,dataset_id, image_names):
         data = {
             'dataset_id': dataset_id,
-            'annotations': []
+            'annotations': {}
         }
-        for path in image_path_list:
-            data['annotations'].append({
-                'pic_path': path,
-                'datas': []
-            })
+        for image_name in image_names:
+            data['annotations'][image_name] = []
         data['annotations_num'] = len(data['annotations'])
         annotation_path = os.path.join(self.datasavepath,self.annotation_config_file(dataset_id))
         with open(annotation_path, "w", encoding="utf-8") as f:
@@ -132,7 +129,7 @@ class FlaskServer:
             }
             yaml.dump(pre_data)
             self.write_yamlfile(path, pre_data)
-            self.init_annotion_sets(dataset_id, image_path)
+            self.init_annotion_sets(dataset_id, image_names)
             result = {
                 "code": 0,
                 "data": {
@@ -170,7 +167,7 @@ class FlaskServer:
             data = self.reader_yamlfile(os.path.join(self.datasavepath,self.dataset_config_file(dataset_id)))
             image_path = os.path.join(data['image_path'], pic_name)
             try:
-                return send_file(image_path, mimetype='image/jpeg')
+                return send_file(image_path, mimetype='image/jpeg') # 直接返回图片
             except:
                 result = {
                     "code": 1,
@@ -178,15 +175,14 @@ class FlaskServer:
                 }
                 return json.dumps(result, ensure_ascii=False)  # 返回json
 
-        @app.route('/set/annotation/<dataset_id>/<pic_id>', methods=['POST'])
+        @app.route('/set/annotation/<dataset_id>/<pic_name>', methods=['POST'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'image/x-png'])
-        def set_annotation(dataset_id, pic_id):
+        def set_annotation(dataset_id, pic_name):
             '''
-            set annotation by dataset_id + pic_id
+            set annotation by dataset_id + pic_name
             以图片为单位给我
             '''
-            pic_id = int(pic_id)
-            datas = json.loads(self.reader_request('datas'))
+            datas = json.loads(request.get_data(as_text=True))
             annotation_path = os.path.join(self.datasavepath, self.annotation_config_file(dataset_id))
             if not os.path.exists(annotation_path):
                 result = {
@@ -194,7 +190,7 @@ class FlaskServer:
                 }
             else:
                 pre_data = self.reader_yamlfile(annotation_path)
-                pre_data['annotations'][pic_id]['datas'] = datas
+                pre_data['annotations'][pic_name] = datas
                 with open(annotation_path, "w", encoding="utf-8") as f:
                     yaml.dump(pre_data, f)
                 result = {
@@ -202,13 +198,12 @@ class FlaskServer:
                 }
             return json.dumps(result, ensure_ascii=False)  # 返回json
 
-        @app.route('/get/annotation/<dataset_id>/<pic_id>', methods=['POST'])
+        @app.route('/get/annotation/<dataset_id>/<pic_name>', methods=['GET'])
         @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
-        def get_annotation(dataset_id,pic_id):
+        def get_annotation(dataset_id,pic_name):
             '''
-            get annotation by dataset_id + pic_id
+            get annotation by dataset_id + pic_name
             '''
-            pic_id = int(pic_id)
             annotation_path = os.path.join(self.datasavepath,self.annotation_config_file(dataset_id))
             data = self.reader_yamlfile(annotation_path)
             if data is None:
@@ -219,7 +214,7 @@ class FlaskServer:
             else:
                 result = {
                     "code": 0,
-                    "data":data['annotations'][pic_id]['datas']
+                    "data":data['annotations'][pic_name]
                 }
             return json.dumps(result, ensure_ascii=False)  # 返回json
 

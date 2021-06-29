@@ -1,15 +1,15 @@
 /*
-	Canvas handle 主函数
+  Canvas handle 主函数
  */
 
 class LabelImage {
   constructor(options) {
     // Dataset ID
     this.dataset_id = options.dataset_id,
-    // 后端请求工具
-    this.Backend = options.Backend,
-    // 画布宽度
-    this.cWidth = options.canvas.clientWidth;
+      // 后端请求工具
+      this.Backend = options.Backend,
+      // 画布宽度
+      this.cWidth = options.canvas.clientWidth;
     // 画布高度
     this.cHeight = options.canvas.clientHeight;
     // 缩略图宽度
@@ -191,13 +191,13 @@ class LabelImage {
 
   //----设置图片并初始化画板信息
   // tip: point
-  SetImage = (src, memory = false) => {
+  SetImage = async (img_url, img_name) => {
     let _nodes = this.Nodes;
     _nodes.image = new Image();
     _nodes.image.crossOrigin = "anonymous";
-    _nodes.image.src = src;
+    _nodes.image.src = img_url;
     //监听图片加载
-    _nodes.image.addEventListener("load", () => {
+    _nodes.image.addEventListener("load", async () => {
       openBox("#loading", false);
       this.iWidth = _nodes.image.width;
       this.iHeight = _nodes.image.height;
@@ -269,14 +269,14 @@ class LabelImage {
       this.SetXY(initImgX, initImgY);
 
       this.historyIndex = 0;
-      if (memory) {
-        this.Arrays.imageAnnotateMemory = memory;
-        this.ReplaceAnnotateShow();
-        this.RepaintResultList();
-        this.Arrays.imageAnnotateMemory.forEach((memory, index) => {
-          this.RecordOperation("add", "绘制", index, JSON.stringify(memory));
-        });
-      }
+      let annotations = await Backend.getAnnotation(img_name);
+      this.Arrays.imageAnnotateMemory = annotations.data.data;
+      console.log(this.Arrays.imageAnnotateMemory);
+      this.ReplaceAnnotateShow();
+      this.RepaintResultList();
+      this.Arrays.imageAnnotateMemory.forEach((memory, index) => {
+        this.RecordOperation("add", "绘制", index, JSON.stringify(memory));
+      });
     });
   };
 
@@ -441,7 +441,7 @@ class LabelImage {
           // 使用勾股定理计算鼠标当前位置是否处于当前点上
           let distanceFromCenter = Math.sqrt(
             Math.pow(imageIndexShow[i].x - this.mouseX, 2) +
-              Math.pow(imageIndexShow[i].y - this.mouseY, 2)
+            Math.pow(imageIndexShow[i].y - this.mouseY, 2)
           );
           // 改变圆点颜色动画
           if (distanceFromCenter <= this.radius) {
@@ -469,7 +469,7 @@ class LabelImage {
             // 使用勾股定理计算鼠标当前位置是否处于当前点上
             let distanceFromCenter = Math.sqrt(
               Math.pow(imageIndex[i].x - this.mouseX, 2) +
-                Math.pow(imageIndex[i].y - this.mouseY, 2)
+              Math.pow(imageIndex[i].y - this.mouseY, 2)
             );
             if (distanceFromCenter <= this.radius) {
               this.snapCircleIndex = i;
@@ -1842,8 +1842,8 @@ class LabelImage {
   };
 
   /*
-		  画板禁止触发右键菜单事件
-	   */
+      画板禁止触发右键菜单事件
+     */
   static NoRightMenu(event) {
     event.preventDefault();
   }

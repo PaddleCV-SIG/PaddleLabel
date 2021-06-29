@@ -32,20 +32,9 @@ const taskName = document.querySelector(".pageName"); // 标注任务名称
 const processIndex = document.querySelector(".processIndex"); // 当前标注进度
 const processSum = document.querySelector(".processSum"); // 当前标注任务总数
 
-let imgFiles = [
-  "./assets/images/example/football.jpg",
-  "./assets/images/example/person.jpg",
-  "./assets/images/example/band.jpg",
-  "./assets/images/example/street.jpg",
-  "./assets/images/example/dog.jpeg",
-  "./assets/images/example/cat.jpg",
-  "./assets/images/example/dogs.jpg",
-  "./assets/images/example/furniture.jpg",
-  "./assets/images/example/basketball.jpg",
-  "./assets/images/example/alley.jpg",
-]; //选择上传的文件数据集
+let imgFiles = []; //目录中的文件数据集
 let imgIndex = 1; //标定图片默认下标;
-let imgSum = 10; // 选择图片总数;
+let imgSum = 0; // 选择图片总数;
 
 const http = axios.create({
   baseURL: "http://localhost:627",
@@ -56,15 +45,15 @@ const Backend = {
   },
   addTag: async (name, color) => {
     return http.post(`/tag/add`, {
-		name: name,
-		color: color
-	});
+      name: name,
+      color: color
+    });
   },
   deleteTag: async (name, color) => {
     return http.post(`/tag/delete`, {
-		name: name,
-		color: color
-	});
+      name: name,
+      color: color
+    });
   },
   uploadDataset: async (label_type, path) => {
     return http.post(`/upload/${label_type}/${annotate.dataset_id}`, {
@@ -75,7 +64,13 @@ const Backend = {
     return `/get/picture/${annotate.dataset_id}/${pic_name}`;
   },
   getPic: async (pic_name) => {
-	  return http.get(Backend.getPicURL(pic_name));
+    return http.get(Backend.getPicURL(pic_name));
+  },
+  setAnnotation: async (pic_name, annotations) => {
+    return http.post(`/set/annotation/${annotate.dataset_id}/${pic_name}`, annotations);
+  },
+  getAnnotation: async (pic_name) => {
+    return http.get(`/get/annotation/${annotate.dataset_id}/${pic_name}`);
   }
 };
 
@@ -144,12 +139,10 @@ tool.addEventListener("click", function (e) {
 
 // 获取下一张图片
 nextBtn.onclick = function () {
-  console.log(annotate.Arrays.imageAnnotateMemory);
-  annotate.Arrays.imageAnnotateMemory.length > 0 &&
-    localStorage.setItem(
-      taskName.textContent,
-      JSON.stringify(annotate.Arrays.imageAnnotateMemory)
-    ); // 保存已标定的图片信息
+  // 保存已标定的图片信息
+  if (annotate.Arrays.imageAnnotateMemory.length > 0) {
+    Backend.setAnnotation(taskName.textContent, annotate.Arrays.imageAnnotateMemory);
+  }
   if (imgIndex >= imgSum) {
     imgIndex = 1;
     selectImage(0);
@@ -161,11 +154,10 @@ nextBtn.onclick = function () {
 
 // 获取上一张图片
 prevBtn.onclick = function () {
-  annotate.Arrays.imageAnnotateMemory.length > 0 &&
-    localStorage.setItem(
-      taskName.textContent,
-      JSON.stringify(annotate.Arrays.imageAnnotateMemory)
-    ); // 保存已标定的图片信息
+  // 保存已标定的图片信息
+  if (annotate.Arrays.imageAnnotateMemory.length > 0) {
+    Backend.setAnnotation(taskName.textContent, annotate.Arrays.imageAnnotateMemory);
+  }
   if (imgIndex === 1) {
     imgIndex = imgSum;
     selectImage(imgSum - 1);
@@ -184,7 +176,7 @@ function changeFolder(e) {
 }
 
 function getInitImage(index) {
-  return imgFiles[index].name || imgFiles[index].split("/")[3];
+  return imgFiles[index];
 }
 
 async function selectImage(index) {
@@ -192,7 +184,7 @@ async function selectImage(index) {
   processIndex.innerText = imgIndex;
   taskName.innerText = getInitImage(index);
   let imgURL = Backend.getPicURL(imgFiles[index]);
-  annotate.SetImage(imgURL);
+  annotate.SetImage(imgURL, imgFiles[index]);
 }
 
 document.querySelector(".saveJson").addEventListener("click", function () {

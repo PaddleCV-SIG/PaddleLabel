@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./assets/images/logo.png"><br/>LabelImage
+  <img src="./assets/images/logo.png"><br/>PP-Labeling
 </h1>
 <h4 align="center">
   一款在线的深度学习图像分割标注工具
@@ -9,16 +9,16 @@
 </div>
 
 # 描述
-LabelImage 是一款用于深度学习分割模型训练的图像标注工具（生成.json文件），可以对你将要训练的模型提供帮助。
+PP-Labeling 是一款用于深度学习分割模型训练的图像标注工具（生成.json文件），可以对你将要训练的模型提供帮助。基于原EI-Seg功能，提供智能标注功能。
 <br/>
-[在线演示](https://paddlecv-sig.github.io/label_image/)
+[在线演示](https://paddlecv-sig.github.io/PP-Labeling/)
 
 本地运行：
 <br/>
 
 ```bash
-git clone git@github.com:PaddleCV-SIG/label_image.git
-cd label_image
+git clone git@github.com:PaddleCV-SIG/PP-Labeling.git
+cd PP-Labeling
 # For Python2
 python -m SimpleHTTPServer 8080
 # For Python3

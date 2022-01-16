@@ -1,11 +1,11 @@
 <h1 align="center">
-  <img src="./images/logo.png"><br/>LabelImage
+  <img src="./assets/images/logo.png"><br/>LabelImage
 </h1>
 <h4 align="center">
   一款在线的深度学习图像分割标注工具
 </h4>
 <div align="center">
-  <img src="./images/readme/example.png" width="70%">
+  <img src="./assets/images/readme/example.png" width="70%">
 </div>
 
 # 描述
@@ -52,35 +52,31 @@ python -m http.server 8080
 # 功能演示
 #### 矩形工具操作示例
 <div>
-  <img src="./images/readme/rectExample.gif">
+  <img src="./assets/images/readme/rectExample.gif">
 </div>
 
 #### 多边形工具操作示例
 <div>
-  <img src="./images/readme/polygonExample.gif">
+  <img src="./assets/images/readme/polygonExample.gif">
 </div>
 
 #### 拖拽操作示例
  - 图片拖拽可以选择拖拽工具或者按住鼠标右键快捷拖拽
  - 对坐标点进行拖拽更新
 <div>
-  <img src="./images/readme/dragExample1.gif">
-  <img src="./images/readme/dragExample2.gif">
+  <img src="./assets/images/readme/dragExample1.gif">
+  <img src="./assets/images/readme/dragExample2.gif">
 </div>
 
 #### 历史记录操作示例
 <div>
-  <img src="./images/readme/historyExample.gif">
+  <img src="./assets/images/readme/historyExample.gif">
 </div>
 
 
 # 要求
 - Ubuntu / macOS / Windows
 - Chrome v51+ / Firefox v53+
-
-# 问题
-如有疑问或建议，随时向我留言
-Email: rachelcao277@hotmail.com
 
 # 结语
 感谢你的使用，希望能对你有所帮助

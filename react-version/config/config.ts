@@ -40,6 +40,7 @@ export default defineConfig({
   theme: {
     'root-entry-name': 'variable',
     'primary-color': '#1727C2', // Global Main color
+    'primary-color-hover': '##515EED',
     'link-color': '#2e3dc8', 
     'success-color': '#73c300', 
     'warning-color': '#f1a200',

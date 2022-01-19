@@ -81,13 +81,13 @@ const Login: React.FC = () => {
   const { status, type: loginType } = userLoginState;
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} container`}>
       <div className={styles.lang} data-lang>
         {SelectLang && <SelectLang />}
       </div>
       <div className={styles.content}>
         <LoginForm
-          logo={<img className={styles.logo} alt="logo" src="/logo.png" />}
+          logo={<img id={styles.logo} alt="logo" src="/logo.png" />}
           title=""
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{

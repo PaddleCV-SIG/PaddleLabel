@@ -23,7 +23,7 @@ export default defineConfig({
   // https://umijs.org/zh-CN/plugins/plugin-locale
   locale: {
     // default zh-CN
-    default: 'zh-CN',
+    default: 'en-US',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
@@ -40,7 +40,7 @@ export default defineConfig({
   theme: {
     'root-entry-name': 'variable',
     'primary-color': '#1727C2', // Global Main color
-    'primary-color-hover': '##515EED',
+    'primary-color-hover': '#515EED',
     'link-color': '#2e3dc8', 
     'success-color': '#73c300', 
     'warning-color': '#f1a200',

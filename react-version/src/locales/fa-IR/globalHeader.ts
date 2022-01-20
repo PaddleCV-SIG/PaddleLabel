@@ -10,6 +10,7 @@ export default {
   'component.globalHeader.message.empty': 'شما همه پیام ها را مشاهده کرده اید.',
   'component.globalHeader.event': 'رویداد',
   'component.globalHeader.event.empty': 'شما همه رویدادها را مشاهده کرده اید.',
+  'component.globalHeader.logout': 'خروج',
   'component.noticeIcon.clear': 'پاک کردن',
   'component.noticeIcon.cleared': 'پاک شد',
   'component.noticeIcon.empty': 'بدون اعلان',

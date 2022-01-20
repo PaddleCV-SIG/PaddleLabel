@@ -25,6 +25,11 @@
     component: './Welcome',
   },
   {
+    path: '/test1',
+    name: 'Test1',
+    component: './Welcome',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',

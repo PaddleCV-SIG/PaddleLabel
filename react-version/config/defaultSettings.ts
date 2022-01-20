@@ -11,7 +11,7 @@ const Settings: LayoutSettings & {
   "fixSiderbar": true,
   "pwa": false,
   "logo": "/logo.png",
-  "headerHeight": 48,
+  "headerHeight": 60,
   "splitMenus": false,
   "footerRender": false,
   "menuRender": false

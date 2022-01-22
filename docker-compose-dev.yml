@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  pp-labeling-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    environment:
+      - FLASK_ENV=development
+    # command: /bin/sh -c "while sleep 1000; do :; done"

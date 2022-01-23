@@ -1,0 +1,19 @@
+version: "3.8"
+
+volumes:
+   pip:
+
+services:
+  pp-labeling-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: pp-label-backend:0.0.1
+    container_name: "pp-label-backend"
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    # command: /bin/sh -c "while sleep 1000; do :; done"

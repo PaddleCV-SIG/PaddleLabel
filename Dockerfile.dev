@@ -1,5 +1,8 @@
 FROM python:3.9
 
+WORKDIR /app
+# ADD . .
+
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -19,11 +22,9 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Add source code
-WORKDIR /app
-ADD server .
 
 # Set environment variables
-ENV FLASK_APP=app.py
+ENV FLASK_APP=server/app.py
 
 # Run
 ENTRYPOINT [ "flask", "run", "--host=0.0.0.0" ]

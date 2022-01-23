@@ -1,83 +1,251 @@
-<h1 align="center">
-  <img src="./assets/images/logo.png"><br/>PP-Labeling
-</h1>
-<h4 align="center">
-  一款在线的深度学习图像分割标注工具
-</h4>
-<div align="center">
-  <img src="./assets/images/readme/example.png" width="70%">
-</div>
+# APIs
 
-# 描述
-PP-Labeling 是一款用于深度学习分割模型训练的图像标注工具（生成.json文件），可以对你将要训练的模型提供帮助。基于原EI-Seg功能，提供智能标注功能。
-<br/>
-[在线演示](https://paddlecv-sig.github.io/PP-Labeling/)
+## 选择图片后，上传文件/目录至标注软件路径中
 
-本地运行：
-<br/>
+- Path: /upload
+- Method: POST
+- Type: form-data
+- Data: pics
+- Return:
 
-```bash
-git clone git@github.com:PaddleCV-SIG/PP-Labeling.git
-cd PP-Labeling
-# For Python2
-python -m SimpleHTTPServer 8080
-# For Python3
-python -m http.server 8080
+```json
+{
+  "code": 0,
+  "data": {
+      "size": 5, // 有效图片总数
+      "id": "bulabula", // 数据集ID
+      "message": "5张图片因大小/格式不对添加失败！"
+      //...其他信息
+  },
+}
 ```
 
-<br/>
-然后打开浏览器访问 http://localhost:8080
+## 获取图片
 
-<br/>
-
-# 如何开发
-
-建议使用Visual Studio Code进行开发，并安装Prettier扩展。
-
-# 后端API
-<a href="./backend.md">这里</a>
-<br/>
-
-# 功能清单
-- [x] 上传多个文件，可切换不同图片
-- [x] 矩形标注工具、多边形标注工具 （持续新增工具中……）
-- [x] 图片拖拽，缩放，缩略图显示
-- [x] 标签管理：增、删、改、查（存储在本地）
-- [x] 标注结果编辑修改、删除
-- [x] 操作管理历史记录
-- [ ] 掩膜标注
-- [ ] 对接后端
-- [ ] 修改色调
-
-# 功能演示
-#### 矩形工具操作示例
-<div>
-  <img src="./assets/images/readme/rectExample.gif">
-</div>
-
-#### 多边形工具操作示例
-<div>
-  <img src="./assets/images/readme/polygonExample.gif">
-</div>
-
-#### 拖拽操作示例
- - 图片拖拽可以选择拖拽工具或者按住鼠标右键快捷拖拽
- - 对坐标点进行拖拽更新
-<div>
-  <img src="./assets/images/readme/dragExample1.gif">
-  <img src="./assets/images/readme/dragExample2.gif">
-</div>
-
-#### 历史记录操作示例
-<div>
-  <img src="./assets/images/readme/historyExample.gif">
-</div>
+- Path: /get/picture/{dataset_id}/{pic_id}
+- Method: GET
+- Return: 二进制图片
+```json
+{
+   "code": 0,
+   "data": [
+      {
+         "dataset_id": dataset_id,
+         "pic_id": pic_id,
+         "data": image
+      }
+   ]
+}
+```
 
 
-# 要求
-- Ubuntu / macOS / Windows
-- Chrome v51+ / Firefox v53+
+## 获取已有标注信息
 
-# 结语
-感谢你的使用，希望能对你有所帮助
+- Path: /get/annotation/{dataset_id}/{pic_id}
+- Method: GET
+- Return:
 
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "content": [
+                {
+                    "x": 329.05296950240773,
+                    "y": 130.97913322632422
+                },
+                //...
+            ],
+            "rectMask": {
+                "xMin": 329.05296950240773,
+                "yMin": 130.97913322632422,
+                "width": 187.4799357945425,
+                "height": 165.6500802568218
+            },
+            "labels": {
+                "labelName": "未命名",
+                "labelColor": "red",
+                "labelColorRGB": "255,0,0",
+                "visibility": false
+            },
+            "labelLocation": {
+                "x": 422.792937399679,
+                "y": 213.80417335473513
+            },
+            "contentType": "rect"
+        }
+    ]
+}
+```
+
+## 添加/修改标注信息
+
+- Path: /set/annotation?dataset_id}/{pic_id}
+- Method: POST
+- Data:
+
+```json
+{
+    'datas':[
+      {
+        "content": [
+          {
+            "x": 329.05296950240773,
+            "y": 130.97913322632422
+          },
+          //...
+        ],
+        "rectMask": {
+          "xMin": 329.05296950240773,
+          "yMin": 130.97913322632422,
+          "width": 187.4799357945425,
+          "height": 165.6500802568218
+        },
+        "labels": {
+          "labelName": "未命名",
+          "labelColor": "red",
+          "labelColorRGB": "255,0,0",
+          "visibility": false
+        },
+        "labelLocation": {
+          "x": 422.792937399679,
+          "y": 213.80417335473513
+        },
+        "contentType": "rect"
+      },
+      //...
+    ]
+}
+```
+
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": "success"
+}
+```
+
+## 标签管理
+
+### 读取所有标签
+
+- Path: /tag/{dataset_id}
+- Method: GET
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1",
+            "color": "#FFF000"
+        }
+    ]
+}
+```
+
+### 添加标签
+
+- Path: /tag/{dataset_id}/add
+- Method: POST
+- Data:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1",
+            "color": "#FFF000"
+        }
+    ]
+}
+```
+
+- Return: 
+
+```json
+{
+    "code": 0, // 0: 成功. 1: 标签已存在
+    "data": "success"
+}
+```
+
+### 删除标签
+
+- Path: /tag/{dataset_id}/delete
+- Method: POST
+- Data:
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "name": "tag1"
+        }
+    ]
+}
+```
+
+- Return:
+
+```json
+{
+    "code": 0, // 0: 成功. 1: 资源不存在
+    "data": "success"
+}
+```
+
+## 格式转存
+
+### 提交转存任务
+
+- Path: /transform/submit/{type}/{dataset_id}
+- Method: GET
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": {
+        "task_id": 123,
+        "dataset_id": "bulabula"
+    }
+}
+```
+
+### 查询进度
+
+- Path: /transform/progress/{task_id}
+- Method: GET
+- Return:
+
+```json
+{
+    "code": 1, // 0: 转换完成. 1: 转换中. 2: 转换失败。3: 任务不存在
+    "data": {
+        "task_id": 123,
+        "dataset_id": "bulabula",
+        "progress": 52, // 百分比
+        "message": "3号图片转换失败<br>18号图片转换失败<br>"
+    }
+}
+```
+
+### 导入PaddleX
+
+- Path: /import_paddlex/{dataset_id}
+- Method: GET
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": "success"
+}
+```

@@ -2,99 +2,95 @@
 
 ## 选择图片后，上传文件/目录至标注软件路径中
 
-- Path: /upload
+- Path: /upload/<labeltype>/<dataset_id>
 - Method: POST
 - Type: form-data
-- Data: pics
-- Return:
+```json
+{"data":
+["C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg",
+  "C:\\Users\\reatr\\Desktop\\test.jpg"
+]}
+```
 
+- Return:
 ```json
 {
   "code": 0,
   "data": {
       "size": 5, // 有效图片总数
-      "id": "bulabula", // 数据集ID
-      "message": "5张图片因大小/格式不对添加失败！"
+      "id": dataset_id, // 数据集ID
+      "message": " "
       //...其他信息
   },
 }
 ```
 
-## 获取图片
-
-- Path: /get/picture/{dataset_id}/{pic_id}
+# 获取数据集信息
+- Path: /get/dataset_info/<dataset_id>
 - Method: GET
-- Return: 二进制图片
-```json
+- Return:
+```buildoutcfg
 {
-   "code": 0,
-   "data": [
-      {
-         "dataset_id": dataset_id,
-         "pic_id": pic_id,
-         "data": image
-      }
-   ]
+    "code": 0,
+    "dataset_info": {
+        "dataset_id": "100",
+        "image_num": 9,
+        "image_path_list": [
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg",
+            "C:\\Users\\reatr\\Desktop\\test.jpg"
+        ],
+        "label_type": "det"
+    }
 }
 ```
 
 
-## 获取已有标注信息
 
-- Path: /get/annotation/{dataset_id}/{pic_id}
+## 获取图片
+
+- Path: /get/picture/<dataset_id>/<pic_id>
 - Method: GET
-- Return:
-
+- Return: base64字符串的图片
 ```json
 {
     "code": 0,
     "data": [
-        {
-            "content": [
-                {
-                    "x": 329.05296950240773,
-                    "y": 130.97913322632422
-                },
-                //...
-            ],
-            "rectMask": {
-                "xMin": 329.05296950240773,
-                "yMin": 130.97913322632422,
-                "width": 187.4799357945425,
-                "height": 165.6500802568218
-            },
-            "labels": {
-                "labelName": "未命名",
-                "labelColor": "red",
-                "labelColorRGB": "255,0,0",
-                "visibility": false
-            },
-            "labelLocation": {
-                "x": 422.792937399679,
-                "y": 213.80417335473513
-            },
-            "contentType": "rect"
-        }
+         {
+         "image_path": image_path,
+         "data": 'XXXXXX...'
+         }
     ]
 }
 ```
-
 ## 添加/修改标注信息
 
-- Path: /set/annotation?dataset_id}/{pic_id}
+- Path: /set/annotation/{dataset_id}/{pic_id}
 - Method: POST
+- Type: form-data
 - Data:
 
 ```json
 {
-    'datas':[
+    "datas":[
       {
         "content": [
           {
             "x": 329.05296950240773,
             "y": 130.97913322632422
-          },
-          //...
+          }
         ],
         "rectMask": {
           "xMin": 329.05296950240773,
@@ -113,8 +109,7 @@
           "y": 213.80417335473513
         },
         "contentType": "rect"
-      },
-      //...
+      }
     ]
 }
 ```
@@ -123,10 +118,57 @@
 
 ```json
 {
-    "code": 0,
-    "data": "success"
+    "code": 0,//成功
+}
+
+{
+    "code": 1,//失败
 }
 ```
+
+## 获取已有标注信息
+
+- Path: /get/annotation/{dataset_id}/{pic_id}
+- Method: GET
+- Type: form-data
+- Return:
+
+```json
+{
+    "code": 0,
+    "data": {
+        "datas": [
+            {
+                "content": [
+                    {
+                        "x": 329.05296950240773,
+                        "y": 130.97913322632422
+                    }
+                ],
+                "contentType": "rect",
+                "labelLocation": {
+                    "x": 422.792937399679,
+                    "y": 213.80417335473513
+                },
+                "labels": {
+                    "labelColor": "red",
+                    "labelColorRGB": "255,0,0",
+                    "labelName": "未命名",
+                    "visibility": false
+                },
+                "rectMask": {
+                    "height": 165.6500802568218,
+                    "width": 187.4799357945425,
+                    "xMin": 329.05296950240773,
+                    "yMin": 130.97913322632422
+                }
+            }
+        ]
+    }
+}
+```
+
+
 
 ## 标签管理
 
@@ -150,7 +192,7 @@
 
 ### 添加标签
 
-- Path: /tag/{dataset_id}/add
+- Path: /tag/add
 - Method: POST
 - Data:
 
@@ -205,7 +247,7 @@
 
 ### 提交转存任务
 
-- Path: /transform/submit/{type}/{dataset_id}
+- Path: /transform/submit/{dataset_id}
 - Method: GET
 - Return:
 

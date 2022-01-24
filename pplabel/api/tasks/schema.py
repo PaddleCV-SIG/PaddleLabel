@@ -1,10 +1,9 @@
 from pplabel.config import ma
-
 from .model import Project
 
 
-class ProjectSchema(ma.SQLAlchemyAutoSchema):
+class TaskSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Project
-        include_relationships = True
+        include_fk = True
         load_instance = True

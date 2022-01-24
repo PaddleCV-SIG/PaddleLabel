@@ -15,7 +15,7 @@ paths:
       description: 'Read all the projects, sort by last modify date'
       responses:
         '200':
-          description: Read all projects successful
+          description: success
           content:
             application/json:
               schema:
@@ -30,13 +30,25 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Project'
+            examples:
+              Classfication_Example:
+                value:
+                  project_id: null
+                  name: Classification Example
+                  description: Example Project Descreption
+                  category: 1
+                  data_dir: ~/pplabel/project_name/data
+                  label_dir: ~/pplabel/project_name/label
+                  label_config: '[''class1'', ''class2'', ''class3'']'
+                  created: null
+                  modified: null
+                  other_settings: '{''multiclass_classification'':true}'
       responses:
         '201':
-          description: Create new project successful
+          description: success
           content:
             application/json:
               schema:
-                type: object
                 $ref: '#/components/schemas/Project'
   '/projects/{project_id}':
     get:
@@ -51,19 +63,41 @@ paths:
           required: true
       responses:
         '200':
-          description: Read all projects successful
+          description: Get project detail success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Projects'
+                $ref: '#/components/schemas/Project'
+      description: Get details about one project
+    delete:
+      summary: ''
+      operationId: ''
+      responses:
+        '200':
+          description: OK
+      description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
 components:
   schemas:
     Project:
       type: object
+      description: Contains project details and settings
+      x-examples:
+        Classification_Example:
+          project_id: null
+          name: Classification Example
+          description: Example Project Descreption
+          category: 1
+          data_dir: ~/pplabel/project_name/data
+          label_dir: ~/pplabel/project_name/label
+          label_config: '[''class1'', ''class2'', ''class3'']'
+          created: null
+          modified: null
+          other_settings: '{''multiclass_classification'':true}'
       properties:
         project_id:
           type: integer
           nullable: true
+          readOnly: true
         name:
           type: string
           maxLength: 64
@@ -75,21 +109,35 @@ components:
         category:
           type: integer
           maximum: 64
+          description: 'Top level annotation task category, see TODO for int - category map'
         data_dir:
           type: string
+          description: Absolute directory path where all the data file is stored
         label_dir:
           type: string
+          description: Absolute directory path where all the label files are stored
         label_config:
           type: string
+          description: Label configuration. Varies across different task categories
         created:
           type: string
+          description: Project creation timestamp in UTC
+          format: timestamp
           nullable: true
+          readOnly: true
         modified:
           type: string
+          description: Last time the project detail or ANY TASK of the project is modified
+          format: timestamp
           nullable: true
+          readOnly: true
+        other_settings:
+          type: string
+          description: Project settings that are different across annotation task categories
     Projects:
       type: array
       items:
+        type: object
         properties:
           project_id:
             type: integer
@@ -98,3 +146,5 @@ components:
           name:
             type: string
             maxLength: 32
+          '':
+            type: string

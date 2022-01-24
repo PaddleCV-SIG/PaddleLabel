@@ -1,5 +1,3 @@
-import json
-
 from flask import make_response, abort, request
 
 from pplabel.config import db
@@ -35,9 +33,16 @@ def post():  # create
     return schema.dump(new_project), 201
 
 
-def put(project_id, project):
-    pass
+# def put(project_id, project):
+#     pass
 
 
 def delete(project_id):
-    pass
+    project = Project.query.filter(Project.project_id == project_id).one_or_none()
+
+    if project is None:
+        abort(404, f"Project {project_id} don't exist int the databae.")
+
+    db.session.delete(project)
+    db.session.commit()
+    return make_response(f"Project {project_id} deleted", 200)

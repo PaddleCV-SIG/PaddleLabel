@@ -35,7 +35,7 @@ def post():  # create
     return schema.dump(new_project), 201
 
 
-def update(project_id, project):
+def put(project_id, project):
     pass
 
 

@@ -16,6 +16,9 @@ connex_app.add_api(
     strict_validation=True,  #
 )
 
+if not osp.exists(config.sqlite_url):
+    config.db.create_all()
+
 
 def main():
     connex_app.run(port=5000, debug=True)

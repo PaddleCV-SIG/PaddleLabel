@@ -1,8 +1,10 @@
 from datetime import datetime
 
 import sqlalchemy as sa
+from sqlalchemy import Column
 
 from pplabel.config import db
+from pplabel.api.util import nncol
 
 """
 - Project
@@ -25,14 +27,12 @@ from pplabel.config import db
 
 class Project(db.Model):
     __tablename__ = "project"
-    project_id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column(
-        sa.String(), nullable=False
-    )  # TODO: chinese string, constraint by bytes
-
-    # description = sa.Column(sa.String(32))
-    # category = sa.Column(sa.Integer)
-    # data_dir = sa.Column(sa.String(32))
-    # label_dir = sa.Column(sa.String(32))
-    # modified = sa.Column(sa.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # created = sa.Column(sa.DateTime, default=datetime.utcnow)
+    project_id = nncol(sa.Integer, primary_key=True)
+    name = nncol(sa.String())
+    description = Column(sa.String())
+    category = nncol(sa.SmallInteger())
+    data_dir = nncol(sa.String())
+    label_dir = nncol(sa.String())
+    # label_config =
+    created = nncol(sa.DateTime, default=datetime.utcnow)
+    modified = nncol(sa.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -17,14 +17,14 @@ RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal
 RUN export C_INCLUDE_PATH=/usr/include/gdal
 
 # Install requirements
-COPY ./pplabel/requirements.txt .
+COPY ./requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Add source code
 
 # Set environment variables
-ENV FLASK_APP=pplabel/server.py
+# ENV FLASK_APP=setup.py
 
 # Run
-ENTRYPOINT [ "flask", "run", "--host=0.0.0.0" ]
+ENTRYPOINT [ "python", "-m", "pplabel" ]

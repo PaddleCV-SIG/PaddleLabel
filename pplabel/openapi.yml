@@ -19,7 +19,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Projects"
+                $ref: '#/components/schemas/Projects'
     post:
       tags:
         - People
@@ -37,8 +37,8 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/Project"
-  /projects/{project_id}:
+                $ref: '#/components/schemas/Project'
+  '/projects/{project_id}':
     get:
       tags:
         - Project
@@ -48,16 +48,14 @@ paths:
           description: Id of the person to get
           schema:
             type: integer
-          required: True
+          required: true
       responses:
         '200':
           description: Read all projects successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Projects"
-
-
+                $ref: '#/components/schemas/Projects'
 components:
   schemas:
     Project:
@@ -65,19 +63,38 @@ components:
       properties:
         project_id:
           type: integer
-          description: Id of the person
           nullable: true
         name:
           type: string
-          maxLength: 32
+          maxLength: 64
+          description: Project name
+        description:
+          type: string
+          description: Optional project description
+          nullable: true
+        category:
+          type: integer
+          maximum: 64
+        data_dir:
+          type: string
+        label_dir:
+          type: string
+        label_config:
+          type: string
+        created:
+          type: string
+          nullable: true
+        modified:
+          type: string
+          nullable: true
     Projects:
       type: array
       items:
         properties:
           project_id:
-              type: integer
-              description: Id of the person
-              nullable: true
+            type: integer
+            description: Id of the person
+            nullable: true
           name:
             type: string
             maxLength: 32

@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: pplabel api spec
+  version: 0.1.0
+  description: ''
+servers:
+  - url: 'http://localhost:5000/api'
+    description: ''
+paths:
+  /projects:
+    get:
+      tags:
+        - Project
+      summary: 'Read all the projects, sort by last modify date'
+      description: 'Read all the projects, sort by last modify date'
+      responses:
+        '200':
+          description: Read all projects successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Projects"
+    post:
+      tags:
+        - People
+      description: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Create new project successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Project"
+  /projects/{project_id}:
+    get:
+      tags:
+        - Project
+      parameters:
+        - name: project_id
+          in: path
+          description: Id of the person to get
+          schema:
+            type: integer
+          required: True
+      responses:
+        '200':
+          description: Read all projects successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Projects"
+
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        project_id:
+          type: integer
+          description: Id of the person
+          nullable: true
+        name:
+          type: string
+          maxLength: 32
+    Projects:
+      type: array
+      items:
+        properties:
+          project_id:
+              type: integer
+              description: Id of the person
+              nullable: true
+          name:
+            type: string
+            maxLength: 32

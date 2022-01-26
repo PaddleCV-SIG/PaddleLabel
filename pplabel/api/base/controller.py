@@ -78,6 +78,9 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
             db.session.commit()
         else:
             # 2.2 change all provided properties
+            for k in body.keys():
+                if k in immutables:
+                    abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
             Model.query.filter(getattr(Model, id_name) == id_val).update(body)
             db.session.commit()
 

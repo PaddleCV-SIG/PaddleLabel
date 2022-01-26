@@ -12,6 +12,7 @@ from pplabel.api.base import immutable_properties
 from .model import Project
 from .schema import ProjectSchema
 
+
 def pre_add(new_item, se):
     # TODO: check the file path is valid
     # TODO: https://gist.github.com/mo-han/240b3ef008d96215e352203b88be40db

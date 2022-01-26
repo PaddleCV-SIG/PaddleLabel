@@ -5,7 +5,7 @@ import os.path as osp
 from pplabel import config, api
 from pplabel.util import Resolver
 
-print(swagger_ui_3_path)
+# print(swagger_ui_3_path)
 # options = {"swagger_path": swagger_ui_3_path}
 connex_app = config.connex_app
 connex_app.add_api(

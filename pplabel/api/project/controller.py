@@ -1,4 +1,5 @@
 import json
+import functools
 
 from flask import make_response, abort, request
 import sqlalchemy
@@ -12,15 +13,19 @@ from .schema import ProjectSchema
 #     projects = Project.query.all()
 #     return ProjectSchema(many=True).dump(projects), 200
 
-def get_all():
-    return base.get_all(Project, ProjectSchema)
+get_all = functools.partial(base.get_all, Project, ProjectSchema)
 
-def get(project_id):
-    project = Project.query.filter(Project.project_id == project_id).one_or_none()
+# def get_all():
+#     return base.get_all(Project, ProjectSchema)
+get = functools.partial(base.get, Project, ProjectSchema)
 
-    if project is not None:
-        return ProjectSchema().dump(project)
-    abort(404, f"Project not found for Id: {project_id}")
+# def get(project_id):
+#
+#     project = Project.query.filter(Project.project_id == project_id).one_or_none()
+#
+#     if project is not None:
+#         return ProjectSchema().dump(project)
+#     abort(404, f"Project not found for Id: {project_id}")
 
 # TODO: add request id
 def post():

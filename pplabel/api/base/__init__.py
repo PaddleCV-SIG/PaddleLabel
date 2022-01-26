@@ -1,1 +1,1 @@
-from .controller import get_all
+from .controller import get_all, get

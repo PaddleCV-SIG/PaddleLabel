@@ -26,5 +26,4 @@ ma = Marshmallow(app)
 
 request_id_timeout = 5
 
-
 app.secret_key = rand_string(20)

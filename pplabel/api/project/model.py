@@ -14,6 +14,6 @@ class Project(db.Model):
     data_dir = nncol(db.String(), unique=True)
     label_dir = db.Column(db.String(), unique=True)
     label_config = db.Column(db.String())
-    _created = nncol(db.DateTime, default=datetime.utcnow)
+    created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     other_settings = db.Column(db.String())

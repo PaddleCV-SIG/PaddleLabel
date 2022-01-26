@@ -116,9 +116,9 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
+              anyOf:
                 - $ref: '#/components/schemas/Project'
-                - $ref: '#/components/schemas/KVPair'
+                - $ref: '#/components/schemas/KeyValuePair'
             examples:
               Full Project:
                 value:
@@ -131,8 +131,7 @@ paths:
                   other_settings: '{''multiclass_classification'':true}'
               One Property:
                 value:
-                  key: name
-                  value: Change Only Project Name
+                  name: Change Only Project Name
       responses:
         '200':
           description: success
@@ -300,19 +299,5 @@ components:
           type: string
         json:
           type: string
-    KVPair:
-      title: KVPair
-      type: object
-      properties:
-        key:
-          type: string
-          description: Key of the pair
-          nullable: false
-        value:
-          type: string
-          description: Value of the pair
-          nullable: true
-      required:
-        - key
-        - value
-      description: Used when putting to change one property of an item
+    KeyValuePair:
+      description: A key-value pair

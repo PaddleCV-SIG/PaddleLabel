@@ -29,4 +29,4 @@ class Task(db.Model):
     label_paths = nncol(db.String())
     slice_count = nncol(db.Integer())
     created = nncol(db.DateTime, default=datetime.utcnow)
-    modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) 
+    modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

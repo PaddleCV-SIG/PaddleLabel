@@ -1,19 +1,19 @@
 import os.path as osp
 
-from swagger_ui_bundle import swagger_ui_3_path
+# from swagger_ui_bundle import swagger_ui_3_path
 
 from pplabel import config, api
 from pplabel.util import Resolver
 
 print(swagger_ui_3_path)
-options = {"swagger_path": swagger_ui_3_path}
+# options = {"swagger_path": swagger_ui_3_path}
 connex_app = config.connex_app
 connex_app.add_api(
     "openapi.yml",
     # resolver=RestyResolver("pplabel.api", collection_endpoint_name="get_all"),
     resolver=Resolver("pplabel.api", collection_endpoint_name="get_all"),
     strict_validation=True,  # request with undifiend keys return 400
-    options=options,
+    # options=options,
 )
 
 if not osp.exists(config.sqlite_url):

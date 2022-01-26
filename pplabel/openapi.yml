@@ -59,7 +59,13 @@ paths:
                     created: string
                     modified: string
                     other_settings: string
-  /projects/{project_id}:
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: request_id
+          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+  '/projects/{project_id}':
     get:
       tags:
         - Project
@@ -131,7 +137,7 @@ paths:
         '200':
           description: success
         '404':
-          description: project with project id not fond, or project don't have requested property
+          description: 'project with project id not fond, or project don''t have requested property'
   /tasks:
     get:
       tags:

@@ -1,6 +1,7 @@
 import json
 
 from flask import make_response, abort, request
+import sqlalchemy
 
 from pplabel.config import db
 from .model import Project
@@ -25,14 +26,19 @@ def post():
     new_project = request.get_json()
     schema = ProjectSchema()
     new_project = schema.load(new_project)
-    existing = Project.query.filter(Project.name == new_project.name).one_or_none()
-    if existing is not None:
-        abort(
-            404,
-            f"Project with name {new_project.name} already exists. Plz choose another name.",
-        )
-    db.session.add(new_project)
-    db.session.commit()
+    try:
+        db.session.add(new_project)
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        msg = str(e.orig)
+        if msg.startswith("UNIQUE constraint failed"):
+            col = msg.split(":")[1].strip()
+            abort(
+                409,
+                f"Duplicate {col}.",
+            )
+        else:
+            abort(500, msg)
     return schema.dump(new_project), 201
 
 

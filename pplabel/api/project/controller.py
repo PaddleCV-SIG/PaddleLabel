@@ -19,14 +19,3 @@ post = functools.partial(base.post, Project, ProjectSchema)
 put = functools.partial(base.put, Project, ProjectSchema)
 
 delete = functools.partial(base.delete, Project, ProjectSchema)
-
-
-# def delete(project_id):
-#     project = Project.query.filter(Project.project_id == project_id).one_or_none()
-#
-#     if project is None:
-#         abort(404, f"Project {project_id} don't exist int the databae.")
-#
-#     db.session.delete(project)
-#     db.session.commit()
-#     return make_response(f"Project {project_id} deleted", 200)

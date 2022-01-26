@@ -1,2 +1,2 @@
-from .controller import get_all, get, post, put, delete
+from .controller import  crud
 from .model import immutable_properties

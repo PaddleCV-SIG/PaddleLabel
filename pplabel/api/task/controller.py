@@ -1,9 +1,9 @@
 from flask import make_response, abort, request
 
+from pplabel.api.base import crud
 from pplabel.config import db
 from .model import Task
 from .schema import TaskSchema
-
 
 def get_all():
     tasks = Task.query.all()

@@ -13,7 +13,7 @@ connex_app = config.connex_app
 connex_app.add_api(
     "openapi.yml",
     resolver=RestyResolver("pplabel.api"),
-    strict_validation=True,  #
+    strict_validation=True,  # request with undifiend keys return 400
 )
 
 if not osp.exists(config.sqlite_url):

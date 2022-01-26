@@ -1,18 +1,17 @@
 openapi: 3.0.0
 info:
-  title: pplabel api spec
+  title: PP-Label api spec
   version: 0.1.0
   description: ''
 servers:
   - url: 'http://localhost:5000/api'
-    description: ''
+    description: Local server
 paths:
   /projects:
     get:
       tags:
         - Project
-      summary: 'Read all the projects, sort by last modify date'
-      description: 'Read all the projects, sort by last modify date'
+      summary: 'Read all projects, sort by last modify date'
       responses:
         '200':
           description: success
@@ -22,8 +21,8 @@ paths:
                 $ref: '#/components/schemas/Projects'
     post:
       tags:
-        - People
-      description: Create a new project
+        - Project
+      summary: Create a new project
       requestBody:
         required: true
         content:
@@ -31,17 +30,14 @@ paths:
             schema:
               $ref: '#/components/schemas/Project'
             examples:
-              Classfication_Example:
+              Classfication Example:
                 value:
-                  project_id: null
                   name: Classification Example
                   description: Example Project Descreption
-                  category: 1
-                  data_dir: ~/pplabel/project_name/data
-                  label_dir: ~/pplabel/project_name/label
+                  task_category: 1
+                  data_dir: ~/pplabel/project_dir/data
+                  label_dir: ~/pplabel/project_dir/label
                   label_config: '[''class1'', ''class2'', ''class3'']'
-                  created: null
-                  modified: null
                   other_settings: '{''multiclass_classification'':true}'
       responses:
         '201':
@@ -50,32 +46,139 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
-  '/projects/{project_id}':
+              examples:
+                example-1:
+                  value:
+                    project_id: 0
+                    name: Example Project
+                    description: Example Descreption
+                    task_category: 1
+                    data_dir: ~/pplabel/project_dir/data
+                    label_dir: ~/pplabel/project_dir/label
+                    label_config: string
+                    created: string
+                    modified: string
+                    other_settings: string
+  /projects/{project_id}:
     get:
       tags:
         - Project
+      summary: Get info of a specific project
       parameters:
         - name: project_id
           in: path
-          description: Id of the person to get
+          description: Id of the project
           schema:
             type: integer
           required: true
       responses:
         '200':
-          description: Get project detail success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Project'
-      description: Get details about one project
+          description: OK
+        '404':
+          description: Project not fond
     delete:
-      summary: ''
-      operationId: ''
+      summary: Delete a project record and ALL TASKS RECORDS under the project.
+      description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
+      tags:
+        - Project
+      parameters:
+        - name: project_id
+          in: path
+          description: Id of the project to delete
+          schema:
+            type: integer
+          required: true
       responses:
         '200':
           description: OK
-      description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
+        '404':
+          description: The task specified is not found
+    put:
+      tags:
+        - Project
+      summary: Edit project info
+      description: Edit project info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: project_id
+          in: path
+          description: Id of the project to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Project'
+                - $ref: '#/components/schemas/KVPair'
+            examples:
+              Full Project:
+                value:
+                  name: Change All Info
+                  description: Example Project Descreption
+                  task_category: 1
+                  data_dir: ~/pplabel/project_dir/data
+                  label_dir: ~/pplabel/project_dir/label
+                  label_config: '[''class1'', ''class2'', ''class3'']'
+                  other_settings: '{''multiclass_classification'':true}'
+              One Property:
+                value:
+                  key: name
+                  value: Change Only Project Name
+      responses:
+        '200':
+          description: success
+        '404':
+          description: project with project id not fond, or project don't have requested property
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks, sort by last modified'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+    post:
+      tags:
+        - Task
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+            examples:
+              Task Example:
+                value:
+                  project_id: 1
+                  data_paths:
+                    - image.png
+                  label_paths:
+                    - image_png.xml
+                  slice_count: 1
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                example-1:
+                  value:
+                    project_id: 0
+                    data_paths:
+                      - image.png
+                    label_paths:
+                      - image_png.xml
+                    slice_count: 1
 components:
   schemas:
     Project:
@@ -86,7 +189,7 @@ components:
           project_id: null
           name: Classification Example
           description: Example Project Descreption
-          category: 1
+          task_category: 1
           data_dir: ~/pplabel/project_name/data
           label_dir: ~/pplabel/project_name/label
           label_config: '[''class1'', ''class2'', ''class3'']'
@@ -106,10 +209,10 @@ components:
           type: string
           description: Optional project description
           nullable: true
-        category:
+        task_category:
           type: integer
           maximum: 64
-          description: 'Top level annotation task category, see TODO for int - category map'
+          description: 'Top level annotation task category, see TODO for int <-> category map'
         data_dir:
           type: string
           description: Absolute directory path where all the data file is stored
@@ -134,6 +237,10 @@ components:
         other_settings:
           type: string
           description: Project settings that are different across annotation task categories
+      required:
+        - name
+        - task_category
+        - data_dir
     Projects:
       type: array
       items:
@@ -148,3 +255,58 @@ components:
             maxLength: 32
           '':
             type: string
+    Task:
+      title: Task
+      type: object
+      description: 'An annotation task, groups data and label together'
+      properties:
+        task_id:
+          type: integer
+          readOnly: true
+        project_id:
+          type: integer
+        data_path:
+          type: string
+        slice_count:
+          type: integer
+        created:
+          type: string
+          format: timestamp
+          readOnly: true
+        modified:
+          type: string
+          format: timestamp
+          readOnly: true
+      required:
+        - project_id
+    Annotation:
+      title: Annotation
+      type: object
+      properties:
+        annotation_id:
+          type: integer
+          nullable: true
+        created:
+          type: string
+        modified:
+          type: string
+        type:
+          type: string
+        json:
+          type: string
+    KVPair:
+      title: KVPair
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key of the pair
+          nullable: false
+        value:
+          type: string
+          description: Value of the pair
+          nullable: true
+      required:
+        - key
+        - value
+      description: Used when putting to change one property of an item

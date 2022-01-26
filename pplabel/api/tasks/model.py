@@ -24,8 +24,9 @@ class Task(db.Model):
     __table_args__ = {"comment": "Contains all the tasks"}
     task_id = nncol(db.Integer(), primary_key=True)
     project_id = nncol(db.Integer(), db.ForeignKey("project.project_id"))
-    project = relationship("Project", backref=backref("books")) # TODO: propogate
+    project = db.relationship("Project", backref=db.backref("books")) # TODO: propogate
     data_paths = nncol(db.String())
     label_paths = nncol(db.String())
     slice_count = nncol(db.Integer())
-    created 
+    created = nncol(db.DateTime, default=datetime.utcnow)
+    modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) 

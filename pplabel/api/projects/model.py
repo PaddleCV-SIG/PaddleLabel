@@ -6,16 +6,13 @@ from pplabel.api.util import nncol
 
 class Project(db.Model):
     __tablename__ = "project"
-    __table_args__ = {"comment": "Contains all the project information and settings"}
-    project_id = nncol(
-        db.Integer,
-        primary_key=True,
-    )
-    name = nncol(db.String())
+    __table_args__ = {"comment": "Stores information and settings for each project"}
+    project_id = nncol(db.Integer, primary_key=True)
+    name = nncol(db.String(), unique=True)
     description = db.Column(db.String())
-    category = nncol(db.SmallInteger())
+    task_category = nncol(db.SmallInteger())
     data_dir = nncol(db.String())
-    label_dir = nncol(db.String())
+    label_dir = db.Column(db.String())
     label_config = db.Column(db.String())
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

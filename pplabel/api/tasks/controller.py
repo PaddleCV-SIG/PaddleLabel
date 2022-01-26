@@ -21,8 +21,9 @@ def get(task_id):
 def post():
     new_task = request.get_json()
     schema = TaskSchema()
-
     new_task = schema.load(new_task)
+    
+    print("new_task", new_task)
     db.session.add(new_task)
     db.session.commit()
     return schema.dump(new_task), 201

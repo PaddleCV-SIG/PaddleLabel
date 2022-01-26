@@ -1,13 +1,15 @@
 import os.path as osp
 
-from connexion.resolver import RestyResolver
+# from connexion.resolver import RestyResolver
 
 from pplabel import config, api
+from pplabel.util import Resolver
 
 connex_app = config.connex_app
 connex_app.add_api(
     "openapi.yml",
-    resolver=RestyResolver("pplabel.api"),
+    # resolver=RestyResolver("pplabel.api", collection_endpoint_name="get_all"),
+    resolver=Resolver("pplabel.api", collection_endpoint_name="get_all"),
     strict_validation=True,  # request with undifiend keys return 400
 )
 

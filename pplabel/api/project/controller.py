@@ -4,14 +4,16 @@ from flask import make_response, abort, request
 import sqlalchemy
 
 from pplabel.config import db
+from pplabel.api import base
 from .model import Project
 from .schema import ProjectSchema
 
+# def get_all():
+#     projects = Project.query.all()
+#     return ProjectSchema(many=True).dump(projects), 200
 
-def search():
-    projects = Project.query.all()
-    return ProjectSchema(many=True).dump(projects), 200
-
+def get_all():
+    return base.get_all(Project, ProjectSchema)
 
 def get(project_id):
     project = Project.query.filter(Project.project_id == project_id).one_or_none()
@@ -19,7 +21,6 @@ def get(project_id):
     if project is not None:
         return ProjectSchema().dump(project)
     abort(404, f"Project not found for Id: {project_id}")
-
 
 # TODO: add request id
 def post():
@@ -40,7 +41,6 @@ def post():
         else:
             abort(500, msg)
     return schema.dump(new_project), 201
-
 
 def put(project_id):
     # 1. check project exists
@@ -66,7 +66,6 @@ def put(project_id):
     # FIXME: really need to requery?
     project = Project.query.filter(Project.project_id == project_id).one_or_none()
     return ProjectSchema().dump(project), 200
-
 
 def delete(project_id):
     project = Project.query.filter(Project.project_id == project_id).one_or_none()

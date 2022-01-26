@@ -1,18 +1,8 @@
 # Byte-compiled / optimized / DLL files
-test/
 __pycache__/
 *.py[cod]
 *$py.class
-dzq*
-.vscode
-.vscode/
-vis_temp.py
-test.txt
-*.pdparams
-output/
-temp*
-temp/
-
+*.db
 
 # C extensions
 *.so
@@ -138,26 +128,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# vscode
-.vscode/*
-
-# exe
-out/
-eiseg/requirements_with_opt.txt
-
-# test
-test/
-test_output/
-*.npy
-
-# qsetting
-*.ini
-
-# mask_sm
-tool/mask.png
-
-# static_weights
-*.pdiparams
-*.pdiparams.info
-*.pdmodel

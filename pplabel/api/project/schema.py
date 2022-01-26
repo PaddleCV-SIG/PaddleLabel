@@ -13,7 +13,7 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
 
 
     @pre_load
-    def empty2none(self, data, **kwargs):
+    def empty_label_dir(self, data, **kwargs):
         if 'label_dir' in data.keys() and data['label_dir'] == "":
             data['label_dir'] = None
         return data

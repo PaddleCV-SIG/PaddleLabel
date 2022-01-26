@@ -5,7 +5,7 @@ from .model import Task
 from .schema import TaskSchema
 
 
-def search():
+def get_all():
     tasks = Task.query.all()
     return TaskSchema(many=True).dump(tasks), 200
 
@@ -22,7 +22,7 @@ def post():
     new_task = request.get_json()
     schema = TaskSchema()
     new_task = schema.load(new_task)
-    
+
     print("new_task", new_task)
     db.session.add(new_task)
     db.session.commit()

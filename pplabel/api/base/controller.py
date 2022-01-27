@@ -34,9 +34,7 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         immutables=immutable_properties,
     ):
         schema = Schema()
-        print("+_+_+_+_+_", request.get_json())
         new_item = schema.load(request.get_json())
-        print("herehereherehereherehereherehere")
         if pre_add is not None:
             pre_add(new_item, db.session)
         try:

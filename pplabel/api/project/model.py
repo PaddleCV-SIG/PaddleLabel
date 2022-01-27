@@ -24,4 +24,5 @@ class Project(db.Model):
         cascade="all, delete, delete-orphan",
         single_parent=True,
         order_by="desc(Task.created)",
+        lazy="noload",
     )  # TODO: order by file name or slice

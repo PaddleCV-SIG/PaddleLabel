@@ -27,6 +27,78 @@ paths:
       responses:
         '201':
           description: success
+  /tasks/{task_id}:
+    get:
+      tags:
+        - Task
+      summary: Get info of a specific task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Task not fond
+    delete:
+      summary: Delete a task and ALL ANNOTATION RECORDS
+      description: Deleting a task will also delete all the annotation records associated with the task
+      tags:
+        - Task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The task specified is not found
+    put:
+      tags:
+        - Task
+      summary: Edit task info
+      description: Edit task info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values you don't intend to change out of request body.
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Task'
+                - $ref: '#/components/schemas/KeyValuePair'
+            examples:
+              Full Project:
+                value:
+                  name: Change All Info
+                  description: Example Project Descreption
+                  task_category: 1
+                  data_dir: ~/pplabel/project_dir/data
+                  label_dir: ~/pplabel/project_dir/label
+                  label_config: '[''class1'', ''class2'', ''class3'']'
+                  other_settings: '{''multiclass_classification'':true}'
+              One Property:
+                value:
+                  name: Change Only Project Name
+      responses:
+        '200':
+          description: success
+        '404':
+          description: 'Project with project id not fond, or project dont have requested property'
   /projects:
     get:
       tags:

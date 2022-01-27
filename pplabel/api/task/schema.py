@@ -9,24 +9,27 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
     data_paths=fields.List(fields.String())
-    label_paths=fields.List(fields.String())
-    # @pre_load
-    # def check_comma(self,data,**kwargs):
-    #     pass
+
 
     @post_load
     def list2str(self, data, **kwargs):
+        print("----------", data)
         data_paths_string = ""
         for data_path in data["data_paths"]:
             data_paths_string += data_path + ","
-        data["data_paths"]=data_paths_string
+        data["data_paths"] = data_paths_string
 
-        label_paths_string=""
-        for label_path in data["label_paths"]:
-            label_paths_string+=(label_path + ",")
-        data["label_paths"]=label_paths_string
+        # label_paths_string=""
+        # for label_path in data["label_paths"]:
+        #     label_paths_string+=(label_path + ",")
+        # data["label_paths"]=label_paths_string
         print("data", data)
-    
+
+TaskSchema().load('''{
+  "project_id": 1,
+  "data_paths": ["data1", "data2"],
+  "slice_count": 1
+}''')
     # @pre_dump
     # def str2list(self, data, **kwargs):
     #     data['data_paths'] = data['data_paths'].strip(",").split(',')

@@ -34,7 +34,9 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         immutables=immutable_properties,
     ):
         schema = Schema()
+        print("+_+_+_+_+_", request.get_json())
         new_item = schema.load(request.get_json())
+        print("herehereherehereherehereherehere")
         if pre_add is not None:
             pre_add(new_item, db.session)
         try:
@@ -54,7 +56,14 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
             post_add(new_item, db.session)
         return schema.dump(new_item), 201
 
-    def put(Model, Schema, immutables=immutable_properties, **kwargs):
+    def put(
+        Model,
+        Schema,
+        immutables=immutable_properties,
+        pre_put=tgs["pre_put"],
+        post_put=tgs["post_put"],
+        **kwargs,
+    ):
         # 1. check project existgs
         id_name, id_val = list(kwargs.items())[0]
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
@@ -63,9 +72,9 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
                 404,
                 f"{Model.__tablename__.capitalize()} with {id_name} {id_val} is not found.",
             )
+        if pre_put is not None:
+            pre_put(item, db.session)
         body = request.get_json()
-        print("+_+_+", body)
-        print(len(body.items()))
         if len(body.items()) == 1:
             # 2.1 key in keys: change one property
             k, v = list(body.items())[0]
@@ -86,6 +95,9 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
 
         # FIXME: really need to requery?
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
+        print("_______", post_put)
+        if post_put is not None:
+            post_put(item, db.session)
         return Schema().dump(item), 200
 
     def delete(Model, Schema, **kwargs):

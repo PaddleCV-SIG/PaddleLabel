@@ -7,6 +7,26 @@ servers:
   - url: 'http://localhost:5000/api'
     description: Local server
 paths:
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks, sort by last modified'
+      responses:
+        '200':
+          description: success
+    post:
+      tags:
+        - Task
+      summary: Create a new task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: success
   /projects:
     get:
       tags:
@@ -65,7 +85,7 @@ paths:
           in: header
           name: request_id
           description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
-  '/projects/{project_id}':
+  /projects/{project_id}:
     get:
       tags:
         - Project
@@ -136,54 +156,7 @@ paths:
         '200':
           description: success
         '404':
-          description: 'project with project id not fond, or project don''t have requested property'
-  /tasks:
-    get:
-      tags:
-        - Task
-      summary: 'Get all tasks, sort by last modified'
-      responses:
-        '200':
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projects'
-    post:
-      tags:
-        - Task
-      summary: Create a new task
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-            examples:
-              Task Example:
-                value:
-                  project_id: 1
-                  data_paths:
-                    - image.png
-                  label_paths:
-                    - image_png.xml
-                  slice_count: 1
-      responses:
-        '201':
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-              examples:
-                example-1:
-                  value:
-                    project_id: 0
-                    data_paths:
-                      - image.png
-                    label_paths:
-                      - image_png.xml
-                    slice_count: 1
+          description: 'Project with project id not fond, or project dont have requested property'
 components:
   schemas:
     Project:
@@ -201,6 +174,7 @@ components:
           created: null
           modified: null
           other_settings: '{''multiclass_classification'':true}'
+      additionalProperties: false
       properties:
         project_id:
           type: integer
@@ -246,7 +220,6 @@ components:
         - name
         - task_category
         - data_dir
-      additionalProperties: false
     Projects:
       type: array
       items:
@@ -264,15 +237,19 @@ components:
     Task:
       title: Task
       type: object
-      description: 'An annotation task, groups data and label together'
+      description: An annotation task
+      additionalProperties: false
       properties:
         task_id:
           type: integer
+          nullable: true
           readOnly: true
         project_id:
           type: integer
-        data_path:
-          type: string
+        data_paths:
+          type: array
+          items:
+            type: string
         slice_count:
           type: integer
         created:
@@ -285,7 +262,7 @@ components:
           readOnly: true
       required:
         - project_id
-      additionalProperties: false
+        - data_paths
     Annotation:
       title: Annotation
       type: object
@@ -301,6 +278,5 @@ components:
           type: string
         json:
           type: string
-      additionalProperties: false
     KeyValuePair:
       description: A key-value pair

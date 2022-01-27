@@ -246,6 +246,7 @@ components:
         - name
         - task_category
         - data_dir
+      additionalProperties: false
     Projects:
       type: array
       items:
@@ -284,6 +285,7 @@ components:
           readOnly: true
       required:
         - project_id
+      additionalProperties: false
     Annotation:
       title: Annotation
       type: object
@@ -299,5 +301,6 @@ components:
           type: string
         json:
           type: string
+      additionalProperties: false
     KeyValuePair:
       description: A key-value pair

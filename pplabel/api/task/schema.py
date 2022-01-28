@@ -11,7 +11,7 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    # project = Nested("ProjectSchema", exclude=("task",))
+    project = Nested("ProjectSchema")
     datas = fields.List(Nested("DataSchema"), exclude=("task",))
     annotations = fields.List(Nested("AnnotationSchema"), exclude=("task",))
 
@@ -28,8 +28,7 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
 
     @pre_dump
     def output(self, data, **kwargs):
-        print("_____________________", dir(data))
-        # print(data.task)
+        print(data.project)
         return data
 
     # @post_load

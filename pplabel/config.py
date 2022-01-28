@@ -19,7 +19,7 @@ sqlite_url = "sqlite:///" + os.path.join(basedir, "pplabel.db")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = True
+# app.config["SQLALCHEMY_ECHO"] = True
 
 db = SQLAlchemy(app)
 se = db.session

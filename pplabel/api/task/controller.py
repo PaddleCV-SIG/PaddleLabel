@@ -12,10 +12,10 @@ import pplabel
 get_all, get, post, put, delete = crud(Task, TaskSchema)
 
 
-def post():
-    # pplabel.core.classification.classification_single.import_project(
-    pplabel.core.classification.import_project(
-        1,
-        "/home/lin/Desktop/data/pplabel/single_clas_toy/PetImages/",
-        filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]},
-    )
+# def post():
+#     # pplabel.core.classification.classification_single.import_project(
+#     pplabel.core.classification.import_project(
+#         1,
+#         "/home/lin/Desktop/data/pplabel/single_clas_toy/PetImages/",
+#         filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]},
+#     )

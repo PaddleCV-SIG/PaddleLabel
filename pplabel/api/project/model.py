@@ -18,6 +18,14 @@ class Project(db.Model):
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     other_settings = db.Column(db.String())
 
+    def __repr__(self):
+        s = f"--------------------\n{self.__tablename__}\n"
+        for att in dir(self):
+            if att[0] != "_":
+                s += f"{att}: {getattr(self, att)}\n"
+        s += "--------------------\n"
+        return s
+
     # tasks = db.relationship(
     #     "Task",
     #     # backref="project",

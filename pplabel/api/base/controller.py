@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from flask import make_response, abort, request
 import sqlalchemy
+import marshmallow
 
 from pplabel.config import db
 from .model import immutable_properties
@@ -41,7 +42,18 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         immutables=immutable_properties,
     ):
         schema = Schema()
-        new_item = schema.load(request.get_json())
+        try:
+            new_item = schema.load(request.get_json())
+        except marshmallow.exceptions.ValidationError as e:
+            print("xxxxxxxxxxxxxx", dir(e))
+            # {'data_dir': ['Missing data for required field.']}
+            for field, msgs in e.messages.items():
+                print(field, msgs)
+                if "Missing data for required field." in msgs:
+                    # TODO: change code
+                    abort(500, f"Missing data for required field: {field}")
+            aobrt(500, e.messages)
+
         if pre_add is not None:
             pre_add(new_item, db.session)
         try:

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import event
+from sqlalchemy.orm import backref
 
 from pplabel.config import db
 from pplabel.api.util import nncol

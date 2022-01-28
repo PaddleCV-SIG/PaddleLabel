@@ -18,7 +18,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Projects'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
     post:
       tags:
         - Project
@@ -80,6 +82,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
         '404':
           description: Project not fond
     delete:
@@ -135,6 +141,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
   /tasks:
@@ -145,6 +155,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
     post:
       tags:
         - Task
@@ -172,6 +186,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
         '404':
           description: Task not fond
     delete:
@@ -214,6 +232,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
         '404':
           description: 'Task with task id not fond, or task dont have requested property'
   /datas/:
@@ -224,6 +246,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
     post:
       tags:
         - Data
@@ -262,6 +288,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
         '404':
           description: Data record not fond
     delete:
@@ -304,6 +334,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
         '404':
           description: 'Data record with data id not fond, or data dont have requested property'
   /annotations/:
@@ -314,6 +348,12 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
     post:
       tags:
         - Annotation
@@ -352,6 +392,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
         '404':
           description: Annotation not fond
     delete:
@@ -394,6 +438,10 @@ paths:
       responses:
         '200':
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
         '404':
           description: 'Annotation record with data id not fond, or data dont have requested property'
 components:
@@ -417,7 +465,7 @@ components:
       properties:
         project_id:
           type: integer
-          nullable: true
+          readOnly: true
         name:
           type: string
           maxLength: 64
@@ -425,7 +473,6 @@ components:
         description:
           type: string
           description: Optional project description
-          nullable: true
         task_category:
           type: integer
           maximum: 64
@@ -458,20 +505,6 @@ components:
         - name
         - task_category
         - data_dir
-    Projects:
-      type: array
-      items:
-        type: object
-        properties:
-          project_id:
-            type: integer
-            description: Id of the person
-            nullable: true
-          name:
-            type: string
-            maxLength: 32
-          '':
-            type: string
     Task:
       title: Task
       type: object
@@ -480,43 +513,30 @@ components:
       properties:
         task_id:
           type: integer
-          nullable: true
           readOnly: true
         project_id:
           type: integer
         datas:
           type: array
           items:
-            type: string
-        created:
-          type: string
-          format: timestamp
+            $ref: '#/components/schemas/Data'
           readOnly: true
-        modified:
-          type: string
-          format: timestamp
-          readOnly: true
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Annotation'
         project:
           $ref: '#/components/schemas/Project'
-      required:
-        - project_id
-    Annotation:
-      title: Annotation
-      type: object
-      properties:
-        annotation_id:
-          type: integer
-          nullable: true
-        created:
-          type: string
         modified:
           type: string
-        type:
+          format: timestamp
+          readOnly: true
+        created:
           type: string
-        json:
-          type: string
-    KeyValuePair:
-      description: A key-value pair
+          format: timestamp
+          readOnly: true
+      required:
+        - project_id
     Data:
       title: Data
       type: object
@@ -530,13 +550,37 @@ components:
           type: string
         slice_count:
           type: integer
+        task:
+          $ref: '#/components/schemas/Task'
         created:
           type: string
           readOnly: true
         modified:
           type: string
           readOnly: true
-        task:
-          $ref: '#/components/schemas/Task'
       required:
         - path
+    Annotation:
+      title: Annotation
+      type: object
+      description: ''
+      properties:
+        annotation_id:
+          type: integer
+          readOnly: true
+        label_id:
+          type: integer
+        result:
+          type: string
+        slice_id:
+          type: integer
+        task:
+          $ref: '#/components/schemas/Task'
+        modified:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          readOnly: true
+    KeyValuePair:
+      description: A key-value pair

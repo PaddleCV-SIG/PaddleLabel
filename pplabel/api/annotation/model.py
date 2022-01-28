@@ -13,5 +13,6 @@ class Annotation(db.Model):
     task_id = db.Column(db.Integer(), db.ForeignKey("task.task_id", ondelete="CASCADE"))
     # task = db.relationship("Task", lazy="select")
     result = nncol(db.String())
+    slice_id = nncol(db.Integer())
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

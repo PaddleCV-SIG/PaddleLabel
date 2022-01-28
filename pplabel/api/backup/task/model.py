@@ -13,3 +13,4 @@ class Task(db.Model):
     slice_count = nncol(db.Integer())
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    project = db.relationship("Project", back_populates="task")

@@ -9,8 +9,10 @@ import sqlalchemy
 from pplabel.config import db
 from pplabel.api import base
 from pplabel.api.base import immutable_properties
-from .model import Project
-from .schema import ProjectSchema
+
+# from .model import Project
+from pplabel.api.model import Project
+from ..schema import ProjectSchema
 
 
 def create_dir(**kwargs):

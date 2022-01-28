@@ -9,7 +9,6 @@ from pplabel.config import request_id_timeout
 @app.before_request
 def check_request_id():
     request_id = request.headers.get("request_id", None)
-    print(request_id)
     if request_id is None or len(request_id) == 0:
         return
     curr_time = time.time()

@@ -1,6 +1,12 @@
-from pplabel.config import ma
 from marshmallow import post_load, pre_load, pre_dump, fields
-from .model import Task
+from marshmallow_sqlalchemy.fields import Nested
+
+
+from pplabel.config import ma
+
+# from .model import Task
+from pplabel.api.model import Task
+from pplabel.api.project.schema import ProjectSchema
 
 
 class TaskSchema(ma.SQLAlchemyAutoSchema):
@@ -10,6 +16,7 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
 
     data_paths = fields.List(fields.String())
+    project = Nested(ProjectSchema)
 
     # TODO: invalid chars
     @post_load

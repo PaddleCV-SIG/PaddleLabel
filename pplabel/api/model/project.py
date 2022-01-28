@@ -18,11 +18,17 @@ class Project(db.Model):
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     other_settings = db.Column(db.String())
 
+    # tasks = db.relationship(
+    #     "Task",
+    #     # backref="project",
+    #     back_populates="project",
+    #     cascade="all, delete, delete-orphan",
+    #     single_parent=True,
+    #     order_by="desc(Task.created)",
+    #     lazy="noload",
+    # )  # TODO: order by file name or slice
     tasks = db.relationship(
         "Task",
-        backref="project",
-        cascade="all, delete, delete-orphan",
-        single_parent=True,
-        order_by="desc(Task.created)",
+        back_populates="project",
         lazy="noload",
-    )  # TODO: order by file name or slice
+    )

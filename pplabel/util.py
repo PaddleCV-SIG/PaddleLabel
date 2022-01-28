@@ -41,8 +41,6 @@ class Resolver(connexion.resolver.RestyResolver):
                 d = self.default_module_name
                 r = resource_name
                 name = f"{d}.controller.{r}"
-                print("+_+_+_+", d, r, name)
-
             return name
 
         def get_function_name():

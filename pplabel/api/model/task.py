@@ -13,9 +13,9 @@ class Task(db.Model):
     project_id = nncol(
         db.Integer(), db.ForeignKey("project.project_id", ondelete="CASCADE")
     )
-    # data_paths = nncol(db.String(), unique=True)
-    datas = db.relationship("Data", backref="task")
     project = db.relationship("Project")
+    datas = db.relationship("Data", backref="task")
+    # annotations = db.relationship("Annotation", backref="task")
     # slice_count = nncol(db.Integer())
     # annotation
     created = nncol(db.DateTime, default=datetime.utcnow)

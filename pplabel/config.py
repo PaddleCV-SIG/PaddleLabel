@@ -24,6 +24,6 @@ app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-request_id_timeout = 5
+request_id_timeout = 2
 
 app.secret_key = rand_string(20)

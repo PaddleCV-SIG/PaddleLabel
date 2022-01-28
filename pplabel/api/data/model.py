@@ -3,8 +3,6 @@ from datetime import datetime
 from pplabel.config import db
 from pplabel.api.util import nncol
 
-from pplabel.api.task.model import Task
-
 
 class Data(db.Model):
     __tablename__ = "data"

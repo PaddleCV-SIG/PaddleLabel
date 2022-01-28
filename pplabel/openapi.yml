@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: PP-Label api spec
+  title: PP-Label API Spec
   version: 0.1.0
   description: ''
 servers:
@@ -137,14 +137,6 @@ paths:
           description: success
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
-  /datas/:
-    get:
-      tags:
-        - Data
-      summary: 'Get all data, sort by last modified'
-      responses:
-        '200':
-          description: success
   /tasks:
     get:
       tags:
@@ -181,7 +173,229 @@ paths:
         '200':
           description: OK
         '404':
-          description: Project not fond
+          description: Task not fond
+    delete:
+      summary: Delete a task and ALL DATA and ANNOTATIONS under the task.
+      description: Delete a task and ALL DATA and ANNOTATIONS under the project. Won't delete file on file system
+      tags:
+        - Task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The task specified is not found
+    put:
+      tags:
+        - Task
+      summary: Edit task info
+      description: Edit task info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Task'
+                - $ref: '#/components/schemas/KeyValuePair'
+      responses:
+        '200':
+          description: success
+        '404':
+          description: 'Task with task id not fond, or task dont have requested property'
+  /datas/:
+    get:
+      tags:
+        - Data
+      summary: 'Get all data, sort by last modified'
+      responses:
+        '200':
+          description: success
+    post:
+      tags:
+        - Data
+      summary: Create a new data record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: request_id
+          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+  /datas/{data_id}:
+    get:
+      tags:
+        - Data
+      summary: Get info of a specific data record
+      parameters:
+        - name: data_id
+          in: path
+          description: Id of the data record
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Data record not fond
+    delete:
+      summary: Delete a data record
+      description: Delete a data record, file on file system will not be deleted
+      tags:
+        - Data
+      parameters:
+        - name: data_id
+          in: path
+          description: Id of the data record to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The data record specified is not found
+    put:
+      tags:
+        - Data
+      summary: Edit data record
+      description: Edit data record. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: data_id
+          in: path
+          description: Id of the data record to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Data'
+                - $ref: '#/components/schemas/KeyValuePair'
+      responses:
+        '200':
+          description: success
+        '404':
+          description: 'Data record with data id not fond, or data dont have requested property'
+  /annotations/:
+    get:
+      tags:
+        - Annotation
+      summary: 'Get all annotations, sort by last modified'
+      responses:
+        '200':
+          description: success
+    post:
+      tags:
+        - Annotation
+      summary: Create a new annotation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Annotation'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: request_id
+          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+  /annotations/{annotation_id}:
+    get:
+      tags:
+        - Annotation
+      summary: Get info of a specific annotation
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Annotation not fond
+    delete:
+      summary: Delete an annotation
+      description: Delete an annotation
+      tags:
+        - Annotation
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The annotation record specified is not found
+    put:
+      tags:
+        - Annotation
+      summary: Edit annotation
+      description: Edit annotation. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Annotation'
+                - $ref: '#/components/schemas/KeyValuePair'
+      responses:
+        '200':
+          description: success
+        '404':
+          description: 'Annotation record with data id not fond, or data dont have requested property'
 components:
   schemas:
     Project:
@@ -204,7 +418,6 @@ components:
         project_id:
           type: integer
           nullable: true
-          readOnly: true
         name:
           type: string
           maxLength: 64
@@ -271,6 +484,7 @@ components:
           readOnly: true
         project_id:
           type: integer
+          readOnly: true
         datas:
           type: array
           items:
@@ -283,6 +497,8 @@ components:
           type: string
           format: timestamp
           readOnly: true
+        project:
+          $ref: '#/components/schemas/Project'
       required:
         - project_id
     Annotation:
@@ -306,5 +522,22 @@ components:
       title: Data
       type: object
       properties:
+        data_id:
+          type: integer
+          readOnly: true
+        task_id:
+          type: integer
         path:
           type: string
+        slice_count:
+          type: integer
+        created:
+          type: string
+          readOnly: true
+        modified:
+          type: string
+          readOnly: true
+        task:
+          $ref: '#/components/schemas/Task'
+      required:
+        - path

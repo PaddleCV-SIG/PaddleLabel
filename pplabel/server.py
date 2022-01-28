@@ -2,7 +2,7 @@ import os.path as osp
 
 # from swagger_ui_bundle import swagger_ui_3_path
 
-from pplabel import config, api
+from pplabel import config, api, core
 from pplabel.util import Resolver
 
 # print(swagger_ui_3_path)

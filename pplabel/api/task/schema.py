@@ -11,16 +11,25 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    project = Nested("ProjectSchema")
+    # project = Nested("ProjectSchema", exclude=("task",))
     datas = fields.List(Nested("DataSchema"), exclude=("task",))
+    annotations = fields.List(Nested("AnnotationSchema"), exclude=("task",))
 
-    # # TODO: invalid chars
+    # TODO: invalid chars
     @pre_load
     def list2str(self, data, **kwargs):
         datas = []
+        print("asdfasdfasdfasdfasdf ", data["datas"])
         for path in data["datas"]:
             datas.append({"path": path})
         data["datas"] = datas
+        print("+_+_+_", data)
+        return data
+
+    @pre_dump
+    def output(self, data, **kwargs):
+        print("_____________________", dir(data))
+        # print(data.task)
         return data
 
     # @post_load

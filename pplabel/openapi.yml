@@ -247,7 +247,7 @@ paths:
           in: header
           name: request_id
           description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
-  /datas/{data_id}:
+  '/datas/{data_id}':
     get:
       tags:
         - Data
@@ -266,7 +266,7 @@ paths:
           description: Data record not fond
     delete:
       summary: Delete a data record
-      description: Delete a data record, file on file system will not be deleted
+      description: 'Delete a data record, file on file system will not be deleted'
       tags:
         - Data
       parameters:
@@ -337,7 +337,7 @@ paths:
           in: header
           name: request_id
           description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
-  /annotations/{annotation_id}:
+  '/annotations/{annotation_id}':
     get:
       tags:
         - Annotation
@@ -484,7 +484,6 @@ components:
           readOnly: true
         project_id:
           type: integer
-          readOnly: true
         datas:
           type: array
           items:

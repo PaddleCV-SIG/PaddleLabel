@@ -16,8 +16,10 @@ class Task(db.Model):
         db.Integer(), db.ForeignKey("project.project_id", ondelete="CASCADE")
     )
     project = db.relationship("Project")
-    datas = db.relationship("Data", lazy="selectin")
-    # annotations = db.relationship("Annotation", backref="task")
-    # annotation
+    datas = db.relationship("Data", backref="task", lazy="selectin")
+    annotations = db.relationship("Annotation", backref="task", lazy="selectin")
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # def __init__(self, project_id):
+    #     project_id = project_id

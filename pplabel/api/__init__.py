@@ -4,6 +4,10 @@ from flask import abort, session, request
 
 from pplabel.config import app
 from pplabel.config import request_id_timeout
+from .project.model import Project
+from .task.model import Task
+from .data.model import Data
+from .annotation.model import Annotation
 
 
 @app.before_request

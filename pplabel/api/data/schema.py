@@ -13,7 +13,7 @@ class DataSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    task = fields.Nested("TaskSchema", exclude=("datas",))
+    # task = fields.Nested("TaskSchema", exclude=("datas",))
 
     # @pre_load(pass_many=True)
     # def list2json(self, data, many, **kwargs):

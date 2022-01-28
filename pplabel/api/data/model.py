@@ -13,4 +13,4 @@ class Data(db.Model):
     slice_count = db.Column(db.Integer())
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    task = db.relationship("Task", lazy="select")
+    # task = db.relationship("Task", lazy="select")

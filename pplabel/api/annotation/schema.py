@@ -11,4 +11,4 @@ class AnnotationSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    task = Nested("TaskSchema")
+    task = Nested("TaskSchema", exclude=("annotations",))

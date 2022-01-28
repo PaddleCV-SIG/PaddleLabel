@@ -22,6 +22,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 
 db = SQLAlchemy(app)
+se = db.session
 ma = Marshmallow(app)
 
 request_id_timeout = 2

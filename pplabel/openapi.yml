@@ -7,43 +7,6 @@ servers:
   - url: 'http://localhost:5000/api'
     description: Local server
 paths:
-  /tasks:
-    get:
-      tags:
-        - Task
-      summary: 'Get all tasks, sort by last modified'
-      responses:
-        '200':
-          description: success
-    post:
-      tags:
-        - Task
-      summary: Create a new task
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '201':
-          description: success
-  '/tasks/{task_id}':
-    get:
-      tags:
-        - Task
-      summary: Get info of a specific task
-      parameters:
-        - name: task_id
-          in: path
-          description: Id of the task
-          schema:
-            type: integer
-          required: true
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Project not fond
   /projects:
     get:
       tags:
@@ -182,6 +145,43 @@ paths:
       responses:
         '200':
           description: success
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks, sort by last modified'
+      responses:
+        '200':
+          description: success
+    post:
+      tags:
+        - Task
+      summary: Create a new task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: success
+  '/tasks/{task_id}':
+    get:
+      tags:
+        - Task
+      summary: Get info of a specific task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Project not fond
 components:
   schemas:
     Project:

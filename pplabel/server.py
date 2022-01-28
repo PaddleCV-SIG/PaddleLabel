@@ -18,7 +18,6 @@ connex_app.add_api(
     # options=options,
 )
 
-print(config.sqlite_url)
 if not osp.exists(config.sqlite_url):
     config.db.create_all()
 

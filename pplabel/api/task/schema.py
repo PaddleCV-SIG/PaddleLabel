@@ -1,13 +1,8 @@
 from marshmallow import post_load, pre_load, pre_dump, fields
 from marshmallow_sqlalchemy.fields import Nested
 
-
 from pplabel.config import ma
-
-# from .model import Task
-from ..model import Task
-from .project import ProjectSchema
-from .data import DataSchema
+from .model import Task
 
 
 class TaskSchema(ma.SQLAlchemyAutoSchema):
@@ -16,19 +11,16 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    project = Nested(ProjectSchema)
-    datas = fields.List(Nested(DataSchema))
+    project = Nested("ProjectSchema")
+    datas = fields.List(Nested("DataSchema"), exclude=("task",))
 
     # # TODO: invalid chars
     @pre_load
     def list2str(self, data, **kwargs):
-        print("asdfasdf", data)
-        print("9999999999999", data)
         datas = []
         for path in data["datas"]:
             datas.append({"path": path})
         data["datas"] = datas
-        print("000000000", data)
         return data
 
     # @post_load

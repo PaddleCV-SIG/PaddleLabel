@@ -40,7 +40,7 @@ class Resolver(connexion.resolver.RestyResolver):
             elif resource_name:
                 d = self.default_module_name
                 r = resource_name
-                name = f"{d}.controller.{r}"
+                name = f"{d}.{r}.controller"
             return name
 
         def get_function_name():

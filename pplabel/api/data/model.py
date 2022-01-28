@@ -2,7 +2,8 @@ from datetime import datetime
 
 from pplabel.config import db
 from pplabel.api.util import nncol
-from .task import Task
+
+from pplabel.api.task.model import Task
 
 
 class Data(db.Model):
@@ -10,8 +11,8 @@ class Data(db.Model):
     __table_args__ = {"comment": "Contains all the data files"}
     data_id = nncol(db.Integer(), primary_key=True)
     task_id = db.Column(db.Integer(), db.ForeignKey("task.task_id", ondelete="CASCADE"))
-    # task_id = db.relationship("task", remote_side=Task.task_id)
     path = nncol(db.String())
     slice_count = db.Column(db.Integer())
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    task = db.relationship("Task", lazy="select")

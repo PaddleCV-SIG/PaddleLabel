@@ -17,10 +17,9 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
     def get_all(
         Model,
         Schema,
-        # pre_get_all=tgs["pre_get_all"],
+        pre_get_all=tgs["pre_get_all"],
         post_get_all=tgs["post_get_all"],
     ):
-        print("------", post_get_all)
         items = Model.query.order_by(getattr(Model, "modified")).all()
         if post_get_all is not None:
             post_get_all(items, db.session)

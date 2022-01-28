@@ -27,8 +27,9 @@ class Project(db.Model):
     #     order_by="desc(Task.created)",
     #     lazy="noload",
     # )  # TODO: order by file name or slice
-    tasks = db.relationship(
-        "Task",
-        back_populates="project",
-        lazy="noload",
-    )
+    # tasks = db.relationship(
+    #     "Task",
+    #     back_populates="project",
+    #     # lazy="noload",
+    #     lazy="noload",
+    # )

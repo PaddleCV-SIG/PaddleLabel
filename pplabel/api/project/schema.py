@@ -2,8 +2,7 @@ from marshmallow import pre_load
 
 from pplabel.config import ma
 
-# from .model import Project
-from pplabel.api.model import Project
+from .model import Project
 
 
 class ProjectSchema(ma.SQLAlchemyAutoSchema):

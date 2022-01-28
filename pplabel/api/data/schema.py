@@ -4,7 +4,7 @@ from marshmallow_sqlalchemy.fields import Nested
 from pplabel.config import ma
 
 # from .model import Task
-from ..model import Data
+from .model import Data
 
 
 class DataSchema(ma.SQLAlchemyAutoSchema):
@@ -12,6 +12,8 @@ class DataSchema(ma.SQLAlchemyAutoSchema):
         model = Data
         include_fk = True
         load_instance = True
+
+    task = fields.Nested("TaskSchema", exclude=("datas",))
 
     # @pre_load(pass_many=True)
     # def list2json(self, data, many, **kwargs):

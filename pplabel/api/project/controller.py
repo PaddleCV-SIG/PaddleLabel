@@ -7,12 +7,10 @@ from flask import make_response, abort, request
 import sqlalchemy
 
 from pplabel.config import db
-from pplabel.api import base
-from pplabel.api.base import immutable_properties
-
-# from .model import Project
-from pplabel.api.model import Project
-from ..schema import ProjectSchema
+from ..base.controller import crud
+from ..base.model import immutable_properties
+from .model import Project
+from .schema import ProjectSchema
 
 
 def create_dir(**kwargs):
@@ -40,6 +38,6 @@ def post_put(project, se):
     create_dir(data_dir=project.data_dir, label_dir=project.label_dir)
 
 
-get_all, get, post, put, delete = base.crud(
+get_all, get, post, put, delete = crud(
     Project, ProjectSchema, triggers=[post_add, post_put]
 )

@@ -500,8 +500,10 @@ components:
         label_dir:
           type: string
           description: Absolute directory path where all the label files are stored
-        label_config:
-          $ref: '#/components/schemas/LabelConfig'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
         created:
           type: string
           description: Project creation timestamp in UTC
@@ -626,8 +628,14 @@ components:
     Label:
       title: Label
       type: object
+      description: ''
       properties:
         label_id:
+          type: integer
+          readOnly: true
+        id:
+          type: integer
+        project_id:
           type: integer
         name:
           type: string
@@ -635,3 +643,12 @@ components:
           type: string
         comment:
           type: string
+        created:
+          type: string
+          readOnly: true
+        modified:
+          type: string
+          readOnly: true
+      required:
+        - project_id
+        - name

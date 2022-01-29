@@ -6,6 +6,7 @@ import pplabel
 from pplabel.config import app, request_id_timeout
 
 # endpoint
+from .label.model import Label
 from .setting.model import TaskCategory
 from .project.model import Project
 from .task.model import Task

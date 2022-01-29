@@ -17,9 +17,9 @@ from .schema import ProjectSchema
 def pre_add(project, se):
     # task_category = project.get_task_category()
     # project.label_config = eval(task_category.handler)().dumps(project.label_config)
-    project.label_config = pplabel.core.classification.LabelConfig().dumps(
-        project.label_config
-    )
+    # project.label_config = pplabel.core.classification.LabelConfig().dumps(
+    #     project.label_config
+    # )
 
     return project
 

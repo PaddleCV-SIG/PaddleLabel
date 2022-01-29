@@ -19,7 +19,7 @@ class Project(db.Model):
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
     label_dir = db.Column(db.String(), unique=True)
-    label_config = db.Column(db.String())
+    labels = db.relationship("Label")
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     other_settings = db.Column(db.String())

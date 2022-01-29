@@ -34,25 +34,9 @@ class Project(db.Model):
         s += "--------------------\n"
         return s
 
-    def get_task_category(self):
+    def _get_task_category(self):
         task_category = TaskCategory.query.filter(
             TaskCategory.task_category_id == self.task_category_id
         ).one()
         print("}}}}}}}}}}}}}}}}}}}", task_category)
         return task_category
-
-    # tasks = db.relationship(
-    #     "Task",
-    #     # backref="project",
-    #     back_populates="project",
-    #     cascade="all, delete, delete-orphan",
-    #     single_parent=True,
-    #     order_by="desc(Task.created)",
-    #     lazy="noload",
-    # )  # TODO: order by file name or slice
-    # tasks = db.relationship(
-    #     "Task",
-    #     back_populates="project",
-    #     # lazy="noload",
-    #     lazy="noload",
-    # )

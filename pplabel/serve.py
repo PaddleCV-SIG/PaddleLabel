@@ -12,7 +12,6 @@ import pplabel.api
 
 # TODO: remove temp
 if not osp.exists(sqlite_url) and not osp.exists("temp"):
-    print("XXXXXXXXXXXXXXXXXXXX creating new db")
     db.create_all()
     f = open("temp", "w")
     print("temp", file=f)

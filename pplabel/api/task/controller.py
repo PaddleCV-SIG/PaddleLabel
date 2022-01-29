@@ -12,6 +12,10 @@ import pplabel
 get_all, get, post, put, delete = crud(Task, TaskSchema)
 
 
+def get_by_project(project_id):
+    print("klasdkjlfadsljkafsdljkafds")
+
+
 # def post():
 #     # pplabel.core.classification.classification_single.import_project(
 #     pplabel.core.classification.import_project(

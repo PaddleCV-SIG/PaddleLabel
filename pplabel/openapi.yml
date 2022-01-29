@@ -6,6 +6,7 @@ info:
 servers:
   - url: 'http://localhost:5000/api'
     description: Local server
+# x-openapi-router-controller: pplabel.api
 paths:
   /projects:
     get:
@@ -147,6 +148,23 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
+  '/projects/{project_id}/tasks':
+    parameters:
+      - name: project_id
+        in: path
+        description: Id of the project to edit
+        schema:
+          type: integer
+        required: true
+    get:
+      operationId: pplabel.api.task.controller.get_by_project
+      summary: Get all the tasks of a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: suceess
+
   /tasks:
     get:
       tags:

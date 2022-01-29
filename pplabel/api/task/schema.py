@@ -18,6 +18,7 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
     # TODO: invalid chars
     @pre_load
     def list2str(self, data, **kwargs):
+        print("+_+_+_+", data)
         datas = []
         for path in data["datas"]:
             datas.append({"path": path})

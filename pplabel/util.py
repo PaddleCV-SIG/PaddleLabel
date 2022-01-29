@@ -58,5 +58,5 @@ class Resolver(connexion.resolver.RestyResolver):
                 else method.lower()
             )
 
-        print(f"{get_controller_name()}.{get_function_name()}")
+        # print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"

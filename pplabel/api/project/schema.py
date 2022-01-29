@@ -17,7 +17,9 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
 
     label_dir = ma.String(allow_none=True)
     task_category = fields.Nested(TaskCategorySchema)
+    # dump_only = ("label_config", "get_task_category")
     label_config = fields.Raw()
+    get_task_category = fields.Raw()
 
     @pre_load
     def pre_load_action(self, data, **kwargs):
@@ -30,9 +32,3 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
             ).one()
             data["label_config"] = eval(task_category.handler)().load(label_config)
         return data
-
-    # @pre_dump
-    # def pre_dump_action(self, data, **kwargs):
-    #     # data["label_config"] = ""
-    #     # print("aaaaaaaaaaaaaaaaa", data)
-    #     return data

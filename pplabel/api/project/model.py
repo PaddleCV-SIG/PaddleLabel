@@ -1,7 +1,10 @@
 from datetime import datetime
 
-from pplabel.serve import db
+from pplabel.config import db
 from pplabel.api.util import nncol
+
+# TODO: circular risk
+from ..setting import TaskCategory
 
 
 class Project(db.Model):
@@ -10,7 +13,10 @@ class Project(db.Model):
     project_id = nncol(db.Integer, primary_key=True)
     name = nncol(db.String(), unique=True)
     description = db.Column(db.String())
-    task_category = nncol(db.Integer())  # TODO: smallint
+    task_category_id = db.Column(
+        db.Integer(), db.ForeignKey("taskCategory.task_category_id")
+    )  # TODO: smallint
+    task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
     label_dir = db.Column(db.String(), unique=True)
     label_config = db.Column(db.String())
@@ -27,6 +33,13 @@ class Project(db.Model):
                 s += f"{att}: {getattr(self, att)}\n"
         s += "--------------------\n"
         return s
+
+    def get_task_category(self):
+        task_category = TaskCategory.query.filter(
+            TaskCategory.task_category_id == self.task_category_id
+        ).one()
+        print("}}}}}}}}}}}}}}}}}}}", task_category)
+        return task_category
 
     # tasks = db.relationship(
     #     "Task",

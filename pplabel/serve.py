@@ -1,40 +1,29 @@
-import os.path as osp
-import traceback
-
-from .util import Resolver
-
 import os
 import os.path as osp
+import traceback  # TODO: remove
 import random
 import string
 
+import pplabel
+from pplabel.util import Resolver
+from pplabel.config import sqlite_url, db, connexion_app
+import pplabel.api
 
-# TODO: take config out
-### config ###
-import connexion
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 
-from .util import rand_string
+# TODO: remove temp
+if not osp.exists(sqlite_url) and not osp.exists("temp"):
+    print("XXXXXXXXXXXXXXXXXXXX creating new db")
+    db.create_all()
+    f = open("temp", "w")
+    print("temp", file=f)
+    f.close()
 
-# from pplabel.serve import api
-basedir = os.path.abspath(os.path.dirname(__file__))
+    # TODO: move to base
+    from pplabel.config import basedir
+    from pplabel.api.setting.controller import init_site_settings
 
-sqlite_url = "sqlite:///" + osp.normcase(osp.join(basedir, "pplabel.db"))
+    init_site_settings(osp.normpath(osp.join(basedir, "default_setting.json")))
 
-connexion_app = connexion.App(__name__)
-app = connexion_app.app
-app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = True
-app.secret_key = rand_string(20)
-
-db = SQLAlchemy(app)
-se = db.session
-ma = Marshmallow(app)
-###
-
-request_id_timeout = 2  # reject requests with the same request_id within 2 seconds
 
 connexion_app.add_api(
     "openapi.yml",
@@ -44,17 +33,5 @@ connexion_app.add_api(
     pythonic_params=True,
 )
 
-
-for line in traceback.format_stack():
+for line in traceback.format_stack():  # TODO: remove
     print(line.strip())
-
-if not osp.exists(sqlite_url):
-    db.create_all()
-    from . import api
-
-    api.setting.init_site_settings(
-        osp.normpath(osp.join(basedir, "default_setting.json"))
-    )
-
-# TODO: add https support
-# config.connexion_app.run(port=5000)

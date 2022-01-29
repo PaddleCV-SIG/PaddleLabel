@@ -1,16 +1,21 @@
+import os.path as osp
+
 from functools import total_ordering
 
-from pplabel.serve import db
+from pplabel.config import db
 from pplabel.api.util import nncol
 
 
-# Todo: add unique
 class TaskCategory(db.Model):
     __tablename__ = "taskCategory"
-    task_category_id = nncol(db.Integer(), primary_key=True, autoincrement=False)
-    # db.Integer(), primary_key=True)
-    name = nncol(db.String())
-    handler = db.Column(db.String())
+    task_category_id = nncol(
+        db.Integer(),
+        primary_key=True,
+        autoincrement=False,
+    )
+    name = nncol(db.String(), unique=True)
+    handler = db.Column(db.String(), unique=True)
+    # print("XXXXXXXXXXXXXXXXX visited TaskCategory")
 
     def __init__(self, task_category_id, name, handler):
         super().__init__()

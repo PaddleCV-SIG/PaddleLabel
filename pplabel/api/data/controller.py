@@ -1,6 +1,6 @@
 from flask import make_response, abort, request
 
-from pplabel.serve import db
+from pplabel.config import db
 
 from ..base.controller import crud
 from ..base.model import immutable_properties

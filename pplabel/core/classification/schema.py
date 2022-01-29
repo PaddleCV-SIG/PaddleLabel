@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from pplabel.serve import ma, db
+from pplabel.config import ma, db
 
 
 class LabelConfig(Schema):

@@ -2,12 +2,12 @@ import os
 import os.path as osp
 import json
 
-import pplabel.api
-from pplabel.api import Task, Data, Annotation
- db
+import pplabel
+from pplabel.api.task import Task
+from pplabel.api.data import Data
+from pplabel.api.annotation import Annotation
+from pplabel.config import db
 from marshmallow import Schema, fields
-
- ma, db
 
 
 class LabelConfig(Schema):
@@ -45,7 +45,7 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
             if f[: len(pref)] == pref:
                 return True
         for postf in include_postfix:
-            if f[-len(postf):] == postf:
+            if f[-len(postf) :] == postf:
                 return True
         return False
 
@@ -61,7 +61,7 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
             if f[: len(pref)] == pref:
                 return False
         for postf in exclude_postfix:
-            if f[-len(postf):] == postf:
+            if f[-len(postf) :] == postf:
                 return False
         return True
 

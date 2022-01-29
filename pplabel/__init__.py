@@ -8,8 +8,6 @@ from flask import session, request
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
-# from . import config
-
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):

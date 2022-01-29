@@ -473,9 +473,11 @@ components:
         description:
           type: string
           description: Optional project description
-        task_category:
+        task_category_id:
           type: integer
           description: 'Top level annotation task category, see TODO for int <-> category map'
+        task_category:
+          type: string
         data_dir:
           type: string
           description: Absolute directory path where all the data file is stored
@@ -501,7 +503,7 @@ components:
           description: Project settings that are different across annotation task categories
       required:
         - name
-        - task_category
+        - task_category_id
         - data_dir
     Task:
       title: Task

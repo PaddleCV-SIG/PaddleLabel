@@ -6,7 +6,7 @@ from flask import make_response, abort, request
 import sqlalchemy
 import marshmallow
 
-from pplabel.serve import db
+from pplabel.config import db
 from .model import immutable_properties
 
 
@@ -41,6 +41,7 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         post_add=tgs["post_add"],
         immutables=immutable_properties,
     ):
+
         schema = Schema()
         try:
             new_item = schema.load(request.get_json())
@@ -50,9 +51,8 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
                     # TODO: change code
                     abort(500, f"Missing data for required field: {field}")
             abort(500, e.messages)
-
         if pre_add is not None:
-            pre_add(new_item, db.session)
+            new_item = pre_add(new_item, db.session)
         try:
             db.session.add(new_item)
             db.session.commit()

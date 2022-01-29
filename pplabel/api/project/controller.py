@@ -5,37 +5,25 @@ import os
 
 from flask import make_response, abort, request
 import sqlalchemy
+from marshmallow import fields
 
-from pplabel.serve import db
-
+import pplabel
 from ..base.controller import crud
 from ..base.model import immutable_properties
 from .model import Project
 from .schema import ProjectSchema
 
 
-# def create_dir(**kwargs):
-#     for name, path in kwargs.items():
-#         if path is None:
-#             return
-#         if not osp.isabs(path):
-#             abort(500, f"Only support absolute path, {name}: {path} is not")
-#         if not osp.isdir(path):
-#             try:
-#                 os.makedirs(path)
-#                 print("created: ", path)
-#             except Exception as e:
-#                 abort(500, f"Create {name} {path} failed. Exception: {e}")
-#
-#
-# def post_add(project, se):
-#     # TODO: check the file path is valid
-#     # TODO: https://gist.github.com/mo-han/240b3ef008d96215e352203b88be40db
-#     create_dir(data_dir=project.data_dir, label_dir=project.label_dir)
-#
-#
-# def post_put(project, se):
-#     create_dir(data_dir=project.data_dir, label_dir=project.label_dir)
+def pre_add(project, se):
+    task_category = project.get_task_category()
+    project.label_config = eval(task_category.handler)().dumps(project.label_config)
+    print(
+        "qqqqqqqq",
+        task_category.handler,
+        project.label_config,
+        type(project.label_config),
+    )
+    return project
 
 
-get_all, get, post, put, delete = crud(Project, ProjectSchema)
+get_all, get, post, put, delete = crud(Project, ProjectSchema, triggers=[pre_add])

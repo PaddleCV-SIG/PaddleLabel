@@ -2,10 +2,11 @@ from datetime import datetime
 
 from sqlalchemy.orm import backref
 
-from pplabel.serve import db
-from pplabel.api.util import nncol
-from pplabel.api.data.model import Data
-from pplabel.api.annotation.model import Annotation
+from pplabel.config import db
+from ..util import nncol
+from ..data.model import Data
+from ..annotation import Annotation
+from ..project import Project
 
 
 class Task(db.Model):

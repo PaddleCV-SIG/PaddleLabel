@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pplabel.serve import db
+from pplabel.config import db
 from pplabel.api.util import nncol
 
 immutable_properties = ["created", "modified"]

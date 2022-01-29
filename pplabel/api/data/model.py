@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from pplabel.serve import db
-from pplabel.api.util import nncol
+from pplabel.config import db
+from ..util import nncol
 
 
 class Data(db.Model):

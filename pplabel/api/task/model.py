@@ -22,5 +22,10 @@ class Task(db.Model):
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # def __init__(self, project_id):
-    #     project_id = project_id
+    def __repr__(self):
+        s = f"--------------------\n{self.__tablename__}\n"
+        for att in dir(self):
+            if att[0] != "_":
+                s += f"{att}: {getattr(self, att)}\n"
+        s += "--------------------\n"
+        return s

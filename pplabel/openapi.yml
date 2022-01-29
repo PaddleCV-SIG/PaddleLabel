@@ -6,7 +6,6 @@ info:
 servers:
   - url: 'http://localhost:5000/api'
     description: Local server
-# x-openapi-router-controller: pplabel.api
 paths:
   /projects:
     get:
@@ -164,7 +163,6 @@ paths:
       responses:
         '200':
           description: suceess
-
   /tasks:
     get:
       tags:
@@ -625,3 +623,15 @@ components:
             type: string
       required:
         - classes
+    Label:
+      title: Label
+      type: object
+      properties:
+        label_id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        comment:
+          type: string

@@ -13,7 +13,9 @@ get_all, get, post, put, delete = crud(Task, TaskSchema)
 
 
 def get_by_project(project_id):
-    print("klasdkjlfadsljkafsdljkafds")
+    tasks = Task.query.filter(Task.project_id == project_id).all()
+    print(tasks)
+    return TaskSchema(many=True).dump(tasks), 200
 
 
 # def post():

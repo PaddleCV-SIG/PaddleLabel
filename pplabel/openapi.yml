@@ -147,6 +147,90 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
+  /labels:
+    get:
+      tags:
+        - Label
+      summary: 'Read all labels, sort by last modify date'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+    post:
+      tags:
+        - Label
+      summary: Create a new label
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+  '/labels/{label_id}':
+    parameters:
+      - name: label_id
+        in: path
+        description: Id of the label
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Label
+      summary: Get info about a specific label
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '404':
+          description: Label not fond
+    delete:
+      summary: Delete a label
+      description: Delete a label. Labels in use (have annotation pointing at them) are not allowed to be deleted.
+      tags:
+        - Label
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The label specified is not found
+    put:
+      tags:
+        - Label
+      summary: Edit label info
+      description: Edit label info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Label'
+                - $ref: '#/components/schemas/KeyValuePair'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '404':
+          description: 'Label with specified label id not fond, or project dont have requested property'
   '/projects/{project_id}/tasks':
     parameters:
       - name: project_id
@@ -650,5 +734,4 @@ components:
           type: string
           readOnly: true
       required:
-        - project_id
         - name

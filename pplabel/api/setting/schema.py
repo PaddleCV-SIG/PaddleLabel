@@ -1,13 +1,7 @@
-from marshmallow import pre_load, fields
-
-from pplabel.config import ma, db
-from pplabel.core.classification import LabelConfig
 from . import TaskCategory
+from ..base import BaseSchema
 
 
-class TaskCategorySchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
+class TaskCategorySchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
         model = TaskCategory
-        include_relationships = True
-        load_instance = True
-        sqla_session = db.session

@@ -62,7 +62,7 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
                 col = msg.split(":")[1].strip()
                 abort(
                     409,
-                    f"{Model.__tablename__} doesn't allow uplicate {col}.",
+                    f"{Model.__tablename__} doesn't allow duplicate {col}.",
                 )
             else:
                 abort(500, msg)
@@ -70,7 +70,6 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         if post_add is not None:
             with db.session.no_autoflush:
                 post_add(new_item, db.session)
-        print("asdfffffffasdfasdfdfsadfas", dir(new_item))
         return schema.dump(new_item), 201
 
     def put(

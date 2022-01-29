@@ -1,0 +1,22 @@
+{
+  "site": {
+    "task_categories": {
+      "1": [
+        "classification",
+        "pplabel.core.classification.LabelConfig"
+      ],
+      "2": [
+        "detection",
+        ""
+      ],
+      "3": [
+        "semantic_segmentation",
+        ""
+      ],
+      "4": [
+        "instance_segmentation",
+        ""
+      ]
+    }
+  }
+}

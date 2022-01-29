@@ -1,7 +1,7 @@
 from marshmallow import post_load, pre_load, pre_dump, fields
 from marshmallow_sqlalchemy.fields import Nested
 
-from pplabel.config import ma
+from pplabel.serve import ma
 from .model import Task
 
 
@@ -19,11 +19,9 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
     @pre_load
     def list2str(self, data, **kwargs):
         datas = []
-        print("asdfasdfasdfasdfasdf ", data["datas"])
         for path in data["datas"]:
             datas.append({"path": path})
         data["datas"] = datas
-        print("+_+_+_", data)
         return data
 
     @pre_dump

@@ -1,6 +1,6 @@
 from marshmallow import pre_load
 
-from pplabel.config import ma, db
+from pplabel.serve import ma, db
 
 from .model import Project
 
@@ -16,7 +16,7 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
 
     @pre_load
     def empty_label_dir(self, data, **kwargs):
-        print("++++++++++++++++++++", data)
         if "label_dir" in data.keys() and data["label_dir"] == "":
             data["label_dir"] = None
+
         return data

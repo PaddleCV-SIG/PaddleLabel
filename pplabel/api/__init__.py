@@ -2,12 +2,16 @@ import time
 
 from flask import abort, session, request
 
-from pplabel.config import app
-from pplabel.config import request_id_timeout
+from pplabel.serve import app, request_id_timeout
+
+# endpoint
 from .project.model import Project
 from .task.model import Task
 from .data.model import Data
 from .annotation.model import Annotation
+
+# settings
+from . import setting
 
 
 @app.before_request

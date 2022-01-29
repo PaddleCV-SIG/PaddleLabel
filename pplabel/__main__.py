@@ -1,4 +1,3 @@
-from pplabel.server import main
+from .serve import connexion_app
 
-if __name__ == "__main__":
-    main()
+connexion_app.run(port=5000)

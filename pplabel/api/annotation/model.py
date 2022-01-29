@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import event
 
-from pplabel.config import db
+from pplabel.serve import db
 from pplabel.api.util import nncol
 
 

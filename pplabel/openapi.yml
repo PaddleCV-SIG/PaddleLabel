@@ -475,7 +475,6 @@ components:
           description: Optional project description
         task_category:
           type: integer
-          maximum: 64
           description: 'Top level annotation task category, see TODO for int <-> category map'
         data_dir:
           type: string
@@ -484,8 +483,7 @@ components:
           type: string
           description: Absolute directory path where all the label files are stored
         label_config:
-          type: string
-          description: Label configuration. Varies across different task categories
+          $ref: '#/components/schemas/LabelConfig'
         created:
           type: string
           description: Project creation timestamp in UTC
@@ -519,8 +517,7 @@ components:
         datas:
           type: array
           items:
-            $ref: '#/components/schemas/Data'
-          readOnly: true
+            type: string
         annotations:
           type: array
           items:
@@ -584,3 +581,13 @@ components:
           readOnly: true
     KeyValuePair:
       description: A key-value pair
+    LabelConfig:
+      $ref: '#/components/schemas/LabelConfig-Classification'
+    LabelConfig-Classification:
+      title: LabelConfig-Classification
+      type: object
+      properties:
+        classes:
+          type: string
+        multi_class:
+          type: boolean

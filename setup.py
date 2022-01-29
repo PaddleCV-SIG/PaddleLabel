@@ -1,26 +1,12 @@
 import pathlib
 from setuptools import setup, find_packages, Extension
 
-import numpy as np
-
 HERE = pathlib.Path(__file__).parent
 
 README = (HERE / "README.md").read_text(encoding="utf-8")
 
 with open("requirements.txt") as fin:
     REQUIRED_PACKAGES = fin.read()
-
-# ext_modules = [
-#     Extension(
-#         "pycocotools._mask",
-#         sources=[
-#             "./eiseg/util/coco/common/maskApi.c",
-#             "./eiseg/util/coco/pycocotools/_mask.pyx",
-#         ],
-#         include_dirs=[np.get_include(), "./eiseg/util/coco/common"],
-#         extra_compile_args=["-Wno-cpp", "-Wno-unused-function", "-std=c99"],
-#     )
-# ]
 
 setup(
     name="pplabel",
@@ -39,10 +25,10 @@ setup(
     ],
     packages=find_packages(exclude=("test",)),
     include_package_data=True,
-    install_requires=REQUIRED_PACKAGES,
-    entry_points={
-        "console_scripts": [
-            "pplabel=pplabel.server:main",
-        ]
+    install_requires=REQUIRED_PACKAGES
+    # entry_points={
+    #     "console_scripts": [
+    #         "pplabel=pplabel",
+    #     ]
     },
 )

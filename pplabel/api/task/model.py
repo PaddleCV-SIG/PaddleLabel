@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import backref
 
-from pplabel.config import db
+from pplabel.serve import db
 from pplabel.api.util import nncol
 from pplabel.api.data.model import Data
 from pplabel.api.annotation.model import Annotation

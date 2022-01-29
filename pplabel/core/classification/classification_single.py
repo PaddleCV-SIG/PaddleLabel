@@ -4,7 +4,15 @@ import json
 
 import pplabel.api
 from pplabel.api import Task, Data, Annotation
-from pplabel.config import db
+ db
+from marshmallow import Schema, fields
+
+ ma, db
+
+
+class LabelConfig(Schema):
+    classes = fields.List(fields.String(), allow_none=True)
+    multi_class = fields.Bool()
 
 
 def create_dir(path):
@@ -37,7 +45,7 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
             if f[: len(pref)] == pref:
                 return True
         for postf in include_postfix:
-            if f[-len(postf) :] == postf:
+            if f[-len(postf):] == postf:
                 return True
         return False
 
@@ -53,7 +61,7 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
             if f[: len(pref)] == pref:
                 return False
         for postf in exclude_postfix:
-            if f[-len(postf) :] == postf:
+            if f[-len(postf):] == postf:
                 return False
         return True
 

@@ -1,7 +1,7 @@
 from marshmallow import post_load, pre_load, pre_dump, fields
 from marshmallow_sqlalchemy.fields import Nested
 
-from pplabel.config import ma
+from pplabel.serve import ma
 from .model import Annotation
 
 

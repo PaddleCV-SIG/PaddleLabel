@@ -584,12 +584,26 @@ components:
     KeyValuePair:
       description: A key-value pair
     LabelConfig:
-      $ref: '#/components/schemas/LabelConfig-Classification'
+      anyOf:
+        - $ref: '#/components/schemas/LabelConfig-Classification'
+        - $ref: '#/components/schemas/LabelConfig-Detection'
     LabelConfig-Classification:
       title: LabelConfig-Classification
       type: object
       properties:
         classes:
-          type: string
+          type: array
+          items:
+            type: string
         multi_class:
           type: boolean
+    LabelConfig-Detection:
+      title: LabelConfig-Detection
+      type: object
+      properties:
+        classes:
+          type: array
+          items:
+            type: string
+      required:
+        - classes

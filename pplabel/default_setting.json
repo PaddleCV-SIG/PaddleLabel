@@ -7,7 +7,7 @@
       ],
       "2": [
         "detection",
-        ""
+        "pplabel.core.detection.LabelConfig"
       ],
       "3": [
         "semantic_segmentation",

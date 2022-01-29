@@ -28,13 +28,11 @@ class ProjectSchema(ma.SQLAlchemyAutoSchema):
             task_category = TaskCategory.query.filter(
                 TaskCategory.task_category_id == data["task_category_id"]
             ).one()
-            # Schema.label_config = fields.Nested(eval(task_category.handler))
             data["label_config"] = eval(task_category.handler)().load(label_config)
-            print()
         return data
 
-    @pre_dump
-    def pre_dump_action(self, data, **kwargs):
-        # data["label_config"] = ""
-        # print("aaaaaaaaaaaaaaaaa", data)
-        return data
+    # @pre_dump
+    # def pre_dump_action(self, data, **kwargs):
+    #     # data["label_config"] = ""
+    #     # print("aaaaaaaaaaaaaaaaa", data)
+    #     return data

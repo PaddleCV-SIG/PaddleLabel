@@ -7,10 +7,9 @@ import sqlalchemy
 import marshmallow
 
 from pplabel.config import db
-from .model import immutable_properties
 
 
-def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
+def crud(Model, Schema, triggers=[]):
     tgs = defaultdict(lambda: None)
     for trigger in triggers:
         tgs[trigger.__name__] = trigger
@@ -39,7 +38,6 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         Schema,
         pre_add=tgs["pre_add"],
         post_add=tgs["post_add"],
-        immutables=immutable_properties,
     ):
 
         schema = Schema()
@@ -75,7 +73,6 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
     def put(
         Model,
         Schema,
-        immutables=immutable_properties,
         pre_put=tgs["pre_put"],
         post_put=tgs["post_put"],
         **kwargs,
@@ -94,7 +91,7 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         if len(body.items()) == 1:
             # 2.1 key in keys: change one property
             k, v = list(body.items())[0]
-            if k in immutables:
+            if k in Model.immutables:
                 abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
             cols = [c.key for c in Model.__table__.columns]
             if k not in cols:
@@ -104,7 +101,7 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
         else:
             # 2.2 change all provided properties
             for k in body.keys():
-                if k in immutables:
+                if k in Model.immutables:
                     abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
             Model.query.filter(getattr(Model, id_name) == id_val).update(body)
             db.session.commit()
@@ -130,6 +127,6 @@ def crud(Model, Schema, immutables=immutable_properties, triggers=[]):
     get_all = functools.partial(get_all, Model, Schema)
     get = functools.partial(get, Model, Schema)
     post = functools.partial(post, Model, Schema)
-    put = functools.partial(put, Model, Schema, immutables)
+    put = functools.partial(put, Model, Schema)
     delete = functools.partial(delete, Model, Schema)
     return get_all, get, post, put, delete

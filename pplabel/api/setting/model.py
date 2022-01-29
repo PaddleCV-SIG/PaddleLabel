@@ -9,13 +9,12 @@ from pplabel.api.util import nncol
 class TaskCategory(db.Model):
     __tablename__ = "taskCategory"
     task_category_id = nncol(
-        db.Integer(),
+        db.SmallInteger(),
         primary_key=True,
         autoincrement=False,
     )
     name = nncol(db.String(), unique=True)
     handler = db.Column(db.String(), unique=True)
-    # print("XXXXXXXXXXXXXXXXX visited TaskCategory")
 
     def __init__(self, task_category_id, name, handler):
         super().__init__()
@@ -27,4 +26,4 @@ class TaskCategory(db.Model):
             self.handler = handler
 
     def __repr__(self):
-        return f"name: {self.name}, task_category_id: {self.task_category_id}, handler: {self.handler}"
+        return str(self.task_category_id)

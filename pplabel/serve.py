@@ -11,11 +11,12 @@ import pplabel.api
 
 
 # TODO: remove temp
+# if not osp.exists(sqlite_url) and not osp.exists("temp"):
 if not osp.exists(sqlite_url) and not osp.exists("temp"):
     db.create_all()
-    f = open("temp", "w")
-    print("temp", file=f)
-    f.close()
+    # f = open("temp", "w")
+    # print("temp", file=f)
+    # f.close()
 
     # TODO: move to base
     from pplabel.config import basedir

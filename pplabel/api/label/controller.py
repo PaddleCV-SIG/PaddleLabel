@@ -4,7 +4,6 @@ from pplabel.config import db
 import numpy as np
 
 from ..base.controller import crud
-from ..base.model import immutable_properties
 from .model import Label
 from .schema import LabelSchema
 
@@ -62,7 +61,7 @@ def pre_add(new_label, se):
     rets, unique = unique_within_project(new_label.project_id, [new_label], cols)
     if not unique[0]:
         not_unique_cols = ", ".join([c for c, u in zip(cols, rets) if not u])
-        abort(500, f"Label {not_unique_cols} is not unique")
+        abort(409, f"Label {not_unique_cols} is not unique")
     return new_label
 
 

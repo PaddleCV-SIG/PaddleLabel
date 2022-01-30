@@ -2,7 +2,11 @@ openapi: 3.0.0
 info:
   title: PP-Label API Spec
   version: 0.1.0
-  description: ''
+  description: Back end APIs for PP-Label
+  contact:
+    name: PP-Label Team
+    url: 'https://github.com/PaddleCV-SIG/PP-Label/issues'
+    email: me@linhan.email
 servers:
   - url: 'http://localhost:5000/api'
     description: Local server
@@ -62,23 +66,20 @@ paths:
                     modified: string
                     other_settings: string
       parameters:
-        - schema:
-            type: string
-          in: header
-          name: request_id
-          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+        - $ref: '#/components/parameters/request_id'
+      description: ''
   '/projects/{project_id}':
+    parameters:
+      - name: project_id
+        in: path
+        description: Id of the project
+        schema:
+          type: integer
+        required: true
     get:
       tags:
         - Project
       summary: Get info of a specific project
-      parameters:
-        - name: project_id
-          in: path
-          description: Id of the project
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: OK
@@ -93,13 +94,6 @@ paths:
       description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
       tags:
         - Project
-      parameters:
-        - name: project_id
-          in: path
-          description: Id of the project to delete
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: OK
@@ -108,23 +102,14 @@ paths:
     put:
       tags:
         - Project
-      summary: Edit project info
-      description: Edit project info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
-      parameters:
-        - name: project_id
-          in: path
-          description: Id of the project to edit
-          schema:
-            type: integer
-          required: true
+      summary: Edit multiple project properties
+      description: Edit multiple project properties. Empty strings will be set. Properties not in request body won't be changed
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              anyOf:
-                - $ref: '#/components/schemas/Project'
-                - $ref: '#/components/schemas/KeyValuePair'
+              $ref: '#/components/schemas/Project'
             examples:
               Full Project:
                 value:
@@ -135,9 +120,6 @@ paths:
                   label_dir: ~/pplabel/project_dir/label
                   label_config: '[''class1'', ''class2'', ''class3'']'
                   other_settings: '{''multiclass_classification'':true}'
-              One Property:
-                value:
-                  name: Change Only Project Name
       responses:
         '200':
           description: success
@@ -147,12 +129,46 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
+  '/projects/{project_id}/tasks':
     parameters:
       - schema:
-          type: integer
+          type: string
         name: project_id
         in: path
         required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      operationId: pplabel.api.controller.task.get_by_project
+  '/projects/{project_id}/labels':
+    parameters:
+      - schema:
+          type: string
+        name: project_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+      operationId: pplabel.api.controller.label.get_by_project
   /labels:
     get:
       tags:
@@ -184,6 +200,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Label'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
   '/labels/{label_id}':
     parameters:
       - name: label_id
@@ -237,68 +255,31 @@ paths:
                 $ref: '#/components/schemas/Label'
         '404':
           description: 'Label with specified label id not fond, or project dont have requested property'
-  # '/projects/{project_id}/tasks':
-  #   parameters:
-  #     - name: project_id
-  #       in: path
-  #       description: Id of the project to edit
-  #       schema:
-  #         type: integer
-  #       required: true
-  #   get:
-  #     operationId: pplabel.api.task.controller.get_by_project
-  #     summary: Get all the tasks of a project
-  #     tags:
-  #       - Project
-  #     responses:
-  #       '200':
-  #         description: suceess
-  #   head:
-  #     summary: ''
-  #     operationId: ''
-  #     responses:
-  #       '200':
-  #         description: OK
-  # '/projects/{project_id}/labels':
-  #   parameters:
-  #     - name: project_id
-  #       in: path
-  #       description: Id of the project to get all labels
-  #       schema:
-  #         type: integer
-  #       required: true
-  #   get:
-  #     operationId: pplabel.api.label.controller.get_by_project
-  #     summary: Get all the labels of a project
-  #     tags:
-  #       - Project
-  #     responses:
-  #       '200':
-  #         description: suceess
-  # /tasks:
-  #   get:
-  #     tags:
-  #       - Task
-  #     summary: 'Get all tasks, sort by last modified'
-  #     responses:
-  #       '200':
-  #         description: success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Task'
-  #   post:
-  #     tags:
-  #       - Task
-  #     summary: Create a new task
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/Task'
-  #     responses:
-  #       '201':
-  #         description: success
+  /tasks:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      operationId: ''
+    post:
+      summary: ''
+      operationId: ''
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+      description: ''
   '/tasks/{task_id}':
     get:
       tags:
@@ -396,11 +377,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Data'
       parameters:
-        - schema:
-            type: string
-          in: header
-          name: request_id
-          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+        - $ref: '#/components/parameters/request_id'
   '/datas/{data_id}':
     get:
       tags:
@@ -500,11 +477,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Annotation'
       parameters:
-        - schema:
-            type: string
-          in: header
-          name: request_id
-          description: 'Assign a unique random value each run, server will reject requests with duplicate request_id within several seconds. Prevent critical operations from running multiple times'
+        - $ref: '#/components/parameters/request_id'
   '/annotations/{annotation_id}':
     get:
       tags:
@@ -632,10 +605,6 @@ components:
         other_settings:
           type: string
           description: Project settings that are different across annotation task categories
-      required:
-        - name
-        - task_category_id
-        - data_dir
     Task:
       title: Task
       type: object
@@ -745,3 +714,12 @@ components:
           readOnly: true
       required:
         - name
+  parameters:
+    request_id:
+      name: request_id
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 30
+      description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'

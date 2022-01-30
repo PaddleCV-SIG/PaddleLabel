@@ -1,4 +1,4 @@
-from marshmallow.fields import Nested
+from marshmallow import fields
 
 
 from pplabel.api.model import Annotation
@@ -9,5 +9,6 @@ class AnnotationSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Annotation
 
+    project_id = fields.Integer()
     # task = Nested("TaskSchema", exclude=("annotations",))
-    label = Nested("LabelSchema")
+    label = fields.Nested("LabelSchema")

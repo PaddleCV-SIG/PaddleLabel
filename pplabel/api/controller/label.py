@@ -4,8 +4,9 @@ from pplabel.config import db
 import numpy as np
 
 from .base import crud
-from ..model import Label
+from ..model import Label, Project, Annotation
 from ..schema import LabelSchema
+from ..util import abort
 
 
 def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
@@ -65,10 +66,25 @@ def pre_add(new_label, se):
     return new_label
 
 
-get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add])
+def in_use(label_id):
+    annotations = Annotation.query.filter(Annotation.label_id == label_id).all()
+    if len(annotations) == 0:
+        return False
+    return True
+
+
+def pre_delete(label, se):
+    if in_use(label.label_id):
+        abort(f"Can't delete label with annotation record", 409)
+
+
+get_all, get, post, put, delete = crud(
+    Label, LabelSchema, triggers=[pre_add, pre_delete]
+)
 
 
 def get_by_project(project_id):
+    Project._exists(project_id)
     labels = Label.query.filter(Label.project_id == project_id).all()
     return LabelSchema(many=True).dump(labels), 200
 

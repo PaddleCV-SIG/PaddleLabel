@@ -3,6 +3,7 @@ import functools
 import os.path as osp
 import os
 
+import connexion
 from flask import make_response, abort, request
 import sqlalchemy
 from marshmallow import fields
@@ -29,8 +30,3 @@ get_all, get, post, put, delete = crud(
     ProjectSchema,
     triggers=[pre_add],
 )
-
-
-def get_by_id(project_id):
-    project = Project.query.filter(Project.project_id == project_id).one_or_none()
-    return project

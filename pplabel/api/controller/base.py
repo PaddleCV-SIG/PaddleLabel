@@ -47,7 +47,7 @@ def crud(Model, Schema, triggers=[]):
             for field, msgs in e.messages.items():
                 if "Missing data for required field." in msgs:
                     # TODO: change code
-                    abort(500, f"Missing data for required field: {field}")
+                    abort(500, f"Marshmallow: Missing data for required field: {field}")
             abort(500, e.messages)
         if pre_add is not None:
             new_item = pre_add(new_item, db.session)
@@ -77,7 +77,7 @@ def crud(Model, Schema, triggers=[]):
         post_put=tgs["post_put"],
         **kwargs,
     ):
-        # 1. check project existgs
+        # 1. check item exist
         id_name, id_val = list(kwargs.items())[0]
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
         if item is None:
@@ -85,41 +85,43 @@ def crud(Model, Schema, triggers=[]):
                 404,
                 f"No {Model.__tablename__} with {id_name}: {id_val} .",
             )
-        if pre_put is not None:
-            pre_put(item, db.session)
+        # 2. check request key exist and can be edited
         body = request.get_json()
-        print("asdfasdfsadfasdf", item, body)
-
+        cols = [c.key for c in Model.__table__.columns]
         for k in body.keys():
             if k in Model._immutables:
                 abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
-        if len(body.items()) == 1:
-            # 2.1 key in keys: change one property
-            cols = [c.key for c in Model.__table__.columns]
-            k, v = list(body.items())[0]
             if k not in cols:
-                abort(404, f"Project doesn't have property {k}")
-            setattr(item, k, v)
-            db.session.commit()
-        else:
-            # 2.2 change all provided properties
-            Model.query.filter(getattr(Model, id_name) == id_val).update(body)
-            db.session.commit()
+                abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
+
+        if pre_put is not None:
+            pre_put(item, body, db.session)
+
+        # 3. edit item
+        Model.query.filter(getattr(Model, id_name) == id_val).update(body)
+        db.session.commit()
 
         # FIXME: really need to requery?
-        item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
+        item = Model.query.filter(getattr(Model, id_name) == id_val).one()
         if post_put is not None:
             post_put(item, db.session)
         return Schema().dump(item), 200
 
-    def delete(Model, Schema, **kwargs):
+    def delete(
+        Model,
+        Schema,
+        pre_delete=tgs["pre_delete"],
+        post_delete=tgs["post_delete"],
+        **kwargs,
+    ):
         id_name, id_val = list(kwargs.items())[0]
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
 
         if item is None:
             abort(404, f"No {Model.__tablename__} with {id_name} == {id_val}")
             pass
-
+        if pre_delete is not None:
+            item = pre_delete(item, db.session)
         db.session.delete(item)
         db.session.commit()
         return f"{Model.__tablename__.capitalize()} {id_val} deleted", 200

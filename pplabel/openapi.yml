@@ -237,68 +237,68 @@ paths:
                 $ref: '#/components/schemas/Label'
         '404':
           description: 'Label with specified label id not fond, or project dont have requested property'
-  '/projects/{project_id}/tasks':
-    parameters:
-      - name: project_id
-        in: path
-        description: Id of the project to edit
-        schema:
-          type: integer
-        required: true
-    get:
-      operationId: pplabel.api.task.controller.get_by_project
-      summary: Get all the tasks of a project
-      tags:
-        - Project
-      responses:
-        '200':
-          description: suceess
-    head:
-      summary: ''
-      operationId: pplabel.api.task.controller.get_stat_by_project
-      responses:
-        '200':
-          description: OK
-  '/projects/{project_id}/labels':
-    parameters:
-      - name: project_id
-        in: path
-        description: Id of the project to get all labels
-        schema:
-          type: integer
-        required: true
-    get:
-      operationId: pplabel.api.label.controller.get_by_project
-      summary: Get all the labels of a project
-      tags:
-        - Project
-      responses:
-        '200':
-          description: suceess
-  /tasks:
-    get:
-      tags:
-        - Task
-      summary: 'Get all tasks, sort by last modified'
-      responses:
-        '200':
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-    post:
-      tags:
-        - Task
-      summary: Create a new task
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '201':
-          description: success
+  # '/projects/{project_id}/tasks':
+  #   parameters:
+  #     - name: project_id
+  #       in: path
+  #       description: Id of the project to edit
+  #       schema:
+  #         type: integer
+  #       required: true
+  #   get:
+  #     operationId: pplabel.api.task.controller.get_by_project
+  #     summary: Get all the tasks of a project
+  #     tags:
+  #       - Project
+  #     responses:
+  #       '200':
+  #         description: suceess
+  #   head:
+  #     summary: ''
+  #     operationId: ''
+  #     responses:
+  #       '200':
+  #         description: OK
+  # '/projects/{project_id}/labels':
+  #   parameters:
+  #     - name: project_id
+  #       in: path
+  #       description: Id of the project to get all labels
+  #       schema:
+  #         type: integer
+  #       required: true
+  #   get:
+  #     operationId: pplabel.api.label.controller.get_by_project
+  #     summary: Get all the labels of a project
+  #     tags:
+  #       - Project
+  #     responses:
+  #       '200':
+  #         description: suceess
+  # /tasks:
+  #   get:
+  #     tags:
+  #       - Task
+  #     summary: 'Get all tasks, sort by last modified'
+  #     responses:
+  #       '200':
+  #         description: success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Task'
+  #   post:
+  #     tags:
+  #       - Task
+  #     summary: Create a new task
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/Task'
+  #     responses:
+  #       '201':
+  #         description: success
   '/tasks/{task_id}':
     get:
       tags:

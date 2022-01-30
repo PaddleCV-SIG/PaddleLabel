@@ -18,3 +18,14 @@ def get_by_project(project_id, instance=False):
             abort(404, f"No project with project id: {project_id}")
 
     return AnnotationSchema(many=True).dump(annotations), 200
+
+
+def get_by_label(label_id, instance=False):
+    annotations = Annotation.query.filter(Annotation.label_id == label_id).all()
+    if instance:
+        return annotations
+    if len(annotations) == 0:
+        if label.controller.get_by_id(label_id) is None:
+            msg = f"No label with label id : {label_id}"
+            return msg, 404, {"message": msg}
+    return AnnotationSchema(many=True).dump(annotations), 200

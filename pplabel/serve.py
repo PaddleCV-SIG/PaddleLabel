@@ -20,7 +20,7 @@ if not osp.exists(sqlite_url) and not osp.exists("temp"):
 
     # TODO: move to base
     from pplabel.config import basedir
-    from pplabel.api.setting.controller import init_site_settings
+    from pplabel.api.controller.setting import init_site_settings
 
     init_site_settings(osp.normpath(osp.join(basedir, "default_setting.json")))
 

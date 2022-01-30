@@ -3,9 +3,9 @@ from flask import make_response, abort, request
 from pplabel.config import db
 import numpy as np
 
-from ..base.controller import crud
-from .model import Label
-from .schema import LabelSchema
+from .base import crud
+from ..model import Label
+from ..schema import LabelSchema
 
 
 def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
@@ -70,8 +70,10 @@ get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add])
 
 def get_by_project(project_id):
     labels = Label.query.filter(Label.project_id == project_id).all()
-    print(labels)
     return LabelSchema(many=True).dump(labels), 200
+
+
+# def is_in_use(label_id):
 
 
 # TODO: abstract to any column

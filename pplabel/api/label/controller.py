@@ -67,6 +67,13 @@ def pre_add(new_label, se):
 
 get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add])
 
+
+def get_by_project(project_id):
+    labels = Label.query.filter(Label.project_id == project_id).all()
+    print(labels)
+    return LabelSchema(many=True).dump(labels), 200
+
+
 # TODO: abstract to any column
 
 """
@@ -81,8 +88,8 @@ comment = db.Column(db.String())
 created = nncol(db.DateTime, default=datetime.utcnow)
 modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-1. id unique within project
-2. name unique within project
-3. label with annotation in use cant be deleted
+- [x]. id unique within project
+- [x]. name unique within project
+- [ ]. label with annotation in use cant be deleted
 
 """

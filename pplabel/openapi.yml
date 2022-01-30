@@ -247,6 +247,22 @@ paths:
       responses:
         '200':
           description: suceess
+  '/projects/{project_id}/labels':
+    parameters:
+      - name: project_id
+        in: path
+        description: Id of the project to get all labels
+        schema:
+          type: integer
+        required: true
+    get:
+      operationId: pplabel.api.label.controller.get_by_project
+      summary: Get all the labels of a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: suceess
   /tasks:
     get:
       tags:

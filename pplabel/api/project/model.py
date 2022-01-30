@@ -20,7 +20,7 @@ class Project(BaseModel):
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
     label_dir = db.Column(db.String(), unique=True)
-    labels = db.relationship("Label")
+    labels = db.relationship("Label", lazy="noload")
     other_settings = db.Column(db.String())
 
     _immutables = BaseModel._immutables + ["project_id", "task_category_id"]

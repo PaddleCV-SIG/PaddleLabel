@@ -8,4 +8,5 @@ class AnnotationSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Annotation
 
-    task = Nested("TaskSchema", exclude=("annotations",))
+    # task = Nested("TaskSchema", exclude=("annotations",))
+    label = Nested("LabelSchema")

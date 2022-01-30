@@ -147,6 +147,12 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
+    parameters:
+      - schema:
+          type: integer
+        name: project_id
+        in: path
+        required: true
   /labels:
     get:
       tags:
@@ -247,6 +253,12 @@ paths:
       responses:
         '200':
           description: suceess
+    head:
+      summary: ''
+      operationId: pplabel.api.task.controller.get_stat_by_project
+      responses:
+        '200':
+          description: OK
   '/projects/{project_id}/labels':
     parameters:
       - name: project_id
@@ -679,53 +691,34 @@ components:
       required:
         - path
     Annotation:
-      title: Annotation
       type: object
+      title: Annotation
       description: ''
+      additionalProperties: false
       properties:
         annotation_id:
           type: integer
           readOnly: true
+        task_id:
+          type: integer
         label_id:
           type: integer
+        label:
+          $ref: '#/components/schemas/Label'
+        project_id:
+          type: string
         result:
           type: string
         slice_id:
           type: integer
-        task:
-          $ref: '#/components/schemas/Task'
-        modified:
+        created:
           type: string
           readOnly: true
-        created:
+        modified:
           type: string
           readOnly: true
     KeyValuePair:
       description: A key-value pair
-    LabelConfig:
-      anyOf:
-        - $ref: '#/components/schemas/LabelConfig-Classification'
-        - $ref: '#/components/schemas/LabelConfig-Detection'
-    LabelConfig-Classification:
-      title: LabelConfig-Classification
-      type: object
-      properties:
-        classes:
-          type: array
-          items:
-            type: string
-        multi_class:
-          type: boolean
-    LabelConfig-Detection:
-      title: LabelConfig-Detection
-      type: object
-      properties:
-        classes:
-          type: array
-          items:
-            type: string
-      required:
-        - classes
     Label:
       title: Label
       type: object

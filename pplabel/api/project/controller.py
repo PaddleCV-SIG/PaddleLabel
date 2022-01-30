@@ -29,3 +29,8 @@ get_all, get, post, put, delete = crud(
     ProjectSchema,
     triggers=[pre_add],
 )
+
+
+def get_by_id(project_id):
+    project = Project.query.filter(Project.project_id == project_id).one_or_none()
+    return project

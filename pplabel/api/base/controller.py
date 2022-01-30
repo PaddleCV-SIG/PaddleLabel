@@ -96,6 +96,7 @@ def crud(Model, Schema, triggers=[]):
         if len(body.items()) == 1:
             # 2.1 key in keys: change one property
             cols = [c.key for c in Model.__table__.columns]
+            k, v = list(body.items())[0]
             if k not in cols:
                 abort(404, f"Project doesn't have property {k}")
             setattr(item, k, v)

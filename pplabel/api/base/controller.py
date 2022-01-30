@@ -83,16 +83,18 @@ def crud(Model, Schema, triggers=[]):
         if item is None:
             abort(
                 404,
-                f"{Model.__tablename__.capitalize()} with {id_name} {id_val} is not found.",
+                f"No {Model.__tablename__} with {id_name}: {id_val} .",
             )
         if pre_put is not None:
             pre_put(item, db.session)
         body = request.get_json()
+        print("asdfasdfsadfasdf", item, body)
+
+        for k in body.keys():
+            if k in Model._immutables:
+                abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
         if len(body.items()) == 1:
             # 2.1 key in keys: change one property
-            k, v = list(body.items())[0]
-            if k in Model.immutables:
-                abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
             cols = [c.key for c in Model.__table__.columns]
             if k not in cols:
                 abort(404, f"Project doesn't have property {k}")
@@ -100,9 +102,6 @@ def crud(Model, Schema, triggers=[]):
             db.session.commit()
         else:
             # 2.2 change all provided properties
-            for k in body.keys():
-                if k in Model.immutables:
-                    abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
             Model.query.filter(getattr(Model, id_name) == id_val).update(body)
             db.session.commit()
 

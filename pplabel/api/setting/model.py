@@ -4,12 +4,13 @@ from functools import total_ordering
 
 from pplabel.config import db
 from pplabel.api.util import nncol
+from ..base import BaseModel
 
 
-class TaskCategory(db.Model):
+class TaskCategory(BaseModel):
     __tablename__ = "taskCategory"
     task_category_id = nncol(
-        db.SmallInteger(),
+        db.Integer(),
         primary_key=True,
         autoincrement=False,
     )
@@ -24,6 +25,3 @@ class TaskCategory(db.Model):
             self.handler = None
         else:
             self.handler = handler
-
-    def __repr__(self):
-        return str(self.task_category_id)

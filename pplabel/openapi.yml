@@ -578,6 +578,7 @@ components:
           description: 'Top level annotation task category, see TODO for int <-> category map'
         task_category:
           type: string
+          readOnly: true
         data_dir:
           type: string
           description: Absolute directory path where all the data file is stored

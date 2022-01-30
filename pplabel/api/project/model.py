@@ -15,7 +15,7 @@ class Project(BaseModel):
     name = nncol(db.String(), unique=True)
     description = db.Column(db.String())
     task_category_id = db.Column(
-        db.SmallInteger(), db.ForeignKey("taskCategory.task_category_id")
+        db.Integer(), db.ForeignKey("taskCategory.task_category_id")
     )
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
@@ -23,7 +23,7 @@ class Project(BaseModel):
     labels = db.relationship("Label")
     other_settings = db.Column(db.String())
 
-    immutables = BaseModel.immutables + ["project_id", "task_category_id"]
+    _immutables = BaseModel._immutables + ["project_id", "task_category_id"]
 
     def _get_task_category(self):
         task_category = TaskCategory.query.filter(

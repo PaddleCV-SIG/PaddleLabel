@@ -9,4 +9,4 @@ class BaseSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
 
-    immutables = fields.Raw()
+    # _immutables = fields.Raw()

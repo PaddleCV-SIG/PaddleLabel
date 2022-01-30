@@ -11,7 +11,7 @@ class BaseModel(db.Model):
     created = nncol(db.DateTime, default=datetime.utcnow)
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    immutables = ["created", "modified", "immutables"]
+    _immutables = ["created", "modified", "immutables"]
 
     def __repr__(self):
         s = f"Object: {self.__tablename__}\n"

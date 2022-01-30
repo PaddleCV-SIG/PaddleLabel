@@ -17,6 +17,7 @@ class ProjectSchema(BaseSchema):
     task_category = fields.Nested("TaskCategorySchema")
     labels = fields.List(fields.Nested("LabelSchema"))
 
+    # TODO: decorator
     get_task_category = fields.Raw()
 
     @pre_load

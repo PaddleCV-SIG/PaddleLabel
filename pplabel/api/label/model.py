@@ -2,9 +2,10 @@ from datetime import datetime
 
 from pplabel.config import db
 from ..util import nncol
+from ..base import BaseModel
 
 
-class Label(db.Model):
+class Label(BaseModel):
     __tablename__ = "label"
     __table_args__ = {"comment": "Contains all the label information"}
     label_id = nncol(db.Integer(), primary_key=True)
@@ -15,13 +16,5 @@ class Label(db.Model):
     name = nncol(db.String())
     color = db.Column(db.String())
     comment = db.Column(db.String())
-    created = nncol(db.DateTime, default=datetime.utcnow)
-    modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __repr__(self):
-        s = f"--------------------\n{self.__tablename__}\n"
-        for att in dir(self):
-            if att[0] != "_":
-                s += f"{att}: {getattr(self, att)}\n"
-        s += "--------------------\n"
-        return s
+    _immutables = BaseModel._immutables + ["label_id", "project_id"]

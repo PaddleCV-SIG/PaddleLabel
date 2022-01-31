@@ -3,6 +3,7 @@ import os.path as osp
 import shutil
 
 
+# TODO: change to raise error
 def create_dir(path):
     if path is None:
         return False, "Path to create is None"

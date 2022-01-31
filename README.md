@@ -8,8 +8,3 @@ Generally, singular for one item, plural for a collection of items
     - Endpoint: lower case
 - Frontend
   -
-
-
-TODO
-- [ ]: move all put k-v pair to patch
--

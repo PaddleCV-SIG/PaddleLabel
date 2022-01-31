@@ -1,7 +1,5 @@
 import os
 import os.path as osp
-import json
-import shutil
 
 from pplabel.config import db
 from pplabel.api import Project, Task, Data, Annotation, Label
@@ -50,6 +48,8 @@ class Classification(BaseTask):
         success, res = create_dir(data_dir)
         if not success:
             return False, res
+        if label_path is not None and not osp.exists(label_path):
+            return False, f"label_path {label_path} doesn't exist"
         data_paths = listdir(data_dir, filters)
         label_lines = open(label_path, "r").readlines()
         label_lines = [l.strip() for l in label_lines if len(l.strip()) != 0]
@@ -113,7 +113,7 @@ def single_clas():
         print(task)
 
     clas_project.single_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/single_clas_export"
+        "/home/lin/Desktop/data/pplabel/demo/export/clas_single_export"
     )
 
 
@@ -141,13 +141,12 @@ def multi_clas():
     )
 
     clas_project.single_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/multi_clas_folder_export"
+        "/home/lin/Desktop/data/pplabel/demo/export/clas_multi_folder_export"
     )
 
     clas_project.multi_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/multi_clas_file_export"
+        "/home/lin/Desktop/data/pplabel/demo/export/clas_multi_file_export"
     )
     tasks = Task.query.all()
     for task in tasks:
         print("tasktasktasktasktasktasktasktask", task)
-    print("------------------", dir(Classification.importers["single_class_importer"]))

@@ -1,3 +1,5 @@
+import json
+
 from marshmallow import post_load, pre_load, pre_dump, fields
 from marshmallow.fields import Nested
 
@@ -13,19 +15,18 @@ class TaskSchema(BaseSchema):
     datas = fields.List(Nested("DataSchema"), exclude=("task",))
     annotations = fields.List(Nested("AnnotationSchema"), exclude=("task",))
 
-    # TODO: invalid chars
+    # TODO: check invalid chars in path
     @pre_load
     def list2str(self, data, **kwargs):
-        print("+_+_+_+", data)
         datas = []
         for path in data["datas"]:
             datas.append({"path": path})
         data["datas"] = datas
         return data
 
+    # TODO: confirm data['result'] dont cause trouble
     @pre_dump
     def output(self, data, **kwargs):
-        print(data.project)
         return data
 
     # @post_load

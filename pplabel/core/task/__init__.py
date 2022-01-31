@@ -1,1 +1,1 @@
-from . import classification
+from . import classification, detection

@@ -10,6 +10,7 @@ from .util import create_dir, listdir, copy, ComponentManager
 
 
 class BaseTask:
+    # NOTE: have to declear these two in subclass
     importers = ComponentManager()
     exporters = ComponentManager()
 

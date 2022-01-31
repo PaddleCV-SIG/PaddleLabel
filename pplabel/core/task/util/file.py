@@ -1,5 +1,6 @@
 import os
 import os.path as osp
+import shutil
 
 
 def create_dir(path):
@@ -56,3 +57,24 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
     files.sort()
     files = [osp.normpath(p) for p in files]
     return files
+
+
+def copy(src, dst):
+    src = osp.normpath(src)
+    dst = osp.normpath(dst)
+    shutil.copy(src, dst)
+
+
+def copytree(src, dst):
+    """Copy all files in src directory to dst directory.
+
+    Parameters
+    ----------
+    src : str
+        Description of parameter `src`.
+    dst : str
+        Description of parameter `dst`.
+    """
+    src = osp.normpath(src)
+    dst = osp.normpath(dst)
+    shutil.copytree(src, dst)

@@ -41,12 +41,25 @@ class BaseModel(db.Model):
 
     @classmethod
     def _get(cls, **kwargs):
-        key, value = list(kwargs.items())[0]
-        if key not in cls._cols:
-            raise AttributeError(
-                f"Model {cls.__tablename__} don't have attribute {key}"
-            )
-        item = cls.query.filter(getattr(cls, key) == value).one_or_none()
+        many = kwargs.get("many", False)
+        if "many" in kwargs.keys():
+            del kwargs["many"]
+        for key in kwargs.keys():
+            if key not in cls._cols:
+                raise AttributeError(
+                    f"Model {cls.__tablename__} don't have attribute {key}"
+                )
+        # TODO: none value
+
+        conditions = {}
+        for k, v in list(kwargs.items()):
+            conditions[k] = v
+        print("................conditions", conditions)
+        if many:
+            items = cls.query.filter_by(**conditions).all()
+            return items
+
+        item = cls.query.filter_by(**conditions).one_or_none()
         return item
 
     @classmethod

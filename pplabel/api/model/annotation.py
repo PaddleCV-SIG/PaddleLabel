@@ -14,6 +14,6 @@ class Annotation(BaseModel):
     project_id = nncol(db.Integer(), db.ForeignKey("project.project_id"))
     result = db.Column(db.String())
     slice_id = nncol(db.Integer())
-    label = db.relationship("Label", lazy="noload")
+    label = db.relationship("Label")
 
     _immutables = BaseModel._immutables + ["annotation_id", "task_id", "slice_id"]

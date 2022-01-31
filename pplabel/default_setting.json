@@ -3,7 +3,7 @@
     "task_categories": {
       "1": [
         "classification",
-        "pplabel.core.classification.LabelConfig"
+        "classification"
       ],
       "2": [
         "detection",

@@ -14,6 +14,11 @@ class BaseModel(db.Model):
 
     _immutables = ["created", "modified", "immutables"]
 
+    @classmethod
+    @property
+    def _cols(cls):
+        return [c.key for c in cls.__table__.columns]
+
     def __repr__(self):
         s = f"Object: {self.__tablename__}\n"
         for att in dir(self):
@@ -33,3 +38,18 @@ class BaseModel(db.Model):
             else:
                 return False
         return True
+
+    @classmethod
+    def _get(cls, **kwargs):
+        key, value = list(kwargs.items())[0]
+        if key not in cls._cols:
+            raise AttributeError(
+                f"Model {cls.__tablename__} don't have attribute {key}"
+            )
+        item = cls.query.filter(getattr(cls, key) == value).one_or_none()
+        return item
+
+    @classmethod
+    def _add(cls, item):
+        db.session.add(item)
+        db.session.commit()

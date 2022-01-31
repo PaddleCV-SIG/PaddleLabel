@@ -1,18 +1,5 @@
 import os
 import os.path as osp
-import json
-
-import pplabel
-from pplabel.api.task import Task
-from pplabel.api.data import Data
-from pplabel.api.annotation import Annotation
-from pplabel.config import db
-from marshmallow import Schema, fields
-
-
-class LabelConfig(Schema):
-    classes = fields.List(fields.String(), allow_none=True)
-    multi_class = fields.Bool()
 
 
 def create_dir(path):
@@ -69,49 +56,3 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
     files.sort()
     files = [osp.normpath(p) for p in files]
     return files
-
-
-def get_id(path):
-    pass
-
-
-def get_tasks(datas, labels):
-    for data in datas:
-        # BUG: root dir
-        label = osp.basename(osp.dirname(data))
-        yield data, [label]
-
-
-def import_project(project_id, data_dir, label_dir=None, filters={}):
-    success, res = create_dir(data_dir)
-    if not success:
-        return False, res
-    data_paths = listdir(data_dir, filters)
-
-    label_paths = []
-    if label_dir is not None:
-        success, res = create_dir(label_dir)
-        if not success:
-            return False, res
-        label_paths = listdir(label_dir, filters)
-
-    for data_path, label in get_tasks(data_paths, label_paths):
-        print(data_path, label)
-        task = Task(
-            project_id=1,
-            datas=[Data(path=data_path)],
-            annotations=[Annotation(result=json.dumps(label))],
-        )
-        task.project_id = 1
-        print(task.project_id)
-        db.session.add(task)
-        # task.datas = [data_path]
-        # task.annotations = json.dumps(label)
-        db.session.commit()
-
-
-# import_project(
-#     1,
-#     "/home/lin/Desktop/data/pplabel/single_clas_toy/PetImages/",
-#     filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]},
-# )

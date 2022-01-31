@@ -87,11 +87,11 @@ def crud(Model, Schema, triggers=[]):
             )
         # 2. check request key exist and can be edited
         body = request.get_json()
-        cols = [c.key for c in Model.__table__.columns]
+
         for k in body.keys():
             if k in Model._immutables:
                 abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
-            if k not in cols:
+            if k not in Model._cols:
                 abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
 
         if pre_put is not None:

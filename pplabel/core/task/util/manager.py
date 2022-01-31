@@ -1,3 +1,5 @@
+# apache 2
+
 import inspect
 from collections.abc import Sequence
 
@@ -62,8 +64,7 @@ class ComponentManager:
 
     def __getitem__(self, item):
         if item not in self._components_dict.keys():
-            raise KeyError("{} does not exist in availabel {}".format(
-                item, self))
+            raise KeyError("{} does not exist in availabel {}".format(item, self))
         return self._components_dict[item]
 
     @property
@@ -89,8 +90,8 @@ class ComponentManager:
         # Currently only support class or function type
         if not (inspect.isclass(component) or inspect.isfunction(component)):
             raise TypeError(
-                "Expect class/function type, but received {}".format(
-                    type(component)))
+                "Expect class/function type, but received {}".format(type(component))
+            )
 
         # Obtain the internal name of the component
         component_name = component.__name__
@@ -99,7 +100,9 @@ class ComponentManager:
         if component_name in self._components_dict.keys():
             warnings.warn(
                 "{} exists already! It is now updated to {} !!!".format(
-                    component_name, component))
+                    component_name, component
+                )
+            )
             self._components_dict[component_name] = component
 
         else:
@@ -126,10 +129,3 @@ class ComponentManager:
             self._add_single_component(component)
 
         return components
-
-
-MODELS = ComponentManager("models")
-BACKBONES = ComponentManager("backbones")
-DATASETS = ComponentManager("datasets")
-TRANSFORMS = ComponentManager("transforms")
-LOSSES = ComponentManager("losses")

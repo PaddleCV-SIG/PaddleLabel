@@ -1,1 +1,1 @@
-from . import classification, detection
+from . import task

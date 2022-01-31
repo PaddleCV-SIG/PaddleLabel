@@ -1,5 +1,5 @@
 from pplabel import serve
-from pplabel.core.classification.classification import main
+import pplabel
 
 
-main()
+pplabel.core.task.classification.multi_clas()

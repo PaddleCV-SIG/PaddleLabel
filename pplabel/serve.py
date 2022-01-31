@@ -8,7 +8,7 @@ import pplabel
 from pplabel.util import Resolver
 from pplabel.config import sqlite_url, db, connexion_app
 import pplabel.api
-
+import pplabel.core
 
 # TODO: remove temp
 # if not osp.exists(sqlite_url) and not osp.exists("temp"):

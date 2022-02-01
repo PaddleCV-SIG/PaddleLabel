@@ -5,3 +5,4 @@ from .data import Data
 from .annotation import Annotation
 from .setting import TaskCategory
 from .tag import Tag
+from .tag_task import TagTask

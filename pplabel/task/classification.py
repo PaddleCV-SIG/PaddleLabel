@@ -1,7 +1,7 @@
 import os
 import os.path as osp
 
-from pplabel.config import db
+from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
 from .util import create_dir, listdir, copy, copytree, ComponentManager
@@ -95,7 +95,7 @@ class Classification(BaseTask):
 def single_clas():
     pj_info = {
         "name": "Single Class Classification Example",
-        "data_dir": "/home/lin/Desktop/data/pplabel/demo/clas_single/PetImages/",
+        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
         "description": "Example Project Descreption",
         "other_settings": "{'some_property':true}",
         "task_category_id": 1,
@@ -113,16 +113,16 @@ def single_clas():
         print(task)
 
     clas_project.single_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/clas_single_export"
+        osp.join(task_test_basedir, "export/clas_single_export")
     )
 
 
 def multi_clas():
     pj_info = {
         "name": "Multi Class Classification Example",
-        "data_dir": "/home/lin/Desktop/data/pplabel/demo/clas_multi/PetImages/",
+        "data_dir": osp.join(task_test_basedir, "clas_multi/PetImages/"),
         "description": "Example Project Descreption",
-        "label_dir": "/home/lin/Desktop/data/pplabel/demo/clas_multi/label.txt",
+        "label_dir": osp.join(task_test_basedir, "clas_multi/label.txt"),
         "other_settings": "{'some_property':true}",
         "task_category_id": 1,
         "labels": [
@@ -141,11 +141,11 @@ def multi_clas():
     )
 
     clas_project.single_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/clas_multi_folder_export"
+        osp.join(task_test_basedir, "export/clas_multi_folder_export")
     )
 
     clas_project.multi_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/clas_multi_file_export"
+        osp.join(task_test_basedir, "export/clas_multi_file_export")
     )
     tasks = Task.query.all()
     for task in tasks:

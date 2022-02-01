@@ -125,9 +125,9 @@ class Segmentation(BaseTask):
 def voc():
     pj_info = {
         "name": "Pascal Detection Example",
-        "data_dir": "/home/lin/Desktop/data/pplabel/demo/det_pascal_voc/JPEGImages/",
+        "data_dir": osp.join(task_test_basedir, "det_pascal_voc/JPEGImages/",
         "task_category_id": 2,
-        "label_dir": "/home/lin/Desktop/data/pplabel/demo/det_pascal_voc/Annotations/",
+        "label_dir": osp.join(task_test_basedir, "det_pascal_voc/Annotations/",
     }
     project = ProjectSchema().load(pj_info)
 
@@ -136,16 +136,16 @@ def voc():
     det_project.voc_importer(filters={"exclude_prefix": ["."]})
 
     det_project.voc_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/det_voc_export"
+        osp.join(task_test_basedir, "export/det_voc_export"
     )
 
 
 def coco():
     pj_info = {
         "name": "COCO Detection Example",
-        "data_dir": "/home/lin/Desktop/data/pplabel/demo/det_coco/JPEGImages/",
+        "data_dir": osp.join(task_test_basedir, "det_coco/JPEGImages/",
         "description": "Example Project Descreption",
-        "label_dir": "/home/lin/Desktop/data/pplabel/demo/det_coco/Annotations/coco_info.json",
+        "label_dir": osp.join(task_test_basedir, "det_coco/Annotations/coco_info.json",
         "task_category_id": 2,
     }
     project = ProjectSchema().load(pj_info)
@@ -155,5 +155,5 @@ def coco():
     det_project.coco_importer(filters={"exclude_prefix": ["."]})
 
     det_project.coco_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/det_coco_export"
+        osp.join(task_test_basedir, "export/det_coco_export"
     )

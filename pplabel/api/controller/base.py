@@ -2,7 +2,9 @@ import json
 import functools
 from collections import defaultdict
 
-from flask import make_response, abort, request
+
+import connexion
+from flask import make_response, abort
 import sqlalchemy
 import marshmallow
 
@@ -42,7 +44,7 @@ def crud(Model, Schema, triggers=[]):
 
         schema = Schema()
         try:
-            new_item = schema.load(request.get_json())
+            new_item = schema.load(connexion.request.json)
         except marshmallow.exceptions.ValidationError as e:
             for field, msgs in e.messages.items():
                 if "Missing data for required field." in msgs:
@@ -86,7 +88,7 @@ def crud(Model, Schema, triggers=[]):
                 f"No {Model.__tablename__} with {id_name}: {id_val} .",
             )
         # 2. check request key exist and can be edited
-        body = request.get_json()
+        body = connexion.request.json
 
         for k in body.keys():
             if k in Model._immutables:

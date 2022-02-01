@@ -21,6 +21,7 @@ app.secret_key = rand_string(20)
 db = SQLAlchemy(app)
 se = db.session
 ma = Marshmallow(app)
-###
 
 request_id_timeout = 2  # reject requests with the same request_id within 2 seconds
+
+task_test_basedir = "/home/lin/Desktop/data/pplabel/demo"

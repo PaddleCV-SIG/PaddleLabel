@@ -388,6 +388,47 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           description: 'Task with task id not fond, or task dont have requested property'
+  '/tasks/{task_id}/tags':
+    get:
+      tags:
+        - Tag
+      summary: Get all tags of the task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      operationId: pplabel.api.controller.tag.get_by_task
+    post:
+      tags:
+        - Tag
+      summary: Add a new tag to the task
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                tag_id:
+                  type: integer
+      operationId: pplabel.api.controller.tag.add_to_task
   /datas/:
     get:
       tags:
@@ -856,6 +897,18 @@ components:
           type: string
         comment:
           type: string
+    TagTask:
+      title: TagTask
+      type: object
+      properties:
+        tag_task_id:
+          type: integer
+        project_id:
+          type: integer
+        tag_id:
+          type: integer
+        task_id:
+          type: integer
   parameters:
     request_id:
       name: request_id

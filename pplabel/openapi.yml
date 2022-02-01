@@ -527,6 +527,35 @@ paths:
                 $ref: '#/components/schemas/Data'
         '404':
           description: 'Data record with data id not fond, or data dont have requested property'
+  '/datas/{data_id}/image':
+    parameters:
+      - schema:
+          type: string
+        name: data_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  image:
+                    type: string
+      operationId: pplabel.api.controller.data.get_image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slice_id:
+                  type: string
   /annotations/:
     get:
       tags:

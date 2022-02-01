@@ -6,3 +6,4 @@ marshmallow_sqlalchemy
 numpy
 Cython
 pycocotoolse
+opencv-python

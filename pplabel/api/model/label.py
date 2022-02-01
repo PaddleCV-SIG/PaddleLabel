@@ -16,5 +16,7 @@ class Label(BaseModel):
     name = nncol(db.String())
     color = db.Column(db.String())
     comment = db.Column(db.String())
-
+    # TODO: foreign key
+    super_category_id = db.Column(db.Integer())
+    # super_category =
     _immutables = BaseModel._immutables + ["label_id", "project_id"]

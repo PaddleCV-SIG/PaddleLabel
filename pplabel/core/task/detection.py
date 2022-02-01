@@ -2,6 +2,8 @@ import os
 import os.path as osp
 import json
 
+from pycocotoolse.coco import COCO
+
 from pplabel.config import db
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
@@ -73,9 +75,34 @@ class Detection(BaseTask):
     def coco_importer(
         self,
         data_dir=None,
+        label_path=None,
         filters={"exclude_prefix": ["."]},
     ):
-        pass
+        project = self.project
+        if data_dir is None:
+            data_dir = project.data_dir
+        success, res = create_dir(data_dir)
+        if not success:
+            return False, res
+        if label_path is None:
+            label_path = project.label_dir
+
+        coco = COCO(label_path)
+
+        ann_by_task = {}
+        for ann_id in coco.getAnnIds():
+            ann = coco.anns[ann_id]
+            label_name = coco.cats[ann["category_id"]]["name"]
+            result = {}
+            result["xmin"] = ann["bbox"][0]
+            result["ymin"] = ann["bbox"][1]
+            result["xmax"] = result["xmin"] + ann["bbox"][2]
+            result["ymax"] = result["ymin"] + ann["bbox"][3]
+            temp = ann_by_task.get(ann["image_id"], [])
+            temp.append({"label_name": label_name, "result": json.dumps(result)})
+            ann_by_task[ann["image_id"]] = temp
+        for img_id, annotations in list(ann_by_task.items()):
+            self.add_task([coco.imgs[img_id]["file_name"]], annotations)
 
     @importers.add_component
     def voc_importer(
@@ -107,7 +134,28 @@ class Detection(BaseTask):
 
     @exporters.add_component
     def coco_exporter(self, export_dir):
-        pass
+        project = self.project
+        coco = COCO()
+        labels = Label._get(project_id=project.project_id, many=True)
+        for label in labels:
+            coco.addCategory(label.id, label.name, label.color)
+        tasks = Task._get(project_id=project.project_id, many=True)
+        data_dir = osp.join(export_dir, "JPEGImages")
+        create_dir(data_dir)
+        for task in tasks:
+            coco.addImage(task.datas[0].path, 1000, 1000, task.task_id)
+            copy(osp.join(project.data_dir, task.datas[0].path), data_dir)
+        annotations = Annotation._get(project_id=project.project_id, many=True)
+        for ann in annotations:
+            r = json.loads(ann.result)
+            bb = [r["xmin"], r["ymin"], r["xmax"] - r["xmin"], r["ymax"] - r["ymin"]]
+            coco.addAnnotation(
+                ann.task.datas[0].path, ann.label_id, [], id=ann.annotation_id, bbox=bb
+            )
+        create_dir(osp.join(export_dir, "Annotations"))
+        f = open(osp.join(export_dir, "Annotations", "coco_info.json"), "w")
+        print(json.dumps(coco.dataset), file=f)
+        f.close()
 
     @exporters.add_component
     def voc_exporter(self, export_dir):
@@ -143,40 +191,25 @@ def voc():
 
     det_project.voc_importer(filters={"exclude_prefix": ["."]})
 
-    det_project.voc_exporter("/home/lin/Desktop/data/pplabel/demo/export/det_voc")
+    det_project.voc_exporter(
+        "/home/lin/Desktop/data/pplabel/demo/export/det_voc_export"
+    )
 
 
-def multi_clas():
+def coco():
     pj_info = {
-        "name": "Multi Class Classification Example",
-        "data_dir": "/home/lin/Desktop/data/pplabel/demo/clas_multi/PetImages/",
+        "name": "COCO Detection Example",
+        "data_dir": "/home/lin/Desktop/data/pplabel/demo/det_coco/JPEGImages/",
         "description": "Example Project Descreption",
-        "label_dir": "/home/lin/Desktop/data/pplabel/demo/clas_multi/label.txt",
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [
-            {"id": 1, "name": "Cat"},
-            {"id": 2, "name": "Dog"},
-            {"id": 3, "name": "Small"},
-            {"id": 4, "name": "Large"},
-        ],
+        "label_dir": "/home/lin/Desktop/data/pplabel/demo/det_coco/Annotations/coco_info.json",
+        "task_category_id": 2,
     }
     project = ProjectSchema().load(pj_info)
 
-    clas_project = Classification(project)
+    det_project = Detection(project)
 
-    clas_project.multi_class_importer(
-        filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]}
-    )
+    det_project.coco_importer(filters={"exclude_prefix": ["."]})
 
-    clas_project.single_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/multi_clas_folder_export"
+    det_project.coco_exporter(
+        "/home/lin/Desktop/data/pplabel/demo/export/det_coco_export"
     )
-
-    clas_project.multi_clas_exporter(
-        "/home/lin/Desktop/data/pplabel/demo/export/multi_clas_file_export"
-    )
-    tasks = Task.query.all()
-    for task in tasks:
-        print("tasktasktasktasktasktasktasktask", task)
-    print("------------------", dir(Classification.importers["single_class_importer"]))

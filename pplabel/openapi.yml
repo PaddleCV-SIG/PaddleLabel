@@ -712,6 +712,8 @@ components:
         modified:
           type: string
           readOnly: true
+        super_category_id:
+          type: integer
       required:
         - name
   parameters:

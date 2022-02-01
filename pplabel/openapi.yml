@@ -169,6 +169,47 @@ paths:
                 items:
                   $ref: '#/components/schemas/Label'
       operationId: pplabel.api.controller.label.get_by_project
+  '/projects/{project_id}/annotations':
+    parameters:
+      - schema:
+          type: string
+        name: project_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: pplabel.api.controller.annotation.get_by_project
+  '/projects/{project_id}/tags':
+    parameters:
+      - schema:
+          type: string
+        name: project_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      operationId: pplabel.api.controller.tag.get_by_project
+      description: ''
   /labels:
     get:
       tags:
@@ -545,6 +586,91 @@ paths:
                 $ref: '#/components/schemas/Annotation'
         '404':
           description: 'Annotation record with data id not fond, or data dont have requested property'
+  /tags:
+    get:
+      tags:
+        - Tag
+      summary: 'Get all tags, sort by last modify date'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+    post:
+      tags:
+        - Tag
+      summary: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      description: ''
+  '/tags/{tag_id}':
+    parameters:
+      - name: tag_id
+        in: path
+        description: Id of the tag
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Tag
+      summary: Get info of a specific tag
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not fond
+    delete:
+      summary: Delete a tag and ALL TAGGING RECORDS under this tag.
+      description: Delete a tag and ALL TAGGING RECORDS under this tag.
+      tags:
+        - Tag
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The tag specified is not found
+    put:
+      tags:
+        - Tag
+      summary: Edit tag properties
+      description: Edit tag properties. Empty strings will be set. Properties not in request body won't be changed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: 'Tag with tag id not fond, or tag dont have requested property'
 components:
   schemas:
     Project:
@@ -716,6 +842,20 @@ components:
           type: integer
       required:
         - name
+    Tag:
+      title: Tag
+      type: object
+      properties:
+        tag_id:
+          type: integer
+        project_id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        comment:
+          type: string
   parameters:
     request_id:
       name: request_id

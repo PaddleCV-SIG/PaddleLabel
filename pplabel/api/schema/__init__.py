@@ -4,3 +4,4 @@ from .task import TaskSchema
 from .data import DataSchema
 from .annotation import AnnotationSchema
 from .setting import TaskCategorySchema
+from .tag import TagSchema

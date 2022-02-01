@@ -4,3 +4,4 @@ from .task import Task
 from .data import Data
 from .annotation import Annotation
 from .setting import TaskCategory
+from .tag import Tag

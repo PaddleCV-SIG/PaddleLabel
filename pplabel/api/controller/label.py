@@ -1,5 +1,3 @@
-from flask import make_response, abort, request
-
 from pplabel.config import db
 import numpy as np
 
@@ -9,6 +7,7 @@ from ..schema import LabelSchema
 from ..util import abort
 
 
+# TODO: simplify with _get
 def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
     """check whether label id and name is unique within project
 
@@ -62,7 +61,7 @@ def pre_add(new_label, se):
     rets, unique = unique_within_project(new_label.project_id, [new_label], cols)
     if not unique[0]:
         not_unique_cols = ", ".join([c for c, u in zip(cols, rets) if not u])
-        abort(409, f"Label {not_unique_cols} is not unique")
+        abort(f"Label {not_unique_cols} is not unique", 409)
     return new_label
 
 

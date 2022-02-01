@@ -2,8 +2,8 @@ from pplabel import serve
 import pplabel
 
 
-# pplabel.core.task.classification.single_clas()
-# pplabel.core.task.classification.multi_clas()
+# pplabel.cocotask.classification.single_clas()
+# pplabel.cocotask.classification.multi_clas()
 
-# pplabel.core.task.detection.voc()
-pplabel.core.task.detection.coco()
+# pplabel.cocotask.detection.voc()
+pplabel.cocotask.detection.coco()

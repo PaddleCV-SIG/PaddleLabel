@@ -1,12 +1,14 @@
 import os
 import os.path as osp
-import traceback  # TODO: remove
+import logging 
 
 import pplabel
 from pplabel.util import Resolver
 from pplabel.config import sqlite_url, db, connexion_app
 import pplabel.api
 import pplabel.task 
+
+logging.getLogger("pplabel").debug("in server.py")
 
 # TODO: remove temp
 # if not osp.exists(sqlite_url) and not osp.exists("temp"):

@@ -1,17 +1,15 @@
 import os
 import os.path as osp
-import logging 
+import logging
 
 import pplabel
 from pplabel.util import Resolver
 from pplabel.config import sqlite_url, db, connexion_app
 import pplabel.api
-import pplabel.task 
+import pplabel.task
 
 logging.getLogger("pplabel").debug("in server.py")
 
-# TODO: remove temp
-# if not osp.exists(sqlite_url) and not osp.exists("temp"):
 if not osp.exists(sqlite_url):
     print("Creating db")
     db.create_all()
@@ -30,6 +28,3 @@ connexion_app.add_api(
     strict_validation=True,
     pythonic_params=True,
 )
-
-# for line in traceback.format_stack():  # TODO: remove
-#     print(line.strip())

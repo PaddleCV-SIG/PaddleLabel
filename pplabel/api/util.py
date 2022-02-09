@@ -7,7 +7,8 @@ import sqlalchemy as sa
 nncol = functools.partial(sa.Column, nullable=False)
 
 
-def abort(msg, status):
+# TODO: settle on how to use detail and title
+def abort(detail, status, title=""):
     raise connexion.exceptions.ProblemException(
-        title=msg, status=status, headers={"message": msg}
+        detail=detail, title=title, status=status, headers={"message": detail}
     )

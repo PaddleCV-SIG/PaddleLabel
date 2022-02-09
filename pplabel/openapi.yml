@@ -741,6 +741,84 @@ paths:
                 $ref: '#/components/schemas/Tag'
         '404':
           description: 'Tag with tag id not fond, or tag dont have requested property'
+  /users:
+    get:
+      summary: Get all users
+      tags: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      operationId: ''
+    post:
+      summary: Add a new user
+      operationId: ''
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      description: ''
+    parameters: []
+  '/users/{user_id}':
+    parameters:
+    - name: user_id
+      in: path
+      description: Id of the user
+      schema:
+        type: integer
+      required: true
+    get:
+      tags:
+        - User
+      summary: Get info of a specific user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not fond
+      description: ''
+    delete:
+      summary: Delete a user
+      description: Delete a user
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The task specified is not found
+    put:
+      tags:
+        - User
+      summary: Edit user info
+      description: Edit user info.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Use with user id not fond, or user dont have requested property'
 components:
   schemas:
     Project:
@@ -937,6 +1015,23 @@ components:
         tag_id:
           type: integer
         task_id:
+          type: integer
+    User:
+      title: User
+      type: object
+      description: ''
+      properties:
+        user_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        role_id:
           type: integer
   parameters:
     request_id:

@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/PaddleCV-SIG/PP-Label",
     author="PaddleCV-SIG",
-    author_email="linhandev@qq.com",
+    author_email="me@linhan.email",
     license="Apache Software License",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
@@ -25,10 +25,10 @@ setup(
     ],
     packages=find_packages(exclude=("test",)),
     include_package_data=True,
-    install_requires=REQUIRED_PACKAGES
-    # entry_points={
-    #     "console_scripts": [
-    #         "pplabel=pplabel",
-    #     ]
+    install_requires=REQUIRED_PACKAGES,
+    entry_points={
+        "console_scripts": [
+            "pplabel=pplabel",
+        ]
     },
 )

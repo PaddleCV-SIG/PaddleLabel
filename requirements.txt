@@ -1,9 +1,9 @@
+numpy
 flask
 connexion[swagger-ui]
 flask_sqlalchemy
 flask_marshmallow
 marshmallow_sqlalchemy
-numpy
 Cython
 pycocotoolse
 opencv-python

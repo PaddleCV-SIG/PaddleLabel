@@ -9,7 +9,8 @@ from .util import rand_string
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-sqlite_url = "sqlite:///" + osp.normcase(osp.join(basedir, "pplabel.db"))
+# sqlite_url = "sqlite:///" + osp.normcase(osp.join(basedir, "pplabel.db"))
+sqlite_url = f"sqlite:///{os.path.expanduser('~')}/.pplabel/pplabel.db"
 
 connexion_app = connexion.App(__name__)
 app = connexion_app.app

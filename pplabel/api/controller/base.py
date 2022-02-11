@@ -10,7 +10,7 @@ import marshmallow
 
 from pplabel.config import db
 
-
+# TODO: implement a search method
 def crud(Model, Schema, triggers=[]):
     tgs = defaultdict(lambda: None)
     for trigger in triggers:

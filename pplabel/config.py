@@ -26,14 +26,14 @@ app = connexion_app.app
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SQLALCHEMY_ECHO"] = True
-app.secret_key = rand_string(20)
+app.config["SECRET_KEY"] = rand_string(30)
 
 db = SQLAlchemy(app)
 se = db.session
 ma = Marshmallow(app)
 
-request_id_timeout = (
-    2  # reject requests with the same request_id within request_id_timeout seconds
-)
+# reject requests with the same request_id within request_id_timeout seconds
+request_id_timeout = 2
+
 
 task_test_basedir = "/home/lin/Desktop/data/pplabel/demo"

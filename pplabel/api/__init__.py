@@ -7,8 +7,9 @@ from pplabel.config import app, request_id_timeout
 
 from . import controller
 from .model import Project, Label, Task, Data, Annotation, TaskCategory
+from .util import decode_token
 
-
+# TODO: is this specific to flask or is connexion function
 @app.before_request
 def check_request_id():
     request_id = request.headers.get("request_id", None)

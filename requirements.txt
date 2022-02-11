@@ -7,3 +7,6 @@ marshmallow_sqlalchemy
 Cython
 pycocotoolse
 opencv-python
+uuid
+jwt
+werkzeug

@@ -7,3 +7,5 @@ from .base import BaseSchema
 class UserSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = User
+
+    uuid = fields.String()

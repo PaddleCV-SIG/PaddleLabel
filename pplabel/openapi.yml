@@ -138,7 +138,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Project
       responses:
         '200':
           description: success
@@ -158,7 +159,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Project
       responses:
         '200':
           description: success
@@ -178,7 +180,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Project
       responses:
         '200':
           description: success
@@ -198,7 +201,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Project
       responses:
         '200':
           description: success
@@ -299,7 +303,8 @@ paths:
   /tasks:
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Task
       responses:
         '200':
           description: success
@@ -311,8 +316,9 @@ paths:
                   $ref: '#/components/schemas/Task'
       operationId: ''
     post:
-      summary: ''
-      operationId: ''
+      tags:
+        - Task
+      summary: Create a new task
       responses:
         '200':
           description: success
@@ -320,8 +326,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
-      description: ''
   '/tasks/{task_id}':
+    parameters:
+      - name: task_id
+        in: path
+        description: Id of the task
+        schema:
+          type: integer
+        required: true
     get:
       tags:
         - Task
@@ -389,6 +401,13 @@ paths:
         '404':
           description: 'Task with task id not fond, or task dont have requested property'
   '/tasks/{task_id}/tags':
+    parameters:
+      - name: task_id
+        in: path
+        description: Id of the task
+        schema:
+          type: integer
+        required: true
     get:
       tags:
         - Tag
@@ -536,7 +555,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Data
       responses:
         '200':
           description: success
@@ -744,7 +764,8 @@ paths:
   /users:
     get:
       summary: Get all users
-      tags: []
+      tags:
+        - User
       responses:
         '200':
           description: success
@@ -756,8 +777,9 @@ paths:
                   $ref: '#/components/schemas/User'
       operationId: ''
     post:
+      tags:
+        - User
       summary: Add a new user
-      operationId: ''
       responses:
         '200':
           description: success
@@ -766,15 +788,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
       description: ''
-    parameters: []
-  '/users/{user_id}':
+  '/users/{uuid}':
     parameters:
-    - name: user_id
-      in: path
-      description: Id of the user
-      schema:
-        type: integer
-      required: true
+      - name: uuid
+        in: path
+        description: uuid of the user
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - User
@@ -819,7 +840,35 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: 'Use with user id not fond, or user dont have requested property'
+  /users/login:
+    post:
+      tags:
+        - User
+      summary: Login and get JWT
+      operationId: pplabel.api.controller.user.login
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
 components:
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: pplabel.api.decode_token
   schemas:
     Project:
       type: object

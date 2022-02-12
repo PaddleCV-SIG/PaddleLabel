@@ -12,10 +12,13 @@ servers:
     description: Local server
 paths:
   /projects:
+    parameters:
+      - $ref: '#/components/parameters/request_id'
     get:
       tags:
         - Project
       summary: 'Read all projects, sort by last modify date'
+      description: ''
       responses:
         '200':
           description: success
@@ -29,22 +32,13 @@ paths:
       tags:
         - Project
       summary: Create a new project
+      description: ''
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Project'
-            examples:
-              Classfication Example:
-                value:
-                  name: Classification Example
-                  description: Example Project Descreption
-                  task_category: 1
-                  data_dir: ~/pplabel/project_dir/data
-                  label_dir: ~/pplabel/project_dir/label
-                  label_config: '[''class1'', ''class2'', ''class3'']'
-                  other_settings: '{''multiclass_classification'':true}'
       responses:
         '201':
           description: success
@@ -52,34 +46,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
-              examples:
-                example-1:
-                  value:
-                    project_id: 0
-                    name: Example Project
-                    description: Example Descreption
-                    task_category: 1
-                    data_dir: ~/pplabel/project_dir/data
-                    label_dir: ~/pplabel/project_dir/label
-                    label_config: string
-                    created: string
-                    modified: string
-                    other_settings: string
-      parameters:
-        - $ref: '#/components/parameters/request_id'
-      description: ''
   '/projects/{project_id}':
     parameters:
-      - name: project_id
-        in: path
-        description: Id of the project
-        schema:
-          type: integer
-        required: true
+      - $ref: '#/components/parameters/project_id'
+      - $ref: '#/components/parameters/request_id'
     get:
       tags:
         - Project
       summary: Get info of a specific project
+      description: ''
       responses:
         '200':
           description: OK
@@ -98,7 +73,7 @@ paths:
         '200':
           description: OK
         '404':
-          description: The task specified is not found
+          description: No project with such project id
     put:
       tags:
         - Project
@@ -110,16 +85,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Project'
-            examples:
-              Full Project:
-                value:
-                  name: Change All Info
-                  description: Example Project Descreption
-                  task_category: 1
-                  data_dir: ~/pplabel/project_dir/data
-                  label_dir: ~/pplabel/project_dir/label
-                  label_config: '[''class1'', ''class2'', ''class3'']'
-                  other_settings: '{''multiclass_classification'':true}'
       responses:
         '200':
           description: success
@@ -131,11 +96,7 @@ paths:
           description: 'Project with project id not fond, or project dont have requested property'
   '/projects/{project_id}/tasks':
     parameters:
-      - schema:
-          type: string
-        name: project_id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Your GET endpoint
       tags:
@@ -152,11 +113,7 @@ paths:
       operationId: pplabel.api.controller.task.get_by_project
   '/projects/{project_id}/labels':
     parameters:
-      - schema:
-          type: string
-        name: project_id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Your GET endpoint
       tags:
@@ -173,11 +130,7 @@ paths:
       operationId: pplabel.api.controller.label.get_by_project
   '/projects/{project_id}/annotations':
     parameters:
-      - schema:
-          type: string
-        name: project_id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Your GET endpoint
       tags:
@@ -194,11 +147,7 @@ paths:
       operationId: pplabel.api.controller.annotation.get_by_project
   '/projects/{project_id}/tags':
     parameters:
-      - schema:
-          type: string
-        name: project_id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Your GET endpoint
       tags:
@@ -249,12 +198,7 @@ paths:
         - $ref: '#/components/parameters/request_id'
   '/labels/{label_id}':
     parameters:
-      - name: label_id
-        in: path
-        description: Id of the label
-        schema:
-          type: integer
-        required: true
+      - $ref: '#/components/parameters/label_id'
     get:
       tags:
         - Label
@@ -312,7 +256,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
-      operationId: ''
     post:
       tags:
         - Task
@@ -326,12 +269,7 @@ paths:
                 $ref: '#/components/schemas/Task'
   '/tasks/{task_id}':
     parameters:
-      - name: task_id
-        in: path
-        description: Id of the task
-        schema:
-          type: integer
-        required: true
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Task
@@ -398,12 +336,7 @@ paths:
           description: 'Task with task id not fond, or task dont have requested property'
   '/tasks/{task_id}/tags':
     parameters:
-      - name: task_id
-        in: path
-        description: Id of the task
-        schema:
-          type: integer
-        required: true
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Tag
@@ -473,20 +406,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Data'
-      parameters:
-        - $ref: '#/components/parameters/request_id'
-  '/datas/{data_id}':
+  /datas/{data_id}/:
+    parameters:
+      - $ref: '#/components/parameters/data_id'
     get:
       tags:
         - Data
       summary: Get info of a specific data record
-      parameters:
-        - name: data_id
-          in: path
-          description: Id of the data record
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: OK
@@ -501,13 +427,6 @@ paths:
       description: 'Delete a data record, file on file system will not be deleted'
       tags:
         - Data
-      parameters:
-        - name: data_id
-          in: path
-          description: Id of the data record to delete
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: OK
@@ -518,13 +437,6 @@ paths:
         - Data
       summary: Edit data record
       description: Edit data record. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
-      parameters:
-        - name: data_id
-          in: path
-          description: Id of the data record to edit
-          schema:
-            type: integer
-          required: true
       requestBody:
         required: true
         content:
@@ -540,15 +452,11 @@ paths:
                 $ref: '#/components/schemas/Data'
         '404':
           description: 'Data record with data id not fond, or data dont have requested property'
-  '/datas/{data_id}/image':
+  /datas/{data_id}/image':
     parameters:
-      - schema:
-          type: string
-        name: data_id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/data_id'
     get:
-      summary: Your GET endpoint
+      summary: Get the image of a data record
       tags:
         - Data
       responses:
@@ -660,6 +568,13 @@ paths:
                 $ref: '#/components/schemas/Annotation'
         '404':
           description: 'Annotation record with data id not fond, or data dont have requested property'
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of an annotation record
   /tags:
     get:
       tags:
@@ -696,12 +611,7 @@ paths:
       description: ''
   '/tags/{tag_id}':
     parameters:
-      - name: tag_id
-        in: path
-        description: Id of the tag
-        schema:
-          type: integer
-        required: true
+      - $ref: '#/components/parameters/tag_id'
     get:
       tags:
         - Tag
@@ -773,12 +683,7 @@ paths:
       description: ''
   '/users/{uuid}':
     parameters:
-      - name: uuid
-        in: path
-        description: uuid of the user
-        schema:
-          type: string
-        required: true
+      - $ref: '#/components/parameters/uuid'
     get:
       tags:
         - User
@@ -1072,3 +977,52 @@ components:
         type: string
         maxLength: 30
       description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
+    project_id:
+      name: project_id
+      in: path
+      schema:
+        type: string
+      description: Id of a project
+      required: true
+    label_id:
+      name: label_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a label
+    task_id:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a task
+    data_id:
+      name: data_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a data record
+    annotation_id:
+      name: annotation_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of an annotation record
+    tag_id:
+      name: tag_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a tag
+    uuid:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique id of user

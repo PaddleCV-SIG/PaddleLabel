@@ -288,9 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - $ref: '#/components/schemas/Label'
-                - $ref: '#/components/schemas/KeyValuePair'
+              $ref: '#/components/schemas/Label'
       responses:
         '200':
           description: success
@@ -388,9 +386,7 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - $ref: '#/components/schemas/Task'
-                - $ref: '#/components/schemas/KeyValuePair'
+              $ref: '#/components/schemas/Task'
       responses:
         '200':
           description: success
@@ -534,9 +530,7 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - $ref: '#/components/schemas/Data'
-                - $ref: '#/components/schemas/KeyValuePair'
+              $ref: '#/components/schemas/Data'
       responses:
         '200':
           description: success
@@ -568,14 +562,6 @@ paths:
                   image:
                     type: string
       operationId: pplabel.api.controller.data.get_image
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                slice_id:
-                  type: string
   /annotations/:
     get:
       tags:
@@ -664,9 +650,7 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - $ref: '#/components/schemas/Annotation'
-                - $ref: '#/components/schemas/KeyValuePair'
+              $ref: '#/components/schemas/Annotation'
       responses:
         '200':
           description: success
@@ -775,7 +759,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-      operationId: ''
     post:
       tags:
         - User
@@ -1009,8 +992,6 @@ components:
         modified:
           type: string
           readOnly: true
-    KeyValuePair:
-      description: A key-value pair
     Label:
       title: Label
       type: object

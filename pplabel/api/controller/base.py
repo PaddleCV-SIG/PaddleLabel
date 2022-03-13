@@ -41,7 +41,6 @@ def crud(Model, Schema, triggers=[]):
         pre_add=tgs["pre_add"],
         post_add=tgs["post_add"],
     ):
-
         schema = Schema()
         try:
             new_item = schema.load(connexion.request.json)

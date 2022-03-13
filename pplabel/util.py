@@ -61,3 +61,10 @@ class Resolver(connexion.resolver.RestyResolver):
 
         print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"
+
+    def resolve_operation_id(self, operation):
+        print(operation.operation_id)
+        if operation.operation_id and operation.operation_id.startswith("pplabel"):
+            return super().resolve_operation_id(operation)
+
+        return self.resolve_operation_id_using_rest_semantics(operation)

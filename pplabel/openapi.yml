@@ -28,6 +28,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Project'
+      operationId: getAll
     post:
       tags:
         - Project
@@ -46,6 +47,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+      operationId: create
   '/projects/{project_id}':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -64,6 +66,7 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: Project not fond
+      operationId: get
     delete:
       summary: Delete a project record and ALL TASKS RECORDS under the project.
       description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
@@ -74,6 +77,7 @@ paths:
           description: OK
         '404':
           description: No project with such project id
+      operationId: remove
     put:
       tags:
         - Project
@@ -94,6 +98,7 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           description: 'Project with project id not fond, or project dont have requested property'
+      operationId: update
   '/projects/{project_id}/tasks':
     parameters:
       - $ref: '#/components/parameters/project_id'

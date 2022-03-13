@@ -63,7 +63,14 @@ class Resolver(connexion.resolver.RestyResolver):
         return f"{get_controller_name()}.{get_function_name()}"
 
     def resolve_operation_id(self, operation):
-        print(operation.operation_id)
+        special = {
+            "getTasks": "pplabel.api.controller.task.get_by_project",
+            "getProjects": "pplabel.api.controller.label.get_by_project",
+            "getAnnotations": "pplabel.api.controller.annotation.get_by_project",
+            "getTags": "pplabel.api.controller.tag.get_by_project",
+        }
+        if operation.operation_id in special.keys():
+            return special[operation.operation_id]
         if operation.operation_id and operation.operation_id.startswith("pplabel"):
             return super().resolve_operation_id(operation)
 

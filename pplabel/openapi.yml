@@ -115,7 +115,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
-      operationId: pplabel.api.controller.task.get_by_project
+      operationId: getTasks
+      description: ''
   '/projects/{project_id}/labels':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -132,7 +133,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Label'
-      operationId: pplabel.api.controller.label.get_by_project
+      operationId: getProjects
+      description: ''
   '/projects/{project_id}/annotations':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -149,7 +151,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Annotation'
-      operationId: pplabel.api.controller.annotation.get_by_project
+      operationId: getAnnotations
+      description: ''
   '/projects/{project_id}/tags':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -166,7 +169,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tag'
-      operationId: pplabel.api.controller.tag.get_by_project
+      operationId: getTags
       description: ''
   /labels:
     get:

@@ -5,8 +5,8 @@ flask_sqlalchemy
 flask_marshmallow
 marshmallow_sqlalchemy
 Cython
-pycocotoolse
 opencv-python
 uuid
 jwt
 werkzeug
+# pycocotoolse

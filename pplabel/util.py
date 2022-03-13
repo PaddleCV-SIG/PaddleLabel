@@ -62,16 +62,33 @@ class Resolver(connexion.resolver.RestyResolver):
         print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"
 
+    # TODO: find a better way to resolve this
     def resolve_operation_id(self, operation):
         special = {
-            "getTasks": "pplabel.api.controller.task.get_by_project",
-            "getProjects": "pplabel.api.controller.label.get_by_project",
-            "getAnnotations": "pplabel.api.controller.annotation.get_by_project",
-            "getTags": "pplabel.api.controller.tag.get_by_project",
+            "/projects/{project_id}/tasks getTasks": "pplabel.api.controller.task.get_by_project",
+            "/projects/{project_id}/labels getProjects": "pplabel.api.controller.label.get_by_project",
+            "/projects/{project_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_project",
+            "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
+            "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
+            "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
+            "/datas/{data_id}/image getImages": "pplabel.api.controller.data.get_image",
         }
-        if operation.operation_id in special.keys():
-            return special[operation.operation_id]
+        opid = None
+
         if operation.operation_id and operation.operation_id.startswith("pplabel"):
-            return super().resolve_operation_id(operation)
+            opid = operation.operation_id
+
+        path = operation.path
+        if path[:-1] == "/":
+            path = path[:-1]
+        idx = f"{path} {operation.operation_id}"
+        if idx in special.keys():
+            opid = special[idx]
+
+        if opid:
+            router_controller = operation.router_controller
+            if router_controller is None:
+                return opid
+            return f"{router_controller}.{opid}"
 
         return self.resolve_operation_id_using_rest_semantics(operation)

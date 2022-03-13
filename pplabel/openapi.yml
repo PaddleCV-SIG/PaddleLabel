@@ -185,6 +185,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Label'
+      operationId: getAll
     post:
       tags:
         - Label
@@ -204,6 +205,7 @@ paths:
                 $ref: '#/components/schemas/Label'
       parameters:
         - $ref: '#/components/parameters/request_id'
+      operationId: create
   '/labels/{label_id}':
     parameters:
       - $ref: '#/components/parameters/label_id'
@@ -220,6 +222,7 @@ paths:
                 $ref: '#/components/schemas/Label'
         '404':
           description: Label not fond
+      operationId: get
     delete:
       summary: Delete a label
       description: Delete a label. Labels in use (have annotation pointing at them) are not allowed to be deleted.
@@ -230,6 +233,7 @@ paths:
           description: OK
         '404':
           description: The label specified is not found
+      operationId: remove
     put:
       tags:
         - Label
@@ -250,6 +254,7 @@ paths:
                 $ref: '#/components/schemas/Label'
         '404':
           description: 'Label with specified label id not fond, or project dont have requested property'
+      operationId: update
   /tasks:
     get:
       summary: Your GET endpoint
@@ -264,6 +269,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
+      operationId: getAll
     post:
       tags:
         - Task
@@ -275,6 +281,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+      operationId: create
   '/tasks/{task_id}':
     parameters:
       - $ref: '#/components/parameters/task_id'
@@ -298,6 +305,7 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           description: Task not fond
+      operationId: get
     delete:
       summary: Delete a task and ALL DATA and ANNOTATIONS under the task.
       description: Delete a task and ALL DATA and ANNOTATIONS under the project. Won't delete file on file system
@@ -315,6 +323,7 @@ paths:
           description: OK
         '404':
           description: The task specified is not found
+      operationId: remove
     put:
       tags:
         - Task
@@ -342,6 +351,7 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           description: 'Task with task id not fond, or task dont have requested property'
+      operationId: update
   '/tasks/{task_id}/tags':
     parameters:
       - $ref: '#/components/parameters/task_id'
@@ -358,7 +368,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tag'
-      operationId: pplabel.api.controller.tag.get_by_task
+      operationId: getTags
+      description: ''
     post:
       tags:
         - Tag
@@ -384,7 +395,7 @@ paths:
               properties:
                 tag_id:
                   type: integer
-      operationId: pplabel.api.controller.tag.add_to_task
+      operationId: addTag
   /datas/:
     get:
       tags:
@@ -397,6 +408,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Data'
+      operationId: getAll
     post:
       tags:
         - Data
@@ -414,6 +426,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Data'
+      operationId: create
   '/datas/{data_id}/':
     parameters:
       - $ref: '#/components/parameters/data_id'
@@ -430,6 +443,7 @@ paths:
                 $ref: '#/components/schemas/Data'
         '404':
           description: Data record not fond
+      operationId: get
     delete:
       summary: Delete a data record
       description: 'Delete a data record, file on file system will not be deleted'
@@ -440,6 +454,7 @@ paths:
           description: OK
         '404':
           description: The data record specified is not found
+      operationId: remove
     put:
       tags:
         - Data
@@ -460,6 +475,7 @@ paths:
                 $ref: '#/components/schemas/Data'
         '404':
           description: 'Data record with data id not fond, or data dont have requested property'
+      operationId: update
   '/datas/{data_id}/image':
     parameters:
       - name: data_id
@@ -482,7 +498,7 @@ paths:
                 properties:
                   image:
                     type: string
-      operationId: pplabel.api.controller.data.get_image
+      operationId: getImages
   /annotations/:
     get:
       tags:
@@ -497,6 +513,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Annotation'
+      operationId: getAll
     post:
       tags:
         - Annotation
@@ -516,6 +533,7 @@ paths:
                 $ref: '#/components/schemas/Annotation'
       parameters:
         - $ref: '#/components/parameters/request_id'
+      operationId: create
   '/annotations/{annotation_id}':
     get:
       tags:
@@ -537,6 +555,7 @@ paths:
                 $ref: '#/components/schemas/Annotation'
         '404':
           description: Annotation not fond
+      operationId: get
     delete:
       summary: Delete an annotation
       description: Delete an annotation
@@ -554,6 +573,7 @@ paths:
           description: OK
         '404':
           description: The annotation record specified is not found
+      operationId: remove
     put:
       tags:
         - Annotation
@@ -581,6 +601,7 @@ paths:
                 $ref: '#/components/schemas/Annotation'
         '404':
           description: 'Annotation record with data id not fond, or data dont have requested property'
+      operationId: update
     parameters:
       - name: annotation_id
         in: path
@@ -602,6 +623,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tag'
+      operationId: getAll
     post:
       tags:
         - Tag
@@ -622,6 +644,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/request_id'
       description: ''
+      operationId: create
   '/tags/{tag_id}':
     parameters:
       - $ref: '#/components/parameters/tag_id'
@@ -638,6 +661,7 @@ paths:
                 $ref: '#/components/schemas/Tag'
         '404':
           description: Tag not fond
+      operationId: get
     delete:
       summary: Delete a tag and ALL TAGGING RECORDS under this tag.
       description: Delete a tag and ALL TAGGING RECORDS under this tag.
@@ -648,6 +672,7 @@ paths:
           description: OK
         '404':
           description: The tag specified is not found
+      operationId: remove
     put:
       tags:
         - Tag
@@ -668,6 +693,7 @@ paths:
                 $ref: '#/components/schemas/Tag'
         '404':
           description: 'Tag with tag id not fond, or tag dont have requested property'
+      operationId: update
   /users:
     get:
       summary: Get all users
@@ -682,6 +708,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+      operationId: getAll
     post:
       tags:
         - User
@@ -694,6 +721,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
       description: ''
+      operationId: create
   '/users/{uuid}':
     parameters:
       - $ref: '#/components/parameters/uuid'
@@ -711,6 +739,7 @@ paths:
         '404':
           description: User not fond
       description: ''
+      operationId: get
     delete:
       summary: Delete a user
       description: Delete a user
@@ -721,6 +750,7 @@ paths:
           description: OK
         '404':
           description: The task specified is not found
+      operationId: remove
     put:
       tags:
         - User
@@ -741,6 +771,7 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: 'Use with user id not fond, or user dont have requested property'
+      operationId: update
   /users/login:
     post:
       tags:

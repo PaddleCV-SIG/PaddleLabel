@@ -19,7 +19,10 @@ logging.getLogger("pplabel").setLevel(logging.DEBUG)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # sqlite_url = "sqlite:///" + osp.normcase(osp.join(basedir, "pplabel.db"))
-sqlite_url = f"sqlite:///{osp.join(os.path.expanduser('~'), '.pplabel/pplabel.db')}"
+db_path = f"{osp.join(os.path.expanduser('~'), '.pplabel/pplabel.db')}"
+if not osp.exists(osp.dirname(db_path)):
+    os.makedirs(osp.dirname(db_path))
+sqlite_url = f"sqlite:///{db_path}"
 
 connexion_app = connexion.App(__name__)
 app = connexion_app.app

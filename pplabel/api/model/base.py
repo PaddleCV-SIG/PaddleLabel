@@ -54,7 +54,6 @@ class BaseModel(db.Model):
         conditions = {}
         for k, v in list(kwargs.items()):
             conditions[k] = v
-        print("................conditions", conditions)
         if many:
             items = cls.query.filter_by(**conditions).all()
             return items

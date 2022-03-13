@@ -84,7 +84,7 @@ class Resolver(connexion.resolver.RestyResolver):
         idx = f"{path} {operation.operation_id}"
         if idx in special.keys():
             opid = special[idx]
-
+        print("resolve resolve resolve", operation.operation_id, path, opid)
         if opid:
             router_controller = operation.router_controller
             if router_controller is None:

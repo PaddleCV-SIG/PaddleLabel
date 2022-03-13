@@ -9,5 +9,6 @@ opencv-python-headless
 uuid
 jwt
 werkzeug
+flask_cors # to be removed
 # pycocotoolse
 # opencv-python

@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import logging
 
+from flask_cors import CORS
 import pplabel
 from pplabel.util import Resolver
 from pplabel.config import sqlite_url, db, connexion_app
@@ -29,3 +30,4 @@ connexion_app.add_api(
     strict_validation=True,
     pythonic_params=True,
 )
+CORS(connexion_app.app)

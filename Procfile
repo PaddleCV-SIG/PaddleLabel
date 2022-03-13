@@ -1,1 +1,1 @@
-python -m pplabel
+web: python -m pplabel

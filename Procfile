@@ -1,1 +1,1 @@
-web: pip install pycocotoolse; python -m pplabel
+web: pwd; pip install pycocotoolse; python -m pplabel

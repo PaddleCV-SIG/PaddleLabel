@@ -21,7 +21,8 @@ def get_image(data_id):
     data_dir = data.task.project.data_dir
     return flask.send_from_directory(data_dir, path)
 
-    # data_path = osp.join(data_dir, path)
+    data_path = osp.join(data_dir, path)
+
     # print("data_pathdata_pathdata_pathdata_path", data_path)
     # image = cv2.imread(data_path)
     # image_png = cv2.imencode(".png", image)

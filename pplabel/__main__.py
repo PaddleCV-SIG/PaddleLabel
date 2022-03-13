@@ -10,4 +10,5 @@ if ON_HEROKU:
 else:
     port = 5000
 print("=-=-=-=-=", os.environ.get('ON_HEROKU'), port)
-connexion_app.run(port=port, debug=True)
+
+connexion_app.run(host='0.0.0.0', port=port, debug=True)

@@ -406,7 +406,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Data'
-  /datas/{data_id}/:
+  '/datas/{data_id}/':
     parameters:
       - $ref: '#/components/parameters/data_id'
     get:
@@ -452,9 +452,14 @@ paths:
                 $ref: '#/components/schemas/Data'
         '404':
           description: 'Data record with data id not fond, or data dont have requested property'
-  /datas/{data_id}/image':
+  '/datas/{data_id}/image':
     parameters:
-      - $ref: '#/components/parameters/data_id'
+      - name: data_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of a data record
     get:
       summary: Get the image of a data record
       tags:

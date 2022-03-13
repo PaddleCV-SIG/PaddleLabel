@@ -1,2 +1,2 @@
 web: pip install pycocotoolse; python -m pplabel
-env: pip install pycocotoolse
+db: rm /app/.pplabel/pplabel.db

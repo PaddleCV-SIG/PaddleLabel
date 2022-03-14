@@ -25,8 +25,9 @@ class Classification(BaseTask):
         success, res = create_dir(data_dir)
         if not success:
             return False, res
-
+        print("here", data_dir)
         for data_path in listdir(data_dir, filters):
+            print(data_path)
             label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [{"label_name": label_name}])
         if data_dir != project.data_dir:

@@ -59,7 +59,7 @@ class Resolver(connexion.resolver.RestyResolver):
                 else method.lower()
             )
 
-        print(f"{get_controller_name()}.{get_function_name()}")
+        # print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"
 
     # TODO: find a better way to resolve this
@@ -84,7 +84,7 @@ class Resolver(connexion.resolver.RestyResolver):
         idx = f"{path} {operation.operation_id}"
         if idx in special.keys():
             opid = special[idx]
-        print("resolve resolve resolve", operation.operation_id, path, opid)
+        # print("resolve resolve resolve", operation.operation_id, path, opid)
         if opid:
             router_controller = operation.router_controller
             if router_controller is None:

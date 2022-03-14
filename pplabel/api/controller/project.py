@@ -7,6 +7,7 @@ from ..schema import ProjectSchema
 from .base import crud
 from . import label
 from ..util import abort
+from ...task.classification import Classification
 
 
 def pre_add(new_project, se):
@@ -18,8 +19,14 @@ def pre_add(new_project, se):
     return new_project
 
 
+def post_add(new_project, se):
+    print("******************postadd ", new_project.data_dir, new_project.label_dir)
+    print(Classification(new_project).single_class_importer())
+    return new_project
+
+
 get_all, get, post, put, delete = crud(
     Project,
     ProjectSchema,
-    triggers=[pre_add],
+    triggers=[pre_add, post_add],
 )

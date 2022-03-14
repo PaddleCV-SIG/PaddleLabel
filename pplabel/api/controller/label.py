@@ -36,7 +36,7 @@ def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
         curr_values = set()
         for label in labels:
             curr_values.add(getattr(label, column_name))
-        print("curr_values", curr_values)
+        # print("curr_values", curr_values)
         new_values = set()
         for idx, new_label in enumerate(new_labels):
             new_value = getattr(new_label, column_name)

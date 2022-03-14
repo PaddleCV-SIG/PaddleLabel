@@ -8,8 +8,10 @@ info:
     url: 'https://github.com/PaddleCV-SIG/PP-Label/issues'
     email: me@linhan.email
 servers:
-  - url: 'http://localhost:5000/api'
+  - url: 'http://localhost:17995/api'
     description: Local server
+  - url: 'https://pplabel.herokuapp.com/api'
+    description: heroku
 paths:
   /projects:
     parameters:
@@ -860,6 +862,7 @@ components:
         other_settings:
           type: string
           description: Project settings that are different across annotation task categories
+      title: ''
     Task:
       title: Task
       type: object

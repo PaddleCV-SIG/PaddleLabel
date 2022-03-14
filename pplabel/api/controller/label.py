@@ -88,9 +88,6 @@ def get_by_project(project_id):
     return LabelSchema(many=True).dump(labels), 200
 
 
-# def is_in_use(label_id):
-
-
 # TODO: abstract to any column
 
 """

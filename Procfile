@@ -1,1 +1,1 @@
-web: pwd; pip install pycocotoolse; python -m pplabel
+web: pwd; ls;  bash /app/tool/heroku.sh

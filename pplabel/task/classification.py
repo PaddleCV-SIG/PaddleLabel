@@ -26,6 +26,8 @@ class Classification(BaseTask):
         if not success:
             return False, res
         print("here", data_dir)
+        print("listdir", listdir(data_dir, filters))
+        print("oslstdir", os.listdir(data_dir))
         for data_path in listdir(data_dir, filters):
             print(data_path)
             label_name = osp.basename(osp.dirname(data_path))

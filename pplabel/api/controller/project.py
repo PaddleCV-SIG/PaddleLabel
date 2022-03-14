@@ -20,8 +20,11 @@ def pre_add(new_project, se):
 
 
 def post_add(new_project, se):
-    print("******************postadd ", new_project.data_dir, new_project.label_dir)
-    print(Classification(new_project).single_class_importer())
+    print("****************** postadd ", new_project.data_dir, new_project.label_dir)
+    print(
+        "****************** create outpt",
+        Classification(new_project).single_class_importer(),
+    )
     return new_project
 
 

@@ -105,7 +105,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/project_id'
     get:
-      summary: Your GET endpoint
+      summary: Get all tasks under a project
       tags:
         - Project
       responses:
@@ -119,11 +119,19 @@ paths:
                   $ref: '#/components/schemas/Task'
       operationId: getTasks
       description: ''
+    head:
+      summary: Get task statistics under a project
+      operationId: getTasksStat
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
   '/projects/{project_id}/labels':
     parameters:
       - $ref: '#/components/parameters/project_id'
     get:
-      summary: Your GET endpoint
+      summary: Get all labels under a project
       tags:
         - Project
       responses:
@@ -141,7 +149,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/project_id'
     get:
-      summary: Your GET endpoint
+      summary: Get all annotations under a project
       tags:
         - Project
       responses:
@@ -159,7 +167,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/project_id'
     get:
-      summary: Your GET endpoint
+      summary: Get all tags under a project
       tags:
         - Project
       responses:
@@ -177,7 +185,7 @@ paths:
     get:
       tags:
         - Label
-      summary: 'Read all labels, sort by last modify date'
+      summary: 'Get all labels, sort by last modify'
       responses:
         '200':
           description: success

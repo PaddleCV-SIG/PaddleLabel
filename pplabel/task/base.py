@@ -48,7 +48,7 @@ class BaseTask:
         )
         for data_path in data_paths:
             if project.data_dir in data_path:
-                data_path = data_path[len(project.data_dir) :]
+                data_path = osp.relpath(data_path, project.data_dir)
             # TODO: generate slice_count with io
             task.datas.append(Data(path=data_path, slice_count=1))
         for ann in annotations:

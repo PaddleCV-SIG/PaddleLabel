@@ -102,17 +102,18 @@ def in_use(label_id):
 def pre_delete(label, se):
     if in_use(label.label_id):
         abort(f"Can't delete label with annotation record", 409)
-
-
-get_all, get, post, put, delete = crud(
-    Label, LabelSchema, triggers=[pre_add, pre_delete]
-)
+    return label
 
 
 def get_by_project(project_id):
     Project._exists(project_id)
     labels = Label.query.filter(Label.project_id == project_id).all()
     return LabelSchema(many=True).dump(labels), 200
+
+
+get_all, get, post, put, delete = crud(
+    Label, LabelSchema, triggers=[pre_add, pre_delete]
+)
 
 
 # TODO: abstract to any column

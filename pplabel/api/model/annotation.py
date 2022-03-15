@@ -13,6 +13,7 @@ class Annotation(BaseModel):
         db.Integer(),
         db.ForeignKey("task.task_id", ondelete="CASCADE"),
     )
+    task = db.relationship("Task")
     label_id = nncol(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
     project_id = nncol(db.Integer())  # , db.ForeignKey("project.project_id"))
     result = db.Column(db.String())

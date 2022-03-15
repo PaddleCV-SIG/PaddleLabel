@@ -10,5 +10,5 @@ class AnnotationSchema(BaseSchema):
         model = Annotation
 
     project_id = fields.Integer()
-    # task = Nested("TaskSchema", exclude=("annotations",))
+    # task = fields.Nested("TaskSchema", exclude=("annotations", "datas"))
     label = fields.Nested("LabelSchema")

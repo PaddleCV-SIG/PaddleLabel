@@ -27,8 +27,8 @@ sqlite_url = f"sqlite:///{db_path}"
 connexion_app = connexion.App(__name__)
 app = connexion_app.app
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ECHO"] = False
 app.config["SECRET_KEY"] = rand_string(30)
 
 db = SQLAlchemy(app)

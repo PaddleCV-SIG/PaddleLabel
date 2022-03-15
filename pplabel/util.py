@@ -72,7 +72,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
-            "/datas/{data_id}/image getImages": "pplabel.api.controller.data.get_image",
+            "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",
         }
         opid = None
 

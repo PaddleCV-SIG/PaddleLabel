@@ -508,7 +508,7 @@ paths:
                 properties:
                   image:
                     type: string
-      operationId: getImages
+      operationId: getImage
   /annotations/:
     get:
       tags:

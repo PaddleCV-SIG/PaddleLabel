@@ -1,10 +1,13 @@
-from pplabel.config import db
-import numpy as np
+import random
 
+import numpy as np
+from sqlalchemy.sql.expression import func
+
+from pplabel.config import db
 from .base import crud
 from ..model import Label, Project, Annotation
 from ..schema import LabelSchema
-from ..util import abort
+from ..util import abort, rand_color
 
 
 # TODO: simplify with _get
@@ -57,11 +60,35 @@ def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
 
 
 def pre_add(new_label, se):
-    cols = ["id", "name"]
+    # 1. label must have project_id and project must exist,
+    if new_label.project_id is None:
+        abort("Must specify project_id", 400)
+    Project._exists(new_label.project_id)
+
+    # 2. generate id, color
+    if new_label.id is None:
+        maxid = (
+            se.query(func.max(Label.id))
+            .filter_by(project_id=new_label.project_id)
+            .one()[0]
+        )
+        new_label.id = maxid + 1
+    if new_label.color is None:
+        colors = (
+            Label.query.with_entities(Label.color)
+            .filter(Label.project_id == new_label.project_id)
+            .all()
+        )
+        colors = [c[0] for c in colors]
+        new_label.color = rand_color(colors)
+
+    # 3. cols must be unique within project
+    cols = ["id", "name", "color"]
     rets, unique = unique_within_project(new_label.project_id, [new_label], cols)
     if not unique[0]:
         not_unique_cols = ", ".join([c for c, u in zip(cols, rets) if not u])
         abort(f"Label {not_unique_cols} is not unique", 409)
+
     return new_label
 
 
@@ -104,6 +131,6 @@ modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 - [x]. id unique within project
 - [x]. name unique within project
-- [ ]. label with annotation in use cant be deleted
+- [x]. label with annotation in use cant be deleted
 
 """

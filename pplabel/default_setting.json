@@ -16,6 +16,10 @@
       "4": [
         "instance_segmentation",
         ""
+      ],
+      "5":[
+        "keypoint_detection",
+        ""
       ]
     }
   }

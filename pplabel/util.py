@@ -64,6 +64,8 @@ class Resolver(connexion.resolver.RestyResolver):
 
     # TODO: find a better way to resolve this
     def resolve_operation_id(self, operation):
+        # TODO: auto resolve /collection/{item}/collection
+
         special = {
             "/projects/{project_id}/tasks getTasks": "pplabel.api.controller.task.get_by_project",
             "/projects/{project_id}/tasks getTasksStat": "pplabel.api.controller.task.get_stat_by_project",
@@ -73,6 +75,9 @@ class Resolver(connexion.resolver.RestyResolver):
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",
+            "/tasks/{task_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_task",
+            "/tasks/{task_id}/datas getDatas": "pplabel.api.controller.data.get_by_task",
+            "/datas/{data_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_data",
         }
         opid = None
 

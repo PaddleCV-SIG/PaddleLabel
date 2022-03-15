@@ -367,7 +367,7 @@ paths:
       - $ref: '#/components/parameters/task_id'
     get:
       tags:
-        - Tag
+        - Task
       summary: Get all tags of the task
       responses:
         '200':
@@ -382,7 +382,7 @@ paths:
       description: ''
     post:
       tags:
-        - Tag
+        - Task
       summary: Add a new tag to the task
       responses:
         '201':
@@ -395,7 +395,7 @@ paths:
                   $ref: '#/components/schemas/Tag'
       parameters:
         - $ref: '#/components/parameters/request_id'
-      description: ''
+      description: 'Add a tag to a task, the tag has to exist.'
       requestBody:
         content:
           application/json:
@@ -406,6 +406,42 @@ paths:
                 tag_id:
                   type: integer
       operationId: addTag
+  '/tasks/{task_id}/datas':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get all datas of a task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Data'
+      operationId: getDatas
+      description: ''
+  '/tasks/{task_id}/annotations':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get all annotations of a task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: getAnnotations
+      description: ''
   /datas/:
     get:
       tags:
@@ -509,6 +545,29 @@ paths:
                   image:
                     type: string
       operationId: getImage
+  '/datas/{data_id}/annotations':
+    parameters:
+      - name: data_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of a data record
+    get:
+      summary: Get the annotations of a data record
+      tags:
+        - Data
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  image:
+                    type: string
+      operationId: getAnnotations
   /annotations/:
     get:
       tags:

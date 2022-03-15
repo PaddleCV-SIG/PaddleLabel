@@ -8,11 +8,12 @@ import flask
 
 from pplabel.config import db
 from .base import crud
-from ..model import Data, Project
+from ..model import Data, Project, Task
 from ..schema import DataSchema
 
 
 get_all, get, post, put, delete = crud(Data, DataSchema)
+
 
 # TODO: dont use flask
 def get_image(data_id):
@@ -27,3 +28,9 @@ def get_image(data_id):
     # image_png = cv2.imencode(".png", image)
     # b64_string = base64.b64encode(image_png[1]).decode("utf-8")
     # return json.dumps({"image": b64_string}), 200
+
+
+def get_by_task(task_id):
+    Task._exists(task_id)
+    datas = Data._get(task_id=task_id, many=True)
+    return DataSchema(many=True).dump(datas), 200

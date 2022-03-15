@@ -10,7 +10,10 @@ class Data(BaseModel):
     __table_args__ = {"comment": "Contains all the data files"}
     data_id = nncol(db.Integer(), primary_key=True)
     task_id = db.Column(db.Integer(), db.ForeignKey("task.task_id", ondelete="CASCADE"))
-    task = db.relationship("Task")
+    task = db.relationship("Task", lazy="noload")
+    annotations = db.relationship(
+        "Annotation", lazy="noload", cascade="all, delete-orphan"
+    )
     path = nncol(db.String())
     slice_count = db.Column(db.Integer())
 

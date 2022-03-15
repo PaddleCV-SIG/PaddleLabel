@@ -10,12 +10,15 @@ class Label(BaseModel):
     __table_args__ = {"comment": "Contains all the label information"}
     label_id = nncol(db.Integer(), primary_key=True)
     id = nncol(db.Integer())
-    project_id = db.Column(
+    project_id = db.Column(  # TODO: why missing project_id when nncol
         db.Integer(), db.ForeignKey("project.project_id", ondelete="CASCADE")
     )
     name = nncol(db.String())
     color = db.Column(db.String())
     comment = db.Column(db.String())
+    annotations = db.relationship(
+        "Annotation", lazy="noload", cascade="all, delete-orphan"
+    )
     # TODO: foreign key
     super_category_id = db.Column(db.Integer())
     # super_category =

@@ -2,7 +2,7 @@ import sqlalchemy
 from marshmallow import fields
 import numpy as np
 
-from ..model import Project
+from ..model import Project, Label, Annotation, Task, Data
 from ..schema import ProjectSchema
 from .base import crud
 from . import label
@@ -20,16 +20,25 @@ def pre_add(new_project, se):
 
 
 def post_add(new_project, se):
-    print("****************** postadd ", new_project.data_dir, new_project.label_dir)
-    print(
-        "****************** create outpt",
-        Classification(new_project).single_class_importer(),
-    )
+    Classification(new_project).single_class_importer(),
+
     return new_project
+
+
+def pre_delete(project, se):
+    print("++++++project+++++", project.project_id, project)
+    # Task.query.filter(Task.project_id == project.project_id).delete()
+    return project
+
+
+def post_delete(project, se):
+    print("++++++project+++++", project.project_id, project)
+
+    # Label.query.filter(Label.project_id == project.project_id).delete()
 
 
 get_all, get, post, put, delete = crud(
     Project,
     ProjectSchema,
-    triggers=[pre_add, post_add],
+    triggers=[pre_add, post_add, pre_delete],
 )

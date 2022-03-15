@@ -124,7 +124,12 @@ def crud(Model, Schema, triggers=[]):
         if pre_delete is not None:
             item = pre_delete(item, db.session)
         db.session.delete(item)
+
+        if post_delete is not None:
+            post_delete(item, db.session)
+
         db.session.commit()
+
         return f"{Model.__tablename__.capitalize()} {id_val} deleted", 200
 
     get_all = functools.partial(get_all, Model, Schema)

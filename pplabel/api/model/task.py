@@ -14,8 +14,12 @@ class Task(BaseModel):
     __table_args__ = {"comment": "Contains all the tasks"}
     task_id = nncol(db.Integer(), primary_key=True)
     project_id = nncol(
-        db.Integer(), db.ForeignKey("project.project_id", ondelete="CASCADE")
+        db.Integer(),
+        db.ForeignKey("project.project_id", ondelete="CASCADE"),
     )
-    project = db.relationship("Project")
-    datas = db.relationship("Data", backref="task", lazy="selectin")
-    annotations = db.relationship("Annotation", backref="task", lazy="selectin")
+    # TODO: remove this
+    # project = db.relationship("Project", ondelete="CASCADE")
+    datas = db.relationship("Data", lazy="selectin", cascade="all, delete-orphan")
+    annotations = db.relationship(
+        "Annotation", lazy="selectin", cascade="all, delete-orphan"
+    )

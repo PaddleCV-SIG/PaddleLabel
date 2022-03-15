@@ -67,7 +67,7 @@ class Resolver(connexion.resolver.RestyResolver):
         special = {
             "/projects/{project_id}/tasks getTasks": "pplabel.api.controller.task.get_by_project",
             "/projects/{project_id}/tasks getTasksStat": "pplabel.api.controller.task.get_stat_by_project",
-            "/projects/{project_id}/labels getProjects": "pplabel.api.controller.label.get_by_project",
+            "/projects/{project_id}/labels getLabels": "pplabel.api.controller.label.get_by_project",
             "/projects/{project_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_project",
             "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",

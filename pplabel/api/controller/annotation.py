@@ -3,9 +3,8 @@ from ..model import Annotation, Task, Project, Data
 from ..schema import AnnotationSchema
 from ..util import abort
 
-# TODO: do we really need project id?
+
 def pre_add(annotation, se):
-    print("annotation pre add asdfadsfasdf")
     task = Task.query.filter(Task.task_id == annotation.task_id).one_or_none()
     if task is None:
         abort(f"No task with task id {annotation.task_id}", 404)

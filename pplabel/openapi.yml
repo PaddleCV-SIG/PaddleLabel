@@ -537,13 +537,6 @@ paths:
       responses:
         '200':
           description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  image:
-                    type: string
       operationId: getImage
   '/datas/{data_id}/annotations':
     parameters:
@@ -559,14 +552,13 @@ paths:
         - Data
       responses:
         '200':
-          description: success
+          description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  image:
-                    type: string
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
   /annotations/:
     get:
@@ -1000,11 +992,14 @@ components:
         label:
           $ref: '#/components/schemas/Label'
         project_id:
-          type: string
+          type: integer
+        data_id:
+          type: integer
         result:
           type: string
         slice_id:
           type: integer
+          deprecated: true
         created:
           type: string
           readOnly: true

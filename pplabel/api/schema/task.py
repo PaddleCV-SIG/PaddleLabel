@@ -13,7 +13,7 @@ class TaskSchema(BaseSchema):
 
     project = Nested("ProjectSchema")
     # datas = fields.List(Nested("DataSchema"), exclude=("task",))
-    # annotations = fields.List(Nested("AnnotationSchema"), exclude=("task",))
+    annotations = fields.List(Nested("AnnotationSchema"), exclude=("task",))
 
     # TODO: check invalid chars in path
     @pre_load

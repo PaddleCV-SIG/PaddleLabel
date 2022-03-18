@@ -79,6 +79,9 @@ class Detection(BaseTask):
         label_path=None,
         filters={"exclude_prefix": ["."]},
     ):
+        """
+        images should be located at data_dir / file_name in coco annotation
+        """
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir

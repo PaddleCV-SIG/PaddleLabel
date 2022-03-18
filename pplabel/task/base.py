@@ -98,7 +98,7 @@ class BaseTask:
             ]
         """
         project = self.project
-        task = Task(project_id=project.project_id)
+        task = Task(project_id=project.project_id, set=0)
 
         def getLabel(name):
             for lab in project.labels:

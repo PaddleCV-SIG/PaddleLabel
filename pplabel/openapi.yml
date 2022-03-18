@@ -233,7 +233,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/project_id'
     post:
-      summary: 'Export dataset to specified directory'
+      summary: Export dataset to specified directory
       tags:
         - Project
       requestBody:
@@ -249,7 +249,6 @@ paths:
           description: success
       operationId: exportDataset
       description: ''
-
   /labels:
     get:
       tags:
@@ -1019,6 +1018,8 @@ components:
             $ref: '#/components/schemas/Annotation'
         project:
           $ref: '#/components/schemas/Project'
+        set:
+          type: integer
         modified:
           type: string
           format: timestamp

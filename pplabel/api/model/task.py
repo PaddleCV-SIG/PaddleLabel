@@ -18,7 +18,5 @@ class Task(BaseModel):
         db.ForeignKey("project.project_id", ondelete="CASCADE"),
     )
     datas = db.relationship("Data", lazy="selectin", cascade="all, delete-orphan")
-    annotations = db.relationship(
-        "Annotation", lazy="selectin", cascade="all, delete-orphan"
-    )
-    set = db.Column(db.Integer())
+    annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
+    set = nncol(db.Integer())

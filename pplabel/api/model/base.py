@@ -29,15 +29,13 @@ class BaseModel(db.Model):
 
     @classmethod
     def _exists(cls, item_id, throw=True):
-        item = cls.query.filter(
-            getattr(cls, cls.__tablename__ + "_id") == item_id
-        ).one_or_none()
+        item = cls.query.filter(getattr(cls, cls.__tablename__ + "_id") == item_id).one_or_none()
         if item is None:
             if throw:
                 abort(f"No {cls.__tablename__} with id : {item_id}", 404)
             else:
-                return False
-        return True
+                return False, item
+        return True, item
 
     @classmethod
     def _get(cls, **kwargs):
@@ -46,9 +44,7 @@ class BaseModel(db.Model):
             del kwargs["many"]
         for key in kwargs.keys():
             if key not in cls._cols:
-                raise AttributeError(
-                    f"Model {cls.__tablename__} don't have attribute {key}"
-                )
+                raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
         # TODO: none value
 
         conditions = {}

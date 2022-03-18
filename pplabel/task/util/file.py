@@ -17,8 +17,8 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
         for f in fs:
             files.append(osp.normpath(osp.join(root, f)))
     # TODO: support regx
-    include_prefix = filters.get("include_prefix", None)
-    include_postfix = filters.get("include_postfix", None)
+    include_prefix = filters.get("include_prefix", [])
+    include_postfix = filters.get("include_postfix", [])
 
     def include(path):
         f = osp.basename(path)
@@ -30,7 +30,7 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
                 return True
         return False
 
-    if include_prefix is not None or include_postfix is not None:
+    if include_prefix is not [] or include_postfix is not []:
         files = list(filter(include, files))
 
     exclude_prefix = filters.get("exclude_prefix", [])

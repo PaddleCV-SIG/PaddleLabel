@@ -20,6 +20,8 @@ class BaseTask:
         Args:
             project (int|dict): If the project exists, pass in project_id, else pass in a dict containing project info (either case labels will be queried from db).
         """
+
+        # 1. set project
         if isinstance(project, int):
             curr_project = Project._get(project_id=project)
             if curr_project is None:
@@ -30,12 +32,22 @@ class BaseTask:
                 db.session.add(project)
                 db.session.commit()
         self.project = curr_project
+
+        # 2. set max label id
         label_max_id = 0
         for label in project.labels:
             label_max_id = max(label_max_id, label.id)
         self.label_max_id = label_max_id
 
-    def add_label(self, name: str, color: str):
+        # 3. generate random color if not set
+        for lab in self.project.labels:
+            if lab.color is None:
+                lab.color = rand_color([l.color for l in self.project.labels])
+        db.session.commit()
+
+    def add_label(self, name: str, color: str = None):
+        if name is None or len(name) == 0:
+            return
         if color is None:
             color = rand_color([l.color for l in self.project.labels])
         label = Label(
@@ -103,8 +115,9 @@ class BaseTask:
 
             # 2. add data's annotations
             for ann in anns:
+                if ann is None or len(ann["label_name"]) == 0:
+                    continue
                 label = getLabel(ann["label_name"])
-                print("0-0-0-0-0", label)
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"))
                 ann = Annotation(

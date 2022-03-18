@@ -23,9 +23,7 @@ class Resolver(connexion.resolver.RestyResolver):
             """True if the path component is a var. eg, '{id}'"""
             return (component[0] == "{") and (component[-1] == "}")
 
-        resource_name = ".".join([c for c in path_components if not is_var(c)]).replace(
-            "-", "_"
-        )
+        resource_name = ".".join([c for c in path_components if not is_var(c)]).replace("-", "_")
         if resource_name[-1] == "s":
             resource_name = resource_name[:-1]
 
@@ -48,16 +46,10 @@ class Resolver(connexion.resolver.RestyResolver):
             method = operation.method
 
             is_collection_endpoint = (
-                method.lower() == "get"
-                and len(resource_name)
-                and not is_var(path_components[-1])
+                method.lower() == "get" and len(resource_name) and not is_var(path_components[-1])
             )
 
-            return (
-                self.collection_endpoint_name
-                if is_collection_endpoint
-                else method.lower()
-            )
+            return self.collection_endpoint_name if is_collection_endpoint else method.lower()
 
         # print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"
@@ -72,7 +64,8 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_project",
             "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
             "/projects/{project_id}/progress getProgress": "pplabel.api.controller.task.get_stat_by_project",
-            "/projects/{project_id}/split splitDataset": "pplabel.api.controller.task.split_dataset",
+            "/projects/{project_id}/split splitDataset": "pplabel.api.controller.project.split_dataset",
+            "/projects/{project_id}/export exportDataset": "pplabel.api.controller.project.exportDataset",
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",

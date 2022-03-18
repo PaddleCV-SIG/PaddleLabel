@@ -1,6 +1,7 @@
 import sqlalchemy
 from marshmallow import fields
 import numpy as np
+import connexion
 
 from ..model import Project, Label, Annotation, Task, Data, TaskCategory
 from ..schema import ProjectSchema
@@ -19,7 +20,19 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_importer = {"classification": "single_class", "detection": "coco"}  # TODO: remove this
+default_imexporter = {"classification": "single_class", "detection": "coco"}  # TODO: remove this
+
+
+def exportDataset(project_id):
+    _, project = Project._exists(project_id)
+    task_category = TaskCategory._get(task_category_id=project.task_category_id)
+    handler = eval(task_category.handler)(project)
+    if project.format is not None:
+        exporter = handler.exporters[project.format]
+    else:
+        exporter = handler.exporters[default_imexporter[project.task_category.name]]
+    req = connexion.request.json
+    exporter(req["export_dir"])
 
 
 def post_add(new_project, se):
@@ -29,12 +42,13 @@ def post_add(new_project, se):
     if new_project.format is not None:
         importer = handler.importers[new_project.format]
     else:
-        importer = handler.importers[default_importer[new_project.task_category.name]]
+        importer = handler.importers[default_imexporter[new_project.task_category.name]]
     importer()
 
     # except Exception as e:
     #     abort(e, 500, "Import dataset failed")
 
+    # TODO: add readme file to project dir
     return new_project
 
 
@@ -44,6 +58,47 @@ def pre_delete(project, se):
 
 def post_delete(project, se):
     pass
+
+
+def split_dataset(project_id, epsilon=1e-3):
+    Project._exists(project_id)
+    split = connexion.request.json
+    if list(split.keys()) != ["train", "validation", "test"] or len(split) != 3:
+        abort(
+            f"Got {split}",
+            500,
+            "Request should provide train, validataion and test percentage",
+        )  # TODO: change response code
+    if abs(1 - sum(split.values())) > epsilon:
+        abort(
+            f"The train({split['train']}), validation({split['validation']}), test({split['test']}) split don't sum to 1.",
+            500,
+            "The three percentage don't sum to 1",
+        )  # TODO: change response code
+    split_num = [0] * 4
+    split_num[0] = 0
+    split_num[1] = split["train"]
+    split_num[2] = split["validation"]
+    split_num[3] = split["test"]
+    split = split_num
+    for idx in range(1, 4):
+        split[idx] += split[idx - 1]
+
+    tasks = Task._get(project_id=project_id, many=True)
+    split = [math.ceil(s * len(tasks)) for s in split]
+    print(len(tasks), split)
+    random.shuffle(tasks)
+    for set in range(3):
+        for idx in range(split[set], split[set + 1]):
+            print(idx)
+            tasks[idx].set = set
+    db.session.commit()
+    tasks = Task._get(project_id=project_id, many=True)
+    return {
+        "train": split[1],
+        "validation": split[2] - split[1],
+        "test": split[3] - split[2],
+    }, 200
 
 
 get_all, get, post, put, delete = crud(

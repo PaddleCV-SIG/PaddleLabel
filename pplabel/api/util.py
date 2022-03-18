@@ -1,5 +1,6 @@
 import functools
 import random
+import time
 
 import connexion
 import sqlalchemy as sa
@@ -12,6 +13,7 @@ nncol = functools.partial(sa.Column, nullable=False)
 # TODO: generate color within certain range
 # TODO: even devide color space
 def rand_color(old_colors=[]):
+    random.seed(time.time())
     r = lambda: random.randint(0, 255)
     while True:
         c = "#%02X%02X%02X" % (r(), r(), r())

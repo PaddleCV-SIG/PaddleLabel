@@ -229,6 +229,27 @@ paths:
                   type: number
                 test:
                   type: number
+  '/projects/{project_id}/export':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: 'Export dataset to specified directory'
+      tags:
+        - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                export_dir:
+                  type: string
+      responses:
+        '200':
+          description: success
+      operationId: exportDataset
+      description: ''
+
   /labels:
     get:
       tags:

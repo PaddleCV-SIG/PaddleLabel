@@ -7,6 +7,8 @@ from pplabel.api.schema import ProjectSchema
 from .util import create_dir, listdir, copy, copytree, ComponentManager
 from .base import BaseTask
 
+image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
 
 class Classification(BaseTask):
     def __init__(self, project):
@@ -16,31 +18,42 @@ class Classification(BaseTask):
             "multi_class": self.multi_class_importer,
         }
         self.exporters = {
-            "single_class": self.single_clas_exporter,
-            "multi_class": self.multi_clas_exporter,
+            "single_class": self.single_class_exporter,
+            "multi_class": self.multi_class_exporter,
         }
 
     def single_class_importer(
         self,
         data_dir=None,
-        filters={"exclude_prefix": ["."]},
+        label_path=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
+        if label_path is None:
+            label_path = project.label_dir
 
-        # 1. if data_dir/labels.txt exists, import labels first
-        label_path = osp.join(data_dir, "labels.txt")
-        if osp.exists(label_path):
+        # 1. if data_dir/labels.txt exists, import labels
+        # TODO: last string as color
+        if label_path is not None and osp.exists(label_path):
             labels = open(label_path, "r").readlines()
-            labels = [l.strip() for l in labels]
-            print("label file", labels)
+            labels = [l.strip() for l in labels if len(l.strip()) != 0]
+            for lab in labels:
+                self.add_label(lab)
 
+        # 2. import records
         create_dir(data_dir)
         for data_path in listdir(data_dir, filters):
+            if data_path == label_path:
+                continue
+            if project.data_dir in data_path:
+                data_path = osp.relpath(data_path, project.data_dir)
             label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [[{"label_name": label_name}]])
             print(f"==== {data_path} imported ====")
+
+        # 3. move data
         if data_dir != project.data_dir:
             copytree(data_dir, project.data_dir)
 
@@ -49,31 +62,37 @@ class Classification(BaseTask):
         data_dir=None,
         label_path=None,
         delimiter=" ",
-        filters={"exclude_prefix": ["."]},
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
         if label_path is None:
             label_path = project.label_dir
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
-        if label_path is not None and not osp.exists(label_path):
-            return False, f"label_path {label_path} doesn't exist"
-        data_paths = listdir(data_dir, filters)
-        label_lines = open(label_path, "r").readlines()
-        label_lines = [l.strip() for l in label_lines if len(l.strip()) != 0]
-        labels_dict = {}
-        for label in label_lines:
-            cols = label.split(delimiter)
-            labels_dict[cols[0]] = cols[1:]
-        for data_path in data_paths:
-            data_path = data_path[len(project.data_dir) :]
-            labels = labels_dict[data_path]
-            self.add_task([data_path], [{"label_name": name} for name in labels])
 
-    def single_clas_exporter(self, export_dir):
+        if label_path is not None and not osp.exists(label_path):
+            raise RuntimeError(f"label_path ({label_path}) specified but doesn't exist")
+
+        labels_dict = {}
+        if label_path is not None:
+            label_lines = open(label_path, "r").readlines()
+            label_lines = [l.strip() for l in label_lines if len(l.strip()) != 0]
+            for label in label_lines:
+                cols = label.split(delimiter)
+                labels_dict[cols[0]] = cols[1:]
+
+        create_dir(data_dir)
+        data_paths = listdir(data_dir, filters)
+        for data_path in data_paths:
+            if project.data_dir in data_path:
+                data_path = osp.relpath(data_path, project.data_dir)
+            labels = labels_dict.get(data_path, [])
+            self.add_task([data_path], [[{"label_name": name} for name in labels]])
+
+    def single_class_exporter(self, export_dir):
+        if export_dir is None or not osp.exists(export_dir):
+            raise RuntimeError(f"Export dir ({export_dir}) doesn't exist")
+
         project = self.project
         labels = Label._get(project_id=project.project_id, many=True)
         for label in labels:
@@ -82,12 +101,17 @@ class Classification(BaseTask):
 
         tasks = Task._get(project_id=project.project_id, many=True)
         for task in tasks:
-            for ann in task.annotations:
-                dst = osp.join(export_dir, ann.label.name)
-                for data in task.datas:
-                    copy(osp.join(project.data_dir, data.path), dst)
+            for data in task.datas:
+                label_name = ""
+                if len(data.annotations) == 1:
+                    label_name = data.annotations[0].label.name
+                dst = osp.join(export_dir, label_name)
+                copy(osp.join(project.data_dir, data.path), dst)
+        with open(osp.join(export_dir, "labels.txt"), "w") as f:
+            for lab in labels:
+                print(lab.name, file=f)
 
-    def multi_clas_exporter(self, export_dir):
+    def multi_class_exporter(self, export_dir):
         project = self.project
         create_dir(export_dir)
         tasks = Task._get(project_id=project.project_id, many=True)

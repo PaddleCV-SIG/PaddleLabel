@@ -11,8 +11,14 @@ from .base import BaseTask
 class Classification(BaseTask):
     def __init__(self, project):
         super().__init__(project)
-        self.importers = [self.single_class_importer, self.multi_class_importer]
-        self.exporters = [self.single_clas_exporter, self.multi_clas_exporter]
+        self.importers = {
+            "single_class": self.single_class_importer,
+            "multi_class": self.multi_class_importer,
+        }
+        self.exporters = {
+            "single_class": self.single_clas_exporter,
+            "multi_class": self.multi_clas_exporter,
+        }
 
     def single_class_importer(
         self,
@@ -23,13 +29,18 @@ class Classification(BaseTask):
         if data_dir is None:
             data_dir = project.data_dir
 
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
+        # 1. if data_dir/labels.txt exists, import labels first
+        label_path = osp.join(data_dir, "labels.txt")
+        if osp.exists(label_path):
+            labels = open(label_path, "r").readlines()
+            labels = [l.strip() for l in labels]
+            print("label file", labels)
+
+        create_dir(data_dir)
         for data_path in listdir(data_dir, filters):
-            print(data_path)
             label_name = osp.basename(osp.dirname(data_path))
-            self.add_task([data_path], [{"label_name": label_name}])
+            self.add_task([data_path], [[{"label_name": label_name}]])
+            print(f"==== {data_path} imported ====")
         if data_dir != project.data_dir:
             copytree(data_dir, project.data_dir)
 
@@ -91,17 +102,17 @@ class Classification(BaseTask):
 
 
 def test():
-    pj_info = {
-        "name": "Single Class Classification Example",
-        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
-        "description": "Example Project Descreption",
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
-    }
-    project = ProjectSchema().load(pj_info)
+    # pj_info = {
+    #     "name": "Single Class Classification Example",
+    #     "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
+    #     "description": "Example Project Descreption",
+    #     "other_settings": "{'some_property':true}",
+    #     "task_category_id": 1,
+    #     "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
+    # }
+    # project = ProjectSchema().load(pj_info)
 
-    clas_project = Classification(project)
+    clas_project = Classification(project_id=1)
     print(clas_project.importers[0])
 
 
@@ -118,16 +129,12 @@ def single_clas():
 
     clas_project = Classification(project)
 
-    clas_project.importers[0](
-        filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]}
-    )
+    clas_project.importers[0](filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
     print("------------------ all tasks ------------------ ")
     for task in Task._get(project_id=project.project_id, many=True):
         print(task)
 
-    clas_project.single_clas_exporter(
-        osp.join(task_test_basedir, "export/clas_single_export")
-    )
+    clas_project.single_clas_exporter(osp.join(task_test_basedir, "export/clas_single_export"))
 
 
 def multi_clas():
@@ -149,17 +156,13 @@ def multi_clas():
 
     clas_project = Classification(project)
 
-    clas_project.multi_class_importer(
-        filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]}
-    )
+    clas_project.multi_class_importer(filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
 
     clas_project.single_clas_exporter(
         osp.join(task_test_basedir, "export/clas_multi_folder_export")
     )
 
-    clas_project.multi_clas_exporter(
-        osp.join(task_test_basedir, "export/clas_multi_file_export")
-    )
+    clas_project.multi_clas_exporter(osp.join(task_test_basedir, "export/clas_multi_file_export"))
     tasks = Task.query.all()
     for task in tasks:
         print("tasktasktasktasktasktasktasktask", task)

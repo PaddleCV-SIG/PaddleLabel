@@ -14,26 +14,17 @@ class Project(BaseModel):
     project_id = nncol(db.Integer, primary_key=True)
     name = nncol(db.String(), unique=True)
     description = db.Column(db.String())
-    task_category_id = db.Column(
-        db.Integer(), db.ForeignKey("taskCategory.task_category_id")
-    )
+    task_category_id = db.Column(db.Integer(), db.ForeignKey("taskCategory.task_category_id"))
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
     label_dir = db.Column(db.String(), unique=True)
-
     labels = db.relationship(
         "Label",
-        # lazy="selectin",
+        lazy="selectin",
         cascade="all, delete-orphan",
     )
     tasks = db.relationship("Task", lazy="noload", cascade="all, delete-orphan")
-
+    format = db.Column(db.String())
     other_settings = db.Column(db.String())
 
     _immutables = BaseModel._immutables + ["project_id", "task_category_id"]
-
-    def _get_task_category(self):
-        task_category = TaskCategory.query.filter(
-            TaskCategory.task_category_id == self.task_category_id
-        ).one()
-        return task_category

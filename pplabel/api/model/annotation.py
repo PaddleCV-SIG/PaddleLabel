@@ -21,6 +21,5 @@ class Annotation(BaseModel):
     label = db.relationship("Label")
 
     # task = db.relationship("Task")
-    # slice_id = nncol(db.Integer())
 
     _immutables = BaseModel._immutables + ["annotation_id", "task_id", "slice_id"]

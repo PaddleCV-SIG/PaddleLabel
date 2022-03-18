@@ -3,20 +3,12 @@ import os.path as osp
 import shutil
 
 
-# TODO: change to raise error
 def create_dir(path):
     if path is None:
-        return False, "Path to create is None"
+        raise RuntimeError("Path to create is None")
     if not osp.isabs(path):
-        return False, f"Only supports absolute path, got {path}"
-    if not osp.isdir(path):
-        try:
-            os.makedirs(path)
-            return True, f"Created directory {path}"
-        except Exception as e:
-            return False, f"Create {path} failed. Got exception: {e}"
-    else:
-        return True, f"{path} exists"
+        raise RuntimeError(f"Only supports absolute path, got {path}")
+    os.makedirs(path, exist_ok=True)
 
 
 def listdir(path, filters={"exclude_prefix": ["."]}):

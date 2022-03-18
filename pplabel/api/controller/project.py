@@ -19,9 +19,22 @@ def pre_add(new_project, se):
     return new_project
 
 
+default_importer = {"classification": "single_class"}  # TODO: remove this
+
+
 def post_add(new_project, se):
     task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
-    eval(task_category.handler)(new_project).importers[0]()
+    # try:
+    handler = eval(task_category.handler)(new_project)
+    if new_project.format is not None:
+        importer = handler.importers[new_project.format]
+    else:
+        importer = handler.importers[default_importer[new_project.task_category.name]]
+    importer()
+
+    # except Exception as e:
+    #     abort(e, 500, "Import dataset failed")
+
     return new_project
 
 

@@ -1045,9 +1045,6 @@ components:
           type: integer
         result:
           type: string
-        slice_id:
-          type: integer
-          deprecated: true
         created:
           type: string
           readOnly: true

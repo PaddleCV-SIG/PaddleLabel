@@ -70,8 +70,8 @@ def create_voc_label(filename, width, height, annotations):
 class Detection(BaseTask):
     def __init__(self, project):
         super().__init__(project)
-        self.importers = [self.coco_importer, self.voc_importer]
-        self.exporters = [self.coco_exporter, self.voc_exporter]
+        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
+        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}
 
     def coco_importer(
         self,
@@ -85,9 +85,7 @@ class Detection(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
+        create_dir(data_dir)
         if label_path is None:
             label_path = project.label_dir
 
@@ -106,7 +104,7 @@ class Detection(BaseTask):
             temp.append({"label_name": label_name, "result": json.dumps(result)})
             ann_by_task[ann["image_id"]] = temp
         for img_id, annotations in list(ann_by_task.items()):
-            self.add_task([coco.imgs[img_id]["file_name"]], annotations)
+            self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
 
     def voc_importer(
         self,

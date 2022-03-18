@@ -586,6 +586,11 @@ paths:
         '200':
           description: success
       operationId: getImage
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: sault
   '/datas/{data_id}/annotations':
     parameters:
       - name: data_id
@@ -927,6 +932,7 @@ components:
           modified: null
           other_settings: '{''multiclass_classification'':true}'
       additionalProperties: false
+      title: ''
       properties:
         project_id:
           type: integer
@@ -954,6 +960,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Label'
+        format:
+          type: string
         created:
           type: string
           description: Project creation timestamp in UTC
@@ -969,7 +977,6 @@ components:
         other_settings:
           type: string
           description: Project settings that are different across annotation task categories
-      title: ''
     Task:
       title: Task
       type: object
@@ -1010,8 +1017,6 @@ components:
           readOnly: true
         task_id:
           type: integer
-        path:
-          type: string
         slice_count:
           type: integer
         task:
@@ -1022,8 +1027,8 @@ components:
         modified:
           type: string
           readOnly: true
-      required:
-        - path
+        sault:
+          type: string
     Annotation:
       type: object
       title: Annotation

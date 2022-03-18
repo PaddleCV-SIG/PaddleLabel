@@ -19,7 +19,7 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_importer = {"classification": "single_class"}  # TODO: remove this
+default_importer = {"classification": "single_class", "detection": "coco"}  # TODO: remove this
 
 
 def post_add(new_project, se):

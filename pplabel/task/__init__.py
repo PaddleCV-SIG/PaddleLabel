@@ -1,1 +1,2 @@
-from . import classification, detection
+from .classification import Classification
+from .detection import Detection

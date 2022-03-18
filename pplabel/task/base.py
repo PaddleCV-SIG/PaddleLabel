@@ -11,8 +11,6 @@ from .util import create_dir, listdir, copy, ComponentManager
 
 class BaseTask:
     # NOTE: have to declear these two in subclass
-    importers = ComponentManager()
-    exporters = ComponentManager()
 
     def __init__(self, project):
         curr_project = Project._get(project_id=project.project_id)

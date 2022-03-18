@@ -9,10 +9,11 @@ from .base import BaseTask
 
 
 class Classification(BaseTask):
-    importers = ComponentManager()
-    exporters = ComponentManager()
+    def __init__(self, project):
+        super().__init__(project)
+        self.importers = [self.single_class_importer, self.multi_class_importer]
+        self.exporters = [self.single_clas_exporter, self.multi_clas_exporter]
 
-    @importers.add_component
     def single_class_importer(
         self,
         data_dir=None,
@@ -32,7 +33,6 @@ class Classification(BaseTask):
         if data_dir != project.data_dir:
             copytree(data_dir, project.data_dir)
 
-    @importers.add_component
     def multi_class_importer(
         self,
         data_dir=None,
@@ -62,7 +62,6 @@ class Classification(BaseTask):
             labels = labels_dict[data_path]
             self.add_task([data_path], [{"label_name": name} for name in labels])
 
-    @exporters.add_component
     def single_clas_exporter(self, export_dir):
         project = self.project
         labels = Label._get(project_id=project.project_id, many=True)
@@ -77,7 +76,6 @@ class Classification(BaseTask):
                 for data in task.datas:
                     copy(osp.join(project.data_dir, data.path), dst)
 
-    @exporters.add_component
     def multi_clas_exporter(self, export_dir):
         project = self.project
         create_dir(export_dir)
@@ -90,6 +88,21 @@ class Classification(BaseTask):
                 for ann in task.annotations:
                     line += " " + ann.label.name
                 print(line, file=f)
+
+
+def test():
+    pj_info = {
+        "name": "Single Class Classification Example",
+        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
+        "description": "Example Project Descreption",
+        "other_settings": "{'some_property':true}",
+        "task_category_id": 1,
+        "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
+    }
+    project = ProjectSchema().load(pj_info)
+
+    clas_project = Classification(project)
+    print(clas_project.importers[0])
 
 
 def single_clas():
@@ -105,7 +118,7 @@ def single_clas():
 
     clas_project = Classification(project)
 
-    clas_project.single_class_importer(
+    clas_project.importers[0](
         filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]}
     )
     print("------------------ all tasks ------------------ ")

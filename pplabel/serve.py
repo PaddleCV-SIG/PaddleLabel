@@ -11,7 +11,6 @@ import pplabel.task
 
 logging.getLogger("pplabel").debug("in server.py")
 
-print(sqlite_url)
 if not osp.exists(sqlite_url):
     print("Creating db")
     db.create_all()

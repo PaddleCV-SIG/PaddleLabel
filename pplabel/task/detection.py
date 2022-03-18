@@ -68,10 +68,11 @@ def create_voc_label(filename, width, height, annotations):
 
 
 class Detection(BaseTask):
-    importers = ComponentManager()
-    exporters = ComponentManager()
+    def __init__(self, project):
+        super().__init__(project)
+        self.importers = [self.coco_importer, self.voc_importer]
+        self.exporters = [self.coco_exporter, self.voc_exporter]
 
-    @importers.add_component
     def coco_importer(
         self,
         data_dir=None,
@@ -104,7 +105,6 @@ class Detection(BaseTask):
         for img_id, annotations in list(ann_by_task.items()):
             self.add_task([coco.imgs[img_id]["file_name"]], annotations)
 
-    @importers.add_component
     def voc_importer(
         self,
         data_dir=None,
@@ -132,7 +132,6 @@ class Detection(BaseTask):
             id = osp.basename(data_path).split(".")[0]
             self.add_task([data_path], parse_voc_label(label_dict[id]))
 
-    @exporters.add_component
     def coco_exporter(self, export_dir):
         project = self.project
         coco = COCO()
@@ -157,7 +156,6 @@ class Detection(BaseTask):
         print(json.dumps(coco.dataset), file=f)
         f.close()
 
-    @exporters.add_component
     def voc_exporter(self, export_dir):
         project = self.project
         tasks = Task._get(project_id=project.project_id, many=True)

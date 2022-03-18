@@ -2,14 +2,14 @@ import sqlalchemy
 from marshmallow import fields
 import numpy as np
 
-from ..model import Project, Label, Annotation, Task, Data
+from ..model import Project, Label, Annotation, Task, Data, TaskCategory
 from ..schema import ProjectSchema
 from .base import crud
 from . import label
 from ..util import abort
 import pplabel.task
 
-from ...task.classification import Classification
+# from ...task.classification import Classification
 
 
 def pre_add(new_project, se):
@@ -22,22 +22,18 @@ def pre_add(new_project, se):
 
 
 def post_add(new_project, se):
-    print("asdsafasdf", new_project.task_category_id)
-    Classification(new_project).single_class_importer(),
-
+    task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
+    # print("qwer", task_category, eval(task_category.handler))
+    eval(task_category.handler)(new_project).importers[0]()
     return new_project
 
 
 def pre_delete(project, se):
-    print("++++++project+++++", project.project_id, project)
-    # Task.query.filter(Task.project_id == project.project_id).delete()
     return project
 
 
 def post_delete(project, se):
-    print("++++++project+++++", project.project_id, project)
-
-    # Label.query.filter(Label.project_id == project.project_id).delete()
+    pass
 
 
 get_all, get, post, put, delete = crud(

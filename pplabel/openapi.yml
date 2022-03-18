@@ -119,14 +119,6 @@ paths:
                   $ref: '#/components/schemas/Task'
       operationId: getTasks
       description: ''
-    head:
-      summary: Get task statistics under a project
-      operationId: getTasksStat
-      tags:
-        - Project
-      responses:
-        '200':
-          description: OK
   '/projects/{project_id}/labels':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -180,6 +172,27 @@ paths:
                 items:
                   $ref: '#/components/schemas/Tag'
       operationId: getTags
+      description: ''
+  '/projects/{project_id}/progress':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    get:
+      summary: Get project progress
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  finished:
+                    type: integer
+                  total:
+                    type: integer
+      operationId: getProgress
       description: ''
   /labels:
     get:

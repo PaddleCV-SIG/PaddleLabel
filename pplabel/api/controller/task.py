@@ -30,4 +30,4 @@ def get_stat_by_project(project_id):
         if len(task.annotations) != 0:
             ann_count += 1
     res = {"finished": ann_count, "total": len(tasks)}
-    return json.dumps(res), 200, res
+    return res, 200

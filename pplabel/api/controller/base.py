@@ -31,8 +31,10 @@ def crud(Model, Schema, triggers=[]):
         id_name, id_val = list(kwargs.items())[0]
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
 
+        print("===========", Schema().dump(item))
+
         if item is not None:
-            return Schema().dump(item)
+            return Schema().dump(item), 200
         abort(404, f"No {id_name.split('_')[0]} with id: {id_val}")
 
     def post(

@@ -7,6 +7,8 @@ from ..schema import ProjectSchema
 from .base import crud
 from . import label
 from ..util import abort
+import pplabel.task
+
 from ...task.classification import Classification
 
 
@@ -20,6 +22,7 @@ def pre_add(new_project, se):
 
 
 def post_add(new_project, se):
+    print("asdsafasdf", new_project.task_category_id)
     Classification(new_project).single_class_importer(),
 
     return new_project

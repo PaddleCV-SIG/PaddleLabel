@@ -17,9 +17,8 @@ class Task(BaseModel):
         db.Integer(),
         db.ForeignKey("project.project_id", ondelete="CASCADE"),
     )
-    # TODO: remove this
-    # project = db.relationship("Project", ondelete="CASCADE")
     datas = db.relationship("Data", lazy="selectin", cascade="all, delete-orphan")
     annotations = db.relationship(
         "Annotation", lazy="selectin", cascade="all, delete-orphan"
     )
+    set = db.Column(db.Integer())

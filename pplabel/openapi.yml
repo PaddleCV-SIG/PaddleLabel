@@ -194,6 +194,41 @@ paths:
                     type: integer
       operationId: getProgress
       description: ''
+  '/projects/{project_id}/split':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: 'Split this project''s data into train, validation and test dataset.'
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  train:
+                    type: integer
+                  validation:
+                    type: integer
+                  test:
+                    type: integer
+      operationId: splitDataset
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                train:
+                  type: number
+                validation:
+                  type: number
+                test:
+                  type: number
   /labels:
     get:
       tags:

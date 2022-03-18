@@ -45,7 +45,6 @@ class BaseModel(db.Model):
         if "many" in kwargs.keys():
             del kwargs["many"]
         for key in kwargs.keys():
-            print("lkj", dir(cls), cls._cols)
             if key not in cls._cols:
                 raise AttributeError(
                     f"Model {cls.__tablename__} don't have attribute {key}"

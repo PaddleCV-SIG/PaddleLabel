@@ -9,8 +9,6 @@ from . import label
 from ..util import abort
 import pplabel.task
 
-# from ...task.classification import Classification
-
 
 def pre_add(new_project, se):
     new_labels = new_project.labels
@@ -23,7 +21,6 @@ def pre_add(new_project, se):
 
 def post_add(new_project, se):
     task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
-    # print("qwer", task_category, eval(task_category.handler))
     eval(task_category.handler)(new_project).importers[0]()
     return new_project
 

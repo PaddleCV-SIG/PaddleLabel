@@ -109,26 +109,34 @@ class Detection(BaseTask):
     def voc_importer(
         self,
         data_dir=None,
-        label_dir=None,
+        name_only=False,
         filters={"exclude_prefix": ["."]},
     ):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        if label_dir is None:
-            label_dir = project.label_dir
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
-        if label_dir is not None:
-            success, res = create_dir(data_dir)
-            if not success:
-                return False, res
-        data_paths = listdir(data_dir)
-        label_paths = listdir(label_dir)
-        label_dict = {}
+        if json.loads(project.other_settings).get("name_only"):
+            name_only = True
+
+        data_dir = osp.join(data_dir, "JPEGImages")
+        label_dir = osp.join(data_dir, "Annotations")
+        create_dir(data_dir)
+
+        data_paths = listdir(data_dir, filters=filters)
+        label_paths = listdir(label_dir, filters=filters)
+        data_paths = [osp.join(data_dir, p) for p in data_paths]
+        label_paths = [osp.join(label_dir, p) for p in label_paths]
+
+        label_name_dict = {}
+        label_xml_dict = {}
+        labels = []
         for label_path in label_paths:
-            label_dict[osp.basename(label_path).split(".")[0]] = label_path
+            labels.append(parse_voc_label(label_path))
+            label_name_dict[osp.basename(label_path).split(".")[0]] = len(labels) - 1
+            label_xml_dict[labels[-1]["label_name"]] = len(labels) - 1
+
+        print(label_name_dict, label_xml_dict)
+
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
             self.add_task([data_path], parse_voc_label(label_dict[id]))

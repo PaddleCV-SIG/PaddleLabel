@@ -85,6 +85,7 @@ class Detection(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
+        print("==========", data_dir)
         create_dir(data_dir)
         if label_path is None:
             label_path = project.label_dir
@@ -103,8 +104,17 @@ class Detection(BaseTask):
             temp = ann_by_task.get(ann["image_id"], [])
             temp.append({"label_name": label_name, "result": json.dumps(result)})
             ann_by_task[ann["image_id"]] = temp
+        have_label = []
         for img_id, annotations in list(ann_by_task.items()):
+            print("============", coco.imgs[img_id]["file_name"])
+            have_label.append(coco.imgs[img_id]["file_name"])
             self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
+
+        image_paths = listdir(data_dir)
+        print("======", image_paths)
+        for image_path in image_paths:
+            if image_path not in have_label:
+                self.add_task([image_path], [])
 
     def voc_importer(
         self,

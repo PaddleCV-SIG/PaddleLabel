@@ -72,6 +72,7 @@ def pre_add(new_label, se):
             .filter_by(project_id=new_label.project_id)
             .one()[0]
         )
+        if(not maxid): maxid = 0
         new_label.id = maxid + 1
     if new_label.color is None:
         colors = (

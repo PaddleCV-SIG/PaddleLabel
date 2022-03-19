@@ -67,6 +67,9 @@ def create_voc_label(filename, width, height, annotations):
     return voc_label.strip()
 
 
+image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
+
 class Detection(BaseTask):
     def __init__(self, project):
         super().__init__(project)
@@ -77,7 +80,7 @@ class Detection(BaseTask):
         self,
         data_dir=None,
         label_path=None,
-        filters={"exclude_prefix": ["."]},
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         """
         images should be located at data_dir / file_name in coco annotation
@@ -113,7 +116,7 @@ class Detection(BaseTask):
         print("======", image_paths)
         for image_path in image_paths:
             if image_path not in have_label:
-                self.add_task([image_path], [[]])
+                self.add_task([image_path])
 
     def voc_importer(
         self,

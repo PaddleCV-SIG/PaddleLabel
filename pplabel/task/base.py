@@ -61,7 +61,7 @@ class BaseTask:
         self.label_max_id += 1
         return label
 
-    def add_task(self, data_paths: list, annotations: list):
+    def add_task(self, data_paths: list, annotations: list = None):
         """Add one task to project.
 
         Parameters
@@ -106,6 +106,8 @@ class BaseTask:
                     return lab
             return None
 
+        if annotations is None or len(annotations) == 0:
+            annotations = [[]] * len(data_paths)
         for anns, data_path in zip(annotations, data_paths):
             # 1. add data record
             if project.data_dir in data_path:

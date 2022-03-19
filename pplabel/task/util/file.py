@@ -30,9 +30,8 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
                 return True
         return False
 
-    if include_prefix is not [] or include_postfix is not []:
+    if len(include_prefix) != 0 or len(include_postfix) != 0:
         files = list(filter(include, files))
-    print("+++++++++", files)
 
     exclude_prefix = filters.get("exclude_prefix", [])
     exclude_postfix = filters.get("exclude_postfix", [])

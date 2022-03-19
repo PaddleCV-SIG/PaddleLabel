@@ -106,7 +106,6 @@ class Detection(BaseTask):
             ann_by_task[ann["image_id"]] = temp
         have_label = []
         for img_id, annotations in list(ann_by_task.items()):
-            print("============", coco.imgs[img_id]["file_name"])
             have_label.append(coco.imgs[img_id]["file_name"])
             self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
 
@@ -114,7 +113,7 @@ class Detection(BaseTask):
         print("======", image_paths)
         for image_path in image_paths:
             if image_path not in have_label:
-                self.add_task([image_path], [])
+                self.add_task([image_path], [[]])
 
     def voc_importer(
         self,

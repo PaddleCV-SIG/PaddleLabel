@@ -67,11 +67,9 @@ def pre_add(new_label, se):
 
     # 2. generate id, color
     if new_label.id is None:
-        maxid = (
-            se.query(func.max(Label.id))
-            .filter_by(project_id=new_label.project_id)
-            .one()[0]
-        )
+        maxid = se.query(func.max(Label.id)).filter_by(project_id=new_label.project_id).one()[0]
+        if maxid is None:
+            maxid = 0
         new_label.id = maxid + 1
     if new_label.color is None:
         colors = (
@@ -111,9 +109,7 @@ def get_by_project(project_id):
     return LabelSchema(many=True).dump(labels), 200
 
 
-get_all, get, post, put, delete = crud(
-    Label, LabelSchema, triggers=[pre_add, pre_delete]
-)
+get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add, pre_delete])
 
 
 # TODO: abstract to any column

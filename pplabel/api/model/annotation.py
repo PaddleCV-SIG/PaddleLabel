@@ -19,6 +19,7 @@ class Annotation(BaseModel):
     result = db.Column(db.String())
     label_id = nncol(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
     label = db.relationship("Label")
+    type = db.Column(db.String())
 
     # task = db.relationship("Task")
 

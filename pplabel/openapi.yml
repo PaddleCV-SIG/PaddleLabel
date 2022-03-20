@@ -1072,6 +1072,8 @@ components:
           type: integer
         result:
           type: string
+        type:
+          type: string
         created:
           type: string
           readOnly: true

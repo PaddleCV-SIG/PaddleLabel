@@ -14,6 +14,8 @@ def pre_add(annotation, se):
 
     annotation.task_id = data.task_id
     annotation.project_id = task.project_id
+    # if annotation.type is None:
+    #     annotation.type = "json"
 
     return annotation
 

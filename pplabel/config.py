@@ -39,6 +39,7 @@ ma = Marshmallow(app)
 # reject requests with the same request_id within request_id_timeout seconds
 request_id_timeout = 2
 
+data_base_dir = "/home/lin/Desktop/data/pplabel/"
 
 # TODO: move this to test
 task_test_basedir = "/home/lin/Desktop/data/pplabel/"

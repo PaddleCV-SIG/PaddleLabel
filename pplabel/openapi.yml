@@ -928,6 +928,23 @@ paths:
               required:
                 - username
                 - password
+  /rpc/folders:
+    post:
+      summary: ''
+      tags:
+        - rpc
+      operationId: getFolders
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
 components:
   securitySchemes:
     jwt:

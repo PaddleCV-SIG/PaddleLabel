@@ -88,7 +88,6 @@ class Detection(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        print("==========", data_dir)
         create_dir(data_dir)
         if label_path is None:
             label_path = project.label_dir
@@ -113,7 +112,7 @@ class Detection(BaseTask):
             self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
 
         image_paths = listdir(data_dir)
-        print("======", image_paths)
+        image_paths = [osp.relpath(p, data_dir) for p in image_paths]
         for image_path in image_paths:
             if image_path not in have_label:
                 self.add_task([image_path])

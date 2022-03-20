@@ -9,6 +9,8 @@ class AnnotationSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = Annotation
 
-    project_id = fields.Integer()  # not required when calling api
+    # not required when calling api
+    project_id = fields.Integer()
+    task_id = fields.Integer()
     # task = fields.Nested("TaskSchema", exclude=("annotations", "datas"))
     label = fields.Nested("LabelSchema")

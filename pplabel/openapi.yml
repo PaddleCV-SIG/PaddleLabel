@@ -1078,6 +1078,8 @@ components:
         modified:
           type: string
           readOnly: true
+      required:
+        - data_id
     Label:
       title: Label
       type: object

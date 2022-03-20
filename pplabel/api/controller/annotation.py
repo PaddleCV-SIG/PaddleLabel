@@ -5,10 +5,16 @@ from ..util import abort
 
 
 def pre_add(annotation, se):
-    task = Task.query.filter(Task.task_id == annotation.task_id).one_or_none()
+    data = Data._get(data_id=annotation.data_id)
+    if data is None:
+        abort(f"No data with data_id {data_id}")
+    task = Task._get(task_id=data.task_id)
     if task is None:
         abort(f"No task with task id {annotation.task_id}", 404)
+
+    annotation.task_id = data.task_id
     annotation.project_id = task.project_id
+
     return annotation
 
 

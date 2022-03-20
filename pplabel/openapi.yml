@@ -633,6 +633,26 @@ paths:
                 items:
                   $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
+    delete:
+      summary: ''
+      operationId: deleteAnnotations
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: ''
+      operationId: setAnnotations
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Annotation'
+            examples: {}
   /annotations/:
     get:
       tags:

@@ -1,7 +1,11 @@
+import connexion
+
 from .base import crud
 from ..model import Annotation, Task, Project, Data
 from ..schema import AnnotationSchema
 from ..util import abort
+
+from pplabel.config import db
 
 
 def pre_add(annotation, se):
@@ -40,3 +44,29 @@ def get_by_data(data_id):
     Data._exists(data_id)
     anns = Annotation._get(data_id=data_id, many=True)
     return AnnotationSchema(many=True).dump(anns), 200
+
+
+def set_all_by_data(data_id):
+    _, data = Data._exists(data_id)
+    delete_by_data(data_id)
+
+    anns = connexion.request.json
+    task = Task._get(task_id=data.task_id)
+
+    print("anns", task.project_id, task.task_id, anns)
+
+    schema = AnnotationSchema()
+    for ann in anns:
+        ann = schema.load(ann)
+        print("====", ann)
+        ann.task_id = task.task_id
+        ann.project_id = task.project_id
+        data.annotations.append(ann)
+    db.session.commit()
+
+
+def delete_by_data(data_id):
+    anns = Annotation._get(data_id=data_id, many=True)
+    for ann in anns:
+        db.session.delete(ann)
+    db.session.commit()

@@ -72,6 +72,8 @@ class Resolver(connexion.resolver.RestyResolver):
             "/tasks/{task_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_task",
             "/tasks/{task_id}/datas getDatas": "pplabel.api.controller.data.get_by_task",
             "/datas/{data_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_data",
+            "/datas/{data_id}/annotations setAnnotations": "pplabel.api.controller.annotation.set_all_by_data",
+            "/datas/{data_id}/annotations deleteAnnotations": "pplabel.api.controller.annotation.delete_by_data",
             "/rpc/folders getFolders": "pplabel.api.rpc.file.get_folders",
         }
         opid = None

@@ -38,8 +38,8 @@ def create_voc_label(filename, width, height, annotations):
     from xml.dom import minidom
 
     object_labels = ""
+    r = json.loads(ann.result)
     for ann in annotations:
-        r = json.loads(ann.result)
         object_labels += f"""
     <object>
     <name>{ann.label.name}</name>
@@ -124,13 +124,16 @@ class Detection(BaseTask):
         filters={"exclude_prefix": ["."]},
     ):
         project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
-        if json.loads(project.other_settings).get("name_only"):
-            name_only = True
+        base_dir = data_dir
+        if base_dir is None:
+            base_dir = project.data_dir
+        if project.other_settings is not None:
+            if json.loads(project.other_settings).get("name_only"):  # only match with file name
+                name_only = True
 
-        data_dir = osp.join(data_dir, "JPEGImages")
-        label_dir = osp.join(data_dir, "Annotations")
+        data_dir = osp.join(base_dir, "JPEGImages")
+        label_dir = osp.join(base_dir, "Annotations")
+
         create_dir(data_dir)
 
         data_paths = listdir(data_dir, filters=filters)
@@ -144,13 +147,11 @@ class Detection(BaseTask):
         for label_path in label_paths:
             labels.append(parse_voc_label(label_path))
             label_name_dict[osp.basename(label_path).split(".")[0]] = len(labels) - 1
-            label_xml_dict[labels[-1]["label_name"]] = len(labels) - 1
-
-        print(label_name_dict, label_xml_dict)
+            # label_xml_dict[labels[-1]["label_name"]] = len(labels) - 1
 
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
-            self.add_task([data_path], parse_voc_label(label_dict[id]))
+            self.add_task([data_path], [labels[label_name_dict[id]]])
 
     def coco_exporter(self, export_dir):
         project = self.project
@@ -184,6 +185,8 @@ class Detection(BaseTask):
         create_dir(export_data_dir)
         create_dir(export_label_dir)
 
+        set_names = ["train.txt", "validation.txt", "test.txt"]
+        set_files = [open(osp.join(export_dir, n), "w") for n in set_names]
         for task in tasks:
             data_path = osp.join(project.data_dir, task.datas[0].path)
             copy(data_path, export_data_dir)
@@ -193,6 +196,13 @@ class Detection(BaseTask):
                 create_voc_label(osp.basename(data_path), 1000, 1000, task.annotations),
                 file=f,
             )
+            f.close()
+
+            print(
+                f"JPEGImages/{osp.basename(data_path)} Annotations/{id}.xml",
+                file=set_files[task.set],
+            )
+        for f in set_files:
             f.close()
 
 

@@ -60,6 +60,7 @@ def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
 
 
 def pre_add(new_label, se):
+    print("========", new_label)
     # 1. label must have project_id and project must exist,
     if new_label.project_id is None:
         abort("Must specify project_id", 400)

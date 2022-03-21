@@ -2,6 +2,7 @@ import random
 
 import numpy as np
 from sqlalchemy.sql.expression import func
+import connexion
 
 from pplabel.config import db
 from .base import crud
@@ -108,6 +109,26 @@ def get_by_project(project_id):
     Project._exists(project_id)
     labels = Label.query.filter(Label.project_id == project_id).all()
     return LabelSchema(many=True).dump(labels), 200
+
+
+def delete_by_project(project_id, project_exists=False):
+    if not project_exists:
+        Project._exists(project_id)
+    labels = Label._get(project_id=project_id, many=True)
+    for lab in labels:
+        db.session.delete(lab)
+    db.session.commit()
+
+
+def set_by_project(project_id):
+    _, project = Project._exists(project_id)
+    delete_by_project(project_id, project_exists=True)
+    schema = LabelSchema(many=True)
+    labels = schema.load(connexion.request.json)
+    for lab in labels:
+        project.labels.append(lab)
+    db.session.commit()
+    return schema.dump(project.labels), 200
 
 
 get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add, pre_delete])

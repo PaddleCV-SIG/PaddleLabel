@@ -137,6 +137,38 @@ paths:
                   $ref: '#/components/schemas/Label'
       operationId: getLabels
       description: ''
+    post:
+      summary: 'Set all labels under a project, will delete previous labels'
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+      operationId: setLabels
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Label'
+    delete:
+      summary: Delete all labels under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+      operationId: removeLabels
+      description: ''
+
   '/projects/{project_id}/annotations':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -634,13 +666,17 @@ paths:
                   $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
     delete:
-      summary: ''
+      summary: Delete all annotations of a data record
+      tags:
+        - Data
       operationId: deleteAnnotations
       responses:
         '200':
           description: OK
     post:
-      summary: ''
+      summary: Set the annotations of a data record
+      tags:
+        - Data
       operationId: setAnnotations
       responses:
         '200':
@@ -652,7 +688,6 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/Annotation'
-            examples: {}
   /annotations/:
     get:
       tags:
@@ -1146,6 +1181,7 @@ components:
         super_category_id:
           type: integer
       required:
+        - label_id
         - name
     Tag:
       title: Tag

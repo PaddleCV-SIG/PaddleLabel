@@ -50,7 +50,7 @@ def crud(Model, Schema, triggers=[]):
             for field, msgs in e.messages.items():
                 if "Missing data for required field." in msgs:
                     # TODO: change code
-                    abort(500, f"Marshmallow: Missing data for required field: {field}")
+                    abort(500, f"Marshmallow catch: Missing data for required field: {field}")
             abort(500, e.messages)
         if pre_add is not None:
             new_item = pre_add(new_item, db.session)

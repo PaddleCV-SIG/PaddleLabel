@@ -9,18 +9,21 @@ from pplabel.config import db
 
 
 def pre_add(annotation, se):
-    data = Data._get(data_id=annotation.data_id)
-    if data is None:
-        abort(f"No data with data_id {data_id}")
-    task = Task._get(task_id=data.task_id)
-    if task is None:
-        abort(f"No task with task id {annotation.task_id}", 404)
-
+    _, data = Data._exists(annotation.data_id)
+    _, task = Task._exists(data.task_id)
     annotation.task_id = data.task_id
     annotation.project_id = task.project_id
 
-    # if annotation.type is None:
-    #     annotation.type = "json"
+    print("label=====", annotation.label)
+    print("anno====", annotation)
+    print("labelid====", annotation.label_id)
+
+    # if annotation.label_id is not None:
+    #     annotation.label = None
+
+    annotation.label_id = 1
+    # annotation.label = None
+    print("=====", annotation.label_id)
 
     return annotation
 

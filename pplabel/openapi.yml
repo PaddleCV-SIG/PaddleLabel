@@ -168,7 +168,6 @@ paths:
           description: success
       operationId: removeLabels
       description: ''
-
   '/projects/{project_id}/annotations':
     parameters:
       - $ref: '#/components/parameters/project_id'
@@ -1161,9 +1160,6 @@ components:
       properties:
         label_id:
           type: integer
-          readOnly: true
-        id:
-          type: integer
         project_id:
           type: integer
         name:
@@ -1181,7 +1177,6 @@ components:
         super_category_id:
           type: integer
       required:
-        - label_id
         - name
     Tag:
       title: Tag

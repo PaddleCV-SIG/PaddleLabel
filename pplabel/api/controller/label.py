@@ -5,6 +5,7 @@ from sqlalchemy.sql.expression import func
 import connexion
 
 from pplabel.config import db
+from pplabel.api.util import abort
 from .base import crud
 from ..model import Label, Project, Annotation
 from ..schema import LabelSchema
@@ -40,7 +41,6 @@ def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
         curr_values = set()
         for label in labels:
             curr_values.add(getattr(label, column_name))
-        # print("curr_values", curr_values)
         new_values = set()
         for idx, new_label in enumerate(new_labels):
             new_value = getattr(new_label, column_name)
@@ -121,14 +121,15 @@ def delete_by_project(project_id, project_exists=False):
 
 
 def set_by_project(project_id):
-    _, project = Project._exists(project_id)
-    delete_by_project(project_id, project_exists=True)
-    schema = LabelSchema(many=True)
-    labels = schema.load(connexion.request.json)
-    for lab in labels:
-        project.labels.append(lab)
-    db.session.commit()
-    return schema.dump(project.labels), 200
+    # _, project = Project._exists(project_id)
+    # delete_by_project(project_id, project_exists=True)
+    # schema = LabelSchema(many=True)
+    # labels = schema.load(connexion.request.json)
+    # for lab in labels:
+    #     project.labels.append(lab)
+    # db.session.commit()
+    # return schema.dump(project.labels), 200
+    abort("Not implemented", 500, "Not implemented")
 
 
 get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add, pre_delete])

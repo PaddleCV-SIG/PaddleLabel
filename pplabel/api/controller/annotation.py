@@ -72,7 +72,7 @@ def delete_by_data(data_id):
     db.session.commit()
 
 
-def set_all_by_task_and_frontend(frontend_id, task_id):
+def set_all_by_task_and_frontend(task_id):
     _, task = Task._exists(task_id)
     # 删除task关联的所有annotation
     current_anns = Annotation._get(task_id=task_id, many=True)
@@ -86,6 +86,5 @@ def set_all_by_task_and_frontend(frontend_id, task_id):
         print("====", ann)
         ann.task_id = task.task_id
         ann.project_id = task.project_id
-        ann.frontend_id = frontend_id
         task.annotations.append(ann)
     db.session.commit()

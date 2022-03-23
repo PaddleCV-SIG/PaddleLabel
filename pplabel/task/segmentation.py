@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import json
 
-from pycocotoolse.coco import COCO
+from pycocotools.coco import COCO
 
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label

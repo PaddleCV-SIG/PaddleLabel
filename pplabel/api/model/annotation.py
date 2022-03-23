@@ -9,7 +9,7 @@ class Annotation(BaseModel):
     __tablename__ = "annotation"
     __table_args__ = {"comment": "Contains all the annotations"}
     annotation_id = nncol(db.Integer(), primary_key=True)
-    frontend_id = nncol(db.Integer())
+    frontend_id = nncol(db.Integer(), nullable=True)
     task_id = nncol(db.Integer(), db.ForeignKey("task.task_id", ondelete="CASCADE"))
     task = db.relationship("Task")
     project_id = nncol(db.Integer(), db.ForeignKey("project.project_id"))

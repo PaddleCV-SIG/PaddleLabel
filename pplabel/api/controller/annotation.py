@@ -11,7 +11,7 @@ from pplabel.config import db
 def pre_add(annotation, se):
     data = Data._get(data_id=annotation.data_id)
     if data is None:
-        abort(f"No data with data_id {data_id}")
+        abort(f"No data with data_id {annotation.data_id}")
     task = Task._get(task_id=data.task_id)
     if task is None:
         abort(f"No task with task id {annotation.task_id}", 404)
@@ -69,4 +69,23 @@ def delete_by_data(data_id):
     anns = Annotation._get(data_id=data_id, many=True)
     for ann in anns:
         db.session.delete(ann)
+    db.session.commit()
+
+
+def set_all_by_task_and_frontend(frontend_id, task_id):
+    _, task = Task._exists(task_id)
+    # 删除task关联的所有annotation
+    current_anns = Annotation._get(task_id=task_id, many=True)
+    for cann in current_anns:
+        db.session.delete(cann)
+    # 插入新annotation
+    anns = connexion.request.json
+    schema = AnnotationSchema()
+    for ann in anns:
+        ann = schema.load(ann)
+        print("====", ann)
+        ann.task_id = task.task_id
+        ann.project_id = task.project_id
+        ann.frontend_id = frontend_id
+        task.annotations.append(ann)
     db.session.commit()

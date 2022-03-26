@@ -7,6 +7,8 @@ from ..util import abort
 
 from pplabel.config import db
 
+# TODO: don't create label if exists.
+
 
 def pre_add(annotation, se):
     _, data = Data._exists(annotation.data_id)
@@ -17,14 +19,6 @@ def pre_add(annotation, se):
     print("label=====", annotation.label)
     print("anno====", annotation)
     print("labelid====", annotation.label_id)
-
-    # if annotation.label_id is not None:
-    #     annotation.label = None
-
-    annotation.label_id = 1
-    # annotation.label = None
-    print("=====", annotation.label_id)
-
     return annotation
 
 

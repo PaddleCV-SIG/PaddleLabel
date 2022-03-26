@@ -7,7 +7,7 @@ from pycocotoolse.coco import COCO
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, ComponentManager
+from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
 from .base import BaseTask
 
 # TODO: move to io
@@ -63,11 +63,9 @@ def create_voc_label(filename, width, height, annotations):
 {object_labels}
 </annotation>
 """
+    # TODO: beautify export xml
     # return minidom.parseString(voc_label.strip()).toprettyxml(indent="    ", newl="")
     return voc_label.strip()
-
-
-image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
 
 class Detection(BaseTask):

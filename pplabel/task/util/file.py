@@ -2,6 +2,8 @@ import os
 import os.path as osp
 import shutil
 
+image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
 
 def create_dir(path):
     if path is None:

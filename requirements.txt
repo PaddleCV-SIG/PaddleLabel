@@ -3,6 +3,7 @@ flask
 connexion[swagger-ui]
 flask_sqlalchemy
 flask_marshmallow
+sqlalchemy>=0.27.0
 marshmallow_sqlalchemy
 Cython
 opencv-python-headless

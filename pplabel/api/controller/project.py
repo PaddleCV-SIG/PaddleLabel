@@ -24,7 +24,11 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_imexporter = {"classification": "single_class", "detection": "coco"}  # TODO: remove this
+default_imexporter = {
+    "classification": "single_class",
+    "detection": "coco",
+    "segmentation": "mask",
+}  # TODO: remove this
 
 
 def exportDataset(project_id):
@@ -44,6 +48,8 @@ def post_add(new_project, se):
     # try:
     handler = eval(task_category.handler)(new_project)
     if new_project.format is not None:
+        if new_project.format not in handler.importers.keys():
+            abort(f"Importer {new_project.format} not found", 500, "No such importer")
         importer = handler.importers[new_project.format]
     else:
         importer = handler.importers[default_imexporter[new_project.task_category.name]]

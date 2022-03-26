@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import json
 
-from pycocotools.coco import COCO
+from pycocotoolse.coco import COCO
 
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
@@ -220,9 +220,7 @@ def voc():
 
     seg_project.voc_importer(filters={"exclude_prefix": ["."]})
 
-    seg_project.voc_exporter(
-        osp.join(task_test_basedir, "export/inseg_voc_export")
-    )
+    seg_project.voc_exporter(osp.join(task_test_basedir, "export/inseg_voc_export"))
 
 
 def coco():
@@ -239,6 +237,4 @@ def coco():
 
     seg_project.coco_importer(filters={"exclude_prefix": ["."]})
 
-    seg_project.coco_exporter(
-        osp.join(task_test_basedir, "export/inseg_coco_export")
-    )
+    seg_project.coco_exporter(osp.join(task_test_basedir, "export/inseg_coco_export"))

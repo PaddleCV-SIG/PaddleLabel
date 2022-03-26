@@ -1,6 +1,8 @@
 import os
 import os.path as osp
 
+from pycocotools.coco import COCO
+
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
@@ -88,69 +90,42 @@ class Segmentation(BaseTask):
         for f in set_files:
             f.close()
 
+            print(
+                f"JPEGImages/{osp.basename(data_path)} Annotations/{id}.xml",
+                file=set_files[task.set],
+            )
+        for f in set_files:
+            f.close()
 
-def test():
+
+def voc():
     pj_info = {
-        "name": "Single Class Classification Example",
-        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
-        "description": "Example Project Descreption",
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
+        "name": "Pascal Segmentation Example",
+        "data_dir": osp.join(task_test_basedir, "seg_pascal_voc/JPEGImages/"),
+        "task_category_id": 3,
+        "label_dir": osp.join(task_test_basedir, "seg_pascal_voc/Annotations/"),
     }
     project = ProjectSchema().load(pj_info)
 
-    clas_project = Classification(project)
-    print(clas_project.importers[0])
+    seg_project = Segmentation(project)
+
+    seg_project.voc_importer(filters={"exclude_prefix": ["."]})
+
+    seg_project.voc_exporter(osp.join(task_test_basedir, "export/seg_voc_export"))
 
 
-# def single_clas():
-#     pj_info = {
-#         "name": "Single Class Classification Example",
-#         "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
-#         "description": "Example Project Descreption",
-#         "other_settings": "{'some_property':true}",
-#         "task_category_id": 1,
-#         "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
-#     }
-#     project = ProjectSchema().load(pj_info)
-#
-#     clas_project = Classification(project)
-#
-#     clas_project.importers[0](filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
-#     print("------------------ all tasks ------------------ ")
-#     for task in Task._get(project_id=project.project_id, many=True):
-#         print(task)
-#
-#     clas_project.single_clas_exporter(osp.join(task_test_basedir, "export/clas_single_export"))
-#
-#
-# def multi_clas():
-#     pj_info = {
-#         "name": "Multi Class Classification Example",
-#         "data_dir": osp.join(task_test_basedir, "clas_multi/PetImages/"),
-#         "description": "Example Project Descreption",
-#         "label_dir": osp.join(task_test_basedir, "clas_multi/label.txt"),
-#         "other_settings": "{'some_property':true}",
-#         "task_category_id": 1,
-#         "labels": [
-#             {"id": 1, "name": "Cat"},
-#             {"id": 2, "name": "Dog"},
-#             {"id": 3, "name": "Small"},
-#             {"id": 4, "name": "Large"},
-#         ],
-#     }
-#     project = ProjectSchema().load(pj_info)
-#
-#     clas_project = Classification(project)
-#
-#     clas_project.multi_class_importer(filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
-#
-#     clas_project.single_clas_exporter(
-#         osp.join(task_test_basedir, "export/clas_multi_folder_export")
-#     )
-#
-#     clas_project.multi_clas_exporter(osp.join(task_test_basedir, "export/clas_multi_file_export"))
-#     tasks = Task.query.all()
-#     for task in tasks:
-#         print("=======task=======", task)
+def coco():
+    pj_info = {
+        "name": "COCO Segmentation Example",
+        "data_dir": osp.join(task_test_basedir, "seg_coco/JPEGImages/"),
+        "description": "Example Project Descreption",
+        "label_dir": osp.join(task_test_basedir, "seg_coco/Annotations/coco_info.json"),
+        "task_category_id": 3,
+    }
+    project = ProjectSchema().load(pj_info)
+
+    seg_project = Segmentation(project)
+
+    seg_project.coco_importer(filters={"exclude_prefix": ["."]})
+
+    seg_project.coco_exporter(osp.join(task_test_basedir, "export/seg_coco_export"))

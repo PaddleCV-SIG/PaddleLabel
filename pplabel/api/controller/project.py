@@ -24,13 +24,6 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_imexporter = {
-    "classification": "single_class",
-    "detection": "coco",
-    "segmentation": "mask",
-}  # TODO: remove this
-
-
 def exportDataset(project_id):
     _, project = Project._exists(project_id)
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
@@ -43,20 +36,27 @@ def exportDataset(project_id):
     exporter(req["export_dir"])
 
 
+default_imexporter = {
+    "classification": "single_class",
+    "detection": "voc",
+    "semantic_segmentation": "gray_scale",
+    "instance_segmentation": "gray_scale",
+    # "keypoint_detection": "",
+    # "remote_sensing": "",
+}  # TODO: remove this
+
+
 def post_add(new_project, se):
     task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
-    # try:
-    handler = eval(task_category.handler)(new_project)
-    if new_project.format is not None:
-        if new_project.format not in handler.importers.keys():
-            abort(f"Importer {new_project.format} not found", 500, "No such importer")
-        importer = handler.importers[new_project.format]
-    else:
-        importer = handler.importers[default_imexporter[new_project.task_category.name]]
-    importer()
-
-    # except Exception as e:
-    #     abort(e, 500, "Import dataset failed")
+    if task_category in default_imexporter.keys():
+        handler = eval(task_category.handler)(new_project)
+        if new_project.format is not None:
+            if new_project.format not in handler.importers.keys():
+                abort(f"Importer {new_project.format} not found", 500, "No such importer")
+            importer = handler.importers[new_project.format]
+        else:
+            importer = handler.importers[default_imexporter[new_project.task_category.name]]
+        importer()
 
     # TODO: add readme file to project dir
     return new_project

@@ -1131,6 +1131,9 @@ components:
         annotation_id:
           type: integer
           readOnly: true
+        frontend_id:
+          type: integer
+          readOnly: true
         task_id:
           type: integer
         label_id:
@@ -1265,6 +1268,13 @@ components:
       schema:
         type: string
       description: Id of an annotation record
+    frontend_id:
+      name: frontend_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a frontend-annotation record
     tag_id:
       name: tag_id
       in: path

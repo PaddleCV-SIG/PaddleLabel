@@ -7,10 +7,11 @@ from pycocotools.coco import COCO
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
+from .util import create_dir, listdir, copy, copytree, ComponentManager
 from .base import BaseTask
 
-# TODO: move to io
+
+# FIXME: update inssegmentation parse_voc_label and create_voc_label
 def parse_voc_label(label_path):
     from xml.dom import minidom
 
@@ -63,12 +64,14 @@ def create_voc_label(filename, width, height, annotations):
 {object_labels}
 </annotation>
 """
-    # TODO: beautify export xml
     # return minidom.parseString(voc_label.strip()).toprettyxml(indent="    ", newl="")
     return voc_label.strip()
 
 
-class Detection(BaseTask):
+image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
+
+class InsSegmentation(BaseTask):
     def __init__(self, project):
         super().__init__(project)
         self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
@@ -206,32 +209,36 @@ class Detection(BaseTask):
 
 def voc():
     pj_info = {
-        "name": "Pascal Detection Example",
-        "data_dir": osp.join(task_test_basedir, "det_pascal_voc/JPEGImages/"),
-        "task_category_id": 2,
-        "label_dir": osp.join(task_test_basedir, "det_pascal_voc/Annotations/"),
+        "name": "Pascal InsSegmentation Example",
+        "data_dir": osp.join(task_test_basedir, "inseg_pascal_voc/JPEGImages/"),
+        "task_category_id": 3,
+        "label_dir": osp.join(task_test_basedir, "inseg_pascal_voc/Annotations/"),
     }
     project = ProjectSchema().load(pj_info)
 
-    det_project = Detection(project)
+    seg_project = InsSegmentation(project)
 
-    det_project.voc_importer(filters={"exclude_prefix": ["."]})
+    seg_project.voc_importer(filters={"exclude_prefix": ["."]})
 
-    det_project.voc_exporter(osp.join(task_test_basedir, "export/det_voc_export"))
+    seg_project.voc_exporter(
+        osp.join(task_test_basedir, "export/inseg_voc_export")
+    )
 
 
 def coco():
     pj_info = {
-        "name": "COCO Detection Example",
-        "data_dir": osp.join(task_test_basedir, "det_coco/JPEGImages/"),
+        "name": "COCO InsSegmentation Example",
+        "data_dir": osp.join(task_test_basedir, "inseg_coco/JPEGImages/"),
         "description": "Example Project Descreption",
-        "label_dir": osp.join(task_test_basedir, "det_coco/Annotations/coco_info.json"),
-        "task_category_id": 2,
+        "label_dir": osp.join(task_test_basedir, "inseg_coco/Annotations/coco_info.json"),
+        "task_category_id": 3,
     }
     project = ProjectSchema().load(pj_info)
 
-    det_project = Detection(project)
+    seg_project = InsSegmentation(project)
 
-    det_project.coco_importer(filters={"exclude_prefix": ["."]})
+    seg_project.coco_importer(filters={"exclude_prefix": ["."]})
 
-    det_project.coco_exporter(osp.join(task_test_basedir, "export/det_coco_export"))
+    seg_project.coco_exporter(
+        osp.join(task_test_basedir, "export/inseg_coco_export")
+    )

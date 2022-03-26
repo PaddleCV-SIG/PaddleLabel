@@ -11,5 +11,5 @@ uuid
 jwt
 werkzeug
 flask_cors # to be removed
-# pycocotoolse
+pycocotools
 # opencv-python

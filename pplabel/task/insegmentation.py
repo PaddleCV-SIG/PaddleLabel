@@ -11,7 +11,7 @@ from .util import create_dir, listdir, copy, copytree, ComponentManager
 from .base import BaseTask
 
 
-# FIXME: update segmentation parse_voc_label and create_voc_label
+# FIXME: update inssegmentation parse_voc_label and create_voc_label
 def parse_voc_label(label_path):
     pass
 
@@ -20,7 +20,7 @@ def create_voc_label(filename, width, height, annotations):
     pass
 
 
-class RemoteSensing(BaseTask):
+class InsSegmentation(BaseTask):
     importers = ComponentManager()
     exporters = ComponentManager()
 
@@ -133,36 +133,36 @@ class RemoteSensing(BaseTask):
 
 def voc():
     pj_info = {
-        "name": "Pascal RemoteSensing Example",
-        "data_dir": osp.join(task_test_basedir, "rs_pascal_voc/JPEGImages/"),
-        "task_category_id": 6,
-        "label_dir": osp.join(task_test_basedir, "rs_pascal_voc/Annotations/"),
+        "name": "Pascal InsSegmentation Example",
+        "data_dir": osp.join(task_test_basedir, "inseg_pascal_voc/JPEGImages/"),
+        "task_category_id": 3,
+        "label_dir": osp.join(task_test_basedir, "inseg_pascal_voc/Annotations/"),
     }
     project = ProjectSchema().load(pj_info)
 
-    seg_project = RemoteSensing(project)
+    seg_project = InsSegmentation(project)
 
     seg_project.voc_importer(filters={"exclude_prefix": ["."]})
 
     seg_project.voc_exporter(
-        osp.join(task_test_basedir, "export/rs_voc_export")
+        osp.join(task_test_basedir, "export/inseg_voc_export")
     )
 
 
 def coco():
     pj_info = {
-        "name": "COCO RemoteSensing Example",
-        "data_dir": osp.join(task_test_basedir, "rs_coco/JPEGImages/"),
+        "name": "COCO InsSegmentation Example",
+        "data_dir": osp.join(task_test_basedir, "inseg_coco/JPEGImages/"),
         "description": "Example Project Descreption",
-        "label_dir": osp.join(task_test_basedir, "rs_coco/Annotations/coco_info.json"),
-        "task_category_id": 6,
+        "label_dir": osp.join(task_test_basedir, "inseg_coco/Annotations/coco_info.json"),
+        "task_category_id": 3,
     }
     project = ProjectSchema().load(pj_info)
 
-    seg_project = RemoteSensing(project)
+    seg_project = InsSegmentation(project)
 
     seg_project.coco_importer(filters={"exclude_prefix": ["."]})
 
     seg_project.coco_exporter(
-        osp.join(task_test_basedir, "export/rs_coco_export")
+        osp.join(task_test_basedir, "export/inseg_coco_export")
     )

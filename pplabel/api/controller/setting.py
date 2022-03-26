@@ -13,7 +13,7 @@ def init_site_settings(json_path):
         curr_cat = TaskCategory.query.filter(
             TaskCategory.task_category_id == idx
         ).one_or_none()
-        print(TaskCategory.query.all())
+        # print(TaskCategory.query.all())
         if curr_cat is None:
             curr_cat = TaskCategory(idx, cat, handler)
             se.add(curr_cat)

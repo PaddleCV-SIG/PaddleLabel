@@ -3,10 +3,10 @@
     "task_categories": {
       "1": ["classification", "pplabel.task.Classification"],
       "2": ["detection", "pplabel.task.Detection"],
-      "3": ["semantic_segmentation", ""],
-      "4": ["instance_segmentation", ""],
-      "5": ["keypoint_detection", ""],
-      "6": ["remote_sensing", ""]
+      "3": ["semantic_segmentation", "pplabel.task.Segmentation"],
+      "4": ["instance_segmentation", "pplabel.task.InsSegmentation"],
+      "5": ["keypoint_detection", "pplabel.task.KeyDetection"],
+      "6": ["remote_sensing", "pplabel.task.RemoteSensing"]
     }
   }
 }

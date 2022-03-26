@@ -24,6 +24,7 @@ db_path = f"{osp.join(os.path.expanduser('~'), '.pplabel/pplabel.db')}"
 if not osp.exists(osp.dirname(db_path)):
     os.makedirs(osp.dirname(db_path))
 sqlite_url = f"sqlite:///{db_path}"
+print("sqlite_url: ", sqlite_url)
 
 connexion_app = connexion.App(__name__)
 app = connexion_app.app

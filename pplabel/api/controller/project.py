@@ -24,7 +24,14 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_imexporter = {"classification": "single_class", "detection": "coco"}  # TODO: remove this
+default_imexporter = {
+    "classification": "single_class", 
+    "detection": "voc",
+    "semantic_segmentation": "voc",
+    "instance_segmentation": "voc",
+    "keypoint_detection": "voc",
+    "remote_sensing": "voc",
+    }  # TODO: remove this
 
 
 def exportDataset(project_id):

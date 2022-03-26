@@ -13,30 +13,83 @@ from .base import BaseTask
 
 # FIXME: update inssegmentation parse_voc_label and create_voc_label
 def parse_voc_label(label_path):
-    pass
+    from xml.dom import minidom
+
+    def data(elements):
+        return elements[0].firstChild.data
+
+    file = minidom.parse(label_path)
+    objects = file.getElementsByTagName("object")
+    res = []
+    for object in objects:
+        temp = {}
+        temp["label_name"] = data(object.getElementsByTagName("name"))
+        bndbox = object.getElementsByTagName("bndbox")[0]
+        temp["result"] = {}
+        temp["result"]["xmin"] = data(bndbox.getElementsByTagName("xmin"))
+        temp["result"]["xmax"] = data(bndbox.getElementsByTagName("xmax"))
+        temp["result"]["ymin"] = data(bndbox.getElementsByTagName("ymin"))
+        temp["result"]["ymax"] = data(bndbox.getElementsByTagName("ymax"))
+        temp["result"] = json.dumps(temp["result"])
+        res.append(temp)
+    return res
 
 
 def create_voc_label(filename, width, height, annotations):
-    pass
+    from xml.dom import minidom
+
+    object_labels = ""
+    r = json.loads(ann.result)
+    for ann in annotations:
+        object_labels += f"""
+    <object>
+    <name>{ann.label.name}</name>
+    <bndbox>
+      <xmin>{r['xmin']}</xmin>
+      <ymin>{r['ymin']}</ymin>
+      <xmax>{r['xmax']}</xmax>
+      <ymax>{r['ymax']}</ymax>
+    </bndbox>
+    </object>
+"""
+    voc_label = f"""
+<?xml version='1.0' encoding='UTF-8'?>
+<annotation>
+  <filename>{filename}</filename>
+  <object_num>{len(annotations)}</object_num>
+  <size>
+    <width>{width}</width>
+    <height>{height}</height>
+  </size>
+{object_labels}
+</annotation>
+"""
+    # return minidom.parseString(voc_label.strip()).toprettyxml(indent="    ", newl="")
+    return voc_label.strip()
+
+
+image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
 
 class InsSegmentation(BaseTask):
-    importers = ComponentManager()
-    exporters = ComponentManager()
+    def __init__(self, project):
+        super().__init__(project)
+        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
+        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}
 
-    @importers.add_component
     def coco_importer(
         self,
         data_dir=None,
         label_path=None,
-        filters={"exclude_prefix": ["."]},
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        """
+        images should be located at data_dir / file_name in coco annotation
+        """
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
+        create_dir(data_dir)
         if label_path is None:
             label_path = project.label_dir
 
@@ -54,38 +107,53 @@ class InsSegmentation(BaseTask):
             temp = ann_by_task.get(ann["image_id"], [])
             temp.append({"label_name": label_name, "result": json.dumps(result)})
             ann_by_task[ann["image_id"]] = temp
+        have_label = []
         for img_id, annotations in list(ann_by_task.items()):
-            self.add_task([coco.imgs[img_id]["file_name"]], annotations)
+            have_label.append(coco.imgs[img_id]["file_name"])
+            self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
 
-    @importers.add_component
+        image_paths = listdir(data_dir)
+        image_paths = [osp.relpath(p, data_dir) for p in image_paths]
+        for image_path in image_paths:
+            if image_path not in have_label:
+                self.add_task([image_path])
+
     def voc_importer(
         self,
         data_dir=None,
-        label_dir=None,
+        name_only=False,
         filters={"exclude_prefix": ["."]},
     ):
         project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
-        if label_dir is None:
-            label_dir = project.label_dir
-        success, res = create_dir(data_dir)
-        if not success:
-            return False, res
-        if label_dir is not None:
-            success, res = create_dir(data_dir)
-            if not success:
-                return False, res
-        data_paths = listdir(data_dir)
-        label_paths = listdir(label_dir)
-        label_dict = {}
+        base_dir = data_dir
+        if base_dir is None:
+            base_dir = project.data_dir
+        if project.other_settings is not None:
+            if json.loads(project.other_settings).get("name_only"):  # only match with file name
+                name_only = True
+
+        data_dir = osp.join(base_dir, "JPEGImages")
+        label_dir = osp.join(base_dir, "Annotations")
+
+        create_dir(data_dir)
+
+        data_paths = listdir(data_dir, filters=filters)
+        label_paths = listdir(label_dir, filters=filters)
+        data_paths = [osp.join(data_dir, p) for p in data_paths]
+        label_paths = [osp.join(label_dir, p) for p in label_paths]
+
+        label_name_dict = {}
+        label_xml_dict = {}
+        labels = []
         for label_path in label_paths:
-            label_dict[osp.basename(label_path).split(".")[0]] = label_path
+            labels.append(parse_voc_label(label_path))
+            label_name_dict[osp.basename(label_path).split(".")[0]] = len(labels) - 1
+            # label_xml_dict[labels[-1]["label_name"]] = len(labels) - 1
+
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
-            self.add_task([data_path], parse_voc_label(label_dict[id]))
+            self.add_task([data_path], [labels[label_name_dict[id]]])
 
-    @exporters.add_component
     def coco_exporter(self, export_dir):
         project = self.project
         coco = COCO()
@@ -110,7 +178,6 @@ class InsSegmentation(BaseTask):
         print(json.dumps(coco.dataset), file=f)
         f.close()
 
-    @exporters.add_component
     def voc_exporter(self, export_dir):
         project = self.project
         tasks = Task._get(project_id=project.project_id, many=True)
@@ -119,6 +186,8 @@ class InsSegmentation(BaseTask):
         create_dir(export_data_dir)
         create_dir(export_label_dir)
 
+        set_names = ["train.txt", "validation.txt", "test.txt"]
+        set_files = [open(osp.join(export_dir, n), "w") for n in set_names]
         for task in tasks:
             data_path = osp.join(project.data_dir, task.datas[0].path)
             copy(data_path, export_data_dir)
@@ -128,6 +197,13 @@ class InsSegmentation(BaseTask):
                 create_voc_label(osp.basename(data_path), 1000, 1000, task.annotations),
                 file=f,
             )
+            f.close()
+
+            print(
+                f"JPEGImages/{osp.basename(data_path)} Annotations/{id}.xml",
+                file=set_files[task.set],
+            )
+        for f in set_files:
             f.close()
 
 

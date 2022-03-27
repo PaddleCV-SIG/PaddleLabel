@@ -3,8 +3,8 @@ import os.path as osp
 import logging
 
 import connexion
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy  # TODO: remove
+from flask_marshmallow import Marshmallow  # TODO: remove
 
 from .util import rand_string
 

@@ -1,9 +1,10 @@
 numpy
 flask
 connexion[swagger-ui]
-flask_sqlalchemy
-flask_marshmallow
-marshmallow_sqlalchemy
+flask_sqlalchemy # to be removed
+flask_marshmallow # to be removed
+marshmallow_sqlalchemy>=0.27.0
+# sqlalchemy>=
 Cython
 opencv-python-headless
 uuid

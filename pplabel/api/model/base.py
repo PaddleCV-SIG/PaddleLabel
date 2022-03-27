@@ -42,9 +42,9 @@ class BaseModel(db.Model):
         many = kwargs.get("many", False)
         if "many" in kwargs.keys():
             del kwargs["many"]
-        # for key in kwargs.keys():
-        #     if key not in cls._cols:  # FIXME: TypeError: argument of type 'method' is not iterable
-        #         raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
+        for key in kwargs.keys():
+            if key not in cls._cols:
+                raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
 
         # TODO: none value
 

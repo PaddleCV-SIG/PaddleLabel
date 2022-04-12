@@ -20,4 +20,4 @@ class Task(BaseModel):
     datas = db.relationship("Data", lazy="selectin", cascade="all, delete-orphan")
     annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
     # TODO: split with tag!
-    set = nncol(db.Integer()) # 0 undefined, 1 train, 2 val, 3 test
+    set = nncol(db.Integer()) # 0 train, 1 val, 2 test

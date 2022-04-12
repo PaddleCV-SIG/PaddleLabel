@@ -89,38 +89,30 @@ class Classification(BaseTask):
 
     def single_class_exporter(self, export_dir):
         create_dir(export_dir)
-
         project = self.project
+
+        # 1. write labels.txt
         labels = Label._get(project_id=project.project_id, many=True)
         labels.sort(key=lambda l: l.id)
-        label_idx = {}
-        for idx, label in enumerate(labels):
-            label_idx[label.name] = idx
         with open(osp.join(export_dir, "labels.txt"), "w") as f:
             for lab in labels:
                 print(lab.name, file=f)
-
+        label_idx = {}
+        for idx, label in enumerate(labels):
+            label_idx[label.name] = idx
+        # create label dirs
         for label in labels:
-            dir = osp.join(export_dir, label.name)
-            create_dir(dir)
+            create_dir(osp.join(export_dir, label.name))
 
-        set_names = ["train", "validation", "test"]
-        set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
         tasks = Task._get(project_id=project.project_id, many=True)
         for task in tasks:
             for data in task.datas:
                 label_name = ""
                 if len(data.annotations) == 1:
                     label_name = data.annotations[0].label.name
-                    print(
-                        f"{osp.join(label_name, osp.basename(data.path))} {label_idx[label_name]}",
-                        file=set_files[task.set],
-                    )
-                dst = osp.join(export_dir, label_name)
-                copy(osp.join(project.data_dir, data.path), dst)
-
-        for f in set_files:
-            f.close()
+                copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
+        
+        self.write_split(export_dir, tasks)
 
     def multi_class_exporter(self, export_dir):
         create_dir(osp.join(export_dir, "image"))

@@ -242,7 +242,7 @@ paths:
                 properties:
                   train:
                     type: integer
-                  validation:
+                  val:
                     type: integer
                   test:
                     type: integer
@@ -256,7 +256,7 @@ paths:
               properties:
                 train:
                   type: number
-                validation:
+                val:
                   type: number
                 test:
                   type: number

@@ -51,7 +51,6 @@ def listdir(path, filters={"exclude_prefix": ["."]}):
     files = list(filter(exclude, files))
     files.sort()
     files = [osp.normpath(p) for p in files]
-    print("asdfasdfasdf", files)
     return files
 
 

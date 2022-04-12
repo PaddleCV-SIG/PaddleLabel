@@ -9,7 +9,7 @@ from .base import BaseTask
 
 class Classification(BaseTask):
     def __init__(self, project):
-        super().__init__(project)
+        super(Classification, self).__init__(project)
         self.importers = {
             "single_class": self.single_class_importer,
             "multi_class": self.multi_class_importer,
@@ -25,6 +25,7 @@ class Classification(BaseTask):
         self,
         data_dir=None,
         label_path=None,
+        delimiter=" ",
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
@@ -34,12 +35,11 @@ class Classification(BaseTask):
             label_path = project.label_dir
 
         # 1. if data_dir/labels.txt exists, import labels
-        # TODO: last string as color
         if label_path is not None and osp.exists(label_path):
             labels = open(label_path, "r").readlines()
-            labels = [l.strip() for l in labels if len(l.strip()) != 0]
+            labels = [l.strip().split(delimiter) for l in labels if len(l.strip()) != 0]
             for lab in labels:
-                self.add_label(lab)
+                self.add_label(lab[0], lab[1] if len(lab)==2 else None)
 
         # 2. import records
         create_dir(data_dir)
@@ -50,7 +50,6 @@ class Classification(BaseTask):
                 data_path = osp.relpath(data_path, project.data_dir)
             label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [[{"label_name": label_name}]])
-            print(f"==== {data_path} imported ====")
 
         # 3. move data
         if data_dir != project.data_dir:
@@ -68,7 +67,7 @@ class Classification(BaseTask):
             data_dir = project.data_dir
         if label_path is None:
             label_path = project.label_dir
-
+        
         if label_path is not None and not osp.exists(label_path):
             raise RuntimeError(f"label_path ({label_path}) specified but doesn't exist")
 
@@ -79,7 +78,6 @@ class Classification(BaseTask):
             for label in label_lines:
                 cols = label.split(delimiter)
                 labels_dict[cols[0]] = cols[1:]
-        print("+_+_+_+_+", labels_dict)
 
         create_dir(data_dir)
         data_paths = listdir(data_dir, filters)

@@ -35,11 +35,14 @@ class BaseTask:
             label_max_id = max(label_max_id, label.id)
         self.label_max_id = label_max_id
 
-        # 3. generate random color if not set
+        # 3. generate random color for labels if not set
         for lab in self.project.labels:
             if lab.color is None:
                 lab.color = rand_color([l.color for l in self.project.labels])
         db.session.commit()
+
+        # 4. read split
+        self.split = self.read_split()
 
     def add_label(self, name: str, color: str = None):
         if name is None or len(name) == 0:
@@ -57,7 +60,7 @@ class BaseTask:
         self.label_max_id += 1
         return label
 
-    def add_task(self, data_paths: list, annotations: list = None):
+    def add_task(self, data_paths: list, annotations: list = None, split: int=None):
         """Add one task to project.
 
         Parameters
@@ -92,9 +95,24 @@ class BaseTask:
                 ],
                 ...
             ]
+        split: int. the split set this task is in. If not passed will attempt to find in the three list files. If not found default to 1 (training set).
         """
         project = self.project
-        task = Task(project_id=project.project_id, set=0)
+        assert len(data_paths) != 0, "can't add task without data"
+
+        # 1. find task split
+        # ensure all relative paths
+        for idx, data_path in enumerate(data_paths):
+            if project.data_dir in data_path:
+                data_paths[idx] = osp.relpath(data_path, project.data_dir)
+        
+        split_idx = 0
+        for idx, split in enumerate(self.split):
+            if data_paths[0] in split:
+                split_idx = idx
+                break
+        split_idx += 1
+        task = Task(project_id=project.project_id, set=split_idx)
 
         def get_label(name):
             for lab in project.labels:
@@ -105,18 +123,15 @@ class BaseTask:
         if annotations is None or len(annotations) == 0:
             annotations = [[]] * len(data_paths)
         for anns, data_path in zip(annotations, data_paths):
-            # 1. add data record
-            if project.data_dir in data_path:
-                data_path = osp.relpath(data_path, project.data_dir)
+            # 2. add data record
             data = Data(path=data_path, slice_count=1)  # TODO: generate slice_count from io
             task.datas.append(data)
-            print(f"==== {data_path} imported  ====")
 
-            # 2. add data's annotations
+            # 3. add data's annotations
             for ann in anns:
                 if ann is None or len(ann.get("label_name", "")) == 0:
                     continue
-                # TODO: multiple labels under same label_name can exist
+                # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"))
@@ -127,6 +142,8 @@ class BaseTask:
                 )
                 task.annotations.append(ann)
                 data.annotations.append(ann)
+            print(f"==== {data_path} with {len(anns)} annotations imported to set {split_idx} ====")
+
 
         db.session.add(task)
         db.session.commit()
@@ -140,3 +157,18 @@ class BaseTask:
 
         for data_path in listdir(data_dir, filters):
             self.add_task([data_path])
+    
+    def read_split(self, data_dir=None):
+        if data_dir is None:
+            data_dir = self.project.data_dir
+        
+        sets = []
+        split_names = ["train_list.txt", "val_list.txt", "test_list.txt"]
+        for split_name in split_names:
+            split_path = osp.join(data_dir, split_name)
+            paths = []
+            if osp.exists(split_path):
+                paths = open(split_path, "r").readlines()
+                paths = [p.strip() for p in paths if len(p.strip())!=0]
+            sets.append(set(paths))
+        return sets

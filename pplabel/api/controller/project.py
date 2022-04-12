@@ -1,7 +1,6 @@
 import math
 import random
 
-import sqlalchemy
 from marshmallow import fields
 import numpy as np
 import connexion
@@ -12,8 +11,8 @@ from ..schema import ProjectSchema
 from .base import crud
 from . import label
 from ..util import abort
-import pplabel.task
 from pplabel.util import camel2snake
+import pplabel
 
 
 def pre_add(new_project, se):
@@ -26,28 +25,30 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_imexporter = {
-    "classification": "single_class",
-    "detection": "voc",
-    "semantic_segmentation": "gray_scale",
-    "instance_segmentation": "gray_scale",
-}  # TODO: remove this
+default_imexporter = {"classification": "single_class", "detection": "voc"}  # TODO: remove this
+
 
 def post_add(new_project, se):
-    '''run task import after project creation'''
+    """run task import after project creation"""
     task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
-    
+
     # 1. create handler
     handler = eval(task_category.handler)(new_project)
-    
+
+    print("+_+_+_+_+_+", new_project.sub_category)
+
     # 2. choose importer. if specified, use importer for new_project.sub_category, else use default_importer
     if new_project.sub_category is not None:
         if new_project.sub_category not in handler.importers.keys():
-            abort(f"Importer {new_project.sub_category} for project category {task_category.name} not found", 404, "No such importer")
+            abort(
+                f"Importer {new_project.sub_category} for project category {task_category.name} not found",
+                404,
+                "No such importer",
+            )
         importer = handler.importers[new_project.sub_category]
     else:
         importer = handler.default_importer
-    
+
     # 3. run import
     importer()
 

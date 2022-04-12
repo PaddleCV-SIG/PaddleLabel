@@ -260,6 +260,7 @@ paths:
                   type: number
                 test:
                   type: number
+        description: ''
   '/projects/{project_id}/export':
     parameters:
       - $ref: '#/components/parameters/project_id'

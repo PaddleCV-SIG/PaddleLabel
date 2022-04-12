@@ -93,36 +93,3 @@ class SemanticSegmentation(BaseTask):
             )
         for f in set_files:
             f.close()
-
-    
-def voc():
-    pj_info = {
-        "name": "Pascal Segmentation Example",
-        "data_dir": osp.join(task_test_basedir, "seg_pascal_voc/JPEGImages/"),
-        "task_category_id": 3,
-        "label_dir": osp.join(task_test_basedir, "seg_pascal_voc/Annotations/"),
-    }
-    project = ProjectSchema().load(pj_info)
-
-    seg_project = Segmentation(project)
-
-    seg_project.voc_importer(filters={"exclude_prefix": ["."]})
-
-    seg_project.voc_exporter(osp.join(task_test_basedir, "export/seg_voc_export"))
-
-
-def coco():
-    pj_info = {
-        "name": "COCO Segmentation Example",
-        "data_dir": osp.join(task_test_basedir, "seg_coco/JPEGImages/"),
-        "description": "Example Project Descreption",
-        "label_dir": osp.join(task_test_basedir, "seg_coco/Annotations/coco_info.json"),
-        "task_category_id": 3,
-    }
-    project = ProjectSchema().load(pj_info)
-
-    seg_project = Segmentation(project)
-
-    seg_project.coco_importer(filters={"exclude_prefix": ["."]})
-
-    seg_project.coco_exporter(osp.join(task_test_basedir, "export/seg_coco_export"))

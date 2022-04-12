@@ -13,14 +13,44 @@ from .base import crud
 from . import label
 from ..util import abort
 import pplabel.task
+from pplabel.util import camel2snake
 
 
 def pre_add(new_project, se):
+    new_project.sub_category = camel2snake(new_project.sub_category)
     new_labels = new_project.labels
     rets, unique = label.unique_within_project(new_project.project_id, new_labels)
     if not np.all(unique):
         # TODO: return the not unique field
         abort("Project labels are not unique", 409)
+    return new_project
+
+
+default_imexporter = {
+    "classification": "single_class",
+    "detection": "voc",
+    "semantic_segmentation": "gray_scale",
+    "instance_segmentation": "gray_scale",
+}  # TODO: remove this
+
+def post_add(new_project, se):
+    task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
+    
+    # 1. create handler
+    handler = eval(task_category.handler)(new_project)
+    
+    # 2. choose importer. if specified, use importer for new_project.sub_category, else use default_importer
+    if new_project.sub_category is not None:
+        if new_project.sub_category not in handler.importers.keys():
+            abort(f"Importer {new_project.sub_category} for project category {task_category.name} not found", 404, "No such importer")
+        importer = handler.importers[new_project.sub_category]
+    else:
+        importer = handler.default_importer
+    
+    # 3. run import
+    importer()
+
+    # TODO: add readme file to project dir
     return new_project
 
 
@@ -34,32 +64,6 @@ def exportDataset(project_id):
         exporter = handler.exporters[default_imexporter[project.task_category.name]]
     req = connexion.request.json
     exporter(req["export_dir"])
-
-
-default_imexporter = {
-    "classification": "single_class",
-    "detection": "voc",
-    "semantic_segmentation": "gray_scale",
-    "instance_segmentation": "gray_scale",
-    # "keypoint_detection": "",
-    # "remote_sensing": "",
-}  # TODO: remove this
-
-
-def post_add(new_project, se):
-    task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
-    if task_category in default_imexporter.keys():
-        handler = eval(task_category.handler)(new_project)
-        if new_project.format is not None:
-            if new_project.format not in handler.importers.keys():
-                abort(f"Importer {new_project.format} not found", 500, "No such importer")
-            importer = handler.importers[new_project.format]
-        else:
-            importer = handler.importers[default_imexporter[new_project.task_category.name]]
-        importer()
-
-    # TODO: add readme file to project dir
-    return new_project
 
 
 def pre_delete(project, se):

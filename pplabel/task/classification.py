@@ -1,4 +1,3 @@
-import os
 import os.path as osp
 
 from pplabel.config import db, task_test_basedir
@@ -19,6 +18,8 @@ class Classification(BaseTask):
             "single_class": self.single_class_exporter,
             "multi_class": self.multi_class_exporter,
         }
+        self.default_importer = self.single_class_importer
+        self.default_exporter = self.single_class_exporter
 
     def single_class_importer(
         self,
@@ -78,6 +79,7 @@ class Classification(BaseTask):
             for label in label_lines:
                 cols = label.split(delimiter)
                 labels_dict[cols[0]] = cols[1:]
+        print("+_+_+_+_+", labels_dict)
 
         create_dir(data_dir)
         data_paths = listdir(data_dir, filters)

@@ -1,14 +1,13 @@
-import os
 import os.path as osp
 
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
+from .util import create_dir, listdir, copy, copytree, image_extensions
 from .base import BaseTask
 
 
-class Segmentation(BaseTask):
+class SemanticSegmentation(BaseTask):
     def __init__(self, project):
         super().__init__(project)
         self.importers = {
@@ -95,7 +94,7 @@ class Segmentation(BaseTask):
         for f in set_files:
             f.close()
 
-
+    
 def voc():
     pj_info = {
         "name": "Pascal Segmentation Example",

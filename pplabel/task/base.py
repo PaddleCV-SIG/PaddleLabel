@@ -1,13 +1,9 @@
-import os
 import os.path as osp
-import json
-import shutil
 
-from pplabel.config import db
-from pplabel.api import Project, Task, Data, Annotation, Label
-from pplabel.api.schema import ProjectSchema
+from pplabel.api import Annotation, Data, Label, Project, Task
 from pplabel.api.util import rand_color
-from pplabel.task.util import create_dir, listdir, copy
+from pplabel.config import db
+from pplabel.task.util import image_extensions, listdir
 
 """
 Base for import/export and other task specific operations.
@@ -18,14 +14,14 @@ class BaseTask:
     def __init__(self, project):
         """
         Args:
-            project (int|dict): If the project exists, pass in project_id, else pass in a dict containing project info (either case labels will be queried from db).
+            project (int|dict): If the project exists, self.project will be queried from db with parameter project or project.project_id. Else the project with parameter project as info will be created.
         """
 
         # 1. set project
         if isinstance(project, int):
             curr_project = Project._get(project_id=project)
             if curr_project is None:
-                raise RuntimeError(f"No project with project_id {project}")
+                raise RuntimeError(f"No project with project_id {project} found")
         else:
             curr_project = Project._get(project_id=project.project_id)
             if curr_project is None:
@@ -100,7 +96,7 @@ class BaseTask:
         project = self.project
         task = Task(project_id=project.project_id, set=0)
 
-        def getLabel(name):
+        def get_label(name):
             for lab in project.labels:
                 if lab.name == name:
                     return lab
@@ -114,12 +110,14 @@ class BaseTask:
                 data_path = osp.relpath(data_path, project.data_dir)
             data = Data(path=data_path, slice_count=1)  # TODO: generate slice_count from io
             task.datas.append(data)
+            print(f"==== {data_path} imported  ====")
 
             # 2. add data's annotations
             for ann in anns:
-                if ann is None or len(ann["label_name"]) == 0:
+                if ann is None or len(ann.get("label_name", "")) == 0:
                     continue
-                label = getLabel(ann["label_name"])
+                # TODO: multiple labels under same label_name can exist
+                label = get_label(ann["label_name"])
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"))
                 ann = Annotation(
@@ -132,3 +130,13 @@ class BaseTask:
 
         db.session.add(task)
         db.session.commit()
+    
+    # TODO: add total imported count
+    def default_importer(
+        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
+    ):
+        if data_dir is None:
+            data_dir = self.project.data_dir
+
+        for data_path in listdir(data_dir, filters):
+            self.add_task([data_path])

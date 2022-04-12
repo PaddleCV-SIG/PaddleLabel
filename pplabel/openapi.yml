@@ -1051,8 +1051,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Label'
-        format:
+        sub_category:
           type: string
+          description: 'eg: single_class/multi_class for classification'
         created:
           type: string
           description: Project creation timestamp in UTC

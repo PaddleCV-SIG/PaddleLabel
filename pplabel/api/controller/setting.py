@@ -5,6 +5,7 @@ from ..model import TaskCategory
 from pplabel.config import se
 
 
+# TODO: change task_categories to project_category
 def init_site_settings(json_path):
     settings = json.loads(open(json_path, "r").read())
     task_categories = settings["site"]["task_categories"]

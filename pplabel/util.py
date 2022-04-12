@@ -9,6 +9,21 @@ def rand_string(length):
     return "".join(random.choice(chars) for x in range(20))
 
 
+def camel2snake(string):
+    '''
+        convert camel case to snake case
+    '''
+    if string is None:
+        return None
+    new_string = ""
+    for c in string:
+        if c >= "A" and c <= "Z":
+            new_string += "_" + c.lower()
+        else:
+            new_string += c
+    return new_string
+
+
 class Resolver(connexion.resolver.RestyResolver):
     def resolve_operation_id_using_rest_semantics(self, operation):
         """

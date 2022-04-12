@@ -15,7 +15,7 @@ class TaskCategory(BaseModel):
         autoincrement=False,
     )
     name = nncol(db.String(), unique=True)
-    handler = db.Column(db.String(), unique=True)
+    handler = db.Column(db.String())
 
     def __init__(self, task_category_id, name, handler):
         super().__init__()

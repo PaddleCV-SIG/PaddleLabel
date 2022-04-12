@@ -24,7 +24,7 @@ class Project(BaseModel):
         cascade="all, delete-orphan",
     )
     tasks = db.relationship("Task", lazy="noload", cascade="all, delete-orphan")
-    format = db.Column(db.String())
+    sub_category = db.Column(db.String())
     other_settings = db.Column(db.String())
 
     _immutables = BaseModel._immutables + ["project_id", "task_category_id"]

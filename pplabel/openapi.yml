@@ -1085,7 +1085,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Label'
-        sub_category:
+        label_format:
           type: string
           description: 'eg: single_class/multi_class for classification'
         created:

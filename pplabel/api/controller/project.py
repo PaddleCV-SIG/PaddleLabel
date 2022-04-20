@@ -17,7 +17,7 @@ import pplabel
 
 
 def pre_add(new_project, se):
-    new_project.sub_category = camel2snake(new_project.sub_category)
+    new_project.label_format = camel2snake(new_project.label_format)
     new_labels = new_project.labels
     rets, unique = label.unique_within_project(new_project.project_id, new_labels)
     if not np.all(unique):
@@ -37,15 +37,15 @@ def _import_dataset(project, data_dir=None):
     else:
         handler = eval(task_category.handler)(project)
 
-    # 2. choose importer. if specified, use importer for new_project.sub_category, else use default_importer
-    if project.sub_category is not None:
-        if project.sub_category not in handler.importers.keys():
+    # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer
+    if project.label_format is not None:
+        if project.label_format not in handler.importers.keys():
             abort(
-                f"Importer {project.sub_category} for project category {task_category.name} not found",
+                f"Importer {project.label_format} for project category {task_category.name} not found",
                 404,
                 "No such importer",
             )
-        importer = handler.importers[project.sub_category]
+        importer = handler.importers[project.label_format]
     else:
         importer = handler.default_importer
 
@@ -64,8 +64,8 @@ def export_dataset(project_id):
     _, project = Project._exists(project_id)
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project)
-    if project.sub_category is not None:
-        exporter = handler.exporters[project.sub_category]
+    if project.label_format is not None:
+        exporter = handler.exporters[project.label_format]
     else:
         exporter = handler.default_exporter
     req = connexion.request.json

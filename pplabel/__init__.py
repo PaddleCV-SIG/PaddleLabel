@@ -1,11 +1,5 @@
-import os
-import os.path as osp
+version = "0.0.1"
 
-import connexion
-
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_marshmallow import Marshmallow
-from flask import session, request
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 

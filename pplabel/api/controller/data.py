@@ -1,7 +1,7 @@
 import json
 import os
 import os.path as osp
-import base64
+import random
 
 import cv2
 import flask
@@ -18,11 +18,13 @@ get_all, get, post, put, delete = crud(Data, DataSchema)
 
 # TODO: dont use flask
 def get_image(data_id):
+    # if random.random()<0.9:
+    #     abort("Mimic package loss", 404)
     if data_id is None:
-        abort("Have to provide data_id")
+        abort("Have to provide data_id", 500)
     data = Data._get(data_id=data_id)
     if data is None:
-        abort(f"Data with data_id {data_id} doesn't exist")
+        abort(f"Data with data_id {data_id} doesn't exist", 500)
     path = data.path
     project_id = data.task.project_id
     data_dir = Project._get(project_id=project_id).data_dir

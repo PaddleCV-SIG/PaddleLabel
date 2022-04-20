@@ -73,11 +73,13 @@ class Detection(BaseTask):
         super().__init__(project)
         self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
         self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}
+        self.default_importer = self.coco_importer
+        self.default_exporter = self.coco_exporter
 
     def coco_importer(
         self,
         data_dir=None,
-        label_path=None,
+        label_file_path=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         """
@@ -86,11 +88,10 @@ class Detection(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        create_dir(data_dir)
-        if label_path is None:
-            label_path = project.label_dir
+        if label_file_path is None:
+            label_file_path = osp.join(data_dir, "annotations.json")
 
-        coco = COCO(label_path)
+        coco = COCO(label_file_path)
 
         ann_by_task = {}
         for ann_id in coco.getAnnIds():

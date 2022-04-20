@@ -1,12 +1,13 @@
 import math
 import random
+import time
 
 from marshmallow import fields
 import numpy as np
 import connexion
 
 from pplabel.config import db
-from ..model import Project, Label, Annotation, Task, Data, TaskCategory
+from pplabel.api.model import Project, Label, Annotation, Task, Data, TaskCategory
 from ..schema import ProjectSchema
 from .base import crud
 from . import label
@@ -27,36 +28,39 @@ def pre_add(new_project, se):
 
 default_imexporter = {"classification": "single_class", "detection": "voc"}  # TODO: remove this
 
-
-def post_add(new_project, se):
-    """run task import after project creation"""
-    task_category = TaskCategory._get(task_category_id=new_project.task_category_id)
+def _import_dataset(project, data_dir=None):
+    task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
     # 1. create handler
-    handler = eval(task_category.handler)(new_project)
-
-    print("+_+_+_+_+_+", new_project.sub_category)
+    if task_category is None:
+        handler = pplabel.task.BaseTask(project)
+    else:
+        handler = eval(task_category.handler)(project)
 
     # 2. choose importer. if specified, use importer for new_project.sub_category, else use default_importer
-    if new_project.sub_category is not None:
-        if new_project.sub_category not in handler.importers.keys():
+    if project.sub_category is not None:
+        if project.sub_category not in handler.importers.keys():
             abort(
-                f"Importer {new_project.sub_category} for project category {task_category.name} not found",
+                f"Importer {project.sub_category} for project category {task_category.name} not found",
                 404,
                 "No such importer",
             )
-        importer = handler.importers[new_project.sub_category]
+        importer = handler.importers[project.sub_category]
     else:
         importer = handler.default_importer
 
     # 3. run import
-    importer()
+    importer(data_dir)
+
+def post_add(new_project, se):
+    """run task import after project creation"""
+    _import_dataset(new_project)
 
     # TODO: add readme file to project dir
     return new_project
 
 
-def exportDataset(project_id):
+def export_dataset(project_id):
     _, project = Project._exists(project_id)
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project)
@@ -66,6 +70,12 @@ def exportDataset(project_id):
         exporter = handler.default_exporter
     req = connexion.request.json
     exporter(req["export_dir"])
+
+def import_dataset(project_id):
+    req = connexion.request.json
+    _, project = Project._exists(project_id)
+    print("project", project)
+    _import_dataset(project, req["import_dir"])
 
 
 def pre_delete(project, se):

@@ -1,9 +1,9 @@
+import time
 import os.path as osp
 
-from pplabel.config import db, task_test_basedir
-from pplabel.api import Project, Task, Data, Annotation, Label
-from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
+from pplabel.config import db
+from pplabel.api import Task
+from .util import create_dir, listdir, copy, image_extensions
 from .base import BaseTask
 
 
@@ -24,193 +24,91 @@ class Classification(BaseTask):
     def single_class_importer(
         self,
         data_dir=None,
-        label_path=None,
-        delimiter=" ",
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        if label_path is None:
-            label_path = project.label_dir
-
-        # 1. if data_dir/labels.txt exists, import labels
-        if label_path is not None and osp.exists(label_path):
-            labels = open(label_path, "r").readlines()
-            labels = [l.strip().split(delimiter) for l in labels if len(l.strip()) != 0]
-            for lab in labels:
-                self.add_label(lab[0], lab[1] if len(lab)==2 else None)
-
-        # 2. import records
-        create_dir(data_dir)
-        for data_path in listdir(data_dir, filters):
-            if data_path == label_path:
-                continue
-            if project.data_dir in data_path:
-                data_path = osp.relpath(data_path, project.data_dir)
-            label_name = osp.basename(osp.dirname(data_path))
+        data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
+        for data_path in data_paths:
+            if data_path not in self.curr_data_paths:
+                label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [[{"label_name": label_name}]])
+        db.session.commit()
 
-        # 3. move data
-        if data_dir != project.data_dir:
-            copytree(data_dir, project.data_dir)
 
+        
     def multi_class_importer(
         self,
         data_dir=None,
-        label_path=None,
         delimiter=" ",
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        if label_path is None:
-            label_path = project.label_dir
         
-        if label_path is not None and not osp.exists(label_path):
-            raise RuntimeError(f"label_path ({label_path}) specified but doesn't exist")
-
+        label_lines = []
+        for list_name in ['train_list.txt', 'val_list.txt', 'test_list.txt']:
+            list_path = osp.join(data_dir, list_name)
+            if osp.exists(list_path):
+                label_lines += open(list_path, "r").readlines()
+        label_lines = [l.strip().split(delimiter) for l in label_lines if l.strip() != ""]
+        
         labels_dict = {}
-        if label_path is not None:
-            label_lines = open(label_path, "r").readlines()
-            label_lines = [l.strip() for l in label_lines if len(l.strip()) != 0]
-            for label in label_lines:
-                cols = label.split(delimiter)
-                labels_dict[cols[0]] = cols[1:]
+        for l in label_lines:
+            labels_dict[l[0]] = l[1:]
 
-        create_dir(data_dir)
-        data_paths = listdir(data_dir, filters)
+        data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
-            if project.data_dir in data_path:
-                data_path = osp.relpath(data_path, project.data_dir)
             labels = labels_dict.get(data_path, [])
             self.add_task([data_path], [[{"label_name": name} for name in labels]])
+        db.session.commit()
 
     def single_class_exporter(self, export_dir):
         create_dir(export_dir)
         project = self.project
 
         # 1. write labels.txt
-        labels = Label._get(project_id=project.project_id, many=True)
-        labels.sort(key=lambda l: l.id)
-        with open(osp.join(export_dir, "labels.txt"), "w") as f:
-            for lab in labels:
-                print(lab.name, file=f)
-        label_idx = {}
-        for idx, label in enumerate(labels):
-            label_idx[label.name] = idx
-        # create label dirs
+        labels = self.export_label_names(osp.join(export_dir, "labels.txt"), project.project_id)
+
+        # 2. create label dirs
         for label in labels:
             create_dir(osp.join(export_dir, label.name))
 
+        # 3. move files to output dir
         tasks = Task._get(project_id=project.project_id, many=True)
+        new_paths = []
         for task in tasks:
             for data in task.datas:
                 label_name = ""
                 if len(data.annotations) == 1:
                     label_name = data.annotations[0].label.name
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
+                new_paths.append([osp.join(label_name, osp.basename(data.path))])
         
-        self.write_split(export_dir, tasks)
+        # 4. write split files
+        self.export_split(export_dir, tasks, new_paths)
 
     def multi_class_exporter(self, export_dir):
-        create_dir(osp.join(export_dir, "image"))
         project = self.project
 
-        labels = Label._get(project_id=project.project_id, many=True)
-        labels.sort(key=lambda l: l.id)
-        label_idx = {}
-        for idx, label in enumerate(labels):
-            label_idx[label.name] = idx
-        with open(osp.join(export_dir, "labels.txt"), "w") as f:
-            for lab in labels:
-                print(lab.name, file=f)
+        # 1. all images go to export_dir/image
+        create_dir(osp.join(export_dir, "image"))
 
-        set_names = ["train", "validation", "test"]
-        set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
+        # 2. write labels.txt
+        self.export_label_names(osp.join(export_dir, "labels.txt"), project.project_id)
+
+        # 3. move all images to image folder
         tasks = Task._get(project_id=project.project_id, many=True)
+        new_paths = []
         for task in tasks:
             for data in task.datas:
-                label_ids = []
-                for ann in data.annotations:
-                    label_ids.append(label_idx[ann.label.name])
-                label_ids = [str(id) for id in label_ids]
-                if len(label_ids) != 0:
-                    print(
-                        f"{osp.basename(data.path)} {' '.join(label_ids)}", file=set_files[task.set]
-                    )
                 copy(
                     osp.join(project.data_dir, data.path),
                     osp.join(export_dir, "image", osp.basename(data.path)),
                 )
-
-        for f in set_files:
-            f.close()
-
-
-def test():
-    pj_info = {
-        "name": "Single Class Classification Example",
-        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
-        "description": "Example Project Descreption",
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
-    }
-    project = ProjectSchema().load(pj_info)
-
-    clas_project = Classification(project)
-    print(clas_project.importers[0])
-
-
-def single_clas():
-    pj_info = {
-        "name": "Single Class Classification Example",
-        "data_dir": osp.join(task_test_basedir, "clas_single/PetImages/"),
-        "description": "Example Project Descreption",
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [{"id": 1, "name": "Cat"}, {"id": 2, "name": "Dog"}],
-    }
-    project = ProjectSchema().load(pj_info)
-
-    clas_project = Classification(project)
-
-    clas_project.importers[0](filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
-    print("------------------ all tasks ------------------ ")
-    for task in Task._get(project_id=project.project_id, many=True):
-        print(task)
-
-    clas_project.single_clas_exporter(osp.join(task_test_basedir, "export/clas_single_export"))
-
-
-def multi_clas():
-    pj_info = {
-        "name": "Multi Class Classification Example",
-        "data_dir": osp.join(task_test_basedir, "clas_multi/PetImages/"),
-        "description": "Example Project Descreption",
-        "label_dir": osp.join(task_test_basedir, "clas_multi/label.txt"),
-        "other_settings": "{'some_property':true}",
-        "task_category_id": 1,
-        "labels": [
-            {"id": 1, "name": "Cat"},
-            {"id": 2, "name": "Dog"},
-            {"id": 3, "name": "Small"},
-            {"id": 4, "name": "Large"},
-        ],
-    }
-    project = ProjectSchema().load(pj_info)
-
-    clas_project = Classification(project)
-
-    clas_project.multi_class_importer(filters={"exclude_prefix": ["."], "exclude_postfix": [".db"]})
-
-    clas_project.single_clas_exporter(
-        osp.join(task_test_basedir, "export/clas_multi_folder_export")
-    )
-
-    clas_project.multi_clas_exporter(osp.join(task_test_basedir, "export/clas_multi_file_export"))
-    tasks = Task.query.all()
-    for task in tasks:
-        print("=======task=======", task)
+                new_paths.append([osp.join("image", osp.basename(data.path))])
+        
+        # 4. export split
+        self.export_split(osp.join(export_dir), tasks, new_paths)

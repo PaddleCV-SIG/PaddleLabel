@@ -1,6 +1,8 @@
 import os.path as osp
+import time
 
 from pplabel.api import Annotation, Data, Label, Project, Task
+from pplabel.api.model import project
 from pplabel.api.util import rand_color
 from pplabel.config import db
 from pplabel.task.util import image_extensions, listdir
@@ -14,7 +16,7 @@ class BaseTask:
     def __init__(self, project):
         """
         Args:
-            project (int|dict): If the project exists, self.project will be queried from db with parameter project or project.project_id. Else the project with parameter project as info will be created.
+            project (int|dict): If the project exists, self.project will be queried from db with parameter project or project.project_id. Else the project will be created.
         """
 
         # 1. set project
@@ -27,22 +29,44 @@ class BaseTask:
             if curr_project is None:
                 db.session.add(project)
                 db.session.commit()
+                curr_project = project
         self.project = curr_project
 
-        # 2. set max label id
-        label_max_id = 0
+        # 2. set current label max id
+        self.label_max_id = 0
         for label in project.labels:
-            label_max_id = max(label_max_id, label.id)
-        self.label_max_id = label_max_id
+            self.label_max_id = max(self.label_max_id, label.id)
 
-        # 3. generate random color for labels if not set
-        for lab in self.project.labels:
-            if lab.color is None:
-                lab.color = rand_color([l.color for l in self.project.labels])
-        db.session.commit()
-
-        # 4. read split
+        # 3. read dataset split
         self.split = self.read_split()
+
+        # 4. create labels specified in labels.txt
+        if project.other_settings is not None:
+            label_names_path = project.other_settings.get("label_names_path", None)
+            if label_names_path is None:
+                label_names_path = osp.join(project.data_dir, "labels.txt")
+            if osp.exists(label_names_path):
+                self.import_label_names()
+
+        # 5. polupate label colors
+        self.populate_label_colors()
+
+        # 6. get curr datapaths
+        tasks = Task._get(project_id=project.project_id, many=True)
+        self.curr_data_paths = []
+        for task in tasks:
+            for data in task.datas:
+                self.curr_data_paths.append(data.path)
+        print(self.curr_data_paths)
+
+        self.project = Project._get(project_id=project.project_id)
+
+    def populate_label_colors(self):
+        labels = Label._get(project_id=self.project.project_id, many=True)
+        for lab in labels:
+            if lab.color is None:
+                lab.color = rand_color([l.color for l in labels])
+        db.session.commit()
 
     def add_label(self, name: str, color: str = None):
         if name is None or len(name) == 0:
@@ -56,12 +80,13 @@ class BaseTask:
             color=color,
         )
         self.project.labels.append(label)
-        db.session.commit()
+        db.session.commit()  # TODO: remove
         self.label_max_id += 1
         return label
 
     def add_task(self, data_paths: list, annotations: list = None, split: int = None):
         """Add one task to project.
+        ATTENTION: invoke db.session.commit() after adding all tasks
 
         Parameters
         ----------
@@ -101,16 +126,12 @@ class BaseTask:
         assert len(data_paths) != 0, "can't add task without data"
 
         # 1. find task split
-        # ensure all relative paths
-        for idx, data_path in enumerate(data_paths):
-            if project.data_dir in data_path:
-                data_paths[idx] = osp.relpath(data_path, project.data_dir)
-
         split_idx = 0
         for idx, split in enumerate(self.split):
             if data_paths[0] in split:
                 split_idx = idx
                 break
+
         task = Task(project_id=project.project_id, set=split_idx)
 
         def get_label(name):
@@ -119,16 +140,20 @@ class BaseTask:
                     return lab
             return None
 
-        if annotations is None or len(annotations) == 0:
-            annotations = [[]] * len(data_paths)
+        if annotations is None:
+            annotations = []
+        while len(annotations) < len(data_paths):
+            annotations.append([])
+
         for anns, data_path in zip(annotations, data_paths):
             # 2. add data record
             data = Data(path=data_path, slice_count=1)  # TODO: generate slice_count from io
             task.datas.append(data)
+            total_anns = 0
 
             # 3. add data's annotations
             for ann in anns:
-                if ann is None or len(ann.get("label_name", "")) == 0:
+                if len(ann.get("label_name", "")) == 0:
                     continue
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
@@ -141,22 +166,12 @@ class BaseTask:
                 )
                 task.annotations.append(ann)
                 data.annotations.append(ann)
+                total_anns += 1
             print(
-                f"==== {data_path} with {len(anns)} annotation{'' if len(anns)==1 else 's'} imported to set {split_idx} ===="
+                f"==== {data_path} with {total_anns} annotation{'' if len(anns)==1 else 's'} imported to set {split_idx} ===="
             )
 
         db.session.add(task)
-        db.session.commit()
-
-    # TODO: add total imported count
-    def default_importer(
-        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
-    ):
-        if data_dir is None:
-            data_dir = self.project.data_dir
-
-        for data_path in listdir(data_dir, filters):
-            self.add_task([data_path])
 
     def read_split(self, data_dir=None, delimiter=" "):
         if data_dir is None:
@@ -174,19 +189,59 @@ class BaseTask:
             sets.append(set(paths))
         return sets
 
-    def write_split(self, export_dir, tasks=None, delimiter=" "):
-        if tasks is None:
-            tasks = Task._get(project_id=self.project.project_id, many=True)
-
+    def export_split(self, export_dir, tasks, new_paths, delimiter=" "):
         set_names = ["train", "val", "test"]
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
-        for task in tasks:
-            for data in task.datas:
+        for task, task_new_paths in zip(tasks, new_paths):
+            for data, new_path in zip(task.datas, task_new_paths):
                 label_ids = []
                 for ann in data.annotations:
                     label_ids.append(ann.label.id)
                 label_ids = [str(id) for id in label_ids]
-                print(data.path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
+                print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
 
         for f in set_files:
             f.close()
+
+    # TODO: seperate label file path from label dir
+    def import_label_names(self, label_names_path, delimiter=" "):
+        if label_names_path is None or not osp.exists(label_names_path):
+            return
+        labels = open(label_names_path, "r").readlines()
+        labels = [l.strip() for l in labels if len(l.strip()) != 0]
+        labels = [l.split(delimiter) for l in labels]
+        current_labels = Label._get(project_id=self.project.project_id)
+        current_labels = [l.name for l in current_labels]
+        for label in labels:
+            if len(label) > 2:
+                raise RuntimeError(
+                    f"Each line in labels.txt should contain at most 1 delimiter, after split {label}"
+                )
+            if label[0] not in current_labels:
+                self.add_label(**label)
+
+    def export_label_names(self, label_names_path: str, project_id: int = None):
+        if project_id is None:
+            project_id = self.project.project_id
+        
+        labels = Label._get(project_id=project_id, many=True)
+        labels.sort(key=lambda l: l.id)
+        with open(label_names_path, "w") as f:
+            for lab in labels:
+                print(lab.name, file=f)
+        return labels
+
+    # TODO: add total imported count
+    def default_importer(
+        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
+    ):
+        if data_dir is None:
+            data_dir = self.project.data_dir
+
+        for data_path in listdir(data_dir, filters):
+            split = 0  # TODO: test this
+            for idx, set in enumerate(self.split):
+                if data_path in set:
+                    split = idx
+            self.add_task([data_path], split=split)
+        db.session.commit()

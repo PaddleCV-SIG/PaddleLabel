@@ -281,6 +281,30 @@ paths:
           description: success
       operationId: exportDataset
       description: ''
+  '/projects/{project_id}/import':
+    parameters:
+      - schema:
+          type: string
+        name: project_id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: importDataset
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                import_dir:
+                  type: string
+        description: ''
   /labels:
     get:
       tags:
@@ -1000,6 +1024,15 @@ paths:
               properties:
                 path:
                   type: string
+  /version:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - manage
+      operationId: getVersion
+      responses:
+        '200':
+          description: OK
 components:
   securitySchemes:
     jwt:
@@ -1068,8 +1101,7 @@ components:
           nullable: true
           readOnly: true
         other_settings:
-          type: string
-          description: Project settings that are different across annotation task categories
+          $ref: '#/components/schemas/ProjectOtherSettings'
     Task:
       title: Task
       type: object
@@ -1081,7 +1113,7 @@ components:
           readOnly: true
         project_id:
           type: integer
-        datas:
+        data_paths:
           type: array
           items:
             type: string
@@ -1226,6 +1258,16 @@ components:
           type: string
         role_id:
           type: integer
+    ProjectOtherSettings:
+      title: ProjectOtherSettings
+      type: object
+      properties:
+        label_names_path:
+          type: string
+        split_file_paths:
+          type: array
+          items:
+            type: string
   parameters:
     request_id:
       name: request_id

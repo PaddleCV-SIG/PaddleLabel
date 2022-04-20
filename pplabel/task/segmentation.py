@@ -1,10 +1,23 @@
 import os.path as osp
+from pplabel.api.model import annotation
 
 from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, image_extensions
+from pplabel.task.util import create_dir, listdir, copy, copytree, image_extensions
 from .base import BaseTask
+
+import cv2
+
+import matplotlib.pyplot as plt
+
+
+def parse_gray_annotation(annotation_path):
+    print("parsing", annotation_path)
+    ann = cv2.imread(annotation_path, cv2.IMREAD_GRAYSCALE)
+    print(type(ann), ann.shape)
+    plt.imshow(ann)
+    plt.show()
 
 
 class SemanticSegmentation(BaseTask):
@@ -12,84 +25,58 @@ class SemanticSegmentation(BaseTask):
         super().__init__(project)
         self.importers = {
             "gray_scale": self.gray_scale_importer,
+            "pesudo_color": self.pesudo_color_importer,
         }
         self.exporters = {
-            "gray_scale": self.single_class_exporter,
+            "gray_scale": self.gray_scale_exporter,
+            "pesudo_color": self.pesudo_color_exporter,
         }
 
     def gray_scale_importer(
         self,
         data_dir=None,
-        label_dir=None,
+        label_file_path=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
         if data_dir is None:
-            data_dir = project.data_dir
-        if label_path is None:
-            label_path = project.label_dir
+            data_dir = osp.join(project.data_dir, "JPEGImages")
+            annotation_dir = osp.join(project.data_dir, "Annotations")
+        if label_file_path is None:
+            label_file_path = project.label_dir
 
         # 1. if data_dir/labels.txt exists, import labels
         # TODO: last string as color
-        if label_path is not None and osp.exists(label_path):
-            labels = open(label_path, "r").readlines()
-            labels = [l.strip() for l in labels if len(l.strip()) != 0]
-            for lab in labels:
-                self.add_label(lab)
-
+        self.import_label_file(label_file_path)
+        
         # 2. import records
         create_dir(data_dir)
         for data_path in listdir(data_dir, filters):
-            if data_path == label_path:
-                continue
+            annotation_path = data_path.replace("JPEGImages", "Annotations")
+            parse_gray_annotation(annotation_path)
+            input("here")
+
             if project.data_dir in data_path:
                 data_path = osp.relpath(data_path, project.data_dir)
+
             label_name = osp.basename(osp.dirname(data_path))
+
             self.add_task([data_path], [[{"label_name": label_name}]])
-            print(f"==== {data_path} imported ====")
 
         # 3. move data
         if data_dir != project.data_dir:
             copytree(data_dir, project.data_dir)
 
+    def pesudo_color_importer(
+        self,
+        data_dir=None,
+        label_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    ):
+        pass
+
     def gray_scale_exporter(self, export_dir):
-        create_dir(export_dir)
+        pass
 
-        project = self.project
-        labels = Label._get(project_id=project.project_id, many=True)
-        labels.sort(key=lambda l: l.id)
-        label_idx = {}
-        for idx, label in enumerate(labels):
-            label_idx[label.name] = idx
-        with open(osp.join(export_dir, "labels.txt"), "w") as f:
-            for lab in labels:
-                print(lab.name, file=f)
-
-        for label in labels:
-            dir = osp.join(export_dir, label.name)
-            create_dir(dir)
-
-        set_names = ["train", "validation", "test"]
-        set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
-        tasks = Task._get(project_id=project.project_id, many=True)
-        for task in tasks:
-            for data in task.datas:
-                label_name = ""
-                if len(data.annotations) == 1:
-                    label_name = data.annotations[0].label.name
-                    print(
-                        f"{osp.join(label_name, osp.basename(data.path))} {label_idx[label_name]}",
-                        file=set_files[task.set],
-                    )
-                dst = osp.join(export_dir, label_name)
-                copy(osp.join(project.data_dir, data.path), dst)
-
-        for f in set_files:
-            f.close()
-
-            print(
-                f"JPEGImages/{osp.basename(data_path)} Annotations/{id}.xml",
-                file=set_files[task.set],
-            )
-        for f in set_files:
-            f.close()
+    def pesudo_color_exporter(self, export_dir):
+        pass

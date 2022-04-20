@@ -10,9 +10,9 @@ def rand_string(length):
 
 
 def camel2snake(string):
-    '''
-        convert camel case to snake case
-    '''
+    """
+    convert camel case to snake case
+    """
     if string is None:
         return None
     new_string = ""
@@ -82,7 +82,8 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
             "/projects/{project_id}/progress getProgress": "pplabel.api.controller.task.get_stat_by_project",
             "/projects/{project_id}/split splitDataset": "pplabel.api.controller.project.split_dataset",
-            "/projects/{project_id}/export exportDataset": "pplabel.api.controller.project.exportDataset",
+            "/projects/{project_id}/export exportDataset": "pplabel.api.controller.project.export_dataset",
+            "/projects/{project_id}/import importDataset": "pplabel.api.controller.project.import_dataset",
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",
@@ -92,6 +93,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/datas/{data_id}/annotations setAnnotations": "pplabel.api.controller.annotation.set_all_by_data",
             "/datas/{data_id}/annotations deleteAnnotations": "pplabel.api.controller.annotation.delete_by_data",
             "/rpc/folders getFolders": "pplabel.api.rpc.file.get_folders",
+            "/version getVersion": "pplabel.api.rpc.monitor.get_version",
         }
         opid = None
 

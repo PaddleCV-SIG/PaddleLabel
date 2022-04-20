@@ -34,7 +34,7 @@ class BaseModel(db.Model):
             if throw:
                 abort(f"No {cls.__tablename__} with id : {item_id}", 404)
             else:
-                return False, item
+                return False, None
         return True, item
 
     @classmethod

@@ -16,7 +16,7 @@ class Project(BaseModel):
     description = db.Column(db.String())
     task_category_id = db.Column(db.Integer(), db.ForeignKey("taskCategory.task_category_id"))
     task_category = db.relationship("TaskCategory")
-    data_dir = nncol(db.String(), unique=True)
+    data_dir = nncol(db.String()) # TODO: unique=True, removed for testing
     label_dir = db.Column(db.String(), unique=True)
     labels = db.relationship(
         "Label",

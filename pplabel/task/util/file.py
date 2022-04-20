@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 import shutil
+import time
 
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
@@ -13,11 +14,25 @@ def create_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def listdir(path, filters={"exclude_prefix": ["."]}):
+def listdir(folder, filters={"exclude_prefix": ["."]}):
+    """
+    list all files satisfying filters under folder and its subfolders
+
+    Args:
+        folder (str): the folder to list
+        filters (dict, optional): Four lists, include/exclude_prefix/postfix. Include first, satisfying either include, then exclude fail either one gets excluded.
+
+    Returns:
+        list: File paths relative to folder, sorted
+    """    
+
     files = []
-    for root, fdrs, fs in os.walk(path):
+    for root, fdrs, fs in os.walk(folder):
+        if osp.basename(root).startswith("."): # skip all hidden folders
+            continue
         for f in fs:
             files.append(osp.normpath(osp.join(root, f)))
+    files = [osp.relpath(f, folder) for f in files]
     # TODO: support regx
     include_prefix = filters.get("include_prefix", [])
     include_postfix = filters.get("include_postfix", [])
@@ -61,14 +76,12 @@ def copy(src, dst):
 
 
 def copytree(src, dst):
-    """Copy all files in src directory to dst directory.
+    """
+    Copy all files in src directory to dst directory.
 
-    Parameters
-    ----------
-    src : str
-        Description of parameter `src`.
-    dst : str
-        Description of parameter `dst`.
+    Args:
+        src (str): source folder
+        dst (str): destination folder
     """
     src = osp.normpath(src)
     dst = osp.normpath(dst)

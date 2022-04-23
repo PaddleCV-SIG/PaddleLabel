@@ -32,6 +32,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SECRET_KEY"] = rand_string(30)
+app.static_url_path = '/static/'
+app.static_folder = osp.join(basedir, 'static')
 
 db = SQLAlchemy(app)
 se = db.session

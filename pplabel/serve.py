@@ -1,15 +1,18 @@
-import os
 import os.path as osp
-import logging
 
 from flask_cors import CORS
+import flask
+
 import pplabel
 from pplabel.util import Resolver
 from pplabel.config import sqlite_url, db, connexion_app
 import pplabel.api
 import pplabel.task
 
-logging.getLogger("pplabel").debug("in server.py")
+@connexion_app.app.route("/")
+def index():
+    return flask.send_file("static/index.html")
+
 
 if not osp.exists(sqlite_url):
     print("Creating db")
@@ -29,4 +32,5 @@ connexion_app.add_api(
     strict_validation=True,
     pythonic_params=True,
 )
+
 CORS(connexion_app.app)

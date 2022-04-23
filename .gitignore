@@ -1,7 +1,10 @@
-pplabel/pplabel.db
+pplabel.db
+static/
+temp/
 temp
 test.py
 *.log
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

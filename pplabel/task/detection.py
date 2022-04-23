@@ -4,7 +4,6 @@ import json
 
 from pycocotoolse.coco import COCO
 
-from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
 from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
@@ -205,34 +204,3 @@ class Detection(BaseTask):
             f.close()
 
 
-def voc():
-    pj_info = {
-        "name": "Pascal Detection Example",
-        "data_dir": osp.join(task_test_basedir, "det_pascal_voc/JPEGImages/"),
-        "task_category_id": 2,
-        "label_dir": osp.join(task_test_basedir, "det_pascal_voc/Annotations/"),
-    }
-    project = ProjectSchema().load(pj_info)
-
-    det_project = Detection(project)
-
-    det_project.voc_importer(filters={"exclude_prefix": ["."]})
-
-    det_project.voc_exporter(osp.join(task_test_basedir, "export/det_voc_export"))
-
-
-def coco():
-    pj_info = {
-        "name": "COCO Detection Example",
-        "data_dir": osp.join(task_test_basedir, "det_coco/JPEGImages/"),
-        "description": "Example Project Descreption",
-        "label_dir": osp.join(task_test_basedir, "det_coco/Annotations/coco_info.json"),
-        "task_category_id": 2,
-    }
-    project = ProjectSchema().load(pj_info)
-
-    det_project = Detection(project)
-
-    det_project.coco_importer(filters={"exclude_prefix": ["."]})
-
-    det_project.coco_exporter(osp.join(task_test_basedir, "export/det_coco_export"))

@@ -13,12 +13,12 @@ class Annotation(BaseModel):
     result = db.Column(db.String())
     type = db.Column(db.String())
     label_id = nncol(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
-    label = db.relationship("Label")
+    # label = db.relationship("Label")
     data_id = db.Column(db.Integer(), db.ForeignKey("data.data_id", ondelete="CASCADE"))
 
     # TODO: remove
     task_id = nncol(db.Integer(), db.ForeignKey("task.task_id", ondelete="CASCADE"))
-    task = db.relationship("Task")
+    # task = db.relationship("Task")
     project_id = nncol(db.Integer(), db.ForeignKey("project.project_id"))
 
     _immutables = BaseModel._immutables + ["annotation_id", "label_id", "task_id", "slice_id"]

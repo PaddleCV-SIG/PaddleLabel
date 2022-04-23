@@ -19,6 +19,7 @@ class Label(BaseModel):
     annotations = db.relationship(
         "Annotation",
         lazy="noload",  # cascade="all, delete-orphan"
+        backref='label'
     )
     super_category_id = db.Column(db.Integer())  # TODO: foreign key
     _immutables = BaseModel._immutables + ["label_id", "project_id"]

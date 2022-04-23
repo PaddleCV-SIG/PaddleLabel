@@ -1,7 +1,5 @@
 import re
-import logging
 
-import sqlalchemy
 from marshmallow import fields
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..model import User
 from ..schema import UserSchema
 from .base import crud
-from . import label
 from ..util import abort, generate_token
 
 

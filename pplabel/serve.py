@@ -5,16 +5,15 @@ import flask
 
 import pplabel
 from pplabel.util import Resolver
-from pplabel.config import sqlite_url, db, connexion_app
+from pplabel.config import sqlite_url, db, connexion_app, db_path
 import pplabel.api
 import pplabel.task
 
 @connexion_app.app.route("/")
 def index():
-    return flask.send_file("static/index.html")
+    return flask.redirect('/static/index.html')
 
-
-if not osp.exists(sqlite_url):
+if not osp.exists(db_path):
     print("Creating db")
     db.create_all()
 

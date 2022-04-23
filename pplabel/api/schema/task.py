@@ -3,7 +3,6 @@ import time
 
 from marshmallow import post_load, pre_load, pre_dump, post_dump, fields
 from marshmallow.fields import Nested
-from sklearn import datasets
 
 from pplabel.api.model import Task
 from pplabel.api.schema.util import path2sault

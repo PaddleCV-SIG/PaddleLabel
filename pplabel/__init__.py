@@ -1,8 +1,11 @@
-version = "0.0.1"
+import pathlib
 
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
+HERE = pathlib.Path(__file__).parent
+
+version = open((HERE / "version"), "r").read().strip()
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):

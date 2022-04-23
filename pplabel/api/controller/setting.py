@@ -18,6 +18,6 @@ def init_site_settings(json_path):
         if curr_cat is None:
             curr_cat = TaskCategory(idx, cat, handler)
             se.add(curr_cat)
-            print("add task", TaskCategory(idx, cat, handler))
+            # print("add task", TaskCategory(idx, cat, handler))
             se.commit()
-    print("All TackCategories: ", TaskCategory.query.all())
+    # print("All TackCategories: ", TaskCategory.query.all())

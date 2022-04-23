@@ -1,7 +1,6 @@
 import os.path as osp
 from pplabel.api.model import annotation
 
-from pplabel.config import db, task_test_basedir
 from pplabel.api import Project, Task, Data, Annotation, Label
 from pplabel.api.schema import ProjectSchema
 from pplabel.task.util import create_dir, listdir, copy, copytree, image_extensions

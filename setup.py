@@ -5,13 +5,14 @@ HERE = pathlib.Path(__file__).parent
 
 README = (HERE / "README.md").read_text(encoding="utf-8")
 
-with open("requirements.txt") as fin:
+
+with open("requirements.txt", "r") as fin:
     REQUIRED_PACKAGES = fin.read()
 
 setup(
     name="pplabel",
-    version="0.0.1",
-    description="标注",
+    version=open((HERE / "pplabel" / "version"), "r").read().strip(),
+    description="Web Based Multi Purpose Annotation",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/PaddleCV-SIG/PP-Label",
@@ -21,14 +22,14 @@ setup(
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
-    packages=find_packages(exclude=("test",)),
+    packages=find_packages(exclude=("test", "tool")),
     include_package_data=True,
     install_requires=REQUIRED_PACKAGES,
     entry_points={
         "console_scripts": [
-            "pplabel=pplabel",
+            "pplabel=pplabel.__main__:run",
         ]
     },
 )

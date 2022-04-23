@@ -1,15 +1,13 @@
+opencv-python
 numpy
-flask
+# flask
 connexion[swagger-ui]
 flask_sqlalchemy # to be removed
 flask_marshmallow # to be removed
-marshmallow_sqlalchemy>=0.27.0
+marshmallow_sqlalchemy
 # sqlalchemy>=
-Cython
-opencv-python-headless
 uuid
 jwt
 werkzeug
 flask_cors # to be removed
 pycocotoolse
-# opencv-python

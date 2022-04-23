@@ -58,7 +58,3 @@ class BaseModel(db.Model):
         item = cls.query.filter_by(**conditions).one_or_none()
         return item
 
-    @classmethod
-    def _add(cls, item):
-        db.session.add(item)
-        db.session.commit()

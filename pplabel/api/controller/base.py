@@ -96,7 +96,7 @@ def crud(Model, Schema, triggers=[]):
                 abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
 
         if pre_put is not None:
-            pre_put(item, body, db.session)
+            item, body = pre_put(item, body, db.session)
 
         # 3. edit item
         Model.query.filter(getattr(Model, id_name) == id_val).update(body)

@@ -1,7 +1,8 @@
 import os
 import os.path as osp
 import shutil
-import time
+
+from pplabel.api import abort
 
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
@@ -75,14 +76,30 @@ def copy(src, dst):
     shutil.copy(src, dst)
 
 
-def copytree(src, dst):
+def copycontent(src, dst):
     """
-    Copy all files in src directory to dst directory.
+    Recursively copy everything in src to dst. Create dst if not exist.
 
     Args:
         src (str): source folder
         dst (str): destination folder
     """
-    src = osp.normpath(src)
-    dst = osp.normpath(dst)
-    shutil.copytree(src, dst)
+    
+    assert osp.abspath(src), f"src dir {src} isn't abspath"
+    assert osp.abspath(dst),  f"dst dir {dst} isn't abspath"
+    assert src != dst, f"The source and destination folder are both {src}"
+
+    print(src, dst)
+    
+    for root, fdrs, fs in os.walk(src):
+        if osp.basename(root).startswith("."): # skip all hidden folders
+            continue
+        if not osp.exists(osp.join(dst, osp.relpath(root, src))):
+            os.makedirs(osp.join(dst, osp.relpath(root, src)))
+
+        for f in fs:
+            fsrc = osp.join(root, f)
+            fdst = osp.join(osp.join(dst, osp.relpath(root, src), f))
+            if osp.exists(fdst):
+                continue
+            copy(fsrc, fdst)

@@ -1,4 +1,4 @@
 import pplabel
 
 def get_version():
-    return pplabel.version
+    return pplabel.version, 200

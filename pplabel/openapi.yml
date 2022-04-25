@@ -1033,6 +1033,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: string
 components:
   securitySchemes:
     jwt:
@@ -1101,7 +1105,14 @@ components:
           nullable: true
           readOnly: true
         other_settings:
-          $ref: '#/components/schemas/ProjectOtherSettings'
+          type: object
+          properties:
+            mlBackendUrl:
+              type: string
+            perviousModel:
+              type: string
+            models:
+              type: object
     Task:
       title: Task
       type: object

@@ -1,13 +1,11 @@
 import os.path as osp
-from pplabel.api.model import annotation
-
-from pplabel.api import Project, Task, Data, Annotation, Label
-from pplabel.api.schema import ProjectSchema
-from pplabel.task.util import create_dir, listdir, copy, copytree, image_extensions
-from .base import BaseTask
 
 import cv2
 
+from pplabel.task.util import create_dir, listdir, image_extensions
+from .base import BaseTask
+
+# debug
 import matplotlib.pyplot as plt
 
 
@@ -47,7 +45,7 @@ class SemanticSegmentation(BaseTask):
         # 1. if data_dir/labels.txt exists, import labels
         # TODO: last string as color
         self.import_label_file(label_file_path)
-        
+
         # 2. import records
         create_dir(data_dir)
         for data_path in listdir(data_dir, filters):

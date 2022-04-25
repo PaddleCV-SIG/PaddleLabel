@@ -1,5 +1,6 @@
+import os
 import os.path as osp
-import time
+import json
 
 from pplabel.api import Annotation, Data, Label, Project, Task
 from pplabel.api.model import project
@@ -32,6 +33,9 @@ class BaseTask:
                 curr_project = project
         self.project = curr_project
 
+        if not osp.exists(self.project.data_dir):
+            os.makedirs(self.project.data_dir)
+
         # 2. set current label max id
         self.label_max_id = 0
         for label in project.labels:
@@ -42,7 +46,11 @@ class BaseTask:
 
         # 4. create labels specified in labels.txt
         if project.other_settings is not None:
-            label_names_path = project.other_settings.get("label_names_path", None)
+            if isinstance(project.other_settings, str):
+                other_settings = json.loads(project.other_settings)
+            else:
+                other_settings = project.other_settings
+            label_names_path = other_settings.get("label_names_path", None)
             if label_names_path is None:
                 label_names_path = osp.join(project.data_dir, "labels.txt")
             if osp.exists(label_names_path):

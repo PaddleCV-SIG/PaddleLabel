@@ -1,8 +1,8 @@
-import time
 import os.path as osp
 
 from pplabel.config import db
 from pplabel.api import Task
+from pplabel.task.util.file import copycontent
 from .util import create_dir, listdir, copy, image_extensions
 from .base import BaseTask
 
@@ -34,10 +34,10 @@ class Classification(BaseTask):
             if data_path not in self.curr_data_paths:
                 label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [[{"label_name": label_name}]])
+        if data_dir != project.data_dir:
+            copycontent(data_dir, project.data_dir)
         db.session.commit()
 
-
-        
     def multi_class_importer(
         self,
         data_dir=None,
@@ -47,14 +47,14 @@ class Classification(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        
+
         label_lines = []
-        for list_name in ['train_list.txt', 'val_list.txt', 'test_list.txt']:
+        for list_name in ["train_list.txt", "val_list.txt", "test_list.txt"]:
             list_path = osp.join(data_dir, list_name)
             if osp.exists(list_path):
                 label_lines += open(list_path, "r").readlines()
         label_lines = [l.strip().split(delimiter) for l in label_lines if l.strip() != ""]
-        
+
         labels_dict = {}
         for l in label_lines:
             labels_dict[l[0]] = l[1:]
@@ -86,7 +86,7 @@ class Classification(BaseTask):
                     label_name = data.annotations[0].label.name
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
                 new_paths.append([osp.join(label_name, osp.basename(data.path))])
-        
+
         # 4. write split files
         self.export_split(export_dir, tasks, new_paths)
 
@@ -109,6 +109,6 @@ class Classification(BaseTask):
                     osp.join(export_dir, "image", osp.basename(data.path)),
                 )
                 new_paths.append([osp.join("image", osp.basename(data.path))])
-        
+
         # 4. export split
         self.export_split(osp.join(export_dir), tasks, new_paths)

@@ -1,15 +1,15 @@
 import math
 import random
-import time
+import json
 
 from marshmallow import fields
 import numpy as np
 import connexion
 
 from pplabel.config import db
-from pplabel.api.model import Project, Label, Annotation, Task, Data, TaskCategory
-from ..schema import ProjectSchema
-from .base import crud
+from pplabel.api.model import Project, Task, TaskCategory
+from pplabel.api.schema import ProjectSchema
+from pplabel.api.controller.base import crud
 from . import label
 from ..util import abort
 from pplabel.util import camel2snake
@@ -74,16 +74,14 @@ def export_dataset(project_id):
 def import_dataset(project_id):
     req = connexion.request.json
     _, project = Project._exists(project_id)
-    print("project", project)
     _import_dataset(project, req["import_dir"])
 
 
-def pre_delete(project, se):
-    return project
 
-
-def post_delete(project, se):
-    pass
+def pre_put(project, body, se):
+    if 'other_settings' in body.keys():
+        body['other_settings'] = json.dumps(body['other_settings'])
+    return project, body
 
 
 def split_dataset(project_id, epsilon=1e-3):
@@ -128,5 +126,5 @@ def split_dataset(project_id, epsilon=1e-3):
 get_all, get, post, put, delete = crud(
     Project,
     ProjectSchema,
-    triggers=[pre_add, post_add, pre_delete],
+    triggers=[pre_add, post_add, pre_put],
 )

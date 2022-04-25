@@ -1,12 +1,10 @@
-import os
 import os.path as osp
 import json
 
 from pycocotoolse.coco import COCO
 
-from pplabel.api import Project, Task, Data, Annotation, Label
-from pplabel.api.schema import ProjectSchema
-from .util import create_dir, listdir, copy, copytree, ComponentManager, image_extensions
+from pplabel.api import Task, Annotation, Label
+from .util import create_dir, listdir, copy, image_extensions
 from .base import BaseTask
 
 # TODO: move to io
@@ -202,5 +200,3 @@ class Detection(BaseTask):
             )
         for f in set_files:
             f.close()
-
-

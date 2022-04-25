@@ -45,16 +45,20 @@ class BaseTask:
         self.split = self.read_split()
 
         # 4. create labels specified in labels.txt
+        # if project.other_settings is not None:
+        label_names_path =None
         if project.other_settings is not None:
             if isinstance(project.other_settings, str):
                 other_settings = json.loads(project.other_settings)
             else:
                 other_settings = project.other_settings
             label_names_path = other_settings.get("label_names_path", None)
-            if label_names_path is None:
-                label_names_path = osp.join(project.data_dir, "labels.txt")
-            if osp.exists(label_names_path):
-                self.import_label_names()
+
+        if label_names_path is None:
+            label_names_path = osp.join(project.data_dir, "labels.txt")
+        print("label_names_path", label_names_path)
+        if osp.exists(label_names_path):
+            self.import_label_names(label_names_path)
 
         # 5. polupate label colors
         self.populate_label_colors()
@@ -218,20 +222,21 @@ class BaseTask:
         labels = open(label_names_path, "r").readlines()
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
         labels = [l.split(delimiter) for l in labels]
-        current_labels = Label._get(project_id=self.project.project_id)
+        current_labels = Label._get(project_id=self.project.project_id, many=True)
         current_labels = [l.name for l in current_labels]
         for label in labels:
             if len(label) > 2:
                 raise RuntimeError(
                     f"Each line in labels.txt should contain at most 1 delimiter, after split {label}"
                 )
+            print("label", label)
             if label[0] not in current_labels:
-                self.add_label(**label)
+                self.add_label(*label)
 
     def export_label_names(self, label_names_path: str, project_id: int = None):
         if project_id is None:
             project_id = self.project.project_id
-        
+
         labels = Label._get(project_id=project_id, many=True)
         labels.sort(key=lambda l: l.id)
         with open(label_names_path, "w") as f:

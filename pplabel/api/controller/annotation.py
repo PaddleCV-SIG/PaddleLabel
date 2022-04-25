@@ -16,9 +16,6 @@ def pre_add(annotation, se):
     annotation.task_id = data.task_id
     annotation.project_id = task.project_id
 
-    print("label=====", annotation.label)
-    print("anno====", annotation)
-    print("labelid====", annotation.label_id)
     return annotation
 
 

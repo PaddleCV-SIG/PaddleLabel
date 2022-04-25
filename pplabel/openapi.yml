@@ -305,6 +305,39 @@ paths:
                 import_dir:
                   type: string
         description: ''
+  '/projects/{project_id}/predict':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: Run prediction on all data in the dataset
+      tags:
+        - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ml_backend_url:
+                  type: string
+                model:
+                  type: string
+                same_server:
+                  type: boolean
+                  description: |-
+                    Default false. Will b64 encode image and send to ml backend in this case. Images are directly encoded as file.
+                    If the ml backend has read access to project data dir, set same_server to true. This case web backend will send file path to ml backend. Reduce b64 en/decode overhead.
+                create_label:
+                  type: boolean
+                  description: Default false. Create label if model prediction not in current labels. Won't save prediction result in db if prediciont label not present in current labels
+              required:
+                - ml_backend_url
+                - model
+      responses:
+        '200':
+          description: success
+      operationId: predict
+      description: ''
   /labels:
     get:
       tags:

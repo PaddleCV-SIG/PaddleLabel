@@ -13,6 +13,7 @@ class BaseModel(db.Model):
     modified = nncol(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     _immutables = ["created", "modified", "immutables"]
+    _nested = ["project"]
 
     @classmethod
     @property
@@ -20,9 +21,9 @@ class BaseModel(db.Model):
         return [c.key for c in cls.__table__.columns]
 
     def __repr__(self):
-        s = f"Object: {self.__tablename__}\n"
+        s = f"Object {self.__tablename__}:  "
         for att in dir(self):
-            if att[0] != "_":
+            if att[0] != "_" and att[-1] != 's' and att not in ["query", "registry", "metadata", "query_class"] and att not in self._nested:
                 s += f"{att}: {getattr(self, att)}  "
         s += "\n"
         return s

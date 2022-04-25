@@ -84,6 +84,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/split splitDataset": "pplabel.api.controller.project.split_dataset",
             "/projects/{project_id}/export exportDataset": "pplabel.api.controller.project.export_dataset",
             "/projects/{project_id}/import importDataset": "pplabel.api.controller.project.import_dataset",
+            "/projects/{project_id}/predict predict": "pplabel.api.controller.project.predict",
             "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",

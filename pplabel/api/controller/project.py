@@ -162,6 +162,7 @@ def predict(project_id):
 
     labels = Label._get(project_id=project_id, many=True)
     labels = {l.name: l.label_id for l in labels}
+    
 
     for task in Task._get(project_id=project_id, many=True):
         for data in task.datas:
@@ -183,6 +184,8 @@ def predict(project_id):
             ann = Annotation(
                 label_id=labels[res["result"]],
                 project_id=project.project_id,
+                # task_id=task.task_id,
+                data_id=data.data_id,
                 result="",
             )
             task.annotations.append(ann)

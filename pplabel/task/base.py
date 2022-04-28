@@ -202,13 +202,13 @@ class BaseTask:
         return sets
 
     def export_split(self, export_dir, tasks, new_paths, delimiter=" "):
-        set_names = ["train", "val", "test"]
+        set_names = ["train_list", "val_list", "test_list"]
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
         for task, task_new_paths in zip(tasks, new_paths):
             for data, new_path in zip(task.datas, task_new_paths):
                 label_ids = []
                 for ann in data.annotations:
-                    label_ids.append(ann.label.id)
+                    label_ids.append(ann.label.id - 1)
                 label_ids = [str(id) for id in label_ids]
                 print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
 

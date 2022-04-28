@@ -21,12 +21,12 @@ class SemanticSegmentation(BaseTask):
     def __init__(self, project):
         super().__init__(project)
         self.importers = {
-            "gray_scale": self.gray_scale_importer,
-            "pesudo_color": self.pesudo_color_importer,
+            "mask": self.default_importer,
+            "polygon": self.default_importer,
         }
         self.exporters = {
-            "gray_scale": self.gray_scale_exporter,
-            "pesudo_color": self.pesudo_color_exporter,
+            "mask": self.gray_scale_exporter,
+            "polygon": self.pesudo_color_exporter,
         }
 
     def gray_scale_importer(

@@ -162,10 +162,11 @@ def predict(project_id):
 
     labels = Label._get(project_id=project_id, many=True)
     labels = {l.name: l.label_id for l in labels}
-    
 
     for task in Task._get(project_id=project_id, many=True):
         for data in task.datas:
+            if len(data.annotations) != 0:
+                continue
             if params["same_server"]:
                 body = {"img": osp.join(project.data_dir, data.path), "format": "path"}
             else:

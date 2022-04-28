@@ -1,5 +1,5 @@
 cd ../pplabel-front/
-# rm -rf dist/ src/.umi-production src/.umi
+rm -rf dist/ src/.umi-production src/.umi
 npx browserslist@latest --update-db
 npm run build
 

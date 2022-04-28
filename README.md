@@ -1,4 +1,5 @@
 # PP-Label
+[![Downloads](https://pepy.tech/badge/pplabel)](https://pepy.tech/project/pplabel) [![PyPI version](https://badge.fury.io/py/pplabel.svg)](https://badge.fury.io/py/pplabel)
 
 # Install
 

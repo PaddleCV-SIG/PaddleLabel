@@ -1,4 +1,4 @@
-conda env remove --name test
+# conda env remove --name test
 conda create -n test python=3.9 -y
 conda activate test
 

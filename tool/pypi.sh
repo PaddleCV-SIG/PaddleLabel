@@ -1,12 +1,12 @@
-cd ../pplabel-front/
+cd ../PP-Label-Frontend/
 rm -rf dist/ src/.umi-production src/.umi
 npx browserslist@latest --update-db
 npm run build
 
-cd ../pplabel
+cd ../PP-Label
 rm -rf pplabel/static/
 mkdir pplabel/static/
-cp -r ../pplabel-front/dist/* pplabel/static/
+cp -r ../PP-Label-Frontend/dist/* pplabel/static/
 
 python tool/bumpversion.py
 pip install twine

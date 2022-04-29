@@ -95,6 +95,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/datas/{data_id}/annotations deleteAnnotations": "pplabel.api.controller.annotation.delete_by_data",
             "/rpc/folders getFolders": "pplabel.api.rpc.file.get_folders",
             "/version getVersion": "pplabel.api.rpc.monitor.get_version",
+            "/samples loadSample": "pplabel.api.controller.sample.load_sample",
         }
         opid = None
 

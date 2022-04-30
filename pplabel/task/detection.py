@@ -4,8 +4,9 @@ import json
 from pycocotoolse.coco import COCO
 
 from pplabel.api import Task, Annotation, Label
-from .util import create_dir, listdir, copy, image_extensions
-from .base import BaseTask
+from pplabel.task.util import create_dir, listdir, copy, image_extensions
+from pplabel.task.base import BaseTask
+from pplabel.config import db
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -69,8 +70,9 @@ class Detection(BaseTask):
     def __init__(self, project):
         super().__init__(project)
         self.importers = {"coco": self.default_importer, "voc": self.voc_importer}
-        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter} # TODO: change
-        self.default_importer = self.default_importer
+        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}  # TODO: change
+        # self.default_importer = self.default_importer # default to voc
+        self.default_importer = self.voc_importer  # default to voc
         self.default_exporter = self.coco_exporter
 
     def coco_importer(
@@ -116,16 +118,12 @@ class Detection(BaseTask):
     def voc_importer(
         self,
         data_dir=None,
-        name_only=False,
         filters={"exclude_prefix": ["."]},
     ):
         project = self.project
         base_dir = data_dir
         if base_dir is None:
             base_dir = project.data_dir
-        if project.other_settings is not None:
-            if json.loads(project.other_settings).get("name_only"):  # only match with file name
-                name_only = True
 
         data_dir = osp.join(base_dir, "JPEGImages")
         label_dir = osp.join(base_dir, "Annotations")
@@ -138,16 +136,16 @@ class Detection(BaseTask):
         label_paths = [osp.join(label_dir, p) for p in label_paths]
 
         label_name_dict = {}
-        label_xml_dict = {}
         labels = []
         for label_path in label_paths:
             labels.append(parse_voc_label(label_path))
             label_name_dict[osp.basename(label_path).split(".")[0]] = len(labels) - 1
-            # label_xml_dict[labels[-1]["label_name"]] = len(labels) - 1
 
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
+            print("++", [data_path], [labels[label_name_dict[id]]])
             self.add_task([data_path], [labels[label_name_dict[id]]])
+        db.session.commit()
 
     def coco_exporter(self, export_dir):
         project = self.project

@@ -1,5 +1,6 @@
 cd ../PP-Label-Frontend/
 rm -rf dist/ src/.umi-production src/.umi
+# nvm use 17 # node 17 latest is suggested
 npx browserslist@latest --update-db
 npm run build
 

@@ -137,6 +137,8 @@ class BaseTask:
         project = self.project
         assert len(data_paths) != 0, "can't add task without data"
 
+        data_paths = [osp.relpath(p, project.data_dir) if project.data_dir in p else p for p in data_paths ]        
+
         # 1. find task split
         split_idx = 0
         for idx, split in enumerate(self.split):

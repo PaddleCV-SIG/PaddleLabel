@@ -10,6 +10,9 @@ from tqdm import tqdm
 import connexion
 
 from pplabel.config import data_base_dir
+import pplabel.task as task
+from pplabel.api.schema import ProjectSchema
+from pplabel.api.model import TaskCategory
 
 sample_projects = {
     "classification": "https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz",
@@ -70,7 +73,20 @@ def load_sample():
 
     extract(archive_path, sample_folder)
 
-    extract_path = sample_folder.parent / archive_path.name.split(".")[0]
+    extract_path = sample_folder / archive_path.name.split(".")[0]
     print(extract_path)
 
     # TODO: import dataset
+    handler = eval(f"task.{task_category}.{task_category.capitalize()}")
+    print(handler)
+    task_category_id = TaskCategory._get(name=task_category).task_category_id
+    project = {
+        "name": f"Sample Project - {task_category}",
+        "description": f"A {task_category} sample project created by PP-Label",
+        "task_category_id": str(task_category_id),
+        "data_dir": str(extract_path),
+    }
+    project = ProjectSchema().load(project)
+    print(project)
+    handler = handler(project)
+    handler.default_importer()

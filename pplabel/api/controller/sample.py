@@ -22,14 +22,14 @@ sample_projects = {
     "keypointDetection": "",
 }
 
-
-sample_projects = {
-    "classification": "http://localhost:1111/vegetables_cls.tar.gz",
-    "detection": "http://localhost:1111/insect_det.tar.gz",
-    "semanticSegmentation": "http://localhost:1111/optic_disc_seg.tar.gz",
-    "instanceSegmentation": "",  # todo
-    "keypointDetection": "",
-}
+if os.environ.get('dev', None):
+    sample_projects = {
+        "classification": "http://localhost:1111/vegetables_cls.tar.gz",
+        "detection": "http://localhost:1111/insect_det.tar.gz",
+        "semanticSegmentation": "http://localhost:1111/optic_disc_seg.tar.gz",
+        "instanceSegmentation": "",  # todo
+        "keypointDetection": "",
+    }
 
 
 def download_file(url, dst_path, chunk_size=8192):

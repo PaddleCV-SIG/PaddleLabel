@@ -144,7 +144,6 @@ class Detection(BaseTask):
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
             label_idx = label_name_dict.get(id, -1)
-            print(labels[label_idx] if label_idx != -1 else [])
             self.add_task([data_path], [labels[label_idx] if label_idx != -1 else []])
         db.session.commit()
 

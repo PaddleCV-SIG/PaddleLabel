@@ -56,7 +56,6 @@ class BaseTask:
 
         if label_names_path is None:
             label_names_path = osp.join(project.data_dir, "labels.txt")
-        print("label_names_path", label_names_path)
         if osp.exists(label_names_path):
             self.import_label_names(label_names_path)
 
@@ -69,7 +68,7 @@ class BaseTask:
         for task in tasks:
             for data in task.datas:
                 self.curr_data_paths.append(data.path)
-        print(self.curr_data_paths)
+        print("Current data paths", self.curr_data_paths)
 
         self.project = Project._get(project_id=project.project_id)
 
@@ -231,7 +230,7 @@ class BaseTask:
                 raise RuntimeError(
                     f"Each line in labels.txt should contain at most 1 delimiter, after split {label}"
                 )
-            print("label", label)
+            print("==== Adding label", label, "====")
             if label[0] not in current_labels:
                 self.add_label(*label)
 

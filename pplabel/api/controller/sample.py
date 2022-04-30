@@ -18,7 +18,7 @@ sample_projects = {
     "classification": "https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz",
     "detection": "https://bj.bcebos.com/paddlex/datasets/insect_det.tar.gz",
     "semanticSegmentation": "https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz",
-    "instanceSegmentation": "",  # todo
+    "instanceSegmentation": "",
     "keypointDetection": "",
 }
 
@@ -90,3 +90,5 @@ def load_sample():
     print(project)
     handler = handler(project)
     handler.default_importer()
+
+    return {"project_id": handler.project.project_id}, 200

@@ -8,7 +8,7 @@ info:
     url: 'https://github.com/PaddleCV-SIG/PP-Label/issues'
     email: me@linhan.email
 servers:
-  - url: '/api'
+  - url: /api
     description: Same origion
   - url: 'http://localhost:17995/api'
     description: Local server
@@ -1092,8 +1092,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-
+                type: object
+                properties:
+                  project_id:
+                    type: integer
 components:
   securitySchemes:
     jwt:

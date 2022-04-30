@@ -3,7 +3,6 @@ import os.path as osp
 import requests
 import tarfile
 import zipfile
-from scipy.fft import dst
 from pathlib import Path
 
 from tqdm import tqdm
@@ -62,7 +61,6 @@ def extract(archive, dst_fdr):
 
 def load_sample():
     task_category = connexion.request.json.get("task_category")
-    print(task_category)
 
     sample_folder = Path(data_base_dir) / "sample_dataset"
     sample_folder.mkdir(exist_ok=True)

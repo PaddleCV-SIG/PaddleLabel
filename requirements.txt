@@ -11,3 +11,4 @@ jwt
 werkzeug
 flask_cors # to be removed
 pycocotoolse
+tqdm

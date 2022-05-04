@@ -4,6 +4,8 @@ import shutil
 
 from pplabel.api import abort
 
+# TODO: switch to pathlib
+
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
 

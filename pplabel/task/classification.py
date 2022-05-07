@@ -1,4 +1,5 @@
 import os.path as osp
+import shutil
 
 from pplabel.config import db
 from pplabel.api import Task
@@ -67,6 +68,8 @@ class Classification(BaseTask):
 
     def single_class_exporter(self, export_dir):
         create_dir(export_dir)
+        create_dir(osp.join(export_dir, "no_annotation"))
+        use_no_annotation = False
         project = self.project
 
         # 1. write labels.txt
@@ -84,8 +87,14 @@ class Classification(BaseTask):
                 label_name = ""
                 if len(data.annotations) == 1:
                     label_name = data.annotations[0].label.name
+                else:
+                    label_name = "no_annotation"
+                    use_no_annotation = True
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
                 new_paths.append([osp.join(label_name, osp.basename(data.path))])
+        
+        if not use_no_annotation:
+            shutil.rmtree(osp.join(export_dir, "no_annotation"))
 
         # 4. write split files
         self.export_split(export_dir, tasks, new_paths)

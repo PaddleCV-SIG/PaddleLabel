@@ -210,6 +210,8 @@ class BaseTask:
                 label_ids = []
                 for ann in data.annotations:
                     label_ids.append(ann.label.id - 1)
+                if len(label_ids) == 0:
+                    continue
                 label_ids = [str(id) for id in label_ids]
                 print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
 

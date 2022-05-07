@@ -4,6 +4,7 @@ import os.path as osp
 import connexion
 from flask_sqlalchemy import SQLAlchemy  # TODO: remove
 from flask_marshmallow import Marshmallow  # TODO: remove
+from flask_cors import CORS
 
 from .util import rand_string
 
@@ -24,10 +25,12 @@ app.config["SQLALCHEMY_ECHO"] = False
 app.config["SECRET_KEY"] = rand_string(30)
 app.static_url_path = "/static"
 app.static_folder = osp.join(basedir, "static")
+CORS(connexion_app.app)
 
 db = SQLAlchemy(app)
 se = db.session
 ma = Marshmallow(app)
+
 
 # reject requests with the same request_id within request_id_timeout seconds
 request_id_timeout = 2

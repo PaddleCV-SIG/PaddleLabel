@@ -1237,7 +1237,6 @@ components:
           readOnly: true
         frontend_id:
           type: integer
-          readOnly: true
         task_id:
           type: integer
         label_id:

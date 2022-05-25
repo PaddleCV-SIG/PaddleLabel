@@ -52,5 +52,6 @@ You can also choose to expose the service to lan. This way it's possbile to run 
 pplabel --lan
 ```
 
-Please refer to the 
-Please refer to the [Developer Guide](https://github.com/PaddleCV-SIG/PP-Label/wiki/Developer-Guide) for more backend implementation details.
+Please refer to the [Dataset File Structure](./doc/dataset_file_structure.md) for the dataset formats PP Label can import and export.
+
+The [Developer Guide](https://github.com/PaddleCV-SIG/PP-Label/wiki/Developer-Guide) contains details on backend implementation.

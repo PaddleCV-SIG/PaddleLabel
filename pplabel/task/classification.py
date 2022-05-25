@@ -30,25 +30,40 @@ class Classification(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
+        self.create_warning(data_dir)
+
+        
+        move_data=data_dir != project.data_dir
+            
+
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
-            if data_path not in self.curr_data_paths:
-                label_name = osp.basename(osp.dirname(data_path))
+            label_name = osp.basename(osp.dirname(data_path))
             self.add_task([data_path], [[{"label_name": label_name}]])
-        if data_dir != project.data_dir:
-            copycontent(data_dir, project.data_dir)
+            if move_data:
+                copy(osp.join(data_dir, data_path), osp.join(project.data_dir, data_path))
+
         db.session.commit()
 
     def multi_class_importer(
         self,
         data_dir=None,
-        delimiter=" ",
+        delimiter=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        # 1. set params
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
+        self.create_warning(data_dir)
 
+        if delimiter is None:
+            if self.project.other_settings is not None:
+                delimiter = self.project.other_settings.get("list_delimiter", " ")
+            else:
+                delimiter = " "
+        
+        # 2. get label names from xx_list.txt
         label_lines = []
         for list_name in ["train_list.txt", "val_list.txt", "test_list.txt"]:
             list_path = osp.join(data_dir, list_name)
@@ -58,7 +73,17 @@ class Classification(BaseTask):
 
         labels_dict = {}
         for l in label_lines:
-            labels_dict[l[0]] = l[1:]
+            labs = []
+            for lab in l[1:]:
+                try:
+                    # if number, get name
+                    lab_idx = int(lab) + 1
+                    labs.append(self.label_id2name(lab_idx))
+                except ValueError:
+                    # if str, use str as name
+                    labs.append(lab)
+            
+            labels_dict[l[0]] = labs
 
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
@@ -67,6 +92,7 @@ class Classification(BaseTask):
         db.session.commit()
 
     def single_class_exporter(self, export_dir):
+        print("single export")
         create_dir(export_dir)
         create_dir(osp.join(export_dir, "no_annotation"))
         use_no_annotation = False

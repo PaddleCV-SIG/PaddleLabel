@@ -4,6 +4,7 @@ import json
 import requests
 import os.path as osp
 import base64
+import os
 
 import cv2
 import numpy as np
@@ -194,9 +195,14 @@ def predict(project_id):
     db.session.commit()
     return "finished"
 
+def post_delete(project, se):
+    warning_path = osp.join(project.data_dir, "pplabel.warning")
+    if osp.exists(warning_path):
+        os.remove(warning_path)
+    
 
 get_all, get, post, put, delete = crud(
     Project,
     ProjectSchema,
-    triggers=[pre_add, post_add, pre_put],
+    triggers=[pre_add, post_add, pre_put, post_delete],
 )

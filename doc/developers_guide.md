@@ -152,7 +152,8 @@ heroku ps:restart web
 heroku logs --tail
 ```
 
-## Attention
+## Note
 
-- In front end, there are if clauses using if(something) to test if something exists. All indexes should start from 1.
+- In front end, there are if clauses using if(something) to test if something exists. All indexes (xx.xx_id or xx.id) will start from 1.
+- Though internally label.id start from 1, but to be compatable with other tools, in labels.txt and xx_list.txt files, labels start from 0.
 - All primary keys are named xx_id in backend and xxId in frontend. For example the primary key for annotation table is annotation_id or annotationId. annotation.id is a value user specify mainly for import/export. This value may be changed by user and shouldn't be used as index.

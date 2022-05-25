@@ -17,14 +17,14 @@ class BaseTask:
     def __init__(self, project):
         """
         Args:
-            project (int|dict): If the project exists, self.project will be queried from db with parameter project or project.project_id. Else the project will be created.
+            project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
         """
 
         # 1. set project
         if isinstance(project, int):
             curr_project = Project._get(project_id=project)
             if curr_project is None:
-                raise RuntimeError(f"No project with project_id {project} found")
+                raise RuntimeError(f"No project with project_id {project}")
         else:
             curr_project = Project._get(project_id=project.project_id)
             if curr_project is None:
@@ -33,10 +33,10 @@ class BaseTask:
                 curr_project = project
         self.project = curr_project
 
-        if not osp.exists(self.project.data_dir):
-            os.makedirs(self.project.data_dir)
+        os.makedirs(self.project.data_dir, exist_ok=True)
 
         # 2. set current label max id
+        # next added label will have id label_max_id+1, so label.id starts from 1
         self.label_max_id = 0
         for label in project.labels:
             self.label_max_id = max(self.label_max_id, label.id)
@@ -45,8 +45,7 @@ class BaseTask:
         self.split = self.read_split()
 
         # 4. create labels specified in labels.txt
-        # if project.other_settings is not None:
-        label_names_path =None
+        label_names_path = None
         if project.other_settings is not None:
             if isinstance(project.other_settings, str):
                 other_settings = json.loads(project.other_settings)
@@ -68,7 +67,7 @@ class BaseTask:
         for task in tasks:
             for data in task.datas:
                 self.curr_data_paths.append(data.path)
-        print("Current data paths", self.curr_data_paths)
+        # print("Current data paths", self.curr_data_paths)
 
         self.project = Project._get(project_id=project.project_id)
 
@@ -97,7 +96,7 @@ class BaseTask:
 
     def add_task(self, data_paths: list, annotations: list = None, split: int = None):
         """Add one task to project.
-        ATTENTION: invoke db.session.commit() after adding all tasks
+        ATTENTION: to be more efficient, this method WONT connmit! make sure you invoke db.session.commit() after adding all tasks
 
         Parameters
         ----------
@@ -136,7 +135,9 @@ class BaseTask:
         project = self.project
         assert len(data_paths) != 0, "can't add task without data"
 
-        data_paths = [osp.relpath(p, project.data_dir) if project.data_dir in p else p for p in data_paths ]        
+        data_paths = [
+            osp.relpath(p, project.data_dir) if project.data_dir in p else p for p in data_paths
+        ]
 
         # 1. find task split
         split_idx = 0
@@ -185,6 +186,12 @@ class BaseTask:
             )
 
         db.session.add(task)
+
+    def label_id2name(self, label_id):
+        for label in self.project.labels:
+            if label.id == label_id:
+                return label.name
+        return None
 
     def read_split(self, data_dir=None, delimiter=" "):
         if data_dir is None:
@@ -261,3 +268,16 @@ class BaseTask:
                     split = idx
             self.add_task([data_path], split=split)
         db.session.commit()
+
+    def create_warning(self, dir):
+        warning_path = osp.join(dir, "pplabel.warning")
+        if not osp.exists(warning_path):
+            print(
+                "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues.",
+                file=open(warning_path, "w"),
+            )
+
+    def remove_warning(self, dir):
+        warning_path = osp.join(dir, "pplabel.warning")
+        if osp.exists(warning_path):
+            os.remove(warning_path)

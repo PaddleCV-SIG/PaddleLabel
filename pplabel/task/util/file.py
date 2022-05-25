@@ -19,7 +19,7 @@ def create_dir(path):
 
 def listdir(folder, filters={"exclude_prefix": ["."]}):
     """
-    list all files satisfying filters under folder and its subfolders
+    return relative path of all files satisfying filters under the folder and its subfolders
 
     Args:
         folder (str): the folder to list
@@ -75,6 +75,7 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
 def copy(src, dst):
     src = osp.normpath(src)
     dst = osp.normpath(dst)
+    os.makedirs(osp.dirname(dst), exist_ok=True)
     shutil.copy(src, dst)
 
 

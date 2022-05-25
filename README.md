@@ -17,22 +17,36 @@ conda activate pplabel
 
 ```shell
 pip install pplabel
+pplabel
 ```
+
+pplabel is now running at [http://127.0.0.1:17995](http://127.0.0.1:17995)
 
 ### source
 
+First clone this repo for backend code.
+
 ```shell
 git clone https://github.com/PaddleCV-SIG/PP-Label
+```
 
-# clone and build frontend
-# todo env setup
+Then clone and build frontend
+
+```shell
 git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
 cd PP-Label-Frontend
+npm install -g yarn
+yarn
 npm run build
-
 cd ..
+```
+
+The last step is to copy built frontend to
+
+```shell
 cd PP-Label
 pip install -r requirements.txt
+mkdir pplabel/static/
 cp -r ../PP-Label-Frontend/dist/* pplabel/static/
 
 python setup.py install
@@ -40,11 +54,13 @@ python setup.py install
 
 ## Run
 
-After installing pplabel, run it from command line with
+After installation, run PP-Label from command line with
 
 ```shell
 pplabel
 ```
+
+PP-Label is now avaliable at [http://127.0.0.1:17995](http://127.0.0.1:17995)
 
 You can also choose to expose the service to lan. This way it's possbile to run the service on a computer and annotate with a tablet.
 
@@ -52,6 +68,14 @@ You can also choose to expose the service to lan. This way it's possbile to run 
 pplabel --lan
 ```
 
-Please refer to the [Dataset File Structure](./doc/dataset_file_structure.md) for the dataset formats PP Label can import and export.
+## Dataset Import/Export
 
-The [Developer Guide](https://github.com/PaddleCV-SIG/PP-Label/wiki/Developer-Guide) contains details on backend implementation.
+PP-Label currently support image classification, object detection and image segmentation projects. Please refer to the [Dataset File Structure Documentation](./doc/dataset_file_structure.md) for more details.
+
+## Release Notes
+
+- 2022.5.31: v0.1.0 [1] Support image classification, detection and segmentations. [2] Interactive image segmentation with EISeg models
+
+## Contributors
+
+Please refer to the [Developers Guide](./doc/developers_guide.md) for details on backend implementation.

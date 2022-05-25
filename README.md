@@ -1,6 +1,6 @@
 # PP-Label
 
-[![Downloads](https://pepy.tech/badge/pplabel)](https://pepy.tech/project/pplabel) [![PyPI version](https://badge.fury.io/py/pplabel.svg)](https://badge.fury.io/py/pplabel)
+[![Downloads](https://pepy.tech/badge/pplabel)](https://pepy.tech/project/pplabel) [![PyPI version](https://badge.fury.io/py/pplabel.svg)](https://badge.fury.io/py/pplabel) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 PP Label aims to become an effective and flexible data annotation tool. There are three parts to this project. This repo contains backend implementation. [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend) contains the React/Antd frontend. [PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML) contains the machine learning backend for automatic and interactive models.
 

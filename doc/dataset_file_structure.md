@@ -1,10 +1,10 @@
-# Dataset Structure
+# Dataset File Structure
 
 This page describes the dataset file structures that PP Label can import and export.
 
 ## Without Annotation
 
-If the dataset doesn't contain any annotation, just put all the files under a single folder. PP Label wil walk through the folder and all subfolders to import all files it can annotate based on file name extension.
+If the dataset doesn't contain any annotation, just put all the files under a single folder. PP Label wil walk through the folder( including all subfolders) to import all files it can annotate based on file name extension.
 
 ## Classification
 
@@ -12,9 +12,7 @@ PP Label supports single class and multi class classification.
 
 ### Single Class Classification
 
-Also know as ImageNet format.
-https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip
-https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz
+Also know as ImageNet format. Sample datasets: [flowers102](https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip) [vegetables_cls](https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz)
 
 Example Layout
 

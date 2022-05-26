@@ -173,10 +173,14 @@ class BaseTask:
                 label = get_label(ann["label_name"])
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"))
+                del ann['label_name']
                 ann = Annotation(
                     label_id=label.label_id,
                     project_id=project.project_id,
-                    result=ann.get("result", ""),
+                    **ann
+                    # result=ann.get("result", ""),
+                    # frontend_id=ann.get("frontend_id", None),
+                    # type = ann.get("type", None)
                 )
                 task.annotations.append(ann)
                 data.annotations.append(ann)

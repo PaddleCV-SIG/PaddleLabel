@@ -69,51 +69,90 @@ def create_voc_label(filename, width, height, annotations):
 class Detection(BaseTask):
     def __init__(self, project):
         super().__init__(project)
-        self.importers = {"coco": self.default_importer, "voc": self.voc_importer}
+        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
         self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}  # TODO: change
         # self.default_importer = self.default_importer # default to voc
-        self.default_importer = self.voc_importer  # default to voc
-        self.default_exporter = self.coco_exporter
+        self.default_importer = self.voc_exporter  # default to voc
+        self.default_exporter = self.voc_importer
 
     def coco_importer(
         self,
         data_dir=None,
-        label_file_path=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         """
         images should be located at data_dir / file_name in coco annotation
         """
+        # 1. set params
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        if label_file_path is None:
-            label_file_path = osp.join(data_dir, "annotations.json")
+        # TODO: coco train val test json
+        label_file_paths = [osp.join(data_dir, "annotations.json")]
 
-        coco = COCO(label_file_path)
+        def _coco_importer(data_paths, label_file_path):
+            coco = COCO(label_file_path)
+            print("+_+_+_+", coco.imgs)
+            ann_by_task = {}
+            for ann_id in coco.getAnnIds():
+                ann = coco.anns[ann_id]
+                label_name = coco.cats[ann["category_id"]]["name"]
+                # result = {}
+                # result["xmin"] = ann["bbox"][0]
+                # result["ymin"] = ann["bbox"][1]
+                # result["xmax"] = result["xmin"] + ann["bbox"][2]
+                # result["ymax"] = result["ymin"] + ann["bbox"][3]
+                res = ann["bbox"]
+                width, height = (
+                    coco.imgs[ann["image_id"]]["width"],
+                    coco.imgs[ann["image_id"]]["height"],
+                )
+                res[2] += res[0]
+                res[3] += res[1]
+                res[0] -= width / 2
+                res[1] -= height / 2
+                res[2] -= width / 2
+                res[3] -= height / 2
+                # res = [-10, -10, 10, 10]
+                res = [str(r) for r in res]
+                res = ",".join(res)
+                print(res)
+                curr_anns = ann_by_task.get(ann["image_id"], [])
+                curr_anns.append(
+                    {
+                        "label_name": label_name,
+                        "result": res,
+                        "type": "rectangle",
+                        "frontend_id": len(curr_anns) + 1,
+                    }
+                )
+                ann_by_task[ann["image_id"]] = curr_anns
 
-        ann_by_task = {}
-        for ann_id in coco.getAnnIds():
-            ann = coco.anns[ann_id]
-            label_name = coco.cats[ann["category_id"]]["name"]
-            result = {}
-            result["xmin"] = ann["bbox"][0]
-            result["ymin"] = ann["bbox"][1]
-            result["xmax"] = result["xmin"] + ann["bbox"][2]
-            result["ymax"] = result["ymin"] + ann["bbox"][3]
-            temp = ann_by_task.get(ann["image_id"], [])
-            temp.append({"label_name": label_name, "result": json.dumps(result)})
-            ann_by_task[ann["image_id"]] = temp
-        have_label = []
-        for img_id, annotations in list(ann_by_task.items()):
-            have_label.append(coco.imgs[img_id]["file_name"])
-            self.add_task([coco.imgs[img_id]["file_name"]], [annotations])
+            print("ann by task", ann_by_task)
 
-        image_paths = listdir(data_dir)
-        image_paths = [osp.relpath(p, data_dir) for p in image_paths]
-        for image_path in image_paths:
-            if image_path not in have_label:
-                self.add_task([image_path])
+            for img_id, annotations in list(ann_by_task.items()):
+                file_name = coco.imgs[img_id]["file_name"]
+                # data_path = filter(lambda p: p[-len(file_name)] == file_name, data_paths)
+                data_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
+                data_path = list(data_path)
+                if len(data_path) != 1:
+                    raise RuntimeError(
+                        f"{'No' if len(data_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
+                    )
+                data_path = data_path[0]
+                data_paths.remove(data_path)
+                print("annotations", annotations)
+                self.add_task([data_path], [annotations])
+            return data_paths
+
+        data_paths = listdir(data_dir, filters=filters)
+        for label_file_path in label_file_paths:
+            data_paths = _coco_importer(data_paths, label_file_path)
+            print(data_paths)
+        db.session.commit()
+
+        for data_path in data_paths:
+            self.add_task([data_path])
 
     def voc_importer(
         self,

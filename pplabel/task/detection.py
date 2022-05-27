@@ -83,16 +83,33 @@ class Detection(BaseTask):
         """
         images should be located at data_dir / file_name in coco annotation
         """
+
         # 1. set params
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
         # TODO: coco train val test json
-        label_file_paths = [osp.join(data_dir, "annotations.json")]
+        label_file_paths = ["train.json", "val.json", "test.json"]
+        label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
 
-        def _coco_importer(data_paths, label_file_path):
+        def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
-            print("+_+_+_+", coco.imgs)
+            # get image full paths
+            for idx, img in coco.imgs.items():
+                # print(idx, img)
+                file_name = img["file_name"]
+                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
+                full_path = list(full_path)
+                if len(full_path) != 1:
+                    raise RuntimeError(
+                        f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
+                    )
+                full_path = full_path[0]
+                data_paths.remove(full_path)
+                coco.imgs[idx]["full_path"] = full_path
+                # print("----", file_name, full_path)
+
+            # get ann by image
             ann_by_task = {}
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
@@ -102,10 +119,11 @@ class Detection(BaseTask):
                 # result["ymin"] = ann["bbox"][1]
                 # result["xmax"] = result["xmin"] + ann["bbox"][2]
                 # result["ymax"] = result["ymin"] + ann["bbox"][3]
+                # image center as origin, right x down y
                 res = ann["bbox"]
                 width, height = (
-                    coco.imgs[ann["image_id"]]["width"],
-                    coco.imgs[ann["image_id"]]["height"],
+                    coco.imgs[ann["image_id"]].get("width", None),
+                    coco.imgs[ann["image_id"]].get("height", None),
                 )
                 res[2] += res[0]
                 res[3] += res[1]
@@ -113,10 +131,9 @@ class Detection(BaseTask):
                 res[1] -= height / 2
                 res[2] -= width / 2
                 res[3] -= height / 2
-                # res = [-10, -10, 10, 10]
+
                 res = [str(r) for r in res]
                 res = ",".join(res)
-                print(res)
                 curr_anns = ann_by_task.get(ann["image_id"], [])
                 curr_anns.append(
                     {
@@ -128,31 +145,22 @@ class Detection(BaseTask):
                 )
                 ann_by_task[ann["image_id"]] = curr_anns
 
-            print("ann by task", ann_by_task)
-
+            # add tasks
             for img_id, annotations in list(ann_by_task.items()):
-                file_name = coco.imgs[img_id]["file_name"]
-                # data_path = filter(lambda p: p[-len(file_name)] == file_name, data_paths)
-                data_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
-                data_path = list(data_path)
-                if len(data_path) != 1:
-                    raise RuntimeError(
-                        f"{'No' if len(data_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
-                    )
-                data_path = data_path[0]
-                data_paths.remove(data_path)
-                print("annotations", annotations)
-                self.add_task([data_path], [annotations])
+                data_path = coco.imgs[img_id]["full_path"]
+                # print("annotations", annotations)
+                self.add_task([data_path], [annotations], split=set)
             return data_paths
 
         data_paths = listdir(data_dir, filters=filters)
-        for label_file_path in label_file_paths:
-            data_paths = _coco_importer(data_paths, label_file_path)
-            print(data_paths)
-        db.session.commit()
+        for split_idx, label_file_path in enumerate(label_file_paths):
+            data_paths = _coco_importer(data_paths, label_file_path, split_idx)
 
+        # add tasks without label
         for data_path in data_paths:
             self.add_task([data_path])
+
+        db.session.commit()
 
     def voc_importer(
         self,

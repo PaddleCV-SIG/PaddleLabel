@@ -13,6 +13,6 @@ class Data(BaseModel):
     # task = db.relationship("Task", lazy="selectin")
     annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
     path = nncol(db.String())
-    slice_count = db.Column(db.Integer())
+    size = db.Column(db.Integer())
 
     _immutables = BaseModel._immutables + ["data_id", "task_id"]

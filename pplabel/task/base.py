@@ -130,7 +130,7 @@ class BaseTask:
                 ],
                 ...
             ]
-        split: int. the split set this task is in. If not passed will attempt to find in the three list files. If not found default to 1 (training set).
+        split: int. the split set this task is in. If not passed will attempt to find in the three list files. If not found default to 0 (training set). 0, 1, 2-> train, val, test
         """
         project = self.project
         assert len(data_paths) != 0, "can't add task without data"
@@ -140,11 +140,14 @@ class BaseTask:
         ]
 
         # 1. find task split
-        split_idx = 0
-        for idx, split in enumerate(self.split):
-            if data_paths[0] in split:
-                split_idx = idx
-                break
+        if split is None:
+            split_idx = 0
+            for idx, split in enumerate(self.split):
+                if data_paths[0] in split:
+                    split_idx = idx
+                    break
+        else:
+            split_idx = split
 
         task = Task(project_id=project.project_id, set=split_idx)
 
@@ -161,7 +164,7 @@ class BaseTask:
 
         for anns, data_path in zip(annotations, data_paths):
             # 2. add data record
-            data = Data(path=data_path, slice_count=1)  # TODO: generate slice_count from io
+            data = Data(path=data_path) 
             task.datas.append(data)
             total_anns = 0
 

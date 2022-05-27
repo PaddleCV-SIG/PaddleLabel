@@ -1,18 +1,18 @@
 # Dataset File Structure
 
-This page describes the dataset file structures that PP Label can import and export. PP Label may make modifications to files under the dataset folder. Like during "Import Additional Data", files will be moved to this folder. Currently we won't delete anything. This behavior is intended to save disk space. **You may make a copy of the dataset as backup before import.** There will be a file named pplabel.warning under the folder PP Label is using. Avoid making changes to files under the folder to avoid bugs.
+This page describes the dataset file structures that PP Label can import and export. PP Label may make modifications to files under the dataset folder. Like during "Import Additional Data", files will be moved to this folder. Currently we won't delete anything. This behavior is intended to save disk space. **You may make a copy of the dataset as backup before import.** There will be a file named pplabel.warning under the root folder PP Label is using. Avoid making changes to files under the folder to avoid bugs.
 
 ## Without Annotation
 
-If the dataset doesn't contain any annotation, just put all the files under a single folder. PP Label wil walk through the folder (and all subfolders) to import all files it can annotate based on file name extension.
+If the dataset doesn't contain any annotation, simply put all files under a single folder. PP Label wil walk through the folder (and all subfolders) to import all files it can annotate based on **file name extension**.
 
 ## Globally Supported Functions
 
-Dataset file structures vary across different types of projects but some functions are globally supported.
+Dataset file structures vary across different types of projects but some functions are supported in most.
 
 ### labels.txt
 
-PP Label will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
+labels.txt is currently supported in all project types. PP Label will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
 
 ```text
 # labels.txt
@@ -22,11 +22,11 @@ Mouse
 
 PP Label supports any string as label name. But label names may be used as folder names during dataset export, so avoid anything your os won't support like listed [here](https://stackoverflow.com/a/31976060). Other toolkits in the PaddlePaddle ecosystem, like [PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md), may also not support Chinese chracters as label names.
 
-During import, PP Label will first create labels in labels.txt. So you are guarenteed the ids for labels in this file will start from 0 and increase. During export this file will be generated.
+During import, PP Label will first create labels in labels.txt. So you are guarenteed the ids for labels in this file will start from 0 and increase. During export this file will also be generated.
 
 ### xx_list.txt
 
-This includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be in the `Dataset Path` folder. These three files specify the dataset split and labels for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories. For example:
+xx_list.txt is currently supported in all project types other than coco detection/segmentation. xx_list.txt includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be placed in the `Dataset Path` folder, same as labels.txt. These three files specify the dataset split and labels for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories. For example:
 
 ```text
 # train_list.txt
@@ -159,6 +159,71 @@ Format for the xml fils is as follows
 	</object>
 </annotation>
 ```
+
+### COCO
+
+COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note in all COCO formats, xx_list.txt isn't supported. Example dataset: [Plane Detection]()
+
+Example Layout:
+
+```shell
+├── image
+│   ├── 0001.jpg
+│   ├── 0002.jpg
+│   ├── 0003.jpg
+│   └── ...
+├── labels.txt
+├── train.json
+├── val.json
+└── test.json
+```
+
+COCO Format:
+
+```json
+{
+    "info": info,
+    "images": [image],
+    "annotations": [annotation],
+    "licenses": [license],
+}
+
+image{
+    "id": int,
+    "width": int,
+    "height": int,
+    "file_name": str,
+    "license": int,
+    "flickr_url": str,
+    "coco_url": str,
+    "date_captured": datetime,
+}
+
+
+annotation{
+    "id": int,
+    "image_id": int,
+    "category_id": int,
+    "segmentation": RLE or [polygon],
+    "area": float,
+    "bbox": [x,y,width,height],
+    "iscrowd": 0 or 1,
+}
+
+categories[
+{
+	"id": int,
+	"name": str,
+	"supercategory": str,
+}
+]
+```
+
+We parse the annotation file with [pycocotoolse](https://github.com/linhandev/cocoapie). It's essentially the origional [pycocotools](https://github.com/cocodataset/cocoapi) with some dataset management features added. We look for three json files under the Dataset Path: train.json, val.json and test.json. Tasks parsed from these three files will go to the training, validation and test subset respectively. Be sure **not to define an image more than once across all files** otherwise import will fail. xx_list.txt and labels.txt isn't used in all projects importing COCO.
+
+We will import all images under the Dataset Path folder as tasks. We match images on disk with image record in COCO json by looking for an image with relative path to Dataset Path ending with file_name value in COCO image record. For example an image with path `\Dataset Path\folder\image.png` will be match to image record with file_name `image.png`. If none or more than one match is found, import will fail. For example, images with path `\Dataset Path\folder1\image.png` and `\Dataset Path\folder2\image.png` will both be matched with image record with file_name value `image.png`. It's advised to put all images under a single folder to avoid duplicate image names.
+
+During export, the three json files will all be generated even if there is no image record in some of them.
 
 ## Segmentation
 

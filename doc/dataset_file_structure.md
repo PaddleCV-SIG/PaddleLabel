@@ -109,7 +109,7 @@ PP Label supports two object detection dataset format: PASCAL VOC and COCO.
 
 ### PASCAL VOC
 
-[Example Datasset](https://bj.bcebos.com/paddlex/datasets/insect_det.tar.gz)
+PASCAL VOC format stores annotations in xml format, one file for each image. [Example Datasset](https://bj.bcebos.com/paddlex/datasets/insect_det.tar.gz)
 
 Example Layout:
 
@@ -160,6 +160,8 @@ Format for the xml fils is as follows
 </annotation>
 ```
 
+In this format, we expect all images to be placed under JPEGImages folder and annotations under Annotations folder. However, we will treat all xml files under Dataset Path as annotations and match this annotation with image file at /Dataset Path/folder/filename. The folder and filename values are parsed from VOC annotation xml. If folder is not present in xml, the default value will be JPEGImages. Empty folder means Dataset Path.
+
 ### COCO
 
 COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note in all COCO formats, xx_list.txt isn't supported. Example dataset: [Plane Detection]()
@@ -180,7 +182,7 @@ Example Layout:
 
 COCO Format:
 
-```json
+```text
 {
     "info": info,
     "images": [image],

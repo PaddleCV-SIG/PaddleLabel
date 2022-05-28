@@ -1,6 +1,8 @@
+from fileinput import filename
 import os.path as osp
 import json
 from copy import deepcopy
+from collections import defaultdict
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -18,54 +20,105 @@ def parse_voc_label(label_path):
         return elements[0].firstChild.data
 
     file = minidom.parse(label_path)
+
+    # 1. parse img info
+    img = {}
+
+    # 1.1 file path
+    folder = file.getElementsByTagName("folder")
+    if len(folder) == 0:
+        folder = "JPEGImages"
+    else:
+        folder = data(folder)
+    filename = file.getElementsByTagName("filename")
+    if len(filename) == 0:
+        raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
+    filename = data(filename)
+    path = osp.join(folder, filename)
+
+    # 1.2 size
+    size = file.getElementsByTagName("size")[0]
+    size = [data(size.getElementsByTagName(n)) for n in ["width", "height"]]
+    width, height = [int(t) for t in size]
+    size = [str(t) for t in [1, width, height]]
+
+    img["size"] = ",".join(size)
+    img["path"] = path
+
+    # 2. parse annotations
     objects = file.getElementsByTagName("object")
-    res = []
+    anns = []
     for object in objects:
-        temp = {}
-        temp["label_name"] = data(object.getElementsByTagName("name"))
+        ann = {}
+        ann["label_name"] = data(object.getElementsByTagName("name"))
         bndbox = object.getElementsByTagName("bndbox")[0]
-        temp["result"] = {}
-        temp["result"]["xmin"] = data(bndbox.getElementsByTagName("xmin"))
-        temp["result"]["xmax"] = data(bndbox.getElementsByTagName("xmax"))
-        temp["result"]["ymin"] = data(bndbox.getElementsByTagName("ymin"))
-        temp["result"]["ymax"] = data(bndbox.getElementsByTagName("ymax"))
-        temp["result"] = json.dumps(temp["result"])
-        res.append(temp)
-    return res
+        # ann["result"] = {}
+        # ann["result"]["xmin"] = data(bndbox.getElementsByTagName("xmin"))
+        # ann["result"]["xmax"] = data(bndbox.getElementsByTagName("xmax"))
+        # ann["result"]["ymin"] = data(bndbox.getElementsByTagName("ymin"))
+        # ann["result"]["ymax"] = data(bndbox.getElementsByTagName("ymax"))
+        # ann["result"] = json.dumps(ann["result"])
+        names = ["xmin", "ymin", "xmax", "ymax"]
+        r = [data(bndbox.getElementsByTagName(n)) for n in names]
+        r = [int(t) for t in r]
+        r[0] -= width / 2
+        r[1] -= height / 2
+        r[2] -= width / 2
+        r[3] -= height / 2
+        r = [str(t) for t in r]
+        ann["result"] = ",".join(r)
+        ann["type"] = "rectangle"
+        anns.append(ann)
+    return img, anns
 
 
-def create_voc_label(filename, width, height, annotations):
-    from xml.dom import minidom
-
+def create_voc_label(filepath, width, height, annotations):
     object_labels = ""
-    r = json.loads(ann.result)
+    width = int(width)
+    height = int(height)
     for ann in annotations:
+        r = [float(t) for t in ann.result.split(",")]
+        r[0] += width / 2
+        r[1] += height / 2
+        r[2] += width / 2
+        r[3] += height / 2
+        r = [int(t) for t in r]
+
         object_labels += f"""
-    <object>
-    <name>{ann.label.name}</name>
-    <bndbox>
-      <xmin>{r['xmin']}</xmin>
-      <ymin>{r['ymin']}</ymin>
-      <xmax>{r['xmax']}</xmax>
-      <ymax>{r['ymax']}</ymax>
-    </bndbox>
-    </object>
-"""
+            <object>
+            <name>{ann.label.name}</name>
+            <bndbox>
+            <xmin>{r[0]}</xmin>
+            <ymin>{r[1]}</ymin>
+            <xmax>{r[2]}</xmax>
+            <ymax>{r[3]}</ymax>
+            </bndbox>
+            </object>
+        """
+
+    folder = osp.dirname(filepath)
+    filename = osp.basename(filepath)
     voc_label = f"""
-<?xml version='1.0' encoding='UTF-8'?>
-<annotation>
-  <filename>{filename}</filename>
-  <object_num>{len(annotations)}</object_num>
-  <size>
-    <width>{width}</width>
-    <height>{height}</height>
-  </size>
-{object_labels}
-</annotation>
-"""
+        <?xml version='1.0' encoding='UTF-8'?>
+        <annotation>
+        <folder>{folder}</folder>
+        <filename>{filename}</filename>
+        <object_num>{len(annotations)}</object_num>
+        <size>
+            <width>{width}</width>
+            <height>{height}</height>
+        </size>
+        {object_labels}
+        </annotation>
+    """
+
     # TODO: beautify export xml
+    # from xml.dom import minidom
     # return minidom.parseString(voc_label.strip()).toprettyxml(indent="    ", newl="")
     return voc_label.strip()
+
+
+# TODO: change data_dir to dataset_path
 
 
 class Detection(BaseTask):
@@ -86,6 +139,7 @@ class Detection(BaseTask):
         images should be located at data_dir / file_name in coco annotation
         """
         # TODO: supercategory
+        # TODO: label color
         # TODO: coco中其他信息
 
         # 1. set params
@@ -156,7 +210,6 @@ class Detection(BaseTask):
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
                 size = "1," + coco.imgs[img_id]["size"]
-                print(data_path, size)
                 self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
             return data_paths
 
@@ -179,34 +232,38 @@ class Detection(BaseTask):
     def voc_importer(
         self,
         data_dir=None,
-        filters={"exclude_prefix": ["."]},
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        # 1. set params
         project = self.project
         base_dir = data_dir
         if base_dir is None:
             base_dir = project.data_dir
+        self.create_warning(base_dir)
 
-        data_dir = osp.join(base_dir, "JPEGImages")
-        label_dir = osp.join(base_dir, "Annotations")
+        # 2. get all data and label
+        data_paths = set(p for p in listdir(base_dir, filters=filters))
+        filters["include_postfix"] = [".xml"]
+        label_paths = [p for p in listdir(base_dir, filters=filters)]
+        
+        # print("data_paths", data_paths)
+        # print("label_paths", label_paths)
 
-        create_dir(data_dir)
-        self.create_warning(data_dir)
-
-        data_paths = listdir(data_dir, filters=filters)
-        label_paths = listdir(label_dir, filters=filters)
-        data_paths = [osp.join(data_dir, p) for p in data_paths]
-        label_paths = [osp.join(label_dir, p) for p in label_paths]
-
-        label_name_dict = {}
-        labels = []
         for label_path in label_paths:
-            labels.append(parse_voc_label(label_path))
-            label_name_dict[osp.basename(label_path).split(".")[0]] = len(labels) - 1
+            data, labels = parse_voc_label(osp.join(base_dir, label_path))
+            if not osp.exists(osp.join(base_dir, data["path"])):
+                raise RuntimeError(f"Image specified in {label_path} not found.")
+            self.add_task([data], [labels])
+            data_paths.remove(data["path"])
 
         for data_path in data_paths:
-            id = osp.basename(data_path).split(".")[0]
-            label_idx = label_name_dict.get(id, -1)
-            self.add_task([data_path], [labels[label_idx] if label_idx != -1 else []])
+            img = cv2.imread(osp.join(base_dir, data_path))
+            s = img.shape
+            size = [1, s[1], s[0], s[2]]
+            size = [str(s) for s in size]
+            size = ",".join(size)
+            self.add_task([{"path": data_path, "size": size}])
+
         db.session.commit()
 
     def coco_exporter(self, export_dir):
@@ -260,29 +317,31 @@ class Detection(BaseTask):
                 print(json.dumps(outcoco.dataset), file=outf)
 
     def voc_exporter(self, export_dir):
+        # 1. set params
         project = self.project
-        tasks = Task._get(project_id=project.project_id, many=True)
+
         export_data_dir = osp.join(export_dir, "JPEGImages")
         export_label_dir = osp.join(export_dir, "Annotations")
         create_dir(export_data_dir)
         create_dir(export_label_dir)
 
-        set_names = ["train.txt", "validation.txt", "test.txt"]
-        set_files = [open(osp.join(export_dir, n), "w") for n in set_names]
+        tasks = Task._get(project_id=project.project_id, many=True)
+        export_paths = []
+
         for task in tasks:
-            data_path = osp.join(project.data_dir, task.datas[0].path)
+            data = task.datas[0]
+            data_path = osp.join(project.data_dir, data.path)
+            export_path = osp.join("JPEGImages", osp.basename(data.path))
+
             copy(data_path, export_data_dir)
             id = osp.basename(data_path).split(".")[0]
-            f = open(osp.join(export_label_dir, f"{id}.xml"), "w")
-            print(
-                create_voc_label(osp.basename(data_path), 1000, 1000, task.annotations),
-                file=f,
-            )
-            f.close()
+            width, height = data.size.split(",")[1:3]
+            with open(osp.join(export_label_dir, f"{id}.xml"), "w") as f:
+                print(
+                    create_voc_label(export_path, width, height, task.annotations),
+                    file=f,
+                )
+            export_paths.append([export_path])
 
-            print(
-                f"JPEGImages/{osp.basename(data_path)} Annotations/{id}.xml",
-                file=set_files[task.set],
-            )
-        for f in set_files:
-            f.close()
+        self.export_split(export_dir, tasks, export_paths, with_labels=False)
+

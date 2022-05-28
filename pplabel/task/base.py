@@ -6,7 +6,7 @@ from pplabel.api import Annotation, Data, Label, Project, Task
 from pplabel.api.model import project
 from pplabel.api.util import rand_color
 from pplabel.config import db
-from pplabel.task.util import image_extensions, listdir
+from pplabel.task.util import image_extensions, listdir, create_dir
 
 """
 Base for import/export and other task specific operations.
@@ -135,12 +135,12 @@ class BaseTask:
         """
         project = self.project
         assert len(datas) != 0, "can't add task without data"
-        print(datas, project.data_dir)
+        # print(datas, project.data_dir)
         # TODO: check abs path
         for idx in range(len(datas)):
-            if osp.isabs(datas[idx]['path']):
-                datas[idx]['path'] = osp.relpath(datas[idx]['path'], project.data_dir)
-        
+            if osp.isabs(datas[idx]["path"]):
+                datas[idx]["path"] = osp.relpath(datas[idx]["path"], project.data_dir)
+
         # 1. find task split
         if split is None:
             split_idx = 0
@@ -178,13 +178,9 @@ class BaseTask:
                 label = get_label(ann["label_name"])
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
-                del ann['label_name']
-                ann = Annotation(
-                    label_id=label.label_id,
-                    project_id=project.project_id,
-                    **ann
-                )
-                task.annotations.append(ann) # TODO: remove
+                del ann["label_name"]
+                ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
+                task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
             print(
@@ -215,18 +211,22 @@ class BaseTask:
             sets.append(set(paths))
         return sets
 
-    def export_split(self, export_dir, tasks, new_paths, delimiter=" "):
+    def export_split(self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True):
         set_names = ["train_list", "val_list", "test_list"]
+        create_dir(export_dir)
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
         for task, task_new_paths in zip(tasks, new_paths):
             for data, new_path in zip(task.datas, task_new_paths):
-                label_ids = []
-                for ann in data.annotations:
-                    label_ids.append(ann.label.id - 1)
-                if len(label_ids) == 0:
-                    continue
-                label_ids = [str(id) for id in label_ids]
-                print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
+                if with_labels:
+                    label_ids = []
+                    for ann in data.annotations:
+                        label_ids.append(ann.label.id - 1)
+                    if len(label_ids) == 0:
+                        continue
+                    label_ids = [str(id) for id in label_ids]
+                    print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
+                else:
+                    print(new_path, file=set_files[task.set])
 
         for f in set_files:
             f.close()

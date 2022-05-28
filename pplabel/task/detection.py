@@ -1,5 +1,6 @@
 import os.path as osp
 import json
+from copy import deepcopy
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -84,6 +85,8 @@ class Detection(BaseTask):
         """
         images should be located at data_dir / file_name in coco annotation
         """
+        # TODO: supercategory
+        # TODO: coco中其他信息
 
         # 1. set params
         project = self.project
@@ -96,6 +99,7 @@ class Detection(BaseTask):
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
+            ann_by_task = {}
             # get image full paths
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
@@ -112,9 +116,9 @@ class Detection(BaseTask):
                 s = [img["width"], img["height"]]
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
+                ann_by_task[img["id"]] = []
 
             # get ann by image
-            ann_by_task = {}
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
                 label_name = coco.cats[ann["category_id"]]["name"]
@@ -138,16 +142,15 @@ class Detection(BaseTask):
 
                 res = [str(r) for r in res]
                 res = ",".join(res)
-                curr_anns = ann_by_task.get(ann["image_id"], [])
-                curr_anns.append(
+                # curr_anns = ann_by_task.get(ann["image_id"], [])
+                ann_by_task[ann["image_id"]].append(
                     {
                         "label_name": label_name,
                         "result": res,
                         "type": "rectangle",
-                        "frontend_id": len(curr_anns) + 1,
+                        "frontend_id": len(ann_by_task[ann["image_id"]]) + 1,
                     }
                 )
-                ann_by_task[ann["image_id"]] = curr_anns
 
             # add tasks
             for img_id, annotations in list(ann_by_task.items()):
@@ -169,7 +172,7 @@ class Detection(BaseTask):
             size = [1, s[1], s[0], s[2]]
             size = [str(s) for s in size]
             size = ",".join(size)
-            self.add_task([{"path": data_path, "size":size}])
+            self.add_task([{"path": data_path, "size": size}])
 
         db.session.commit()
 
@@ -189,7 +192,6 @@ class Detection(BaseTask):
         create_dir(data_dir)
         self.create_warning(data_dir)
 
-
         data_paths = listdir(data_dir, filters=filters)
         label_paths = listdir(label_dir, filters=filters)
         data_paths = [osp.join(data_dir, p) for p in data_paths]
@@ -208,28 +210,54 @@ class Detection(BaseTask):
         db.session.commit()
 
     def coco_exporter(self, export_dir):
+        # 1. set params
         project = self.project
+
+        # 2. create coco with all tasks
         coco = COCO()
+        # 2.1 add categories
         labels = Label._get(project_id=project.project_id, many=True)
         for label in labels:
             coco.addCategory(label.id, label.name, label.color)
+        # 2.2 add images
+        split = [set(), set(), set()]
         tasks = Task._get(project_id=project.project_id, many=True)
-        data_dir = osp.join(export_dir, "JPEGImages")
+        data_dir = osp.join(export_dir, "image")
         create_dir(data_dir)
         for task in tasks:
-            coco.addImage(task.datas[0].path, 1000, 1000, task.task_id)
-            copy(osp.join(project.data_dir, task.datas[0].path), data_dir)
+            data = task.datas[0]
+            size = data.size.split(",")
+            coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
+            copy(osp.join(project.data_dir, data.path), data_dir)
+            split[task.set].add(data.data_id)
+        # 2.3 add annotations
         annotations = Annotation._get(project_id=project.project_id, many=True)
         for ann in annotations:
-            r = json.loads(ann.result)
-            bb = [r["xmin"], r["ymin"], r["xmax"] - r["xmin"], r["ymax"] - r["ymin"]]
+            r = ann.result.split(",")
+            r = [float(t) for t in r]
+            # print(coco.imgs[ann.data_id])
+            width, height = coco.imgs[ann.data_id]["width"], coco.imgs[ann.data_id]["height"]
+            width = int(width)
+            height = int(height)
+            bb = [r[0] + width / 2, r[1] + height / 2, r[2] + width / 2, r[3] + height / 2]
+            bb[2] -= bb[0]
+            bb[3] -= bb[1]
+            area = (r[2] - r[0]) * (r[3] - r[1])
             coco.addAnnotation(
-                ann.task.datas[0].path, ann.label_id, [], id=ann.annotation_id, bbox=bb
+                ann.data_id, ann.label_id, segmentation=[], id=ann.annotation_id, area=area, bbox=bb
             )
-        create_dir(osp.join(export_dir, "Annotations"))
-        f = open(osp.join(export_dir, "Annotations", "coco_info.json"), "w")
-        print(json.dumps(coco.dataset), file=f)
-        f.close()
+        # 3. write coco json
+        for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
+            outcoco = deepcopy(coco)
+            outcoco.dataset["images"] = [
+                img for img in coco.dataset["images"] if img["id"] in split[split_idx]
+            ]
+            outcoco.dataset["annotations"] = [
+                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
+            ]
+
+            with open(osp.join(export_dir, fname), "w") as outf:
+                print(json.dumps(outcoco.dataset), file=outf)
 
     def voc_exporter(self, export_dir):
         project = self.project

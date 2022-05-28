@@ -78,7 +78,7 @@ class BaseTask:
                 lab.color = rand_color([l.color for l in labels])
         db.session.commit()
 
-    def add_label(self, name: str, color: str = None):
+    def add_label(self, name: str, color: str = None, commit=False):
         if name is None or len(name) == 0:
             return
         if color is None:
@@ -90,18 +90,19 @@ class BaseTask:
             color=color,
         )
         self.project.labels.append(label)
-        db.session.commit()  # TODO: remove
+        if commit:
+            db.session.commit()
         self.label_max_id += 1
         return label
 
-    def add_task(self, data_paths: list, annotations: list = None, split: int = None):
+    def add_task(self, datas: list, annotations: list = None, split: int = None):
         """Add one task to project.
         ATTENTION: to be more efficient, this method WONT connmit! make sure you invoke db.session.commit() after adding all tasks
 
         Parameters
         ----------
-        data_paths : list. each path should either be full path or relative path to project.data_dir
-            ['path1', 'path2', ...]
+        datas : list. each item is a dict, path is required, specifying full or relative path to project.data_dir. Others are optional
+            [{"path": 'path1'}, {"path" : 'path2', "size": [1024, 768, 3]}, ...]
         annotations : list
             [
                 [ // labels for path1
@@ -133,17 +134,18 @@ class BaseTask:
         split: int. the split set this task is in. If not passed will attempt to find in the three list files. If not found default to 0 (training set). 0, 1, 2-> train, val, test
         """
         project = self.project
-        assert len(data_paths) != 0, "can't add task without data"
-
-        data_paths = [
-            osp.relpath(p, project.data_dir) if project.data_dir in p else p for p in data_paths
-        ]
-
+        assert len(datas) != 0, "can't add task without data"
+        print(datas, project.data_dir)
+        # TODO: check abs path
+        for idx in range(len(datas)):
+            if osp.isabs(datas[idx]['path']):
+                datas[idx]['path'] = osp.relpath(datas[idx]['path'], project.data_dir)
+        
         # 1. find task split
         if split is None:
             split_idx = 0
             for idx, split in enumerate(self.split):
-                if data_paths[0] in split:
+                if datas[0]["path"] in split:
                     split_idx = idx
                     break
         else:
@@ -159,12 +161,12 @@ class BaseTask:
 
         if annotations is None:
             annotations = []
-        while len(annotations) < len(data_paths):
+        while len(annotations) < len(datas):
             annotations.append([])
 
-        for anns, data_path in zip(annotations, data_paths):
+        for anns, data_record in zip(annotations, datas):
             # 2. add data record
-            data = Data(path=data_path) 
+            data = Data(**data_record)
             task.datas.append(data)
             total_anns = 0
 
@@ -175,21 +177,18 @@ class BaseTask:
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
-                    label = self.add_label(ann["label_name"], ann.get("color"))
+                    label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
                 del ann['label_name']
                 ann = Annotation(
                     label_id=label.label_id,
                     project_id=project.project_id,
                     **ann
-                    # result=ann.get("result", ""),
-                    # frontend_id=ann.get("frontend_id", None),
-                    # type = ann.get("type", None)
                 )
-                task.annotations.append(ann)
+                task.annotations.append(ann) # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
             print(
-                f"==== {data_path} with {total_anns} annotation{'' if len(anns)==1 else 's'} imported to set {split_idx} ===="
+                f"==== {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} ===="
             )
 
         db.session.add(task)
@@ -244,11 +243,12 @@ class BaseTask:
         for label in labels:
             if len(label) > 2:
                 raise RuntimeError(
-                    f"Each line in labels.txt should contain at most 1 delimiter, after split {label}"
+                    f"Each line in labels.txt should contain at most 1 delimiter, after split got {label}"
                 )
-            print("==== Adding label", label, "====")
             if label[0] not in current_labels:
+                print("==== Adding label", label, "====")
                 self.add_label(*label)
+        db.session.commit()
 
     def export_label_names(self, label_names_path: str, project_id: int = None):
         if project_id is None:

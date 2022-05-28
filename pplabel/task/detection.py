@@ -2,6 +2,7 @@ import os.path as osp
 import json
 
 from pycocotoolse.coco import COCO
+import cv2
 
 from pplabel.api import Task, Annotation, Label
 from pplabel.task.util import create_dir, listdir, copy, image_extensions
@@ -88,15 +89,15 @@ class Detection(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
-        # TODO: coco train val test json
         label_file_paths = ["train.json", "val.json", "test.json"]
         label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
+
+        self.create_warning(data_dir)
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
             # get image full paths
             for idx, img in coco.imgs.items():
-                # print(idx, img)
                 file_name = img["file_name"]
                 full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
                 full_path = list(full_path)
@@ -107,7 +108,10 @@ class Detection(BaseTask):
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                # print("----", file_name, full_path)
+                # TODO: read image decide width height if not found
+                s = [img["width"], img["height"]]
+                s = [str(t) for t in s]
+                coco.imgs[idx]["size"] = ",".join(s)
 
             # get ann by image
             ann_by_task = {}
@@ -148,17 +152,24 @@ class Detection(BaseTask):
             # add tasks
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
-                # print("annotations", annotations)
-                self.add_task([data_path], [annotations], split=set)
+                size = "1," + coco.imgs[img_id]["size"]
+                print(data_path, size)
+                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
             return data_paths
 
+        # 2. find all images under data_dir
         data_paths = listdir(data_dir, filters=filters)
         for split_idx, label_file_path in enumerate(label_file_paths):
             data_paths = _coco_importer(data_paths, label_file_path, split_idx)
 
-        # add tasks without label
+        # 3. add tasks without label
         for data_path in data_paths:
-            self.add_task([data_path])
+            img = cv2.imread(osp.join(data_dir, data_path))
+            s = img.shape
+            size = [1, s[1], s[0], s[2]]
+            size = [str(s) for s in size]
+            size = ",".join(size)
+            self.add_task([{"path": data_path, "size":size}])
 
         db.session.commit()
 
@@ -176,6 +187,8 @@ class Detection(BaseTask):
         label_dir = osp.join(base_dir, "Annotations")
 
         create_dir(data_dir)
+        self.create_warning(data_dir)
+
 
         data_paths = listdir(data_dir, filters=filters)
         label_paths = listdir(label_dir, filters=filters)

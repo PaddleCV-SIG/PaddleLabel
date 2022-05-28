@@ -39,7 +39,7 @@ class Classification(BaseTask):
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
-            self.add_task([data_path], [[{"label_name": label_name}]])
+            self.add_task([{"path": data_path}], [[{"label_name": label_name}]])
             if move_data:
                 copy(osp.join(data_dir, data_path), osp.join(project.data_dir, data_path))
 
@@ -84,11 +84,13 @@ class Classification(BaseTask):
                     labs.append(lab)
             
             labels_dict[l[0]] = labs
+        
+        print("+_+_+", labels_dict)
 
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
             labels = labels_dict.get(data_path, [])
-            self.add_task([data_path], [[{"label_name": name} for name in labels]])
+            self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
         db.session.commit()
 
     def single_class_exporter(self, export_dir):

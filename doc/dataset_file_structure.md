@@ -223,6 +223,8 @@ We parse the annotation file with [pycocotoolse](https://github.com/linhandev/co
 
 We will import all images under the Dataset Path folder as tasks. We match images on disk with image record in COCO json by looking for an image with relative path to Dataset Path ending with file_name value in COCO image record. For example an image with path `\Dataset Path\folder\image.png` will be match to image record with file_name `image.png`. If none or more than one match is found, import will fail. For example, images with path `\Dataset Path\folder1\image.png` and `\Dataset Path\folder2\image.png` will both be matched with image record with file_name value `image.png`. It's advised to put all images under a single folder to avoid duplicate image names.
 
+If an image record doesn't have width or height, we will decide them by reading the image during export. This can slow down dataset export.
+
 During export, the three json files will all be generated even if there is no image record in some of them.
 
 ## Segmentation

@@ -1214,8 +1214,8 @@ components:
           readOnly: true
         task_id:
           type: integer
-        slice_count:
-          type: integer
+        size:
+          type: string
         task:
           $ref: '#/components/schemas/Task'
         created:

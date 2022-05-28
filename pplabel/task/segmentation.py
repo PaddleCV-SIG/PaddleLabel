@@ -9,9 +9,8 @@ from .base import BaseTask
 import matplotlib.pyplot as plt
 
 
-def parse_gray_annotation(annotation_path):
-    print("parsing", annotation_path)
-    ann = cv2.imread(annotation_path, cv2.IMREAD_GRAYSCALE)
+def parse_mask(annotation_path):
+    ann = cv2.imread(annotation_path)
     print(type(ann), ann.shape)
     plt.imshow(ann)
     plt.show()
@@ -29,28 +28,26 @@ class SemanticSegmentation(BaseTask):
             "polygon": self.pesudo_color_exporter,
         }
 
-    def gray_scale_importer(
+    def mask_importer(
         self,
         data_dir=None,
         label_file_path=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        # 1. set params
         project = self.project
         if data_dir is None:
-            data_dir = osp.join(project.data_dir, "JPEGImages")
-            annotation_dir = osp.join(project.data_dir, "Annotations")
-        if label_file_path is None:
-            label_file_path = project.label_dir
-
-        # 1. if data_dir/labels.txt exists, import labels
-        # TODO: last string as color
-        self.import_label_file(label_file_path)
+            base_dir = project.data_dir
+            data_dir = osp.join(base_dir, "JPEGImages")
+            ann_dir = osp.join(base_dir, "Annotations")
 
         # 2. import records
-        create_dir(data_dir)
         for data_path in listdir(data_dir, filters):
-            annotation_path = data_path.replace("JPEGImages", "Annotations")
-            parse_gray_annotation(annotation_path)
+            data_path = osp.join(data_dir, data_path)
+            ann_path = data_path.replace("JPEGImages", "Annotations")
+            if not osp.exists(ann_path):
+                raise RuntimeError(f"Annotation for image {data_path} doesn't exist!")
+            parse_mask(ann_path)
             input("here")
 
             if project.data_dir in data_path:

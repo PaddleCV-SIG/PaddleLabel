@@ -224,7 +224,9 @@ class BaseTask:
                     if len(label_ids) == 0:
                         continue
                     label_ids = [str(id) for id in label_ids]
-                    print(new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set])
+                    print(
+                        new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set]
+                    )
                 else:
                     print(new_path, file=set_files[task.set])
 
@@ -269,11 +271,7 @@ class BaseTask:
             data_dir = self.project.data_dir
 
         for data_path in listdir(data_dir, filters):
-            split = 0  # TODO: test this
-            for idx, set in enumerate(self.split):
-                if data_path in set:
-                    split = idx
-            self.add_task([data_path], split=split)
+            self.add_task([{"path": data_path}])
         db.session.commit()
 
     def create_warning(self, dir):

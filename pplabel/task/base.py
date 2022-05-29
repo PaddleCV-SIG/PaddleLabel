@@ -220,7 +220,6 @@ class BaseTask:
         Returns:
             Label: new label generated
         """
-        print(name, color)
         if name is None or len(name) == 0:
             raise RuntimeError(f"Label name is required, got {name}")
         current_names = set(l.name for l in self.project.labels)
@@ -281,7 +280,6 @@ class BaseTask:
 
         # 2. import labels
         labels = open(label_names_path, "r").readlines()
-        print(labels)
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
         labels = [l.split("//") for l in labels]
         comments = [None if len(l) == 1 else l[1].strip() for l in labels]

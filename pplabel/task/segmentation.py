@@ -39,6 +39,7 @@ def parse_mask(annotation_path, labels):
                 print(x, y)
                 result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
                 result = f"{frontend_id},{1}," + result
+                frontend_id += 1
                 anns.append({"label_name": label.name, "result": result, "type":"brush"})
 
     return anns

@@ -192,7 +192,7 @@ def predict(project_id):
                 result="",
             )
             task.annotations.append(ann)
-            print(osp.join(project.data_dir, data.path), res["result"])
+            # print(osp.join(project.data_dir, data.path), res["result"])
     db.session.commit()
     return "finished"
 

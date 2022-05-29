@@ -1,10 +1,9 @@
-from datetime import datetime
+import json
 
 from pplabel.config import db
 from pplabel.api.util import nncol
 
 # TODO: circular risk
-from .setting import TaskCategory
 from .base import BaseModel
 
 
@@ -28,3 +27,8 @@ class Project(BaseModel):
     other_settings = db.Column(db.String())
 
     _immutables = BaseModel._immutables + ["project_id", "task_category_id"]
+
+    def _get_other_settings(self):
+        if self.other_settings is None:
+            return {}
+        return json.loads(self.other_settings)

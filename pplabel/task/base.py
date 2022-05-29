@@ -281,13 +281,15 @@ class BaseTask:
         # 2. import labels
         labels = open(label_names_path, "r").readlines()
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
+        if ignore_first:
+            background_line = labels[0]
+            labels = labels[1:]
+
         labels = [l.split("//") for l in labels]
         comments = [None if len(l) == 1 else l[1].strip() for l in labels]
         labels = [l[0].strip() for l in labels]
         labels = [l.split(delimiter) for l in labels]
-        if ignore_first:
-            labels = labels[1:]
-            comments = comments[1:]
+
         current_labels = Label._get(project_id=self.project.project_id, many=True)
         current_labels = [l.name for l in current_labels]
         for label, comment in zip(labels, comments):
@@ -311,6 +313,8 @@ class BaseTask:
                 label = [None if v == "-" else v for v in label]
                 self.add_label(*label, comment=comment)
         db.session.commit()
+        if ignore_first:
+            return background_line
 
     def populate_label_colors(self):
         labels = Label._get(project_id=self.project.project_id, many=True)
@@ -319,16 +323,16 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(self, label_names_path: str, project_id: int = None):
-        if project_id is None:
-            project_id = self.project.project_id
-
-        labels = Label._get(project_id=project_id, many=True)
+    def export_labels(self, export_dir, background_line: str = None):
+        label_names_path = osp.join(export_dir, "labels.txt")
+        labels = self.project.labels
         labels.sort(key=lambda l: l.id)
         with open(label_names_path, "w") as f:
+            if background_line is not None:
+                print(background_line.strip(), file=f)
             for lab in labels:
                 print(lab.name, file=f)
-        return labels
+        
 
     # TODO: add total imported count
     def default_importer(

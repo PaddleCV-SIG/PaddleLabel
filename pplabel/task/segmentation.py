@@ -1,5 +1,5 @@
 import os.path as osp
-
+import json
 
 import numpy as np
 import cv2
@@ -74,8 +74,11 @@ class SemanticSegmentation(BaseTask):
             base_dir = project.data_dir
             data_dir = osp.join(base_dir, "JPEGImages")
             ann_dir = osp.join(base_dir, "Annotations")
-        # TODO: save background name
-        self.import_labels(ignore_first=True)
+
+        background_name = self.import_labels(ignore_first=True)
+        other_settings = project._get_other_settings()
+        other_settings["background_line"] = background_name
+        project.other_settings = json.dumps(other_settings)
 
         ann_dict = {osp.basename(p).split(".")[0]: p for p in listdir(ann_dir, filters)}
 
@@ -92,11 +95,7 @@ class SemanticSegmentation(BaseTask):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-        # # 3. move data
-        # if data_dir != project.data_dir:
-        #     copytree(data_dir, project.data_dir)
-
-    def mask_exporter(self, export_dir, type="grayscale"):
+    def mask_exporter(self, export_dir, type="pesudo"):
         # 1. set params
         project = self.project
 
@@ -142,17 +141,11 @@ class SemanticSegmentation(BaseTask):
                         mask[x, y] = label_id
             cv2.imwrite(export_label_path, mask)
 
-
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])
 
         self.export_split(export_dir, tasks, export_data_paths, with_labels=False)
-        self.export_labels(osp.join(export_dir, "labels.txt"))
+        self.export_labels(export_dir, project._get_other_settings()['background_line'])
 
     def pesudo_color_exporter(self, export_dir):
         pass
-
-
-"""
-/home/lin/Desktop/git/label/data/export/
-"""

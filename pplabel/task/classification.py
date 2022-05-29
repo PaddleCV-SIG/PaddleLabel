@@ -85,7 +85,6 @@ class Classification(BaseTask):
             
             labels_dict[l[0]] = labs
         
-        print("+_+_+", labels_dict)
 
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
@@ -101,7 +100,7 @@ class Classification(BaseTask):
         project = self.project
 
         # 1. write labels.txt
-        labels = self.export_labels(osp.join(export_dir, "labels.txt"), project.project_id)
+        labels = self.export_labels(export_dir)
 
         # 2. create label dirs
         for label in labels:
@@ -134,7 +133,7 @@ class Classification(BaseTask):
         create_dir(osp.join(export_dir, "image"))
 
         # 2. write labels.txt
-        self.export_labels(osp.join(export_dir, "labels.txt"), project.project_id)
+        self.export_labels(export_dir)
 
         # 3. move all images to image folder
         tasks = Task._get(project_id=project.project_id, many=True)

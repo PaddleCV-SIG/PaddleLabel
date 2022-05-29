@@ -23,22 +23,16 @@ def parse_mask(annotation_path, labels):
         pass
     else:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
-        # plt.imshow(ann)
-        # plt.show()
         anns = []
         for label in labels:
             color = hex_to_rgb(label.color)
             label_mask = np.all(ann == color, axis=2).astype("uint8")
-            print(label_mask.shape, label_mask.dtype)
             ccnum, markers = cv2.connectedComponents(label_mask)
-            print(ccnum, markers)
-
 
             for ccidx in range(1, ccnum + 1):
                 x, y = np.where(markers == ccidx)
-                print(x, y)
                 result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-                result = f"{frontend_id},{1}," + result
+                result = f"{0},{frontend_id}," + result
                 frontend_id += 1
                 anns.append({"label_name": label.name, "result": result, "type":"brush"})
 

@@ -15,28 +15,35 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 
-def parse_mask(annotation_path, labels):
-    ann = cv2.imread(annotation_path)
+def parse_semantic_mask(annotation_path, labels):
+    ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
     frontend_id = 1
-    if len(ann.shape) == 2:
-        # gray scale
-        pass
+    anns = []
+    # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
+    if len(ann.shape) == 2 or (len(ann.shape) == 3 and ann.shape[-1] == 1):
+        for label in labels:
+            plt.imshow(ann)
+            plt.show()
+            x, y = np.where(ann == label.id)
+            result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
+            result = f"{0},{frontend_id}," + result
+            anns.append({"label_name": label.name, "result": result, "type":"brush"})
+            frontend_id += 1
     else:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
-        anns = []
         for label in labels:
             color = hex_to_rgb(label.color)
             label_mask = np.all(ann == color, axis=2).astype("uint8")
-            ccnum, markers = cv2.connectedComponents(label_mask)
-
-            for ccidx in range(1, ccnum + 1):
-                x, y = np.where(markers == ccidx)
-                result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-                result = f"{0},{frontend_id}," + result
-                frontend_id += 1
-                anns.append({"label_name": label.name, "result": result, "type":"brush"})
+            x, y = np.where(label_mask == 1)
+            result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
+            result = f"{0},{frontend_id}," + result
+            anns.append({"label_name": label.name, "result": result, "type":"brush"})
+            frontend_id += 1
 
     return anns
+
+    # ccnum, markers = cv2.connectedComponents(label_mask)
+    # for ccidx in range(1, ccnum + 1):
 
 
 class SemanticSegmentation(BaseTask):
@@ -74,7 +81,7 @@ class SemanticSegmentation(BaseTask):
             if id in ann_dict.keys():
                 ann_path = osp.join(ann_dir, ann_dict[id])
                 print(data_path, ann_path)
-                anns = parse_mask(ann_path, project.labels)
+                anns = parse_semantic_mask(ann_path, project.labels)
             else:
                 anns = None
 
@@ -85,13 +92,6 @@ class SemanticSegmentation(BaseTask):
         # if data_dir != project.data_dir:
         #     copytree(data_dir, project.data_dir)
 
-    def pesudo_color_importer(
-        self,
-        data_dir=None,
-        label_dir=None,
-        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-    ):
-        pass
 
     def gray_scale_exporter(self, export_dir):
         pass

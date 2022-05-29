@@ -233,7 +233,37 @@ During export, the three json files will all be generated even if there is no im
 
 ### Semantic Segmentation
 
-https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz
+We support two dataset formats for semantic segmentation tasks. Mask annotations are saved as png in grayscale or pesudo colors. Polygon annotations are saved in COCO format.
+
+#### MASK
+
+Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) Note PP Label cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify a color for the optic disk class.
+
+We expect all images to be placed in `/Dataset Path/JPEGImages`，all image formats are supported. Annotations should be placed in `/Dataset Path/Annotations`. Sample Layout:
+
+```shell
+Dataset Path
+├── Annotations
+│   ├── A0001.png
+│   ├── B0001.png
+│   ├── H0002.png
+│   └── ...
+├── JPEGImages
+│   ├── A0001.jpg
+│   ├── B0001.jpg
+│   ├── H0002.jpg
+│   └── ...
+├── labels.txt
+├── test_list.txt
+├── train_list.txt
+└── val_list.txt
+
+# labels.txt
+background -
+optic_disk - 128 0 0
+```
+
+PNG is usually used for mask labels. During import, in labels.txt, the first label will be treated as background and given label id 0. For grayscale labels, we match the grayscle pixel value in masks with label id. For pesudo color labels, we match the color for each pixel with color specified in labels.txt. During export, a background class will be added to labels.txt. The values in mask images follow the same rule as during import.
 
 ### Instance Segmentation
 

@@ -9,7 +9,8 @@ from pplabel.api.util import abort
 from .base import crud
 from ..model import Label, Project, Annotation
 from ..schema import LabelSchema
-from ..util import abort, rand_color
+from ..util import abort
+from pplabel.task.util import rand_hex_color
 
 
 # TODO: simplify with _get
@@ -80,7 +81,7 @@ def pre_add(new_label, se):
             .all()
         )
         colors = [c[0] for c in colors]
-        new_label.color = rand_color(colors)
+        new_label.color = rand_hex_color(colors)
 
     # 3. cols must be unique within project
     cols = ["id", "name", "color"]

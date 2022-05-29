@@ -101,7 +101,7 @@ class Classification(BaseTask):
         project = self.project
 
         # 1. write labels.txt
-        labels = self.export_label_names(osp.join(export_dir, "labels.txt"), project.project_id)
+        labels = self.export_labels(osp.join(export_dir, "labels.txt"), project.project_id)
 
         # 2. create label dirs
         for label in labels:
@@ -134,7 +134,7 @@ class Classification(BaseTask):
         create_dir(osp.join(export_dir, "image"))
 
         # 2. write labels.txt
-        self.export_label_names(osp.join(export_dir, "labels.txt"), project.project_id)
+        self.export_labels(osp.join(export_dir, "labels.txt"), project.project_id)
 
         # 3. move all images to image folder
         tasks = Task._get(project_id=project.project_id, many=True)

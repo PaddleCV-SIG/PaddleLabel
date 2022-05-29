@@ -12,7 +12,7 @@ Dataset file structures vary across different types of projects but some functio
 
 ### labels.txt
 
-labels.txt is currently supported in all project types. PP Label will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
+labels.txt is supported in all project types not importing COCO format annotation. PP Label will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
 
 ```text
 # labels.txt
@@ -22,11 +22,11 @@ Mouse
 
 PP Label supports any string as label name. But label names may be used as folder names during dataset export, so avoid anything your os won't support like listed [here](https://stackoverflow.com/a/31976060). Other toolkits in the PaddlePaddle ecosystem, like [PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md), may also not support Chinese chracters as label names.
 
-During import, PP Label will first create labels in labels.txt. So you are guarenteed the ids for labels in this file will start from 0 and increase. During export this file will also be generated.
+During import, PP Label will first create labels specified in labels.txt. So you are guarenteed the ids for labels in this file will start from 0 and increase. During export this file will also be generated.
 
 ### xx_list.txt
 
-xx_list.txt is currently supported in all project types other than coco detection/segmentation. xx_list.txt includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be placed in the `Dataset Path` folder, same as labels.txt. These three files specify the dataset split and labels for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories. For example:
+xx_list.txt labels.txt is supported in all project types not importing COCO format annotation. xx_list.txt includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be placed in the `Dataset Path` folder, same as labels.txt. These three files specify the dataset split and labels for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories. For example:
 
 ```text
 # train_list.txt

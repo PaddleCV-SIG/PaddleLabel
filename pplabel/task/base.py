@@ -4,9 +4,9 @@ import json
 
 from pplabel.api import Annotation, Data, Label, Project, Task
 from pplabel.api.model import project
-from pplabel.api.util import rand_color
 from pplabel.config import db
 from pplabel.task.util import image_extensions, listdir, create_dir
+from pplabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
 
 """
 Base for import/export and other task specific operations.
@@ -14,7 +14,7 @@ Base for import/export and other task specific operations.
 
 
 class BaseTask:
-    def __init__(self, project):
+    def __init__(self, project, skip_label_import=False):
         """
         Args:
             project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
@@ -45,18 +45,8 @@ class BaseTask:
         self.split = self.read_split()
 
         # 4. create labels specified in labels.txt
-        label_names_path = None
-        if project.other_settings is not None:
-            if isinstance(project.other_settings, str):
-                other_settings = json.loads(project.other_settings)
-            else:
-                other_settings = project.other_settings
-            label_names_path = other_settings.get("label_names_path", None)
-
-        if label_names_path is None:
-            label_names_path = osp.join(project.data_dir, "labels.txt")
-        if osp.exists(label_names_path):
-            self.import_label_names(label_names_path)
+        if not skip_label_import:
+            self.import_labels()
 
         # 5. polupate label colors
         self.populate_label_colors()
@@ -70,30 +60,6 @@ class BaseTask:
         # print("Current data paths", self.curr_data_paths)
 
         self.project = Project._get(project_id=project.project_id)
-
-    def populate_label_colors(self):
-        labels = Label._get(project_id=self.project.project_id, many=True)
-        for lab in labels:
-            if lab.color is None:
-                lab.color = rand_color([l.color for l in labels])
-        db.session.commit()
-
-    def add_label(self, name: str, color: str = None, commit=False):
-        if name is None or len(name) == 0:
-            return
-        if color is None:
-            color = rand_color([l.color for l in self.project.labels])
-        label = Label(
-            id=self.label_max_id + 1,
-            project_id=self.project.project_id,
-            name=name,
-            color=color,
-        )
-        self.project.labels.append(label)
-        if commit:
-            db.session.commit()
-        self.label_max_id += 1
-        return label
 
     def add_task(self, datas: list, annotations: list = None, split: int = None):
         """Add one task to project.
@@ -109,24 +75,20 @@ class BaseTask:
                     {
                         "label_name": "",
                         "result": "", // optional, default to ""
-                        "color": "" // optional, new label will be given a randon color
                     },
                     {
                         "label_name": "",
                         "result": "",
-                        "color": ""
                     }
                 ],
                 [ // labels for path2
                     {
                         "label_name": "",
                         "result": "", [optional, default to ""]
-                        "color": ""
                     },
                     {
                         "label_name": "",
                         "result": "", [optional, default to ""]
-                        "color": ""
                     }
                 ],
                 ...
@@ -233,26 +195,133 @@ class BaseTask:
         for f in set_files:
             f.close()
 
-    # TODO: seperate label file path from label dir
-    def import_label_names(self, label_names_path, delimiter=" "):
+    """ label related """
+
+    def add_label(
+        self,
+        name: str,
+        id: int = None,
+        color: str = None,
+        super_category: str = None,
+        comment: str = None,
+        commit=False,
+    ):
+        """
+        Add one label to current project
+
+        Args:
+            name (str): label name
+            id (int, optional): id. Defaults to None, autoincrement.
+            color (str, optional): the color this label uses, can be hex color with leading # or name for a common color. will raise runtime error if specified color is in use by other labels. Defaults to None, will randomly generate.
+            comment (str, optional): comment for label. Defaults to None.
+            super_category (str, optional): name for supercategory. Defaults to None.
+            commit (bool, optional): True -> commit after adding label. Defaults to False.
+
+        Returns:
+            Label: new label generated
+        """
+        print(name, color)
+        if name is None or len(name) == 0:
+            raise RuntimeError(f"Label name is required, got {name}")
+        current_names = set(l.name for l in self.project.labels)
+        if name in current_names:
+            raise RuntimeError(f"Label name {name} is not unique")
+
+        current_colors = set(l.color for l in self.project.labels)
+        if color is None:
+            color = rand_hex_color(current_colors)
+        else:
+            if color[0] != "#":
+                color = name_to_hex(color)
+            if color in current_colors:
+                raise RuntimeError(f"Label color {color} is not unique")
+
+        current_ids = set(int(l.id) for l in self.project.labels)
+        if id is None:
+            id = self.label_max_id + 1
+        else:
+            id = int(id)
+            if id in current_ids:
+                raise RuntimeError(f"Label id {id} is not unique")
+
+        # TODO: supercategory
+
+        label = Label(
+            project_id=self.project.project_id,
+            id=id,
+            name=name,
+            color=color,
+            comment=comment,
+            super_category_id=None,
+        )
+        self.project.labels.append(label)
+        if commit:
+            db.session.commit()
+        current_ids = [l.id for l in self.project.labels]
+
+        self.label_max_id = max(current_ids)
+        return label
+
+    def import_labels(self, delimiter=" ", ignore_first=False):
+        # 1. set params
+        label_names_path = None
+        project = self.project
+        if project.other_settings is not None:
+            if isinstance(project.other_settings, str):
+                other_settings = json.loads(project.other_settings)
+            else:
+                other_settings = project.other_settings
+            label_names_path = other_settings.get("label_names_path", None)
+
+        if label_names_path is None:
+            label_names_path = osp.join(project.data_dir, "labels.txt")
+
         if label_names_path is None or not osp.exists(label_names_path):
             return
+
+        # 2. import labels
         labels = open(label_names_path, "r").readlines()
+        print(labels)
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
+        labels = [l.split("//") for l in labels]
+        comments = [None if len(l) == 1 else l[1].strip() for l in labels]
+        labels = [l[0].strip() for l in labels]
         labels = [l.split(delimiter) for l in labels]
+        if ignore_first:
+            labels = labels[1:]
+            comments = comments[1:]
         current_labels = Label._get(project_id=self.project.project_id, many=True)
         current_labels = [l.name for l in current_labels]
-        for label in labels:
-            if len(label) > 2:
+        for label, comment in zip(labels, comments):
+            """
+            label length: 1: label name
+                          2: label name | label id
+                          3: label name | label id | hex color or common color name or grayscale value
+                          5: label name | label id | r | g | b color
+                          //: string after // is stored as comment
+            """
+            valid_lengths = [1, 2, 3, 5]
+            if len(label) not in valid_lengths:
                 raise RuntimeError(
-                    f"Each line in labels.txt should contain at most 1 delimiter, after split got {label}"
+                    f"After split got {label}. It's not in valid lengths {valid_lengths}"
                 )
             if label[0] not in current_labels:
                 print("==== Adding label", label, "====")
-                self.add_label(*label)
+                if len(label) == 5:
+                    label[2] = rgb_to_hex(label[2:])
+                    del label[3]
+                label = [None if v == "-" else v for v in label]
+                self.add_label(*label, comment=comment)
         db.session.commit()
 
-    def export_label_names(self, label_names_path: str, project_id: int = None):
+    def populate_label_colors(self):
+        labels = Label._get(project_id=self.project.project_id, many=True)
+        for lab in labels:
+            if lab.color is None:
+                lab.color = rand_hex_color([l.color for l in labels])
+        db.session.commit()
+
+    def export_labels(self, label_names_path: str, project_id: int = None):
         if project_id is None:
             project_id = self.project.project_id
 
@@ -273,6 +342,8 @@ class BaseTask:
         for data_path in listdir(data_dir, filters):
             self.add_task([{"path": data_path}])
         db.session.commit()
+
+    """ warning file """
 
     def create_warning(self, dir):
         warning_path = osp.join(dir, "pplabel.warning")

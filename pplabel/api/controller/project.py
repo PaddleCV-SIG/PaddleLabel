@@ -15,7 +15,8 @@ from pplabel.api.model import Project, Task, TaskCategory, Annotation, Label
 from pplabel.api.schema import ProjectSchema
 from pplabel.api.controller.base import crud
 from pplabel.api.controller import label
-from pplabel.api.util import abort, rand_color
+from pplabel.api.util import abort
+from pplabel.task.util import rand_hex_color
 from pplabel.util import camel2snake
 import pplabel
 
@@ -130,7 +131,7 @@ def split_dataset(project_id, epsilon=1e-3):
 
 
 def create_label(project, label_name):
-    color = rand_color([l.color for l in project.labels])
+    color = rand_hex_color([l.color for l in project.labels])
     ids = [l.id for l in project.labels]
     ids.append(0)
     label = Label(

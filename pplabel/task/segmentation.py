@@ -12,10 +12,9 @@ from pplabel.task.util import copy
 from pplabel.api.model import Task, Annotation
 
 # debug
-import matplotlib.pyplot as plt
-import matplotlib
-
-matplotlib.use("TkAgg")
+#import matplotlib
+#matplotlib.use("TkAgg")
+#import matplotlib.pyplot as plt
 
 
 def parse_semantic_mask(annotation_path, labels):

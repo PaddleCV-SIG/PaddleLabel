@@ -13,7 +13,7 @@ def get_folders():
         path = ""
     target = osp.join(data_base_dir, path)
     target = osp.abspath(target)
-    print(target, type(target))
+    # print(target, type(target))
 
     if not target[-1] == os.sep:
         target += os.sep

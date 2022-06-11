@@ -29,5 +29,5 @@ class ProjectSchema(BaseSchema):
     def pre_dump_action(self, project, **kwargs):
         if "other_settings" in project.keys() and project["other_settings"] is not None:
             project["other_settings"] = json.loads(project["other_settings"])
-        print(project["other_settings"])
+        # print(project["other_settings"])
         return project

@@ -47,12 +47,12 @@ def set_all_by_data(data_id):
     anns = connexion.request.json
     task = Task._get(task_id=data.task_id)
 
-    print("anns", task.project_id, task.task_id, anns)
+    # print("anns", task.project_id, task.task_id, anns)
 
     schema = AnnotationSchema()
     for ann in anns:
         ann = schema.load(ann)
-        print("====", ann)
+        # print("====", ann)
         ann.task_id = task.task_id
         ann.project_id = task.project_id
         data.annotations.append(ann)
@@ -77,7 +77,7 @@ def set_all_by_task_and_frontend(task_id):
     schema = AnnotationSchema()
     for ann in anns:
         ann = schema.load(ann)
-        print("====", ann)
+        # print("====", ann)
         ann.task_id = task.task_id
         ann.project_id = task.project_id
         task.annotations.append(ann)

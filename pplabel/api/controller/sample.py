@@ -72,7 +72,7 @@ def load_sample():
     extract(archive_path, sample_folder)
 
     extract_path = sample_folder / archive_path.name.split(".")[0]
-    print(extract_path)
+    # print(extract_path)
 
     # TODO: import dataset
     handler = eval(f"task.{task_category}.{task_category.capitalize()}")

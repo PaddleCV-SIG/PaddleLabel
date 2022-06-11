@@ -74,9 +74,9 @@ class SemanticSegmentation(BaseTask):
             data_dir = osp.join(base_dir, "JPEGImages")
             ann_dir = osp.join(base_dir, "Annotations")
 
-        background_name = self.import_labels(ignore_first=True)
+        background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
-        other_settings["background_line"] = background_name
+        other_settings["background_line"] = background_line
         project.other_settings = json.dumps(other_settings)
 
         ann_dict = {osp.basename(p).split(".")[0]: p for p in listdir(ann_dir, filters)}
@@ -89,7 +89,10 @@ class SemanticSegmentation(BaseTask):
                 ann_path = osp.join(ann_dir, ann_dict[id])
                 size, anns = parse_semantic_mask(ann_path, project.labels)
             else:
-                anns = None
+                anns = []
+                img = cv2.imread(data_path)
+                s = [1] + list(img.shape)
+                size = ",".join([str(s) for s in s])
 
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()

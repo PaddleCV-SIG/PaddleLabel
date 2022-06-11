@@ -264,9 +264,9 @@ We support two dataset formats for semantic segmentation tasks. Mask annotations
 
 #### MASK
 
-Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) Note PP Label cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify a color for the optic disk class.
+Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) Note PP Label cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify the color for the optic disk class.
 
-We expect all images to be placed in `/Dataset Path/JPEGImages`，all image formats are supported. Annotations should be placed in `/Dataset Path/Annotations`. Sample Layout:
+We expect all images to be placed in `/Dataset Path/JPEGImages`, all images under this folder will be imported, with or without annotation. Annotations should be placed in `/Dataset Path/Annotations`. Sample Layout:
 
 ```shell
 Dataset Path
@@ -277,8 +277,8 @@ Dataset Path
 │   └── ...
 ├── JPEGImages
 │   ├── A0001.jpg
-│   ├── B0001.jpg
-│   ├── H0002.jpg
+│   ├── B0001.png
+│   ├── H0002.bmp
 │   └── ...
 ├── labels.txt
 ├── test_list.txt
@@ -287,10 +287,13 @@ Dataset Path
 
 # labels.txt
 background -
-optic_disk - 128 0 0
+optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
 ```
 
-PNG is usually used for mask labels. During import, in labels.txt, the first label will be treated as background and given label id 0. For grayscale labels, we match the grayscle pixel value in masks with label id. For pesudo color labels, we match the color for each pixel with color specified in labels.txt. During export, a background class will be added to labels.txt. The values in mask images follow the same rule as during import.
+PNG is usually used for mask labels. During import, in labels.txt, the first label will be treated as background and given label id 0. For grayscale labels, we match the grayscle pixel value in masks with label id. For pesudo color labels, we match the color for each pixel with color specified in labels.txt. **Annotations without matching labels won't be imported!** If `xx_list.txt` is provided, we will match image and annotation based on `xx_list.txt`. Else, we strip the file name extension from images and labels and match image to label with the same base file name.
+
+During export, the first line of labels.txt will always be the background class. The values in mask images follow the same rule as during import.
+
 
 ### Instance Segmentation
 

@@ -6,7 +6,10 @@ from .serve import connexion_app
 
 parser = argparse.ArgumentParser(description="PP Label")
 parser.add_argument(
-    "--lan", default=False, action="store_true", help="Whether to expose the service to lan"
+    "--lan",
+    default=False,
+    action="store_true",
+    help="Whether to expose the service to lan",
 )
 args = parser.parse_args()
 

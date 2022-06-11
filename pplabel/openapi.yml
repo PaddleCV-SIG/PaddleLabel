@@ -1059,6 +1059,29 @@ paths:
               properties:
                 path:
                   type: string
+  /rpc/seg/polygon2points:
+    post:
+      summary: ''
+      tags:
+        - rpc
+      operationId: polygon2points
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                polygon:
+                  type: array
+                  items:
+                    type: integer
   /version:
     get:
       summary: Get backend version

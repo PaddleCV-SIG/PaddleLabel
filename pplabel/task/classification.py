@@ -32,9 +32,7 @@ class Classification(BaseTask):
             data_dir = project.data_dir
         self.create_warning(data_dir)
 
-        
-        move_data=data_dir != project.data_dir
-            
+        move_data = data_dir != project.data_dir
 
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
@@ -62,7 +60,7 @@ class Classification(BaseTask):
                 delimiter = self.project.other_settings.get("list_delimiter", " ")
             else:
                 delimiter = " "
-        
+
         # 2. get label names from xx_list.txt
         label_lines = []
         for list_name in ["train_list.txt", "val_list.txt", "test_list.txt"]:
@@ -82,9 +80,8 @@ class Classification(BaseTask):
                 except ValueError:
                     # if str, use str as name
                     labs.append(lab)
-            
+
             labels_dict[l[0]] = labs
-        
 
         data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
         for data_path in data_paths:
@@ -100,7 +97,6 @@ class Classification(BaseTask):
 
         # 1. write labels.txt
         labels = self.export_labels(export_dir)
-        print("+++++", labels)
 
         # 2. create label dirs
         for label in labels:
@@ -119,7 +115,7 @@ class Classification(BaseTask):
                     have_no_annotation = True
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
                 new_paths.append([osp.join(label_name, osp.basename(data.path))])
-        
+
         if not have_no_annotation:
             shutil.rmtree(osp.join(export_dir, "no_annotation"))
 
@@ -129,8 +125,12 @@ class Classification(BaseTask):
     def multi_class_exporter(self, export_dir):
         project = self.project
 
-        # 1. all images go to export_dir/image
+        # 1. all images
+        # with annotation go to export_dir/image
+        # without annotation go to export_dir/no_annotation
         create_dir(osp.join(export_dir, "image"))
+        create_dir(osp.join(export_dir, "no_annotation"))
+        have_no_annotation = False
 
         # 2. write labels.txt
         self.export_labels(export_dir)
@@ -140,11 +140,19 @@ class Classification(BaseTask):
         new_paths = []
         for task in tasks:
             for data in task.datas:
+                if len(data.annotations) == 0:
+                    folder = "no_annotation"
+                    have_no_annotation = True
+                else:
+                    folder = "image"
+
                 copy(
                     osp.join(project.data_dir, data.path),
-                    osp.join(export_dir, "image", osp.basename(data.path)),
+                    osp.join(export_dir, folder, osp.basename(data.path)),
                 )
-                new_paths.append([osp.join("image", osp.basename(data.path))])
+                new_paths.append([osp.join(folder, osp.basename(data.path))])
+        if not have_no_annotation:
+            shutil.rmtree(osp.join(export_dir, "no_annotation"))
 
         # 4. export split
         self.export_split(osp.join(export_dir), tasks, new_paths)

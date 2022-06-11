@@ -22,7 +22,36 @@ Mouse
 
 PP Label supports any string as label name. But label names may be used as folder names during dataset export, so avoid anything your os won't support like listed [here](https://stackoverflow.com/a/31976060). Other toolkits in the PaddlePaddle ecosystem, like [PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md), may also not support Chinese chracters as label names.
 
+During import, labels.txt can contain more information than just label name. 4 formats are supported as listed below. | represents delimiter which defaults to space.
+
+label length:
+- 1: label name
+- 2: label name | label id
+- 3: label name | label id | hex color or common color name or grayscale value
+- 5: label name | label id | r | g | b color
+
+besides: 
+- //: string after // is stored as comment
+- -: skip this field
+
+Some examples:
+
+```text
+dog
+monkey 4
+mouse - #0000ff // mouse's id will be 5
+cat 10 yellow
+zibra 11 blue // some common colors are supported
+snake 12 255 0 0 // scary
+```
+
+See [here](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/task/util/color.py#L15) for all supported color names.
+
+
 During import, PP Label will first create labels specified in labels.txt. So you are guarenteed the ids for labels in this file will start from 0 and increase. During export this file will also be generated.
+
+
+
 
 ### xx_list.txt
 

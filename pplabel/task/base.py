@@ -299,6 +299,7 @@ class BaseTask:
                           3: label name | label id | hex color or common color name or grayscale value
                           5: label name | label id | r | g | b color
                           //: string after // is stored as comment
+                          -: skip this field
             """
             valid_lengths = [1, 2, 3, 5]
             if len(label) not in valid_lengths:

@@ -179,6 +179,7 @@ class BaseTask:
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
         for task, task_new_paths in zip(tasks, new_paths):
             for data, new_path in zip(task.datas, task_new_paths):
+                print("_+_+_+", new_path)
                 if with_labels:
                     label_ids = []
                     for ann in data.annotations:
@@ -332,6 +333,7 @@ class BaseTask:
                 print(background_line.strip(), file=f)
             for lab in labels:
                 print(lab.name, file=f)
+        return labels
         
 
     # TODO: add total imported count

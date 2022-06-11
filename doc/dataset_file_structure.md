@@ -26,7 +26,7 @@ During import, PP Label will first create labels specified in labels.txt. So you
 
 ### xx_list.txt
 
-xx_list.txt labels.txt is supported in all project types not importing COCO format annotation. xx_list.txt includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be placed in the `Dataset Path` folder, same as labels.txt. These three files specify the dataset split and labels for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories. For example:
+xx_list.txt labels.txt is supported in all project types not importing COCO format annotation. xx_list.txt includes `train_list.txt`, `val_list.txt` and `test_list.txt`. The files should be placed in the `Dataset Path` folder, same as labels.txt. These three files specify the dataset split and labels or data annotation file match (like for voc annotations, each line will be path to image file and path to annotation file) for each piece of data. File stucture for the three files are the same. Each line starts with path to a piece of data, relative to `Dataset Path`. It's followed by integers or strings indicating categories, or another path to annotation file. For example:
 
 ```text
 # train_list.txt
@@ -35,7 +35,7 @@ image/9932.jpg 4
 image/9928.jpg Cat
 ```
 
-For integers, PP Label will look for the label in `labels.txt`, index starts from 0. There can be multiple categories for one piece of data like in multi class image classification. To use a number as label name, you can either write the number down in `labels.txt` and provide label index in xx_list.txt. Or you can add a prefix to make it not a number like 10 -> n10. All three files will be generated during export, even when some of them are empty.
+For integers, PP Label will look for the label in `labels.txt`, index starts from 0. There can be multiple categories for one piece of data like in multi class image classification. To use a number as label name, you can either write the number down in `labels.txt` and provide label index in xx_list.txt. Or you can add a prefix to make it not a number like 10 -> n10. All three files will be generated during export, even when some of them are empty. Note that to ensure these files can be read by other toolkits in PaddlePaddle ecosystem, datas having no annotation **won't** be included in `xx_list.txt`.
 
 ## Classification
 

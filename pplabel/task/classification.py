@@ -93,14 +93,14 @@ class Classification(BaseTask):
         db.session.commit()
 
     def single_class_exporter(self, export_dir):
-        print("single export")
         create_dir(export_dir)
         create_dir(osp.join(export_dir, "no_annotation"))
-        use_no_annotation = False
+        have_no_annotation = False
         project = self.project
 
         # 1. write labels.txt
         labels = self.export_labels(export_dir)
+        print("+++++", labels)
 
         # 2. create label dirs
         for label in labels:
@@ -116,11 +116,11 @@ class Classification(BaseTask):
                     label_name = data.annotations[0].label.name
                 else:
                     label_name = "no_annotation"
-                    use_no_annotation = True
+                    have_no_annotation = True
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
                 new_paths.append([osp.join(label_name, osp.basename(data.path))])
         
-        if not use_no_annotation:
+        if not have_no_annotation:
             shutil.rmtree(osp.join(export_dir, "no_annotation"))
 
         # 4. write split files

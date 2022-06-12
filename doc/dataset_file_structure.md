@@ -75,7 +75,7 @@ Also know as ImageNet format. Sample datasets: [flowers102](https://paddle-image
 Example Layout
 
 ```shell
-single_class_classification/
+Dataset Path
 ├── Cat
 │   ├── cat-1.jpg
 │   ├── cat-2.png
@@ -106,7 +106,7 @@ To avoid confilict, we only use dataset split information in the xx_list.txt fil
 Example Layout
 
 ```shell
-multi_class_classification/
+Dataset Path
 ├── image
 │   ├── 9911.jpg
 │   ├── 9932.jpg
@@ -141,6 +141,7 @@ PASCAL VOC format stores annotations in xml format, one file for each image. [Ex
 Example Layout:
 
 ```shell
+Dataset Path
 ├── Annotations
 │   ├── 0001.xml
 │   ├── 0002.xml
@@ -196,6 +197,7 @@ COCO keeps all information of a dataset in a single file. We list part of COCO s
 Example Layout:
 
 ```shell
+Dataset Path
 ├── image
 │   ├── 0001.jpg
 │   ├── 0002.jpg

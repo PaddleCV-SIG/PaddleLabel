@@ -1,26 +1,25 @@
-import json
-import random
-import math
-
-import numpy as np
-
 import connexion
 from pplabel.config import db
 from .base import crud
 from ..model import Task, Project
 from ..schema import TaskSchema
-from . import project
 from pplabel.api.util import abort
 
 # TODO: reject tasks with same datas
 get_all, get, post, put, delete = crud(Task, TaskSchema)
 
 
-def get_by_project(project_id):
+def get_by_project(project_id, order_by="created desc"):
     if connexion.request.method == "HEAD":
         return get_stat_by_project(project_id)
     Project._exists(project_id)
-    tasks = Task.query.filter(Task.project_id == project_id).all()
+    key, sort_dir = order_by.split(" ")
+    try:
+        order = getattr(getattr(Task, key), sort_dir)()
+    except:
+        order = Task.created.asc()
+
+    tasks = Task.query.filter(Task.project_id == project_id).order_by(order).all()
     return TaskSchema(many=True).dump(tasks), 200
 
 

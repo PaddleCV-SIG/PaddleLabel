@@ -105,7 +105,12 @@ paths:
       operationId: update
   '/projects/{project_id}/tasks':
     parameters:
-      - $ref: '#/components/parameters/project_id'
+      - name: project_id
+        in: path
+        schema:
+          type: string
+        description: Id of a project
+        required: true
     get:
       summary: Get all tasks under a project
       tags:
@@ -121,6 +126,11 @@ paths:
                   $ref: '#/components/schemas/Task'
       operationId: getTasks
       description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
   '/projects/{project_id}/labels':
     parameters:
       - $ref: '#/components/parameters/project_id'

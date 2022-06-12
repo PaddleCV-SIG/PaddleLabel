@@ -22,7 +22,8 @@ def crud(Model, Schema, triggers=[]):
         pre_get_all=tgs["pre_get_all"],
         post_get_all=tgs["post_get_all"],
     ):
-        items = Model.query.order_by(getattr(Model, "modified")).all()
+        items = Model.query.order_by(getattr(Model, "modified").desc()).all()
+        print(items)
         if post_get_all is not None:
             post_get_all(items, db.session)
         return Schema(many=True).dump(items), 200

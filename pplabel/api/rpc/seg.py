@@ -1,6 +1,9 @@
+import math
+
 import numpy as np
 from PIL import Image, ImageDraw
 import connexion
+from .util.polygon import mask2polygon
 
 import matplotlib.pyplot as plt
 
@@ -89,8 +92,10 @@ def polygon2points(poly):
 
 
 def polygon2points_str():
-    poly = connexion.request.json['polygon']
-    print(poly, type(poly), type(poly[0]))
+    poly = connexion.request.json["polygon"]
+    # print(poly, type(poly), type(poly[0]))
+    poly = poly.split(",")
+    poly = [int(p) for p in poly]
 
     (wmin, hmin), mask = polygon2mask(poly)
     points = []
@@ -107,8 +112,20 @@ def polygon2points_str():
 # print(polygon2points_str([0, 1, 3, 2, 3, 3, 1, 3]))
 
 
-def mask2polygon(mask):
-    pass
+def points2polygon_str(ignore_first_two=False):
+    points = connexion.request.json["points"]
+    points = points.split(",")
+    if ignore_first_two:
+        points = points[2:]
+    points = [int(p) for p in points]
+    points = np.array(points)
+    points = points.reshape((-1, 2))
+    wmax, hmax = points.max(axis=0)
+    mask = np.zeros((wmax + 1, hmax + 1), dtype="uint8")
+    for p in points:
+        mask[p[0], p[1]] = 255
+    polygons = mask2polygon(mask)
+    polygons = [[str(v) for point in poly for v in point] for poly in polygons]
+    polygons = [",".join(poly) for poly in polygons]
 
-def points2polygon(points):
-    pass
+    return polygons

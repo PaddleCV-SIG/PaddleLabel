@@ -3,11 +3,12 @@ from collections import defaultdict
 
 
 import connexion
-from flask import make_response, abort # TODO: change to connextion abort
+from flask import abort  # TODO: change to connextion abort
 import sqlalchemy
 import marshmallow
 
 from pplabel.config import db
+from pplabel.api.util import parse_order_by
 
 # TODO: implement a search method
 def crud(Model, Schema, triggers=[]):
@@ -22,11 +23,7 @@ def crud(Model, Schema, triggers=[]):
         pre_get_all=tgs["pre_get_all"],
         post_get_all=tgs["post_get_all"],
     ):
-        key, sort_dir = order_by.split(" ")
-        try:
-            order = getattr(getattr(Model, key), sort_dir)()
-        except:
-            order = Model.created.asc()
+        order = parse_order_by(Model, order_by)
 
         items = Model.query.order_by(order).all()
         print(items)
@@ -55,7 +52,10 @@ def crud(Model, Schema, triggers=[]):
             for field, msgs in e.messages.items():
                 if "Missing data for required field." in msgs:
                     # TODO: change code
-                    abort(500, f"Marshmallow catch: Missing data for required field: {field}")
+                    abort(
+                        500,
+                        f"Marshmallow catch: Missing data for required field: {field}",
+                    )
             abort(500, e.messages)
         if pre_add is not None:
             new_item = pre_add(new_item, db.session)

@@ -3,21 +3,17 @@ from pplabel.config import db
 from .base import crud
 from ..model import Task, Project
 from ..schema import TaskSchema
-from pplabel.api.util import abort
+from pplabel.api.util import abort, parse_order_by
 
 # TODO: reject tasks with same datas
 get_all, get, post, put, delete = crud(Task, TaskSchema)
 
 
-def get_by_project(project_id, order_by="created desc"):
+def get_by_project(project_id, order_by="created asc"):
     if connexion.request.method == "HEAD":
         return get_stat_by_project(project_id)
     Project._exists(project_id)
-    key, sort_dir = order_by.split(" ")
-    try:
-        order = getattr(getattr(Task, key), sort_dir)()
-    except:
-        order = Task.created.asc()
+    order = parse_order_by(Task, order_by)
 
     tasks = Task.query.filter(Task.project_id == project_id).order_by(order).all()
     return TaskSchema(many=True).dump(tasks), 200

@@ -5,6 +5,8 @@ import time
 import connexion
 import sqlalchemy as sa
 
+from pplabel.util import camel2snake
+
 # sa default to nullable=True
 nncol = functools.partial(sa.Column, nullable=False)
 
@@ -38,3 +40,24 @@ def decode_token(token):
         return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
     except JWTError as e:
         raise Unauthorized from e
+
+
+def parse_order_by(modal, order_by):
+    order_by = order_by.split(" ")
+    if len(order_by) == 2:
+        key, sort_dir = order_by
+        print(key, sort_dir)
+        if "asc" in sort_dir:
+            sort_dir = "asc"
+        else:
+            sort_dir="desc"
+    else:
+        key=order_by[0]
+        sort_dir = "acs"
+    key = camel2snake(key)
+    
+    try:
+        order = getattr(getattr(modal, key), sort_dir)()
+    except:
+        order = modal.created.asc()
+    return order

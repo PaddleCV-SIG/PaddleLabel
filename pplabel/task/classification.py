@@ -87,10 +87,10 @@ class Classification(BaseTask):
         db.session.commit()
 
     def single_class_exporter(self, export_dir):
+        project = self.project
         create_dir(export_dir)
         create_dir(osp.join(export_dir, "no_annotation"))
         have_no_annotation = False
-        project = self.project
 
         # 1. write labels.txt
         labels = self.export_labels(export_dir)
@@ -105,11 +105,11 @@ class Classification(BaseTask):
         for task in tasks:
             for data in task.datas:
                 label_name = ""
-                if len(data.annotations) == 1:
-                    label_name = data.annotations[0].label.name
-                else:
+                if len(data.annotations) == 0:
                     label_name = "no_annotation"
                     have_no_annotation = True
+                else:
+                    label_name = data.annotations[0].label.name
                 copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
                 new_paths.append([osp.join(label_name, osp.basename(data.path))])
 

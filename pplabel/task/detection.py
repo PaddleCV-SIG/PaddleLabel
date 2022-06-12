@@ -122,8 +122,8 @@ def create_voc_label(filepath, width, height, annotations):
 
 
 class Detection(BaseTask):
-    def __init__(self, project):
-        super().__init__(project)
+    def __init__(self, project, data_dir=None):
+        super(Detection, self).__init__(project, data_dir=data_dir)
         self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
         self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter}  # TODO: change
         # self.default_importer = self.default_importer # default to voc

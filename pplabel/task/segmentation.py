@@ -51,8 +51,8 @@ def parse_semantic_mask(annotation_path, labels):
 
 
 class SemanticSegmentation(BaseTask):
-    def __init__(self, project):
-        super().__init__(project, skip_label_import=True)
+    def __init__(self, project, data_dir=None):
+        super().__init__(project, skip_label_import=True, data_dir=data_dir)
         self.importers = {
             "mask": self.mask_importer,
             "polygon": self.default_importer,

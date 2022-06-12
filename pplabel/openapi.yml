@@ -33,6 +33,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/Project'
       operationId: getAll
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
     post:
       tags:
         - Project
@@ -449,6 +454,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/Task'
       operationId: getAll
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
     post:
       tags:
         - Task

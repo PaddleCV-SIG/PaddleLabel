@@ -1,10 +1,9 @@
-import json
 import functools
 from collections import defaultdict
 
 
 import connexion
-from flask import make_response, abort
+from flask import make_response, abort # TODO: change to connextion abort
 import sqlalchemy
 import marshmallow
 
@@ -19,10 +18,17 @@ def crud(Model, Schema, triggers=[]):
     def get_all(
         Model,
         Schema,
+        order_by="modified desc",
         pre_get_all=tgs["pre_get_all"],
         post_get_all=tgs["post_get_all"],
     ):
-        items = Model.query.order_by(getattr(Model, "modified").desc()).all()
+        key, sort_dir = order_by.split(" ")
+        try:
+            order = getattr(getattr(Model, key), sort_dir)()
+        except:
+            order = Model.created.asc()
+
+        items = Model.query.order_by(order).all()
         print(items)
         if post_get_all is not None:
             post_get_all(items, db.session)

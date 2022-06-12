@@ -2,11 +2,10 @@ import math
 import random
 import json
 import requests
+import os
 import os.path as osp
 import base64
-import os
 
-import cv2
 import numpy as np
 import connexion
 
@@ -18,6 +17,7 @@ from pplabel.api.controller import label
 from pplabel.api.util import abort
 from pplabel.task.util import rand_hex_color
 from pplabel.util import camel2snake
+from pplabel.task.util.file import image_extensions, listdir, create_dir, remove_dir, copy
 import pplabel
 
 
@@ -31,9 +31,6 @@ def pre_add(new_project, se):
     return new_project
 
 
-default_imexporter = {"classification": "single_class", "detection": "voc"}  # TODO: remove this
-
-
 def _import_dataset(project, data_dir=None):
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
@@ -41,7 +38,7 @@ def _import_dataset(project, data_dir=None):
     if task_category is None:
         handler = pplabel.task.BaseTask(project)
     else:
-        handler = eval(task_category.handler)(project)
+        handler = eval(task_category.handler)(project, data_dir=data_dir)
 
     # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer
     if project.label_format is not None:
@@ -80,9 +77,51 @@ def export_dataset(project_id):
 
 
 def import_dataset(project_id):
+    """import additional data
+
+    Args:
+        project_id (int): the project to import to
+    """
+    # 1. get project
     req = connexion.request.json
     _, project = Project._exists(project_id)
-    _import_dataset(project, req["import_dir"])
+
+    # 2. get current project data names
+    tasks = Task._get(project_id=project.project_id, many=True)
+    curr_data_names = set()
+    for task in tasks:
+        for data in task.datas:
+            curr_data_names.add(osp.basename(data.path))
+
+    # 3. move all new images and all other files to import temp
+    import_temp = osp.join(project.data_dir, "import_temp")
+    create_dir(import_temp)
+
+    import_dir = req["import_dir"]
+    new_data_paths = listdir(
+        import_dir,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    )
+    all_paths = listdir(
+        import_dir,
+        filters={"exclude_prefix": ["."]},
+    )
+    all_copy_paths = [p for p in all_paths if p not in new_data_paths]
+    new_data_paths = [
+        p for p in new_data_paths if osp.basename(p) not in curr_data_names
+    ]
+    all_copy_paths += new_data_paths
+    print(all_copy_paths)
+    for p in all_copy_paths:
+        copy(osp.join(import_dir, p), osp.join(import_temp, p))
+
+    _import_dataset(project, import_temp)
+
+    for p in new_data_paths:
+        copy(osp.join(import_temp, p), osp.join(project.data_dir, p))
+    
+    remove_dir(import_temp)
+    
 
 
 def pre_put(project, body, se):
@@ -196,11 +235,12 @@ def predict(project_id):
     db.session.commit()
     return "finished"
 
+
 def post_delete(project, se):
     warning_path = osp.join(project.data_dir, "pplabel.warning")
     if osp.exists(warning_path):
         os.remove(warning_path)
-    
+
 
 get_all, get, post, put, delete = crud(
     Project,

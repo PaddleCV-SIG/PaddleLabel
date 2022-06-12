@@ -16,6 +16,8 @@ def create_dir(path):
         raise RuntimeError(f"Only supports absolute path, got {path}")
     os.makedirs(path, exist_ok=True)
 
+def remove_dir(path):
+    shutil.rmtree(path)
 
 def listdir(folder, filters={"exclude_prefix": ["."]}):
     """

@@ -9,8 +9,8 @@ from .base import BaseTask
 
 
 class Classification(BaseTask):
-    def __init__(self, project):
-        super(Classification, self).__init__(project)
+    def __init__(self, project, data_dir=None):
+        super(Classification, self).__init__(project, data_dir=data_dir)
         self.importers = {
             "single_class": self.single_class_importer,
             "multi_class": self.multi_class_importer,
@@ -27,26 +27,24 @@ class Classification(BaseTask):
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        # 1. set params
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
         self.create_warning(data_dir)
 
-        move_data = data_dir != project.data_dir
-
-        data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
+        # 2. import all datas, 
+        data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
-            self.add_task([{"path": data_path}], [[{"label_name": label_name}]])
-            if move_data:
-                copy(osp.join(data_dir, data_path), osp.join(project.data_dir, data_path))
+            label = [{"label_name": label_name}] if len(label_name) != 0 else []
+            self.add_task([{"path": data_path}], [label])
 
         db.session.commit()
 
     def multi_class_importer(
         self,
         data_dir=None,
-        delimiter=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
@@ -54,12 +52,10 @@ class Classification(BaseTask):
         if data_dir is None:
             data_dir = project.data_dir
         self.create_warning(data_dir)
-
-        if delimiter is None:
-            if self.project.other_settings is not None:
-                delimiter = self.project.other_settings.get("list_delimiter", " ")
-            else:
-                delimiter = " "
+        if self.project.other_settings is not None:
+            delimiter = self.project.other_settings.get("xx_list_delimiter", " ")
+        else:
+            delimiter = " "
 
         # 2. get label names from xx_list.txt
         label_lines = []
@@ -83,10 +79,11 @@ class Classification(BaseTask):
 
             labels_dict[l[0]] = labs
 
-        data_paths = [p for p in listdir(data_dir, filters) if p not in self.curr_data_paths]
+        data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
             labels = labels_dict.get(data_path, [])
             self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
+        
         db.session.commit()
 
     def single_class_exporter(self, export_dir):

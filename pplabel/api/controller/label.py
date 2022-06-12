@@ -102,7 +102,7 @@ def in_use(label_id):
 
 def pre_delete(label, se):
     if in_use(label.label_id):
-        abort(f"Can't delete label with annotation record", 409)
+        abort(f"Can't delete label {label.name} with annotation record", 409)
     return label
 
 

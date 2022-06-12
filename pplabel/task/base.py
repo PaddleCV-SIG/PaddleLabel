@@ -14,7 +14,7 @@ Base for import/export and other task specific operations.
 
 
 class BaseTask:
-    def __init__(self, project, skip_label_import=False):
+    def __init__(self, project, skip_label_import=False, data_dir=None):
         """
         Args:
             project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
@@ -33,7 +33,10 @@ class BaseTask:
                 curr_project = project
         self.project = curr_project
 
-        os.makedirs(self.project.data_dir, exist_ok=True)
+        if data_dir is None:
+            data_dir = self.project.data_dir
+
+        # os.makedirs(data_dir, exist_ok=True)
 
         # 2. set current label max id
         # next added label will have id label_max_id+1, so label.id starts from 1
@@ -42,7 +45,7 @@ class BaseTask:
             self.label_max_id = max(self.label_max_id, label.id)
 
         # 3. read dataset split
-        self.split = self.read_split()
+        self.split = self.read_split(data_dir)
 
         # 4. create labels specified in labels.txt
         if not skip_label_import:
@@ -52,11 +55,11 @@ class BaseTask:
         self.populate_label_colors()
 
         # 6. get curr datapaths
-        tasks = Task._get(project_id=project.project_id, many=True)
-        self.curr_data_paths = []
-        for task in tasks:
-            for data in task.datas:
-                self.curr_data_paths.append(data.path)
+        # tasks = Task._get(project_id=project.project_id, many=True)
+        # self.curr_data_paths = []
+        # for task in tasks:
+        #     for data in task.datas:
+        #         self.curr_data_paths.append(data.path)
         # print("Current data paths", self.curr_data_paths)
 
         self.project = Project._get(project_id=project.project_id)

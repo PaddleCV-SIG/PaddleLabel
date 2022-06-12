@@ -13,7 +13,7 @@ nncol = functools.partial(sa.Column, nullable=False)
 # TODO: settle on how to use detail and title
 def abort(detail, status, title=""):
     raise connexion.exceptions.ProblemException(
-        detail=detail, title=title, status=status, headers={"message": detail}
+        detail=detail, title=title if len(title) != 0 else detail, status=status, headers={"message": detail}
     )
 
 

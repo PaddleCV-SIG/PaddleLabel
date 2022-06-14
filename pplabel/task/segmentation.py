@@ -126,7 +126,7 @@ class SemanticSegmentation(BaseTask):
                 for ann in task.annotations:
                     color = hex_to_rgb(ann.label.color)[::-1]
                     points = ann.result.split(",")[2:]
-                    points = [int(p) for p in points]
+                    points = [int(float(p)) for p in points]
                     for idx in range(0, len(points), 2):
                         y = points[idx]
                         x = points[idx + 1]
@@ -136,7 +136,7 @@ class SemanticSegmentation(BaseTask):
                 for ann in task.annotations:
                     label_id = ann.label.label_id
                     points = ann.result.split(",")[2:]
-                    points = [int(p) for p in points]
+                    points = [int(float(p)) for p in points]
                     for idx in range(0, len(points), 2):
                         y = points[idx]
                         x = points[idx + 1]

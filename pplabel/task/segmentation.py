@@ -1,3 +1,4 @@
+from functools import partial
 import os.path as osp
 import json
 
@@ -12,9 +13,9 @@ from pplabel.task.util import copy
 from pplabel.api.model import Task, Annotation
 
 # debug
-#import matplotlib
-#matplotlib.use("TkAgg")
-#import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use("TkAgg")
+# import matplotlib.pyplot as plt
 
 
 def parse_semantic_mask(annotation_path, labels):
@@ -55,7 +56,7 @@ class SemanticSegmentation(BaseTask):
         super().__init__(project, skip_label_import=True, data_dir=data_dir)
         self.importers = {
             "mask": self.mask_importer,
-            "polygon": self.default_importer,
+            "polygon": partial(self.default_importer, with_size=True),
         }
         self.exporters = {
             "mask": self.mask_exporter,
@@ -124,30 +125,45 @@ class SemanticSegmentation(BaseTask):
             if type == "pesudo":
                 mask = np.zeros((width, height, 3))
                 for ann in task.annotations:
+                    # TODO: remove
+                    if ann.result[:2] == "[[":
+                        continue
                     color = hex_to_rgb(ann.label.color)[::-1]
-                    points = ann.result.split(",")[2:]
-                    points = [int(float(p)) for p in points]
-                    for idx in range(0, len(points), 2):
-                        y = points[idx]
-                        x = points[idx + 1]
-                        mask[x, y, :] = color
+                    result = ann.result.split(",")
+                    result = [int(float(p)) for p in result]
+                    points = result[2:]
+                    width = result[0]
+                    prev_x, prev_y = points[0:2]
+                    for idx in range(2, len(points), 2):
+                        x, y = points[idx : idx + 2]
+                        cv2.line(mask, (prev_x, prev_y), (x, y), color, width)
+                        prev_x, prev_y = x, y
             elif type == "grayscale":
                 mask = np.zeros((width, height))
                 for ann in task.annotations:
+                    # TODO: remove
+                    if ann.result[:2] == "[[":
+                        continue
+                    
                     label_id = ann.label.label_id
-                    points = ann.result.split(",")[2:]
-                    points = [int(float(p)) for p in points]
-                    for idx in range(0, len(points), 2):
-                        y = points[idx]
-                        x = points[idx + 1]
-                        mask[x, y] = label_id
+                    result = ann.result.split(",")
+                    result = [int(float(p)) for p in result]
+                    points = result[2:]
+                    width = result[0]
+                    prev_x, prev_y = points[0:2]
+                    for idx in range(2, len(points), 2):
+                        x, y = points[idx : idx + 2]
+                        cv2.line(mask, (prev_x, prev_y), (x, y), label_id, width)
+                        prev_x, prev_y = x, y
+                        # mask[x, y] = label_id
             cv2.imwrite(export_label_path, mask)
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])
 
         self.export_split(export_dir, tasks, export_data_paths, with_labels=False)
-        self.export_labels(export_dir, project._get_other_settings()['background_line'])
+        bg = project._get_other_settings().get("background_line", "background")
+        self.export_labels(export_dir, bg)
 
     def pesudo_color_exporter(self, export_dir):
         pass

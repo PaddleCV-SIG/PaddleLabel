@@ -2,6 +2,8 @@ import os
 import os.path as osp
 import json
 
+import cv2
+
 from pplabel.api import Annotation, Data, Label, Project, Task
 from pplabel.api.model import project
 from pplabel.config import db
@@ -341,13 +343,20 @@ class BaseTask:
 
     # TODO: add total imported count
     def default_importer(
-        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
+        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions},with_size=False
     ):
         if data_dir is None:
             data_dir = self.project.data_dir
 
         for data_path in listdir(data_dir, filters):
-            self.add_task([{"path": data_path}])
+            if with_size:
+                img = cv2.imread(osp.join(data_dir, data_path))
+                size = [1] + list(img.shape)
+                size = ",".join([str(s) for s in size])
+                print("+__+_+", size)
+                self.add_task([{"path": data_path, "size": size}])
+            else:
+                self.add_task([{"path": data_path}])
         db.session.commit()
 
     """ warning file """

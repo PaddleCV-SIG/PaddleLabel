@@ -144,9 +144,13 @@ class BaseTask:
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
-                    label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
+                    label = self.add_label(
+                        ann["label_name"], ann.get("color"), commit=True
+                    )
                 del ann["label_name"]
-                ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
+                ann = Annotation(
+                    label_id=label.label_id, project_id=project.project_id, **ann
+                )
                 task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
@@ -178,7 +182,11 @@ class BaseTask:
             sets.append(set(paths))
         return sets
 
-    def export_split(self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True):
+    def export_split(
+        self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True, annotation_ext=""
+    ):
+        if annotation_ext[0] == '.':
+            annotation_ext = annotation_ext[1:]
         set_names = ["train_list", "val_list", "test_list"]
         create_dir(export_dir)
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
@@ -192,10 +200,15 @@ class BaseTask:
                         continue
                     label_ids = [str(id) for id in label_ids]
                     print(
-                        new_path + delimiter + delimiter.join(label_ids), file=set_files[task.set]
+                        new_path + delimiter + delimiter.join(label_ids),
+                        file=set_files[task.set],
                     )
                 else:
-                    print(new_path, file=set_files[task.set])
+                    annotation_path = new_path.replace("JPEGImages", "Annotations")
+                    annotation_path = annotation_path[:-annotation_path[::-1].find('.')] + annotation_ext
+                    print(
+                        new_path + delimiter + annotation_path, file=set_files[task.set]
+                    )
 
         for f in set_files:
             f.close()
@@ -339,11 +352,13 @@ class BaseTask:
             for lab in labels:
                 print(lab.name, file=f)
         return labels
-        
 
     # TODO: add total imported count
     def default_importer(
-        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions},with_size=False
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+        with_size=False,
     ):
         if data_dir is None:
             data_dir = self.project.data_dir

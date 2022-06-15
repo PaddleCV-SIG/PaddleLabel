@@ -376,4 +376,4 @@ class Detection(BaseTask):
                 )
             export_paths.append([export_path])
 
-        self.export_split(export_dir, tasks, export_paths, with_labels=False)
+        self.export_split(export_dir, tasks, export_paths, with_labels=False, annotation_ext=".xml")

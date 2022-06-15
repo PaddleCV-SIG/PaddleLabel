@@ -46,7 +46,7 @@ def parse_order_by(modal, order_by):
     order_by = order_by.split(" ")
     if len(order_by) == 2:
         key, sort_dir = order_by
-        print(key, sort_dir)
+        # print(key, sort_dir)
         if "asc" in sort_dir:
             sort_dir = "asc"
         else:

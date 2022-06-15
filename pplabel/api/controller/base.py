@@ -127,7 +127,7 @@ def crud(Model, Schema, triggers=[]):
 
         if item is None:
             abort(404, f"No {Model.__tablename__} with {id_name} == {id_val}")
-            pass
+
         if pre_delete is not None:
             item = pre_delete(item, db.session)
         db.session.delete(item)

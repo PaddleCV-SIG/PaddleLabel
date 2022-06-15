@@ -10,18 +10,27 @@ import numpy as np
 import connexion
 
 from pplabel.config import db
-from pplabel.api.model import Project, Task, TaskCategory, Annotation, Label
+from pplabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
 from pplabel.api.schema import ProjectSchema
 from pplabel.api.controller.base import crud
 from pplabel.api.controller import label
 from pplabel.api.util import abort
 from pplabel.task.util import rand_hex_color
 from pplabel.util import camel2snake
-from pplabel.task.util.file import image_extensions, listdir, create_dir, remove_dir, copy
+from pplabel.task.util.file import (
+    image_extensions,
+    listdir,
+    create_dir,
+    remove_dir,
+    copy,
+)
 import pplabel
 
 
 def pre_add(new_project, se):
+    if not osp.isabs(new_project.data_dir):
+        abort("Dataset Path is not absolute path", 409)
+
     new_project.label_format = camel2snake(new_project.label_format)
     new_labels = new_project.labels
     rets, unique = label.unique_within_project(new_project.project_id, new_labels)
@@ -58,7 +67,17 @@ def _import_dataset(project, data_dir=None):
 
 def post_add(new_project, se):
     """run task import after project creation"""
-    _import_dataset(new_project)
+    try:
+        _import_dataset(new_project)
+    except Exception as e:
+        project = Project.query.filter(
+            Project.project_id == new_project.project_id
+        ).one()
+        print("Create project failed")
+        print(e.with_traceback)
+        db.session.delete(project)
+        db.session.commit()
+        abort(e.with_traceback, 500, e)
 
     # TODO: add readme file to project dir
     return new_project
@@ -119,9 +138,8 @@ def import_dataset(project_id):
 
     for p in new_data_paths:
         copy(osp.join(import_temp, p), osp.join(project.data_dir, p))
-    
+
     remove_dir(import_temp)
-    
 
 
 def pre_put(project, body, se):

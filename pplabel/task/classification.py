@@ -27,14 +27,14 @@ class Classification(BaseTask):
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
-        1/0
+        # 1/0
         # 1. set params
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
         self.create_warning(data_dir)
 
-        # 2. import all datas, 
+        # 2. import all datas,
         data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
@@ -84,7 +84,7 @@ class Classification(BaseTask):
         for data_path in data_paths:
             labels = labels_dict.get(data_path, [])
             self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
-        
+
         db.session.commit()
 
     def single_class_exporter(self, export_dir):

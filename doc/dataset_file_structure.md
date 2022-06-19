@@ -194,7 +194,7 @@ TODO: a script to move all images to JPEGImages and change labels based on xx_li
 
 ### COCO
 
-COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note in all COCO formats, xx_list.txt isn't supported. Example dataset: [Plane Detection]()
+COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note that in all projects importing COCO format labels, xx_list.txt isn't supported. Example dataset: [Plane Detection]()
 
 Example Layout:
 

@@ -144,13 +144,9 @@ class BaseTask:
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
-                    label = self.add_label(
-                        ann["label_name"], ann.get("color"), commit=True
-                    )
+                    label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
                 del ann["label_name"]
-                ann = Annotation(
-                    label_id=label.label_id, project_id=project.project_id, **ann
-                )
+                ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
                 task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
@@ -183,10 +179,12 @@ class BaseTask:
         return sets
 
     def export_split(
-        self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True, annotation_ext=""
+        self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True, annotation_ext=None
     ):
-        if annotation_ext[0] == '.':
+        # only used in file-file split, not in file-class split
+        if annotation_ext is not None and annotation_ext[0] == ".":
             annotation_ext = annotation_ext[1:]
+
         set_names = ["train_list", "val_list", "test_list"]
         create_dir(export_dir)
         set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
@@ -205,13 +203,14 @@ class BaseTask:
                     )
                 else:
                     annotation_path = new_path.replace("JPEGImages", "Annotations")
-                    annotation_path = annotation_path[:-annotation_path[::-1].find('.')] + annotation_ext
-                    print(
-                        new_path + delimiter + annotation_path, file=set_files[task.set]
+                    annotation_path = (
+                        annotation_path[: -annotation_path[::-1].find(".")] + annotation_ext
                     )
+                    print(new_path + delimiter + annotation_path, file=set_files[task.set])
 
         for f in set_files:
             f.close()
+        print("here")
 
     """ label related """
 

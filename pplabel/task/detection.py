@@ -32,9 +32,7 @@ def parse_voc_label(label_path):
         folder = data(folder)
     filename = file.getElementsByTagName("filename")
     if len(filename) == 0:
-        raise RuntimeError(
-            f"Missing required field filename in annotation file {label_path}"
-        )
+        raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
     filename = data(filename)
     path = osp.join(folder, filename)
 
@@ -133,8 +131,7 @@ class Detection(BaseTask):
         self.exporters = {
             "coco": self.coco_exporter,
             "voc": self.voc_exporter,
-        }  # TODO: change
-        # self.default_importer = self.default_importer # default to voc
+        }
         self.default_importer = self.voc_exporter  # default to voc
         self.default_exporter = self.voc_importer
 
@@ -148,7 +145,6 @@ class Detection(BaseTask):
         """
         # TODO: supercategory
         # TODO: label color
-        # TODO: coco中其他信息
 
         # 1. set params
         project = self.project
@@ -161,13 +157,14 @@ class Detection(BaseTask):
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
+            info = coco.dataset.get("info", {})
+            licenses = coco.dataset.get("licenses", [])
+
             ann_by_task = {}
             # get image full paths
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(
-                    lambda p: p[-len(file_name) :] == file_name, data_paths
-                )
+                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     raise RuntimeError(
@@ -176,8 +173,9 @@ class Detection(BaseTask):
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                # TODO: read image decide width height if not found
-                s = [img["width"], img["height"]]
+                s = [img.get("width", 0), img.get("height", 0)]
+                if s == [0, 0]:
+                    s = cv2.imread(full_path).shape[:2][::-1]
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []
@@ -220,15 +218,19 @@ class Detection(BaseTask):
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
                 size = "1," + coco.imgs[img_id]["size"]
-                self.add_task(
-                    [{"path": data_path, "size": size}], [annotations], split=set
-                )
-            return data_paths
+                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
+            return data_paths, json.dumps({"info": info, "licenses": licenses})
 
         # 2. find all images under data_dir
         data_paths = listdir(data_dir, filters=filters)
+        coco_others = {}
         for split_idx, label_file_path in enumerate(label_file_paths):
-            data_paths = _coco_importer(data_paths, label_file_path, split_idx)
+            if osp.exists(label_file_path):
+                data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
+                coco_others[split_idx] = others
+        other_settings = project._get_other_settings()
+        other_settings["coco_others"] = coco_others
+        project.other_settings = json.dumps(other_settings)
 
         # 3. add tasks without label
         for data_path in data_paths:
@@ -250,7 +252,7 @@ class Detection(BaseTask):
         project = self.project
         base_dir = data_dir
         allow_missing_image = data_dir is not None
-        
+
         print("+_+_+", base_dir)
 
         if base_dir is None:
@@ -259,7 +261,12 @@ class Detection(BaseTask):
 
         # 2. get all data and label
         data_paths = set(p for p in listdir(base_dir, filters=filters))
-        label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
+        label_paths = [
+            p
+            for p in listdir(
+                base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]}
+            )
+        ]
 
         print("data_paths", data_paths)
         # print("label_paths", label_paths)
@@ -341,9 +348,7 @@ class Detection(BaseTask):
                 img for img in coco.dataset["images"] if img["id"] in split[split_idx]
             ]
             outcoco.dataset["annotations"] = [
-                ann
-                for ann in coco.dataset["annotations"]
-                if ann["image_id"] in split[split_idx]
+                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
             ]
 
             with open(osp.join(export_dir, fname), "w") as outf:

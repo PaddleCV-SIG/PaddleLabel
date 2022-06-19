@@ -210,7 +210,6 @@ class BaseTask:
 
         for f in set_files:
             f.close()
-        print("here")
 
     """ label related """
 

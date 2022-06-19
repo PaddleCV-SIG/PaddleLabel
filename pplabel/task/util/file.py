@@ -2,7 +2,6 @@ import os
 import os.path as osp
 import shutil
 
-from pplabel.api import abort
 
 # TODO: switch to pathlib
 
@@ -16,8 +15,10 @@ def create_dir(path):
         raise RuntimeError(f"Only supports absolute path, got {path}")
     os.makedirs(path, exist_ok=True)
 
+
 def remove_dir(path):
     shutil.rmtree(path)
+
 
 def listdir(folder, filters={"exclude_prefix": ["."]}):
     """
@@ -29,11 +30,11 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
 
     Returns:
         list: File paths relative to folder, sorted
-    """    
+    """
 
     files = []
     for root, fdrs, fs in os.walk(folder):
-        if osp.basename(root).startswith("."): # skip all hidden folders
+        if osp.basename(root).startswith("."):  # skip all hidden folders
             continue
         for f in fs:
             files.append(osp.normpath(osp.join(root, f)))
@@ -74,10 +75,11 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
     return files
 
 
-def copy(src, dst):
+def copy(src, dst, make_dir=False):
     src = osp.normpath(src)
     dst = osp.normpath(dst)
-    os.makedirs(osp.dirname(dst), exist_ok=True)
+    if make_dir:
+        os.makedirs(osp.dirname(dst), exist_ok=True)
     shutil.copy(src, dst)
 
 
@@ -89,15 +91,15 @@ def copycontent(src, dst):
         src (str): source folder
         dst (str): destination folder
     """
-    
+
     assert osp.abspath(src), f"src dir {src} isn't abspath"
-    assert osp.abspath(dst),  f"dst dir {dst} isn't abspath"
+    assert osp.abspath(dst), f"dst dir {dst} isn't abspath"
     assert src != dst, f"The source and destination folder are both {src}"
 
     print(src, dst)
-    
+
     for root, fdrs, fs in os.walk(src):
-        if osp.basename(root).startswith("."): # skip all hidden folders
+        if osp.basename(root).startswith("."):  # skip all hidden folders
             continue
         if not osp.exists(osp.join(dst, osp.relpath(root, src))):
             os.makedirs(osp.join(dst, osp.relpath(root, src)))

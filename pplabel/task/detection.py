@@ -1,8 +1,6 @@
-from fileinput import filename
 import os.path as osp
 import json
 from copy import deepcopy
-from collections import deque
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -11,7 +9,6 @@ from pplabel.api import Task, Annotation, Label
 from pplabel.task.util import create_dir, listdir, copy, image_extensions
 from pplabel.task.base import BaseTask
 from pplabel.config import db
-from pplabel.task.util.color import name_to_hex
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -144,8 +141,7 @@ class Detection(BaseTask):
         """
         images should be located at data_dir / file_name in coco annotation
         """
-        # TODO: label color
-
+        
         # 1. set params
         project = self.project
         if data_dir is None:
@@ -161,34 +157,7 @@ class Detection(BaseTask):
             licenses = coco.dataset.get("licenses", [])
 
             # 1. create all labels
-            catgs = deque()
-            for catg in coco.cats.values():
-                print("+_+_+_+", catg)
-                catgs.append(catg)
-
-            tried_names = []  # guard against invalid dependency graph
-            while len(catgs) != 0:
-                catg = catgs.popleft()
-                color = catg.get("color", None)
-                if color is not None:
-                    color = name_to_hex(color)
-                if catg["supercategory"] == "none" or len(catg["supercategory"]) == 0:
-                    self.add_label(
-                        name=catg["name"], id=catg["id"], super_category_id=None, color=color
-                    )
-                else:
-                    super_category_id = self.label_name2id(catg["supercategory"])
-                    if super_category_id is None and catg["name"] not in tried_names:
-                        catgs.append(catg)
-                        tried_names.append(catg["name"])
-                        continue
-                    self.add_label(
-                        name=catg["name"],
-                        id=catg["id"],
-                        super_category_id=super_category_id,
-                        color=color,
-                    )
-                db.session.commit()
+            self.create_coco_labels(coco.cats.values())
 
             ann_by_task = {}
             # 2. get image full path and size

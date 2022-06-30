@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 import json
+from collections import deque
 
 import cv2
 
@@ -103,7 +104,7 @@ class BaseTask:
         project = self.project
         assert len(datas) != 0, "can't add task without data"
         # print(datas, project.data_dir)
-        
+
         for idx in range(len(datas)):
             if osp.isabs(datas[idx]["path"]):
                 datas[idx]["path"] = osp.relpath(datas[idx]["path"], project.data_dir)
@@ -161,7 +162,7 @@ class BaseTask:
             if label.id == label_id:
                 return label.name
         return None
-    
+
     def label_name2id(self, label_name):
         for label in self.project.labels:
             if label.name == label_name:
@@ -247,8 +248,10 @@ class BaseTask:
             raise RuntimeError(f"Label name is required, got {name}")
         current_names = set(l.name for l in self.project.labels)
         if name in current_names:
-            raise RuntimeError(f"Label name {name} is not unique")
-        
+            # raise RuntimeError(f"Label name {name} is not unique")
+            print(f"Label {name} already exist, skipping.")
+            return
+
         # 2. check or assign color
         current_colors = set(l.color for l in self.project.labels)
         if color is None:
@@ -258,7 +261,7 @@ class BaseTask:
                 color = name_to_hex(color)
             if color in current_colors:
                 raise RuntimeError(f"Label color {color} is not unique")
-        
+
         # 3. check or assign id
         current_ids = set(int(l.id) for l in self.project.labels)
         if id is None:
@@ -269,7 +272,6 @@ class BaseTask:
                 raise RuntimeError(f"Label id {id} is not unique")
 
         # 4. assign super category id
-
 
         label = Label(
             project_id=self.project.project_id,
@@ -396,3 +398,33 @@ class BaseTask:
         warning_path = osp.join(dir, "pplabel.warning")
         if osp.exists(warning_path):
             os.remove(warning_path)
+
+    def create_coco_labels(self, labels):
+        catgs = deque()
+
+        for catg in labels:
+            catgs.append(catg)
+
+        tried_names = []  # guard against invalid dependency graph
+        while len(catgs) != 0:
+            catg = catgs.popleft()
+            color = catg.get("color", None)
+            if color is not None:
+                color = name_to_hex(color)
+            if catg["supercategory"] == "none" or len(catg["supercategory"]) == 0:
+                self.add_label(
+                    name=catg["name"], id=catg["id"], super_category_id=None, color=color
+                )
+            else:
+                super_category_id = self.label_name2id(catg["supercategory"])
+                if super_category_id is None and catg["name"] not in tried_names:
+                    catgs.append(catg)
+                    tried_names.append(catg["name"])
+                    continue
+                self.add_label(
+                    name=catg["name"],
+                    id=catg["id"],
+                    super_category_id=super_category_id,
+                    color=color,
+                )
+            db.session.commit()

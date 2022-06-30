@@ -33,9 +33,13 @@ def name_to_hex(name):
         "magenta": "#FF00FF",
         "olive": "#808000",
     }
+    if name[0] == "#" and len(name) == 7:
+        return name
+
     name = name.lower()
     if name not in color_map.keys():
         raise RuntimeError(f"Don't have hex value for color {name}")
+
     return color_map[name]
 
 

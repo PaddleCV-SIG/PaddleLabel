@@ -25,12 +25,14 @@ PP Label supports any string as label name. But label names may be used as folde
 During import, labels.txt can contain more information than just label name. 4 formats are supported as listed below. | represents delimiter which defaults to space.
 
 label length:
+
 - 1: label name
 - 2: label name | label id
 - 3: label name | label id | hex color or common color name or grayscale value
 - 5: label name | label id | r | g | b color
 
-besides: 
+besides:
+
 - //: string after // is stored as comment
 - -: skip this field
 
@@ -47,9 +49,7 @@ snake 12 255 0 0 // scary
 
 See [here](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/task/util/color.py#L15) for all supported color names.
 
-
 During import, PP Label will first create labels specified in labels.txt. So you are guarenteed the ids for labels in this file will start from **0** and increase. During export this file will also be generated.
-
 
 ### xx_list.txt
 
@@ -194,7 +194,7 @@ TODO: a script to move all images to JPEGImages and change labels based on xx_li
 
 ### COCO
 
-COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note that in all projects importing COCO format labels, xx_list.txt isn't supported. Example dataset: [Plane Detection]()
+COCO keeps all information of a dataset in a single file. We list part of COCO specifications below, please visit the [coco website](https://cocodataset.org/#format-data) for more details. Note that in all projects importing COCO format labels, xx_list.txt and labels.txt aren't supported. Example dataset: [Plane Detection]()
 
 Example Layout:
 
@@ -205,7 +205,6 @@ Dataset Path
 │   ├── 0002.jpg
 │   ├── 0003.jpg
 │   └── ...
-├── labels.txt
 ├── train.json
 ├── val.json
 └── test.json
@@ -248,19 +247,28 @@ categories[
 	"id": int,
 	"name": str,
 	"supercategory": str,
+	"color": str // this feature isn't in the coco spec.
 }
 ]
 ```
 
-We parse the annotation file with [pycocotoolse](https://github.com/linhandev/cocoapie). It's essentially the origional [pycocotools](https://github.com/cocodataset/cocoapi) with some dataset management features added. We look for three json files under the Dataset Path: train.json, val.json and test.json. Tasks parsed from these three files will go to the training, validation and test subset respectively. Be sure **not to define an image more than once across all files** otherwise import will fail. xx_list.txt and labels.txt isn't used in all projects importing COCO.
+We parse the annotation file with [pycocotoolse](https://github.com/linhandev/cocoapie). It's essentially the origional [pycocotools](https://github.com/cocodataset/cocoapi) with some dataset management features added. We look for three json files under the Dataset Path: `train.json`, `val.json` and `test.json`. Tasks parsed from these three files will go to the training, validation and test subset respectively. Be sure **not to define an image more than once across all files** otherwise import will fail. `xx_list.txt` and `labels.txt` aren't used in all projects importing COCO.
 
-We will import all images under the Dataset Path folder as tasks. We match images on disk with image record in COCO json by looking for an image with relative path to Dataset Path ending with file_name value in COCO image record. For example an image with path `\Dataset Path\folder\image.png` will be match to image record with file_name `image.png`. If none or more than one match is found, import will fail. For example, images with path `\Dataset Path\folder1\image.png` and `\Dataset Path\folder2\image.png` will both be matched with image record with file_name value `image.png`. It's advised to put all images under a single folder to avoid duplicate image names.
+We will import all images under the `Dataset Path` folder as tasks. We match images on disk with image record in COCO json by looking for an image with relative path to `Dataset Path` ending with file_name value in COCO image record. For example an image with path `\Dataset Path\folder\image.png` will be match to image record with file_name `image.png`. If none or more than one match is found, import will fail. For example, images with path `\Dataset Path\folder1\image.png` and `\Dataset Path\folder2\image.png` will both be matched with image record with file_name value `image.png`. It's advised to put all images under a single folder to avoid duplicate image names.
 
-If an image record doesn't have width or height, we will decide them by reading the image during export. This can slow down dataset export.
+If an image record doesn't have width or height, we will decide them by reading the image during import. This can slow down dataset import.
 
 During export, the three json files will all be generated even if there is no image record in some of them.
 
+In the categories section we added a color record. This isn't present in the origional coco spec. Color will be exported and used during import.
+
 ## Segmentation
+
+We support two types of segmentation task and two im/export formats: semantic segmentation and instance segmentation task, mask and polygon format. Semantic and instance segmentation are the same with polygon format while mask format trests the two types of tasks differently.
+
+### COCO Polygon Format
+
+
 
 ### Semantic Segmentation
 
@@ -297,7 +305,6 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 PNG is usually used for mask labels. During import, in labels.txt, the first label will be treated as background and given label id 0. For grayscale labels, we match the grayscle pixel value in masks with label id. For pesudo color labels, we match the color for each pixel with color specified in labels.txt. **Annotations without matching labels won't be imported!** If `xx_list.txt` is provided, we will match image and annotation based on `xx_list.txt`. Else, we strip the file name extension from images and labels and match image to label with the same base file name.
 
 During export, the first line of labels.txt will always be the background class. The values in mask images follow the same rule as during import.
-
 
 ### Instance Segmentation
 

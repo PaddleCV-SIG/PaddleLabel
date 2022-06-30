@@ -11,6 +11,7 @@ from pplabel.api import Task, Annotation, Label
 from pplabel.task.util import create_dir, listdir, copy, image_extensions
 from pplabel.task.base import BaseTask
 from pplabel.config import db
+from pplabel.task.util.color import name_to_hex
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -162,20 +163,31 @@ class Detection(BaseTask):
             # 1. create all labels
             catgs = deque()
             for catg in coco.cats.values():
+                print("+_+_+_+", catg)
                 catgs.append(catg)
-            
-            tried_names = [] # guard against invalid dependency graph
+
+            tried_names = []  # guard against invalid dependency graph
             while len(catgs) != 0:
                 catg = catgs.popleft()
-                if catg['supercategory'] == "none":
-                    self.add_label(name=catg['name'], id=catg['id'], super_category_id=None)
+                color = catg.get("color", None)
+                if color is not None:
+                    color = name_to_hex(color)
+                if catg["supercategory"] == "none" or len(catg["supercategory"]) == 0:
+                    self.add_label(
+                        name=catg["name"], id=catg["id"], super_category_id=None, color=color
+                    )
                 else:
-                    super_category_id = self.label_name2id(catg['supercategory']) 
-                    if super_category_id is None and catg['name'] not in tried_names:
+                    super_category_id = self.label_name2id(catg["supercategory"])
+                    if super_category_id is None and catg["name"] not in tried_names:
                         catgs.append(catg)
-                        tried_names.append(catg['name'])
+                        tried_names.append(catg["name"])
                         continue
-                    self.add_label(name=catg['name'], id=catg['id'], super_category_id=super_category_id)            
+                    self.add_label(
+                        name=catg["name"],
+                        id=catg["id"],
+                        super_category_id=super_category_id,
+                        color=color,
+                    )
                 db.session.commit()
 
             ann_by_task = {}
@@ -318,7 +330,12 @@ class Detection(BaseTask):
         # 2.1 add categories
         labels = Label._get(project_id=project.project_id, many=True)
         for label in labels:
-            coco.addCategory(label.id, label.name, label.color)
+            if label.super_category_id is None:
+                super_category_name = "none"
+            else:
+                super_category_name = self.label_id2name(label.super_category_id)
+            coco.addCategory(label.id, label.name, label.color, super_category_name)
+
         # 2.2 add images
         split = [set(), set(), set()]
         tasks = Task._get(project_id=project.project_id, many=True)
@@ -330,6 +347,7 @@ class Detection(BaseTask):
             coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
             copy(osp.join(project.data_dir, data.path), data_dir)
             split[task.set].add(data.data_id)
+
         # 2.3 add annotations
         annotations = Annotation._get(project_id=project.project_id, many=True)
         for ann in annotations:
@@ -359,7 +377,9 @@ class Detection(BaseTask):
                 area=area,
                 bbox=bb,
             )
+
         # 3. write coco json
+        coco_others = project._get_other_settings()["coco_others"]
         for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
             outcoco = deepcopy(coco)
             outcoco.dataset["images"] = [
@@ -368,6 +388,12 @@ class Detection(BaseTask):
             outcoco.dataset["annotations"] = [
                 ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
             ]
+
+            coco_others_split = coco_others.get(str(split_idx), "{}")
+            coco_others_split = json.loads(coco_others_split)
+
+            outcoco.dataset["info"] = coco_others_split.get("info", "")
+            outcoco.dataset["licenses"] = coco_others_split.get("licenses", [])
 
             with open(osp.join(export_dir, fname), "w") as outf:
                 print(json.dumps(outcoco.dataset), file=outf)

@@ -31,7 +31,7 @@ def parse_semantic_mask(annotation_path, labels):
             # plt.show()
             x, y = np.where(ann == label.id)
             result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-            result = f"{0},{frontend_id}," + result
+            result = f"{1},{frontend_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush"})
             frontend_id += 1
     else:
@@ -41,7 +41,7 @@ def parse_semantic_mask(annotation_path, labels):
             label_mask = np.all(ann == color, axis=2).astype("uint8")
             x, y = np.where(label_mask == 1)
             result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-            result = f"{0},{frontend_id}," + result
+            result = f"{1},{frontend_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush"})
             frontend_id += 1
     s = [1] + list(ann.shape)
@@ -62,7 +62,7 @@ def parse_instance_mask(annotation_path, labels):
         for instance_id in instance_ids:
             x, y = np.where(instance_mask == instance_id)
             result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-            result = f"{0},{instance_id}," + result
+            result = f"{1},{instance_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush", "frontend_id": str(instance_id)})
     print(anns)
     s = [1] + list(instance_mask.shape)
@@ -177,8 +177,9 @@ class InstanceSegmentation(BaseTask):
         self.export_split(
             export_dir, tasks, export_data_paths, with_labels=False, annotation_ext=".tiff"
         )
-        bg = project._get_other_settings().get("background_line", "background")
-        print("+_+_+_+_+_", bg)
+        bg = project._get_other_settings().get("background_line")
+        if bg is None or len(bg) == 0:
+            bg = "background"
         self.export_labels(export_dir, bg)
 
     def coco_importer(

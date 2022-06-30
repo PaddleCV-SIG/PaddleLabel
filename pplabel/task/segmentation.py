@@ -1,6 +1,7 @@
 import os.path as osp
 import json
 from copy import deepcopy
+from re import L
 
 import numpy as np
 import cv2
@@ -49,13 +50,204 @@ def parse_semantic_mask(annotation_path, labels):
     return size, anns
 
 
-class SemanticSegmentation(BaseTask):
+class InstanceSegmentation(BaseTask):
     def __init__(self, project, data_dir=None):
         super().__init__(project, skip_label_import=True, data_dir=data_dir)
         self.importers = {
+            "mask": self.default_importer,
+            "polygon": self.coco_importer,
+        }
+        self.exporters = {
+            "mask": self.default_importer,
+            "polygon": self.coco_exporter,
+        }
+
+    def coco_importer(
+        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
+    ):
+        # 1. set params
+        project = self.project
+        if data_dir is None:
+            data_dir = project.data_dir
+        label_file_paths = ["train.json", "val.json", "test.json"]
+        label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
+
+        self.create_warning(data_dir)
+
+        def _coco_importer(data_paths, label_file_path, set=0):
+            coco = COCO(label_file_path)
+            info = coco.dataset.get("info", {})
+            licenses = coco.dataset.get("licenses", [])
+
+            # 1. create all labels
+            self.create_coco_labels(coco.cats.values())
+
+            ann_by_task = {}
+            # 2. get image full path and size
+            for idx, img in coco.imgs.items():
+                file_name = img["file_name"]
+                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
+                full_path = list(full_path)
+                assert (
+                    len(full_path) == 1
+                ), f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
+
+                full_path = full_path[0]
+                data_paths.remove(full_path)
+                coco.imgs[idx]["full_path"] = full_path
+                s = [img.get("width", 0), img.get("height", 0)]
+                if s == [0, 0]:
+                    s = cv2.imread(full_path).shape[:2][::-1]
+                s = [str(t) for t in s]
+                coco.imgs[idx]["size"] = ",".join(s)
+                ann_by_task[img["id"]] = []
+
+            # 3. get ann by image
+            for ann_id in coco.getAnnIds():
+                ann = coco.anns[ann_id]
+                label_name = coco.cats[ann["category_id"]]["name"]
+                res = ann["segmentation"][0]
+                width, height = (
+                    coco.imgs[ann["image_id"]].get("width", None),
+                    coco.imgs[ann["image_id"]].get("height", None),
+                )
+                for idx in range(0, len(res), 2):
+                    res[idx] -= width / 2
+                    res[idx + 1] -= height / 2
+
+                res = [str(r) for r in res]
+                res = ",".join(res)
+                ann_by_task[ann["image_id"]].append(
+                    {
+                        "label_name": label_name,
+                        "result": res,
+                        "type": "polygon",
+                        "frontend_id": len(ann_by_task[ann["image_id"]]) + 1,
+                    }
+                )
+
+            # 4. add tasks
+            for img_id, annotations in list(ann_by_task.items()):
+                data_path = coco.imgs[img_id]["full_path"]
+                size = "1," + coco.imgs[img_id]["size"]
+                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
+            return data_paths, json.dumps({"info": info, "licenses": licenses})
+
+        # 2. find all images under data_dir
+        data_paths = listdir(data_dir, filters=filters)
+        coco_others = {}
+        for split_idx, label_file_path in enumerate(label_file_paths):
+            if osp.exists(label_file_path):
+                data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
+                coco_others[split_idx] = others
+        other_settings = project._get_other_settings()
+        other_settings["coco_others"] = coco_others
+        project.other_settings = json.dumps(other_settings)
+
+        # 3. add tasks without label
+        for data_path in data_paths:
+            img = cv2.imread(osp.join(data_dir, data_path))
+            s = img.shape
+            size = [1, s[1], s[0], s[2]]
+            size = [str(s) for s in size]
+            size = ",".join(size)
+            self.add_task([{"path": data_path, "size": size}])
+
+        db.session.commit()
+
+    def coco_exporter(self, export_dir):
+        # 1. set params
+        project = self.project
+
+        # 2. create coco with all tasks
+        coco = COCO()
+        # 2.1 add categories
+        labels = Label._get(project_id=project.project_id, many=True)
+        for label in labels:
+            if label.super_category_id is None:
+                super_category_name = "none"
+            else:
+                super_category_name = self.label_id2name(label.super_category_id)
+            coco.addCategory(label.id, label.name, label.color, super_category_name)
+
+        # 2.2 add images
+        split = [set(), set(), set()]
+        tasks = Task._get(project_id=project.project_id, many=True)
+        data_dir = osp.join(export_dir, "image")
+        create_dir(data_dir)
+        for task in tasks:
+            data = task.datas[0]
+            size = data.size.split(",")
+            coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
+            copy(osp.join(project.data_dir, data.path), data_dir)
+            split[task.set].add(data.data_id)
+
+        # 2.3 add annotations
+        annotations = Annotation._get(project_id=project.project_id, many=True)
+        for ann in annotations:
+            if ann.type != "polygon":
+                continue
+
+            r = ann.result.split(",")
+            r = [float(t) for t in r]
+            width, height = (
+                coco.imgs[ann.data_id]["width"],
+                coco.imgs[ann.data_id]["height"],
+            )
+            width = int(width)
+            height = int(height)
+            for idx in range(0, len(r), 2):
+                r[idx] += width / 2
+                r[idx + 1] += height / 2
+
+            points = np.array(r)
+            points = points.reshape((-1, 2))
+            wmin, hmin = points.min(axis=0)
+            wmax, hmax = points.max(axis=0)
+
+            bbox = [wmin, hmin, wmax - wmin, hmax - hmin]
+
+            def poly_area(x, y):
+                return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+
+            area = poly_area(points[:, 0].reshape((-1)), points[:, 1].reshape((-1)))
+
+            coco.addAnnotation(
+                ann.data_id,
+                ann.label_id,
+                segmentation=r,
+                id=ann.annotation_id,
+                area=area,
+                bbox=bbox,
+            )
+
+        # 3. write coco json
+        coco_others = project._get_other_settings()["coco_others"]
+        for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
+            outcoco = deepcopy(coco)
+            outcoco.dataset["images"] = [
+                img for img in coco.dataset["images"] if img["id"] in split[split_idx]
+            ]
+            outcoco.dataset["annotations"] = [
+                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
+            ]
+
+            coco_others_split = coco_others.get(str(split_idx), "{}")
+            coco_others_split = json.loads(coco_others_split)
+
+            outcoco.dataset["info"] = coco_others_split.get("info", "")
+            outcoco.dataset["licenses"] = coco_others_split.get("licenses", [])
+
+            with open(osp.join(export_dir, fname), "w") as outf:
+                print(json.dumps(outcoco.dataset), file=outf)
+
+
+class SemanticSegmentation(InstanceSegmentation):
+    def __init__(self, project, data_dir=None):
+        super().__init__(project, data_dir=data_dir)
+        self.importers = {
             "mask": self.mask_importer,
             "polygon": self.coco_importer,
-            # partial(self.default_importer, with_size=True),
         }
         self.exporters = {
             "mask": self.mask_exporter,
@@ -163,186 +355,3 @@ class SemanticSegmentation(BaseTask):
         self.export_split(export_dir, tasks, export_data_paths, with_labels=False)
         bg = project._get_other_settings().get("background_line", "background")
         self.export_labels(export_dir, bg)
-
-    def pesudo_color_exporter(self, export_dir):
-        pass
-
-    def coco_importer(
-        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
-    ):
-        # 1. set params
-        project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
-        label_file_paths = ["train.json", "val.json", "test.json"]
-        label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
-
-        self.create_warning(data_dir)
-
-        def _coco_importer(data_paths, label_file_path, set=0):
-            coco = COCO(label_file_path)
-            info = coco.dataset.get("info", {})
-            licenses = coco.dataset.get("licenses", [])
-
-            # 1. create all labels
-            self.create_coco_labels(coco.cats.values())
-
-            ann_by_task = {}
-            # 2. get image full path and size
-            for idx, img in coco.imgs.items():
-                file_name = img["file_name"]
-                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
-                full_path = list(full_path)
-                assert (
-                    len(full_path) == 1
-                ), f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
-
-                full_path = full_path[0]
-                data_paths.remove(full_path)
-                coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("width", 0), img.get("height", 0)]
-                if s == [0, 0]:
-                    s = cv2.imread(full_path).shape[:2][::-1]
-                s = [str(t) for t in s]
-                coco.imgs[idx]["size"] = ",".join(s)
-                ann_by_task[img["id"]] = []
-
-            # 3. get ann by image
-            for ann_id in coco.getAnnIds():
-                ann = coco.anns[ann_id]
-                label_name = coco.cats[ann["category_id"]]["name"]
-                res = ann["segmentation"][0]
-                width, height = (
-                    coco.imgs[ann["image_id"]].get("width", None),
-                    coco.imgs[ann["image_id"]].get("height", None),
-                )
-                print("+_+_+_", res, type(res))
-                for idx in range(0, len(res), 2):
-                    res[idx] -= width / 2
-                    res[idx + 1] -= height / 2
-
-                res = [str(r) for r in res]
-                res = ",".join(res)
-                ann_by_task[ann["image_id"]].append(
-                    {
-                        "label_name": label_name,
-                        "result": res,
-                        "type": "polygon",
-                        "frontend_id": len(ann_by_task[ann["image_id"]]) + 1,
-                    }
-                )
-
-            # 4. add tasks
-            for img_id, annotations in list(ann_by_task.items()):
-                data_path = coco.imgs[img_id]["full_path"]
-                size = "1," + coco.imgs[img_id]["size"]
-                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
-            return data_paths, json.dumps({"info": info, "licenses": licenses})
-
-        # 2. find all images under data_dir
-        data_paths = listdir(data_dir, filters=filters)
-        coco_others = {}
-        for split_idx, label_file_path in enumerate(label_file_paths):
-            if osp.exists(label_file_path):
-                data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
-                coco_others[split_idx] = others
-        other_settings = project._get_other_settings()
-        other_settings["coco_others"] = coco_others
-        project.other_settings = json.dumps(other_settings)
-
-        # 3. add tasks without label
-        for data_path in data_paths:
-            img = cv2.imread(osp.join(data_dir, data_path))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
-            self.add_task([{"path": data_path, "size": size}])
-
-        db.session.commit()
-
-    def coco_exporter(self, export_dir):
-        # 1. set params
-        project = self.project
-
-        # 2. create coco with all tasks
-        coco = COCO()
-        # 2.1 add categories
-        labels = Label._get(project_id=project.project_id, many=True)
-        for label in labels:
-            if label.super_category_id is None:
-                super_category_name = "none"
-            else:
-                super_category_name = self.label_id2name(label.super_category_id)
-            coco.addCategory(label.id, label.name, label.color, super_category_name)
-
-        # 2.2 add images
-        split = [set(), set(), set()]
-        tasks = Task._get(project_id=project.project_id, many=True)
-        data_dir = osp.join(export_dir, "image")
-        create_dir(data_dir)
-        for task in tasks:
-            data = task.datas[0]
-            size = data.size.split(",")
-            coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
-            copy(osp.join(project.data_dir, data.path), data_dir)
-            split[task.set].add(data.data_id)
-
-        # 2.3 add annotations
-        annotations = Annotation._get(project_id=project.project_id, many=True)
-        for ann in annotations:
-            if ann.type != "polygon":
-                continue
-
-            r = ann.result.split(",")
-            r = [float(t) for t in r]
-            width, height = (
-                coco.imgs[ann.data_id]["width"],
-                coco.imgs[ann.data_id]["height"],
-            )
-            width = int(width)
-            height = int(height)
-            for idx in range(0, len(r), 2):
-                r[idx] += width / 2
-                r[idx + 1] += height / 2
-
-            points = np.array(r)
-            points = points.reshape((-1, 2))
-            wmin, hmin = points.min(axis=0)
-            wmax, hmax = points.max(axis=0)
-
-            bbox = [wmin, hmin, wmax - wmin, hmax - hmin]
-
-            def poly_area(x, y):
-                return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
-
-            area = poly_area(points[:, 0].reshape(( -1)), points[:, 1].reshape(( -1)))
-
-            coco.addAnnotation(
-                ann.data_id,
-                ann.label_id,
-                segmentation=r,
-                id=ann.annotation_id,
-                area=area,
-                bbox=bbox,
-            )
-
-        # 3. write coco json
-        coco_others = project._get_other_settings()["coco_others"]
-        for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
-            outcoco = deepcopy(coco)
-            outcoco.dataset["images"] = [
-                img for img in coco.dataset["images"] if img["id"] in split[split_idx]
-            ]
-            outcoco.dataset["annotations"] = [
-                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
-            ]
-
-            coco_others_split = coco_others.get(str(split_idx), "{}")
-            coco_others_split = json.loads(coco_others_split)
-
-            outcoco.dataset["info"] = coco_others_split.get("info", "")
-            outcoco.dataset["licenses"] = coco_others_split.get("licenses", [])
-
-            with open(osp.join(export_dir, fname), "w") as outf:
-                print(json.dumps(outcoco.dataset), file=outf)

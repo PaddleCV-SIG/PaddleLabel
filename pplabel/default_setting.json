@@ -4,7 +4,7 @@
       "1": ["classification", "pplabel.task.Classification"],
       "2": ["detection", "pplabel.task.Detection"],
       "3": ["semantic_segmentation", "pplabel.task.SemanticSegmentation"],
-      "4": ["instance_segmentation", "pplabel.task.BaseTask"],
+      "4": ["instance_segmentation", "pplabel.task.InstanceSegmentation"],
       "5": ["keypoint_detection", "pplabel.task.BaseTask"],
       "6": ["remote_sensing", "pplabel.task.BaseTask"]
     }

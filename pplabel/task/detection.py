@@ -143,7 +143,6 @@ class Detection(BaseTask):
         """
         images should be located at data_dir / file_name in coco annotation
         """
-        # TODO: supercategory
         # TODO: label color
 
         # 1. set params
@@ -165,15 +164,16 @@ class Detection(BaseTask):
             for catg in coco.cats.values():
                 catgs.append(catg)
             
-            count = 0 # guard against invalid dependency graph
-            while len(catgs) != 0 and count < 10000:
+            tried_names = [] # guard against invalid dependency graph
+            while len(catgs) != 0:
                 catg = catgs.popleft()
                 if catg['supercategory'] == "none":
                     self.add_label(name=catg['name'], id=catg['id'], super_category_id=None)
                 else:
                     super_category_id = self.label_name2id(catg['supercategory']) 
-                    if super_category_id is None:
+                    if super_category_id is None and catg['name'] not in tried_names:
                         catgs.append(catg)
+                        tried_names.append(catg['name'])
                         continue
                     self.add_label(name=catg['name'], id=catg['id'], super_category_id=super_category_id)            
                 db.session.commit()

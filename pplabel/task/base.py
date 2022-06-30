@@ -89,11 +89,11 @@ class BaseTask:
                 [ // labels for path2
                     {
                         "label_name": "",
-                        "result": "", [optional, default to ""]
+                        "result": "", // optional, default to ""
                     },
                     {
                         "label_name": "",
-                        "result": "", [optional, default to ""]
+                        "result": "", // optional, default to ""
                     }
                 ],
                 ...
@@ -103,7 +103,7 @@ class BaseTask:
         project = self.project
         assert len(datas) != 0, "can't add task without data"
         # print(datas, project.data_dir)
-        # TODO: check abs path
+        
         for idx in range(len(datas)):
             if osp.isabs(datas[idx]["path"]):
                 datas[idx]["path"] = osp.relpath(datas[idx]["path"], project.data_dir)
@@ -160,6 +160,12 @@ class BaseTask:
         for label in self.project.labels:
             if label.id == label_id:
                 return label.name
+        return None
+    
+    def label_name2id(self, label_name):
+        for label in self.project.labels:
+            if label.name == label_name:
+                return label.id
         return None
 
     def read_split(self, data_dir=None, delimiter=" "):
@@ -218,7 +224,7 @@ class BaseTask:
         name: str,
         id: int = None,
         color: str = None,
-        super_category: str = None,
+        super_category_id: int = None,
         comment: str = None,
         commit=False,
     ):
@@ -230,18 +236,20 @@ class BaseTask:
             id (int, optional): id. Defaults to None, autoincrement.
             color (str, optional): the color this label uses, can be hex color with leading # or name for a common color. will raise runtime error if specified color is in use by other labels. Defaults to None, will randomly generate.
             comment (str, optional): comment for label. Defaults to None.
-            super_category (str, optional): name for supercategory. Defaults to None.
+            super_category_id (int, optional): id of supercategory. Defaults to None.
             commit (bool, optional): True -> commit after adding label. Defaults to False.
 
         Returns:
             Label: new label generated
         """
+        # 1. check params
         if name is None or len(name) == 0:
             raise RuntimeError(f"Label name is required, got {name}")
         current_names = set(l.name for l in self.project.labels)
         if name in current_names:
             raise RuntimeError(f"Label name {name} is not unique")
-
+        
+        # 2. check or assign color
         current_colors = set(l.color for l in self.project.labels)
         if color is None:
             color = rand_hex_color(current_colors)
@@ -250,7 +258,8 @@ class BaseTask:
                 color = name_to_hex(color)
             if color in current_colors:
                 raise RuntimeError(f"Label color {color} is not unique")
-
+        
+        # 3. check or assign id
         current_ids = set(int(l.id) for l in self.project.labels)
         if id is None:
             id = self.label_max_id + 1
@@ -259,7 +268,8 @@ class BaseTask:
             if id in current_ids:
                 raise RuntimeError(f"Label id {id} is not unique")
 
-        # TODO: supercategory
+        # 4. assign super category id
+
 
         label = Label(
             project_id=self.project.project_id,
@@ -267,7 +277,7 @@ class BaseTask:
             name=name,
             color=color,
             comment=comment,
-            super_category_id=None,
+            super_category_id=super_category_id,
         )
         self.project.labels.append(label)
         if commit:

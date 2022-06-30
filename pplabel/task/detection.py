@@ -2,7 +2,7 @@ from fileinput import filename
 import os.path as osp
 import json
 from copy import deepcopy
-from collections import defaultdict
+from collections import deque
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -160,8 +160,26 @@ class Detection(BaseTask):
             info = coco.dataset.get("info", {})
             licenses = coco.dataset.get("licenses", [])
 
+            # 1. create all labels
+            catgs = deque()
+            for catg in coco.cats.values():
+                catgs.append(catg)
+            
+            count = 0 # guard against invalid dependency graph
+            while len(catgs) != 0 and count < 10000:
+                catg = catgs.popleft()
+                if catg['supercategory'] == "none":
+                    self.add_label(name=catg['name'], id=catg['id'], super_category_id=None)
+                else:
+                    super_category_id = self.label_name2id(catg['supercategory']) 
+                    if super_category_id is None:
+                        catgs.append(catg)
+                        continue
+                    self.add_label(name=catg['name'], id=catg['id'], super_category_id=super_category_id)            
+                db.session.commit()
+
             ann_by_task = {}
-            # get image full paths
+            # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
                 full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
@@ -180,7 +198,7 @@ class Detection(BaseTask):
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []
 
-            # get ann by image
+            # 3. get ann by image
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
                 label_name = coco.cats[ann["category_id"]]["name"]
@@ -214,7 +232,7 @@ class Detection(BaseTask):
                     }
                 )
 
-            # add tasks
+            # 4. add tasks
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
                 size = "1," + coco.imgs[img_id]["size"]

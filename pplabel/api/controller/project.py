@@ -47,7 +47,6 @@ def _import_dataset(project, data_dir=None):
     if task_category is None:
         handler = pplabel.task.BaseTask(project)
     else:
-        print("+_+_+_+_+_+_+", task_category.handler)
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
     # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer

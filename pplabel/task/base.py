@@ -342,6 +342,7 @@ class BaseTask:
                 label = [None if v == "-" else v for v in label]
                 self.add_label(*label, comment=comment)
         db.session.commit()
+
         if ignore_first:
             return background_line
 

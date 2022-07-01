@@ -9,6 +9,7 @@ from pplabel.api import Task, Annotation, Label
 from pplabel.task.util import create_dir, listdir, copy, image_extensions
 from pplabel.task.base import BaseTask
 from pplabel.config import db
+from pplabel.api.util import abort
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -30,7 +31,7 @@ def parse_voc_label(label_path):
         folder = data(folder)
     filename = file.getElementsByTagName("filename")
     if len(filename) == 0:
-        raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
+        abort(detail=f"Missing required field filename in annotation file {label_path}", status=404)
     filename = data(filename)
     path = osp.join(folder, filename)
 
@@ -252,8 +253,6 @@ class Detection(BaseTask):
         base_dir = data_dir
         allow_missing_image = data_dir is not None
 
-        print("+_+_+", base_dir)
-
         if base_dir is None:
             base_dir = project.data_dir
         self.create_warning(base_dir)
@@ -313,7 +312,8 @@ class Detection(BaseTask):
         for task in tasks:
             data = task.datas[0]
             size = data.size.split(",")
-            coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
+            export_path = osp.join("image", osp.basename(data.path))
+            coco.addImage(export_path, int(size[1]), int(size[2]), data.data_id)
             copy(osp.join(project.data_dir, data.path), data_dir)
             split[task.set].add(data.data_id)
 
@@ -337,13 +337,11 @@ class Detection(BaseTask):
             ]
             bb[2] -= bb[0]
             bb[3] -= bb[1]
-            area = (r[2] - r[0]) * (r[3] - r[1])
             coco.addAnnotation(
                 ann.data_id,
                 ann.label_id,
                 segmentation=[],
                 id=ann.annotation_id,
-                area=area,
                 bbox=bb,
             )
 
@@ -375,6 +373,8 @@ class Detection(BaseTask):
         export_label_dir = osp.join(export_dir, "Annotations")
         create_dir(export_data_dir)
         create_dir(export_label_dir)
+
+        self.export_labels(export_dir)
 
         tasks = Task._get(project_id=project.project_id, many=True)
         export_paths = []

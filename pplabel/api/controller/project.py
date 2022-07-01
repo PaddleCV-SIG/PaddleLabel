@@ -75,11 +75,11 @@ def post_add(new_project, se):
         ).one()
         print("Create project failed")
         print(e.with_traceback)
+        print(dir(e))
         db.session.delete(project)
         db.session.commit()
-        abort(e.with_traceback, 500, e)
+        abort(e.detail, 500, e.title)
 
-    # TODO: add readme file to project dir
     return new_project
 
 

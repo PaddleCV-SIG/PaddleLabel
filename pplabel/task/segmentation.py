@@ -13,6 +13,8 @@ from pplabel.config import db
 from pplabel.task.util.color import hex_to_rgb
 from pplabel.task.util import copy
 from pplabel.api.model import Task, Label, Annotation
+from pplabel.api.util import abort
+from pplabel.api.rpc.seg import polygon2points
 
 # debug
 # import matplotlib
@@ -22,28 +24,45 @@ from pplabel.api.model import Task, Label, Annotation
 
 def parse_semantic_mask(annotation_path, labels):
     ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+    print(ann.shape)
     frontend_id = 1
     anns = []
     # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
-    if len(ann.shape) == 2 or (len(ann.shape) == 3 and ann.shape[-1] == 1):
-        for label in labels:
-            # plt.imshow(ann)
-            # plt.show()
-            x, y = np.where(ann == label.id)
-            result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-            result = f"{1},{frontend_id}," + result
-            anns.append({"label_name": label.name, "result": result, "type": "brush"})
-            frontend_id += 1
-    else:
+    if len(ann.shape) == 3:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
+        ann_gray = np.zeros(ann.shape[:2], dtype="uint8")
         for label in labels:
             color = hex_to_rgb(label.color)
-            label_mask = np.all(ann == color, axis=2).astype("uint8")
-            x, y = np.where(label_mask == 1)
-            result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
+            label_mask = np.all(ann == color, axis=2)
+            ann_gray[label_mask == 1] = label.id
+        ann = ann_gray
+
+    # TODO: connected component
+    for label in labels:
+        label_mask = ann
+        label_mask[label_mask != label.id] = 0
+        label_mask[label_mask != 0] = 255
+        if len(np.unique(label_mask)) == 1:
+            continue
+        (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(
+            label_mask, connectivity=8
+        )
+        for cc_id in range(1, cc_num):
+            h, w = np.where(cc_mask == cc_id)
+            result = ",".join([f"{w},{h}" for h, w in zip(h, w)])
             result = f"{1},{frontend_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush"})
             frontend_id += 1
+    # else:
+    #     ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
+    #     for label in labels:
+    #         color = hex_to_rgb(label.color)
+    #         label_mask = np.all(ann == color, axis=2).astype("uint8")
+    #         x, y = np.where(label_mask == 1)
+    #         result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
+    #         result = f"{1},{frontend_id}," + result
+    #         anns.append({"label_name": label.name, "result": result, "type": "brush"})
+    #         frontend_id += 1
     s = [1] + list(ann.shape)
     s = [str(s) for s in s]
     size = ",".join(s)
@@ -55,16 +74,23 @@ def parse_instance_mask(annotation_path, labels):
     instance_mask = mask[0]
     label_mask = mask[1]
     anns = []
+    # print(np.unique(instance_mask), np.unique(label_mask))
 
     for label in labels:
         instance_part = instance_mask[label_mask == label.id]
         instance_ids = np.unique(instance_part)
         for instance_id in instance_ids:
-            x, y = np.where(instance_mask == instance_id)
-            result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
+            h, w = np.where(instance_mask == instance_id)
+            result = ",".join([f"{w},{h}" for w, h in zip(w, h)])
             result = f"{1},{instance_id}," + result
-            anns.append({"label_name": label.name, "result": result, "type": "brush", "frontend_id": str(instance_id)})
-    print(anns)
+            anns.append(
+                {
+                    "label_name": label.name,
+                    "result": result,
+                    "type": "brush",
+                    "frontend_id": str(instance_id),
+                }
+            )
     s = [1] + list(instance_mask.shape)
     s = [str(s) for s in s]
     size = ",".join(s)
@@ -147,27 +173,43 @@ class InstanceSegmentation(BaseTask):
             )
 
             copy(data_path, export_data_dir)
-            width, height = map(int, data.size.split(",")[1:3])
+            height, width = map(int, data.size.split(",")[1:3])
 
-            instance_mask = np.zeros((width, height), dtype="uint8")
-            label_mask = np.zeros((width, height), dtype="uint8")
+            instance_mask = np.zeros((height, width), dtype="uint8")
+            label_mask = np.zeros((height, width), dtype="uint8")
             for ann in task.annotations:
+
                 # TODO: skip eiseg result, remove this
                 if ann.result[:2] == "[[":
                     continue
 
-                label_id = ann.label.label_id
+                label_id = ann.label.id
                 frontend_id = ann.frontend_id
                 result = ann.result.split(",")
                 result = [int(float(p)) for p in result]
-                points = result[2:]
-                width = result[0]
-                prev_x, prev_y = points[0:2]
-                for idx in range(2, len(points), 2):
-                    x, y = points[idx : idx + 2]
-                    cv2.line(label_mask, (prev_x, prev_y), (x, y), int(label_id), width)
-                    cv2.line(instance_mask, (prev_x, prev_y), (x, y), int(frontend_id), width)
-                    prev_x, prev_y = x, y
+                if ann.type == "brush":
+                    points = result[2:]
+                    line_width = result[0]
+                    prev_w, prev_h = points[0:2]
+                else:
+                    for idx in range(0, len(result), 2):
+                        result[idx] = int(result[idx] + width / 2)
+                        result[idx + 1] = int(result[idx + 1] + height / 2)
+                    points = polygon2points(result)
+                    points = np.array(points).reshape((-1))
+                    line_width = 1
+                    prev_w, prev_h = points[0:2]
+                try:
+                    for idx in range(2, len(points), 2):
+                        w, h = points[idx : idx + 2]
+                        cv2.line(label_mask, (prev_w, prev_h), (w, h), int(label_id), line_width)
+                        cv2.line(
+                            instance_mask, (prev_w, prev_h), (w, h), int(frontend_id), line_width
+                        )
+                        prev_w, prev_h = w, h
+                except Exception as e:
+                    abort(detail=e.msg, status=500, title="cv2 error")
+
             mask = np.stack([instance_mask, label_mask], axis=0)
             tif.imwrite(export_label_path, mask, compression="zlib")
 
@@ -177,10 +219,10 @@ class InstanceSegmentation(BaseTask):
         self.export_split(
             export_dir, tasks, export_data_paths, with_labels=False, annotation_ext=".tiff"
         )
-        bg = project._get_other_settings().get("background_line")
-        if bg is None or len(bg) == 0:
-            bg = "background"
-        self.export_labels(export_dir, bg)
+        background_line = project._get_other_settings().get("background_line")
+        if background_line is None or len(background_line) == 0:
+            background_line = "background"
+        self.export_labels(export_dir, background_line, with_id=True)
 
     def coco_importer(
         self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
@@ -208,16 +250,18 @@ class InstanceSegmentation(BaseTask):
                 file_name = img["file_name"]
                 full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
                 full_path = list(full_path)
-                assert (
-                    len(full_path) == 1
-                ), f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
+                if len(full_path) != 1:
+                    abort(
+                        detail=f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}",
+                        status=404,
+                    )
 
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("width", 0), img.get("height", 0)]
+                s = [img.get("height", 0), img.get("width", 0)]
                 if s == [0, 0]:
-                    s = cv2.imread(full_path).shape[:2][::-1]
+                    s = cv2.imread(full_path).shape[:2]
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []
@@ -225,6 +269,10 @@ class InstanceSegmentation(BaseTask):
             # 3. get ann by image
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
+                if coco.imgs.get(ann["image_id"]) is None:
+                    print(f"No image with id {ann['image_id']} found, skipping this annotation.")
+                    continue
+
                 label_name = coco.cats[ann["category_id"]]["name"]
                 res = ann["segmentation"][0]
                 width, height = (
@@ -298,7 +346,8 @@ class InstanceSegmentation(BaseTask):
         for task in tasks:
             data = task.datas[0]
             size = data.size.split(",")
-            coco.addImage(data.path, int(size[1]), int(size[2]), data.data_id)
+            export_path = osp.join("image", osp.basename(data.path))
+            coco.addImage(export_path, int(size[1]), int(size[2]), data.data_id)
             copy(osp.join(project.data_dir, data.path), data_dir)
             split[task.set].add(data.data_id)
 
@@ -320,25 +369,13 @@ class InstanceSegmentation(BaseTask):
                 r[idx] += width / 2
                 r[idx + 1] += height / 2
 
-            points = np.array(r)
-            points = points.reshape((-1, 2))
-            wmin, hmin = points.min(axis=0)
-            wmax, hmax = points.max(axis=0)
-
-            bbox = [wmin, hmin, wmax - wmin, hmax - hmin]
-
-            def poly_area(x, y):
-                return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
-
-            area = poly_area(points[:, 0].reshape((-1)), points[:, 1].reshape((-1)))
-
             coco.addAnnotation(
                 ann.data_id,
                 ann.label_id,
                 segmentation=r,
                 id=ann.annotation_id,
-                area=area,
-                bbox=bbox,
+                # area=area,
+                # bbox=bbox,
             )
 
         # 3. write coco json
@@ -379,7 +416,6 @@ class SemanticSegmentation(InstanceSegmentation):
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
-        print("SemanticSegmentation, mask_importer")
 
         # 1. set params
         project = self.project
@@ -411,7 +447,14 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir, type="pesudo"):
+    def mask_exporter(self, export_dir: str, type: str = "pesudo"):
+        """Export semantic segmentation dataset in mask format
+
+        Args:
+            export_dir (str): The folder to export to.
+            type (str, optional): Mask type, "gray" or "pesudo". Defaults to "gray".
+        """
+
         # 1. set params
         project = self.project
 
@@ -427,53 +470,72 @@ class SemanticSegmentation(InstanceSegmentation):
         for task in tasks:
             data = task.datas[0]
             data_path = osp.join(project.data_dir, data.path)
+            print("+_+_+_+_", data_path, len(task.annotations))
+
             export_data_path = osp.join("JPEGImages", osp.basename(data.path))
+
             # TODO: strip ext
             export_label_path = osp.join(
                 export_label_dir, osp.basename(data_path).split(".")[0] + ".png"
             )
 
             copy(data_path, export_data_dir)
-            width, height = map(int, data.size.split(",")[1:3])
+            height, width = map(int, data.size.split(",")[1:3])
             if type == "pesudo":
-                mask = np.zeros((width, height, 3))
-                for ann in task.annotations:
-                    # TODO: remove
-                    if ann.result[:2] == "[[":
-                        continue
-                    color = hex_to_rgb(ann.label.color)[::-1]
-                    result = ann.result.split(",")
-                    result = [int(float(p)) for p in result]
-                    points = result[2:]
-                    width = result[0]
-                    prev_x, prev_y = points[0:2]
-                    for idx in range(2, len(points), 2):
-                        x, y = points[idx : idx + 2]
-                        cv2.line(mask, (prev_x, prev_y), (x, y), color, width)
-                        prev_x, prev_y = x, y
-            elif type == "grayscale":
-                mask = np.zeros((width, height))
-                for ann in task.annotations:
-                    # TODO: remove
-                    if ann.result[:2] == "[[":
-                        continue
+                mask = np.zeros((height, width, 3))
+            else:
+                mask = np.zeros((height, width))
 
-                    label_id = ann.label.label_id
-                    result = ann.result.split(",")
-                    result = [int(float(p)) for p in result]
+            for ann in task.annotations:
+                # TODO: remove
+                if ann.result[:2] == "[[":
+                    continue
+
+                label_id = ann.label.id
+                result = ann.result.strip().split(",")
+                # print(result)
+                result = [int(float(p)) for p in result]
+                if ann.type == "brush":
                     points = result[2:]
-                    width = result[0]
-                    prev_x, prev_y = points[0:2]
+                    line_width = result[0]
+                    prev_w, prev_h = points[0:2]
+                else:
+                    for idx in range(0, len(result), 2):
+                        result[idx] = int(result[idx] + width / 2)
+                        result[idx + 1] = int(result[idx + 1] + height / 2)
+                    points = polygon2points(result)
+                    points = np.array(points).reshape((-1))
+                    line_width = 1
+                    prev_w, prev_h = points[0:2]
+                try:
                     for idx in range(2, len(points), 2):
-                        x, y = points[idx : idx + 2]
-                        cv2.line(mask, (prev_x, prev_y), (x, y), label_id, width)
-                        prev_x, prev_y = x, y
-                        # mask[x, y] = label_id
+                        w, h = points[idx : idx + 2]
+                        if type == "pesudo":
+                            color = hex_to_rgb(ann.label.color)[::-1]
+                        else:
+                            color = int(label_id)
+                        cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
+                        prev_w, prev_h = w, h
+                except Exception as e:
+                    abort(detail=e.msg, status=500, title="cv2 error")
+
             cv2.imwrite(export_label_path, mask)
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])
 
-        self.export_split(export_dir, tasks, export_data_paths, with_labels=False)
+        self.export_split(
+            export_dir, tasks, export_data_paths, with_labels=False, annotation_ext=".png"
+        )
         bg = project._get_other_settings().get("background_line", "background")
         self.export_labels(export_dir, bg)
+
+
+"""
+{
+            "id": 2,
+            "name": "toy",
+            "color": "#64F3BE",
+            "supercategory": "none"
+        },
+"""

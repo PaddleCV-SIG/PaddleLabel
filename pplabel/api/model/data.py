@@ -13,6 +13,6 @@ class Data(BaseModel):
     # task = db.relationship("Task", lazy="selectin")
     annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
     path = nncol(db.String())
-    size = db.Column(db.String()) # , seperated string. natural image: NWHC (C is optional)
+    size = db.Column(db.String()) # , seperated string. natural image: NHWC (C is optional)
 
     _immutables = BaseModel._immutables + ["data_id", "task_id"]

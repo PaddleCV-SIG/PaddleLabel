@@ -1,5 +1,4 @@
 import functools
-import random
 import time
 
 import connexion
@@ -11,9 +10,14 @@ from pplabel.util import camel2snake
 nncol = functools.partial(sa.Column, nullable=False)
 
 # TODO: settle on how to use detail and title
-def abort(detail, status, title=""):
+def abort(detail: str, status: int, title: str = ""):
+    detail = detail.replace("\n", " ")
+    title = title.replace("\n", " ")
     raise connexion.exceptions.ProblemException(
-        detail=detail, title=title if len(title) != 0 else detail, status=status, headers={"message": detail}
+        detail=detail,
+        title=title if len(title) != 0 else detail,
+        status=status,
+        headers={"detail": detail},
     )
 
 
@@ -50,12 +54,12 @@ def parse_order_by(modal, order_by):
         if "asc" in sort_dir:
             sort_dir = "asc"
         else:
-            sort_dir="desc"
+            sort_dir = "desc"
     else:
-        key=order_by[0]
+        key = order_by[0]
         sort_dir = "acs"
     key = camel2snake(key)
-    
+
     try:
         order = getattr(getattr(modal, key), sort_dir)()
     except:

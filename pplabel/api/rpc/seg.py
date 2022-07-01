@@ -32,10 +32,14 @@ def polygon2mask(poly):
     poly[:, 1] -= hmin
 
     poly = [(p[0], p[1]) for p in poly.tolist()]
-
+    
+    
     img = Image.new("L", [width, height], 0)
     ImageDraw.Draw(img).polygon(poly, outline=1, fill=1)  # col, row
     mask = np.array(img) == 1
+    # plt.imshow(mask)
+    # plt.show()
+    # print("=-=-=-=-=-=", width, height, mask.shape)
 
     # plt.imshow(mask)
     # plt.show()
@@ -79,9 +83,9 @@ def polygon2mask(poly):
 def polygon2points(poly):
     (wmin, hmin), mask = polygon2mask(poly)
     points = []
-    for idw in range(mask.shape[0]):
-        for idh in range(mask.shape[1]):
-            if mask[idw][idh] == 1:
+    for idh in range(mask.shape[0]):
+        for idw in range(mask.shape[1]):
+            if mask[idh][idw] == 1:
                 points.append((wmin + idw, hmin + idh))
 
     return points

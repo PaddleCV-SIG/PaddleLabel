@@ -6,7 +6,7 @@ from collections import deque
 import cv2
 
 from pplabel.api import Annotation, Data, Label, Project, Task
-from pplabel.api.model import project
+from pplabel.api.util import abort
 from pplabel.config import db
 from pplabel.task.util import image_extensions, listdir, create_dir
 from pplabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
@@ -353,7 +353,7 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(self, export_dir, background_line: str = None):
+    def export_labels(self, export_dir:str, background_line: str = None, with_id:bool=False):
         label_names_path = osp.join(export_dir, "labels.txt")
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)
@@ -361,7 +361,10 @@ class BaseTask:
             if background_line is not None:
                 print(background_line.strip(), file=f)
             for lab in labels:
-                print(lab.name, file=f)
+                print(lab)
+                print(lab.name, end=" " if with_id else "\n" , file=f)
+                if with_id:
+                    print(lab.id, file=f)
         return labels
 
     # TODO: add total imported count
@@ -388,6 +391,9 @@ class BaseTask:
     """ warning file """
 
     def create_warning(self, dir):
+        if not osp.exists(dir):
+            abort(detail=f"Dataset Path specified {dir} doesn't exist.", status=404)
+
         warning_path = osp.join(dir, "pplabel.warning")
         if not osp.exists(warning_path):
             print(

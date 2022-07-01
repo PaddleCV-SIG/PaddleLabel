@@ -1,0 +1,4 @@
+red
+gray
+blue
+yellow

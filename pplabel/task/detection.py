@@ -131,8 +131,8 @@ class Detection(BaseTask):
             "coco": self.coco_exporter,
             "voc": self.voc_exporter,
         }
-        self.default_importer = self.voc_exporter  # default to voc
-        self.default_exporter = self.voc_importer
+        self.default_importer = self.voc_importer
+        self.default_exporter = self.voc_exporter  # default to voc
 
     def coco_importer(
         self,
@@ -142,7 +142,7 @@ class Detection(BaseTask):
         """
         images should be located at data_dir / file_name in coco annotation
         """
-        
+
         # 1. set params
         project = self.project
         if data_dir is None:

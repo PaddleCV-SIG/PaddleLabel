@@ -98,8 +98,6 @@ def copycontent(src, dst):
     assert osp.abspath(dst), f"dst dir {dst} isn't abspath"
     assert src != dst, f"The source and destination folder are both {src}"
 
-    print(src, dst)
-
     for root, fdrs, fs in os.walk(src):
         if osp.basename(root).startswith("."):  # skip all hidden folders
             continue
@@ -112,3 +110,4 @@ def copycontent(src, dst):
             if osp.exists(fdst):
                 continue
             copy(fsrc, fdst)
+

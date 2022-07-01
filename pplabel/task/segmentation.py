@@ -53,16 +53,7 @@ def parse_semantic_mask(annotation_path, labels):
             result = f"{1},{frontend_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush"})
             frontend_id += 1
-    # else:
-    #     ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
-    #     for label in labels:
-    #         color = hex_to_rgb(label.color)
-    #         label_mask = np.all(ann == color, axis=2).astype("uint8")
-    #         x, y = np.where(label_mask == 1)
-    #         result = ",".join([f"{y},{x}" for x, y in zip(x, y)])
-    #         result = f"{1},{frontend_id}," + result
-    #         anns.append({"label_name": label.name, "result": result, "type": "brush"})
-    #         frontend_id += 1
+
     s = [1] + list(ann.shape)
     s = [str(s) for s in s]
     size = ",".join(s)
@@ -108,6 +99,8 @@ class InstanceSegmentation(BaseTask):
             "mask": self.mask_exporter,
             "polygon": self.coco_exporter,
         }
+        self.default_importer = self.coco_importer
+        self.default_exporter = self.coco_exporter
 
     def mask_importer(
         self,
@@ -149,7 +142,7 @@ class InstanceSegmentation(BaseTask):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir, type="pesudo"):
+    def mask_exporter(self, export_dir):
         # 1. set params
         project = self.project
 
@@ -410,6 +403,8 @@ class SemanticSegmentation(InstanceSegmentation):
             "mask": self.mask_exporter,
             "polygon": self.coco_exporter,
         }
+        self.default_importer = self.mask_importer
+        self.default_exporter = self.mask_exporter
 
     def mask_importer(
         self,
@@ -447,7 +442,7 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir: str, type: str = "pesudo"):
+    def mask_exporter(self, export_dir: str, type: str = "gray"):
         """Export semantic segmentation dataset in mask format
 
         Args:
@@ -470,7 +465,6 @@ class SemanticSegmentation(InstanceSegmentation):
         for task in tasks:
             data = task.datas[0]
             data_path = osp.join(project.data_dir, data.path)
-            print("+_+_+_+_", data_path, len(task.annotations))
 
             export_data_path = osp.join("JPEGImages", osp.basename(data.path))
 
@@ -481,6 +475,7 @@ class SemanticSegmentation(InstanceSegmentation):
 
             copy(data_path, export_data_dir)
             height, width = map(int, data.size.split(",")[1:3])
+            print(height, width)
             if type == "pesudo":
                 mask = np.zeros((height, width, 3))
             else:
@@ -493,7 +488,6 @@ class SemanticSegmentation(InstanceSegmentation):
 
                 label_id = ann.label.id
                 result = ann.result.strip().split(",")
-                # print(result)
                 result = [int(float(p)) for p in result]
                 if ann.type == "brush":
                     points = result[2:]

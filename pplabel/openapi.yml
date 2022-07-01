@@ -1147,8 +1147,8 @@ paths:
             schema:
               type: object
               properties:
-                task_category:
-                  type: string
+                task_category_id:
+                  type: integer
       responses:
         '200':
           description: OK

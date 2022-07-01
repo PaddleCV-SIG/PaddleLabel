@@ -1,7 +1,10 @@
+recursive-include pplabel/sample/ *
+recursive-include pplabel/static/ *
+
 include pplabel/version
 include pplabel/default_setting.json
 include pplabel/openapi.yml
-recursive-include pplabel/static/ *
+include requirements.txt
+
 exclude test/
 exclude tool/
-include requirements.txt

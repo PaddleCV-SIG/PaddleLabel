@@ -65,7 +65,7 @@
 
 ![demo](doc/images/demo2.png)
 
-PP-Label旨在构建一个高效且灵活的图像数据标注工具。目前该完整的PP-Label包含三部分，这个项目包含PP-Label的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的前端实现，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的用于自动和交互标注的机器学习后端实现。
+PP-Label旨在构建一个高效且灵活的图像数据标注工具。整个PP-Label包括三部分，本项目包含PP-Label的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的PP-Label前端，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的自动和交互式标注的机器学习后端。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -77,55 +77,56 @@ PP-Label旨在构建一个高效且灵活的图像数据标注工具。目前该
 
 ### 安装依赖
 
-建议创建一个新的虚拟环境进行安装：
+为了避免依赖问题，建议创建新的虚拟环境进行安装：
 
 ```python
 conda create -n pplabel python=3.9
 conda activate pplabel
 ```
 
-#### 通过PIP进行安装
+#### 通过PIP安装
 
 ```shell
 pip install pplabel
-pplabel
+pplabel # 运行 pplabel
 ```
 
-#### 通过源码进行安装
+#### 通过源码安装
 
-首先需要将源代码克隆到本地：
+首先需要将后端代码克隆到本地：
 
 ```shell
 git clone https://github.com/PaddleCV-SIG/PP-Label
 ```
 
-接下来需要克隆并构建前端部分：
+接下来需要克隆并构建前端：
 
 ```shell
+cd ..
 git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
 cd PP-Label-Frontend
 npm install -g yarn
 yarn
 npm run build
-cd ..
 ```
 
 最后，将构建好的前端部分复制到`pplabel/static/`中：
 
 ```shell
-cd PP-Label
+cd ../PP-Label
 pip install -r requirements.txt
 mkdir pplabel/static/
 cp -r ../PP-Label-Frontend/dist/* pplabel/static/
 
 python setup.py install
+pplabel # 运行 pplabel
 ```
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
 ### 使用
 
-完成上述的安装操作后，可以直接使用`pplabel`指令运行PP-Label的前后端。目前PP-Labell默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以选择将服务公开给`lan`。这样就可以在计算机上运行该服务，并用平板电脑进行注释：
+完成上述的安装操作后，可以直接使用`pplabel`指令运行PP-Label的前后端。目前PP-Label默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用`pplabel --lan`将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。
 
 ```shell
 pplabel --lan

@@ -1,8 +1,8 @@
 name: Publish PP-Label to pypi
 
-# on: [push]
-on:
-  workflow_dispatch:
+on: [push]
+# on:
+#   workflow_dispatch:
 
 jobs:
   build:

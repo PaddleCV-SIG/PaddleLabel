@@ -3,7 +3,7 @@ name: Publish PP-Label to pypi
 # on: [push]
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,31 +13,67 @@ jobs:
         node-version: ["16.x"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: cd
+        run: |
+          cd ..
+          tree .
+      - name: tree
+        run: |
+          tree .
+      
+      # - name: Cache node_modules
+      #   id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-node_modules2
+      #   with:
+      #     path: ./node_modules/
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      
+      # - name: Install yarn
+      #   run: npm i --global yarn
+      
+      # - name: Install node_modules
+      #   if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      #   run: yarn
+      
+      # - run: |
+      #     ls -la
+      #     ls -la node_modules
+      #     ls -la node_modules/.bin
+      #     echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
+      
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Tree
         run: |
+          cd ..
           tree .
+      - name: Build Frontend
+        run: |
+          cd ..
+          tree .
+          git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install twine wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      # - name: Lint with flake8
-      #   run: |
-      #     # stop the build if there are Python syntax errors or undefined names
-      #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-      #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Bump version
         run: |
           python tool/bumpversion.py
-      # - name: Test with pytest
-      #   run: |
-      #     pytest
+      
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel

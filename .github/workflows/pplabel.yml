@@ -41,14 +41,11 @@ jobs:
 
       - name: Install yarn
         run: |
-          ls
           npm i --global yarn
-        working-directory: ../PP-Label-Frontend
 
       - name: Install node_modules
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: yarn
-        working-directory: ../PP-Label-Frontend
 
       - run: |
           ls -la
@@ -59,12 +56,6 @@ jobs:
       - name: Build frontend
         run: |
           npm run build
-        working-directory: ../PP-Label-Frontend
-
-      - name: Tree
-        run: |
-          ls ../PP-Label-Frontend/dist
-          ls .
 
       - uses: actions/checkout@v3
 

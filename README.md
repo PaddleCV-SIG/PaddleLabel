@@ -76,6 +76,7 @@ PP-Label currently support image classification, object detection and image segm
 
 - 2022.5.31: v0.1.0 [1] Support image classification, detection and segmentations. [2] Interactive image segmentation with EISeg models
 
-## Contributors
+## Contribute
 
 Please refer to the [Developers Guide](./doc/developers_guide.md) for details on backend implementation.
+

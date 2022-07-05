@@ -45,7 +45,7 @@ jobs:
           npm i --global yarn
 
       - name: Install node_modules
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        # if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: |
           yarn
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3

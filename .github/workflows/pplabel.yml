@@ -70,9 +70,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: |
-        pwd
-        ls .
-        ls ..
+          pwd
+          ls .
+          ls ..
 
       - name: Install dependencies
         run: |

@@ -31,7 +31,7 @@ jobs:
 
       - name: Cache node_modules
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node_modules2
         with:
@@ -69,10 +69,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: |
-          pwd
-          ls .
-          ls ..
+      # - run: |
+      #     pwd
+      #     ls .
+      #     ls ..
 
       - name: Install dependencies
         run: |
@@ -86,12 +86,14 @@ jobs:
       
       - name: Copy built frontend
         run: |
-          mv ../dist/ pplabel/static/
+          mv ../dist/ ./pplabel/static/
 
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
       
-      # - name: Tree
-      #   run: |
-      #     tree .
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: pplabel-publish
+          password: ${{ secrets.PPLABEL_PUBLISH_API_TOKEN }}

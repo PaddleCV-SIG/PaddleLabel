@@ -13,18 +13,18 @@ jobs:
         node-version: ["16.x"]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out frontend project
+        uses: actions/checkout@master
+        with:
+          repository: PaddleCV-SIG/PP-Label-Frontend
 
-      - name: Clone frontend project
-        working-directory: ../
+      - name: ls
         run: |
           ls .
-          git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          path: ../PP-Label-Frontend
           node-version: ${{ matrix.node-version }}
           cache: "npm"
 
@@ -34,7 +34,7 @@ jobs:
         env:
           cache-name: cache-node_modules2
         with:
-          path: ../PP-Label-Frontend/node_modules/
+          path: ./node_modules/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -55,24 +55,26 @@ jobs:
           ls -la node_modules
           ls -la node_modules/.bin
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
-      
+
       - name: Build frontend
         run: |
           npm run build
         working-directory: ../PP-Label-Frontend
-      
+
       - name: Tree
-        run: | 
+        run: |
           ls ../PP-Label-Frontend/dist
           ls .
+
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Tree
-        run: | 
+        run: |
           ls ../PP-Label-Frontend/dist
           ls .
 

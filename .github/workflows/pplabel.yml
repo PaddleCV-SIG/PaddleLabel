@@ -50,8 +50,9 @@ jobs:
 
       - run: |
           # ls -la
-          # ls -la node_modules
-          # ls -la node_modules/.bin
+          ls -la node_modules
+          echo "======"
+          ls -la node_modules/.bin
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Build frontend
@@ -93,7 +94,8 @@ jobs:
           python setup.py sdist bdist_wheel
       
       - name: Publish to PyPI
+        # run:twine upload dist/*.tar.gz
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: pplabel-publish
+          user: linhandev
           password: ${{ secrets.PPLABEL_PUBLISH_API_TOKEN }}

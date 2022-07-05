@@ -45,18 +45,22 @@
       <ul>
         <li><a href="#安装依赖">安装依赖</a></li>
         <li><a href="#使用">使用</a></li>
-        <li><a href="#数据导入/导出">数据导入/导出</a></li>
-        <li><a href="#图像分类">图像分类</a></li>
-        <li><a href="#语义分割">语义分割</a></li>
-        <li><a href="#目标检测">目标检测</a></li>
-        <li><a href="#关键点检测">关键点检测</a></li>
+        <li><a href="#高级功能">高级功能</a></li>
       </ul>
     <li><a href="#发行说明">发行说明</a></li>
     <li><a href="#许可证书">许可证书</a></li>
-    <li><a href="#开源贡献">开源贡献</a></li>
+    <li>
+      <a href="#开源贡献">开源贡献</a>
+      <ul>
+        <li><a href="#贡献者">贡献者</a></li>
+        <li><a href="#鸣谢">鸣谢</a></li>
+        <li><a href="#如何参与开源项目">如何参与开源项目</a></li>
+      </ul>
     <li><a href="#学术引用">学术引用</a></li>
   </ol>
 </details>
+
+
 
 
 <!-- about project -->
@@ -65,7 +69,7 @@
 
 ![demo](doc/images/demo2.png)
 
-PP-Label旨在构建一个高效且灵活的图像数据标注工具。目前该完整的PP-Label包含三部分，这个项目包含PP-Label的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的前端实现，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的用于自动和交互标注的机器学习后端实现。
+PP-Label旨在构建一个高效且灵活的图像数据标注工具。目前完整的PP-Label包含了三部分，这个项目包含PP-Label的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的前端实现，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的用于自动和交互标注的机器学习后端实现。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -121,55 +125,44 @@ cp -r ../PP-Label-Frontend/dist/* pplabel/static/
 python setup.py install
 ```
 
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
 ### 使用
 
-完成上述的安装操作后，可以直接使用`pplabel`指令运行PP-Label的前后端。目前PP-Labell默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以选择将服务公开给`lan`。这样就可以在计算机上运行该服务，并用平板电脑进行注释：
+完成上述的安装操作后，可以直接使用`pplabel`指令运行PP-Label的前后端，PP-Labell默认会运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以选择将服务公开给`lan`。这样就可以在计算机上运行该服务，并用平板电脑进行标注：
 
 ```shell
 pplabel --lan
 ```
+#### 创建项目
+
+PP-Label支持图像分类、语义/实例分割以及目标/关键点检测的标注任务，浏览器打开PP-Label后，可以通过创建项目下的五个卡片进行不同类型的项目创建。点击卡片进入到对应的功能创建导航菜单，数据地址为本地数据文件夹的路径。完成后点击创建即可进入到标注界面。
+
+#### 数据标注
+
+PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏（不同任务有不同的工具栏，不同任务的使用详情请参考[数据集文件结构文档](doc/dataset_file_structure.md)）；界面右侧为标签列表，用于添加不同的标签和标注；下方为标注进度展示，上方为可以切换的标签页。使用时：
+
+1. 在右侧创建标签或标注
+2. 在工具栏中移动和缩放图像，找到对应的需要标注的目标（图像分类除外）
+3. 根据创建项目时选择的标注类型选择对应的工具进行标注
+4. 标注完成后点击保存
+
+#### 数据导出
+
+数据集标注完成后通过项目概述对数据集进行训练集、验证集和测试集的划分，并导出数据保存在指定路径。
+
+### 高级功能
+
+PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现自动化或半交互式数据标注，使用方法如下：
+
+1. XXXXXXX
+2. XXXXXXX
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
-
-### 数据导入/导出
-
-XXXXXXXXXX。
-
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
-### 图像分类
-
-XXXXXXXXXX。
-
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
-### 语义分割
-
-XXXXXXXXXX。
-
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
-### 目标检测
-
-XXXXXXXXXX。
-
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
-### 关键点检测
-
-XXXXXXXXXX。
-
-<p align="right">(<a href="#top">返回顶部</a>)</p>
-
-
 
 <!-- release notes-->
 
 ## 发行说明
 
-- [2022.7.XX] [alpha] 测试版本。 
+- [2022.7.XX] [alpha] 测试版本发布。 
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -177,7 +170,7 @@ XXXXXXXXXX。
 
 ## 开源协议
 
-本项目的发布受Apache 2.0 license许可认证。
+本项目的发布受Apache 2.0 license许可认证，详细信息请查阅[LICENSE](LICENSE)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -185,8 +178,21 @@ XXXXXXXXXX。
 
 ## 开源贡献
 
-- 非常感谢XXXXXXX。
-- 非常感谢XXXXXXX。
+### 贡献者
+
+感谢下列开发者参与或协助PP-Label的开发、维护、测试等：
+
+[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
+
+### 鸣谢
+
+感谢下列开源项目，使用它们使得PP-Label更加完善和强大：
+
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+
+### 如何参与开源项目
+
+如果你有任何好的想法或发现了任何问题，欢迎参与到我们的开发和维护中。有关后端实现的详细信息，请参阅[开发者指南](doc/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

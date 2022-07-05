@@ -21,6 +21,7 @@ jobs:
       - name: ls
         run: |
           ls .
+          pwd
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -48,14 +49,18 @@ jobs:
         run: yarn
 
       - run: |
-          ls -la
-          ls -la node_modules
-          ls -la node_modules/.bin
+          # ls -la
+          # ls -la node_modules
+          # ls -la node_modules/.bin
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Build frontend
         run: |
           npm run build
+      
+      - name: Move built frontend
+        run: |
+          mv dist/ ..
 
       - uses: actions/checkout@v3
 
@@ -64,23 +69,29 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Tree
+      - run: |
+        pwd
+        ls .
+        ls ..
+
+      - name: Install dependencies
         run: |
-          ls ../PP-Label-Frontend/dist
-          ls .
+          python -m pip install --upgrade pip
+          pip install twine wheel
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Bump version
+        run: |
+          python tool/bumpversion.py
+      
+      - name: Copy built frontend
+        run: |
+          mv ../dist/ pplabel/static/
 
-      # - name: Install dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install twine wheel
-      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      # - name: Bump version
-      #   run: |
-      #     python tool/bumpversion.py
-
-      # - name: Build package
-      #   run: |
-      #     python setup.py sdist bdist_wheel
+      - name: Build package
+        run: |
+          python setup.py sdist bdist_wheel
+      
       # - name: Tree
       #   run: |
       #     tree .

@@ -14,69 +14,80 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
-      # - name: Use Node.js ${{ matrix.node-version }}
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-      #     cache: 'npm'
-      - name: cd
+
+      - name: Clone frontend project
         run: |
           cd ..
-          tree .
-      - name: tree
+          git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        working-directory: ../PP-Label-Frontend
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Cache node_modules
+        id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node_modules2
+        working-directory: ../PP-Label-Frontend
+        with:
+          path: ./node_modules/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+
+      - name: Install yarn
         run: |
-          tree .
+          ls
+          npm i --global yarn
+        working-directory: ../PP-Label-Frontend
+
+      - name: Install node_modules
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn
+        working-directory: ../PP-Label-Frontend
+
+      - run: |
+          ls -la
+          ls -la node_modules
+          ls -la node_modules/.bin
+          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
       
-      # - name: Cache node_modules
-      #   id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
-      #   uses: actions/cache@v2
-      #   env:
-      #     cache-name: cache-node_modules2
-      #   with:
-      #     path: ./node_modules/
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      - name: Build frontend
+        run: |
+          npm run build
+        working-directory: ../PP-Label-Frontend
       
-      # - name: Install yarn
-      #   run: npm i --global yarn
-      
-      # - name: Install node_modules
-      #   if: steps.node-modules-cache.outputs.cache-hit != 'true'
-      #   run: yarn
-      
-      # - run: |
-      #     ls -la
-      #     ls -la node_modules
-      #     ls -la node_modules/.bin
-      #     echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
-      
+      - name: Tree
+        run: | 
+          ls ../PP-Label-Frontend/dist
+          ls .
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Tree
-        run: |
-          cd ..
-          tree .
-      - name: Build Frontend
-        run: |
-          cd ..
-          tree .
-          git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install twine wheel
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Bump version
-        run: |
-          python tool/bumpversion.py
       
-      - name: Build package
-        run: |
-          python setup.py sdist bdist_wheel
       - name: Tree
-        run: |
-          tree .
+        run: | 
+          ls ../PP-Label-Frontend/dist
+          ls .
+
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install twine wheel
+      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      # - name: Bump version
+      #   run: |
+      #     python tool/bumpversion.py
+
+      # - name: Build package
+      #   run: |
+      #     python setup.py sdist bdist_wheel
+      # - name: Tree
+      #   run: |
+      #     tree .

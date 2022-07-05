@@ -33,9 +33,8 @@ jobs:
         uses: actions/cache@v2
         env:
           cache-name: cache-node_modules2
-        working-directory: ../PP-Label-Frontend
         with:
-          path: ./node_modules/
+          path: ../PP-Label-Frontend/node_modules/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-

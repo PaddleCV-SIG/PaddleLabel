@@ -21,6 +21,9 @@
     <a href="https://github.com/PaddleCV-SIG/PP-Label"><strong>浏览文档 »</strong></a>
     <br />
     <br />
+    简体中文 · <a href="doc/README_en.md">English</a>
+    <br />
+    <br />
     <a href="https://paddlecv-sig.github.io/PP-Label-Frontend/#/PP-Label-Frontend/welcome">查看演示</a>
     ·
     <a href="https://github.com/PaddleCV-SIG/PP-Label/issues">报告错误</a>
@@ -28,6 +31,7 @@
     <a href="https://github.com/PaddleCV-SIG/PP-Label/issues">请求功能</a>
   </p>
 </div>
+
 
 
 

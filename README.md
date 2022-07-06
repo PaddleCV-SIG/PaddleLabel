@@ -63,6 +63,8 @@
 
 
 
+
+
 <!-- about project -->
 
 ## 关于项目
@@ -152,10 +154,34 @@ PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏
 
 ### 高级功能
 
-PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现自动化或半交互式数据标注，使用方法如下：
+PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现自动化或交互式数据标注（目前仅支持图像分类和语义分割），使用方法如下：
 
-1. XXXXXXX
-2. XXXXXXX
+1. 克隆PP-Label-ML到本地：
+
+   ```shell
+   git clone https://github.com/PaddleCV-SIG/PP-Label-ML
+   ```
+
+2. 进入并安装PP-Label-ML所需的依赖：
+
+   ```shell
+   cd PP-Label-ML
+   pip install -r requirements.txt
+   ```
+
+3. 启动ML后端服务，此时ML的后端URL为`http://10.62.242.119:1234/`：
+
+   ```shell
+   python -m pplabel_ml
+   ```
+
+4. 设置ML功能：进入到标注页面，打开右侧工具栏的智能标注功能，在ML Backend URL中填入上述的URL地址，点击Set。完成后在Model中选择需要使用的ML模型，点击Save保存，并在主界面将鼠标悬浮在智能标注工具上，出现模型选择，选择对应的ML模型即可。
+
+5. 如何选择模型XXXXXXXXXXX。
+
+6. 如何训练XXXXXXXXXXX。
+
+7. 如何使用推理XXXXXXXXXXX。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -183,7 +209,7 @@ PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载
 
 感谢下列开发者参与或协助PP-Label的开发、维护、测试等：
 
-[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
+​	[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
 
 ### 鸣谢
 

@@ -202,9 +202,7 @@ PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载
 
 ### 贡献者
 
-感谢下列开发者参与或协助PP-Label的开发、维护、测试等：
-
-​	[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
+感谢下列开发者参与或协助PP-Label的开发、维护、测试等：[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
 
 ### 鸣谢
 

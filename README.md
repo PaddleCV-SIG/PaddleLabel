@@ -158,34 +158,25 @@ PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏
 
 ### 高级功能
 
-PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现自动化或交互式数据标注（目前仅支持图像分类和语义分割），使用方法如下：
+PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持语义分割），使用方法如下：
 
-1. 克隆PP-Label-ML到本地：
+1. 进入到标注页面，打开右侧工具栏的智能标注功能，在Model Path和Weight Path中填入对应的`*.pdmodel`和`*.pdiparams`的文件路径，点击Save即可。
+2. 点击图像，鼠标左键为添加正样本点，鼠标右键为添加负样本点。
 
-   ```shell
-   git clone https://github.com/PaddleCV-SIG/PP-Label-ML
-   ```
+#### 模型下载
 
-2. 进入并安装PP-Label-ML所需的依赖：
-
-   ```shell
-   cd PP-Label-ML
-   pip install -r requirements.txt
-   ```
-
-3. 启动ML后端服务，此时ML的后端URL为`http://10.62.242.119:1234/`：
-
-   ```shell
-   python -m pplabel_ml
-   ```
-
-4. 设置ML功能：进入到标注页面，打开右侧工具栏的智能标注功能，在ML Backend URL中填入上述的URL地址，点击Set。完成后在Model中选择需要使用的ML模型，点击Save保存，并在主界面将鼠标悬浮在智能标注工具上，出现模型选择，选择对应的ML模型即可。
-
-5. 如何选择模型XXXXXXXXXXX。
-
-6. 如何训练XXXXXXXXXXX。
-
-7. 如何使用推理XXXXXXXXXXX。
+| 模型类型     | 适用场景             | 模型结构            | 模型下载地址                                                 |
+| ------------ | -------------------- | ------------------- | ------------------------------------------------------------ |
+| 高精度模型   | 通用场景的图像标注   | HRNet18_OCR64       | [static_hrnet18_ocr64_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_cocolvis.zip) |
+| 轻量化模型   | 通用场景的图像标注   | HRNet18s_OCR48      | [static_hrnet18s_ocr48_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_cocolvis.zip) |
+| 高精度模型   | 通用图像标注场景     | EdgeFlow            | [static_edgeflow_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_edgeflow_cocolvis.zip) |
+| 高精度模型   | 人像标注场景         | HRNet18_OCR64       | [static_hrnet18_ocr64_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_human.zip) |
+| 轻量化模型   | 人像标注场景         | HRNet18s_OCR48      | [static_hrnet18s_ocr48_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_human.zip) |
+| 轻量化模型   | 遥感建筑物标注场景   | HRNet18s_OCR48      | [static_hrnet18_ocr48_rsbuilding_instance](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr48_rsbuilding_instance.zip) |
+| 高精度模型\* | x光胸腔标注场景      | Resnet50_Deeplabv3+ | [static_resnet50_deeplab_chest_xray](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_resnet50_deeplab_chest_xray.zip) |
+| 轻量化模型   | 医疗肝脏标注场景     | HRNet18s_OCR48      | [static_hrnet18s_ocr48_lits](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_lits.zip) |
+| 轻量化模型\* | MRI椎骨图像标注场景  | HRNet18s_OCR48      | [static_hrnet18s_ocr48_MRSpineSeg](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_MRSpineSeg.zip) |
+| 轻量化模型\* | 质检铝板瑕疵标注场景 | HRNet18s_OCR48      | [static_hrnet18s_ocr48_aluminium](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_aluminium.zip) |
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

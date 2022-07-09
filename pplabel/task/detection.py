@@ -266,7 +266,7 @@ class Detection(BaseTask):
             )
         ]
 
-        print("data_paths", data_paths)
+        # print("data_paths", data_paths)
         # print("label_paths", label_paths)
 
         for label_path in label_paths:

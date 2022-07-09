@@ -28,8 +28,13 @@ def get_image(data_id):
     path = data.path
     project_id = data.task.project_id
     data_dir = Project._get(project_id=project_id).data_dir
-    return flask.send_from_directory(data_dir, path)
 
+    folder = osp.join(data_dir, osp.dirname(path))
+    file_name = osp.basename(path)
+    # return flask.send_from_directory(data_dir, path)
+    
+    return flask.send_from_directory(folder, file_name)
+    
     # data_path = osp.join(data_dir, path)
     # image = cv2.imread(data_path)
     # image_png = cv2.imencode(".png", image)

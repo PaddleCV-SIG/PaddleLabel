@@ -24,10 +24,10 @@ from pplabel.api.rpc.seg import polygon2points
 
 def parse_semantic_mask(annotation_path, labels):
     ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
-    print(ann.shape)
     frontend_id = 1
     anns = []
     # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
+    print(labels)
     if len(ann.shape) == 3:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
         ann_gray = np.zeros(ann.shape[:2], dtype="uint8")
@@ -35,15 +35,25 @@ def parse_semantic_mask(annotation_path, labels):
             color = hex_to_rgb(label.color)
             label_mask = np.all(ann == color, axis=2)
             ann_gray[label_mask == 1] = label.id
+            ann[label_mask == 1] = 0
+        
+        if ann.sum()!= 0:
+            ann = ann.reshape((-1, ann.shape[-1]))
+            abort(f"Mask {annotation_path} contains unspecified labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?", 404)
+
         ann = ann_gray
 
-    # TODO: connected component
     for label in labels:
-        label_mask = ann
+        label_mask = deepcopy(ann)
         label_mask[label_mask != label.id] = 0
         label_mask[label_mask != 0] = 255
-        if len(np.unique(label_mask)) == 1:
+
+        # print(np.unique(ann))
+        
+        if label_mask.sum() == 0:
             continue
+        
+        ann[ann == label.id] = 0
         (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(
             label_mask, connectivity=8
         )
@@ -53,6 +63,9 @@ def parse_semantic_mask(annotation_path, labels):
             result = f"{1},{frontend_id}," + result
             anns.append({"label_name": label.name, "result": result, "type": "brush"})
             frontend_id += 1
+    
+    if ann.sum() != 0:
+        abort(f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?", 404)
 
     s = [1] + list(ann.shape)
     s = [str(s) for s in s]
@@ -65,7 +78,6 @@ def parse_instance_mask(annotation_path, labels):
     instance_mask = mask[0]
     label_mask = mask[1]
     anns = []
-    # print(np.unique(instance_mask), np.unique(label_mask))
 
     for label in labels:
         instance_part = instance_mask[label_mask == label.id]
@@ -475,7 +487,6 @@ class SemanticSegmentation(InstanceSegmentation):
 
             copy(data_path, export_data_dir)
             height, width = map(int, data.size.split(",")[1:3])
-            print(height, width)
             if type == "pesudo":
                 mask = np.zeros((height, width, 3))
             else:

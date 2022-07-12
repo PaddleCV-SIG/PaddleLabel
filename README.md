@@ -4,8 +4,6 @@
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg?style=for-the-badge)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/pplabel?color=blue&style=for-the-badge) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/pplabel?color=orange&style=for-the-badge) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg?style=for-the-badge)]() 
 
-
-
 <!-- project informations -->
 
 <div align="center">
@@ -31,11 +29,6 @@
     <a href="https://github.com/PaddleCV-SIG/PP-Label/issues">请求功能</a>
   </p>
 </div>
-
-
-
-
-
 <!-- contents -->
 
 <details>
@@ -63,11 +56,6 @@
     <li><a href="#学术引用">学术引用</a></li>
   </ol>
 </details>
-
-
-
-
-
 
 <!-- about project -->
 
@@ -160,8 +148,31 @@ PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏
 
 PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持语义分割），使用方法如下：
 
-1. 进入到标注页面，打开右侧工具栏的智能标注功能，在Model Path和Weight Path中填入对应的`*.pdmodel`和`*.pdiparams`的文件路径，点击Save即可。
-2. 点击图像，鼠标左键为添加正样本点，鼠标右键为添加负样本点。
+1. 安装PP-Label-ML：
+
+   1. 通过pip安装：
+
+       ```shell
+       pip install pplabel-ml
+       ```
+
+   2. 通过源码安装：
+
+       ```shell
+       git clone https://github.com/PaddleCV-SIG/PP-Label-ML
+       cd PP-Label-ML
+       python setup.py install
+       ```
+
+2. 开启ML后端：
+
+   ```shell
+   pplabel-ml # 运行 pplabel-ml
+   ```
+
+3. 进入到标注页面，打开右侧工具栏的智能标注功能，在Backend URL中填入ML后端提供的URL。若通过pip方式安装的PP-Label-ML，则自带一个通用的交互式分割模型参数。如果需要针对不同任务选择不同的交互式模型参数，可以通过下方“模型下载”处下载模型参数到本地，并在Model Path和Weight Path中填入对应的`*.pdmodel`和`*.pdiparams`的文件绝对路径，完成后点击Save即可。
+
+4. 点击图像，鼠标左键为添加正样本点，鼠标右键为添加负样本点。
 
 #### 模型下载
 

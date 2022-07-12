@@ -96,9 +96,10 @@ def crud(Model, Schema, triggers=[]):
         # 2. check request key exist and can be edited
         body = connexion.request.json
 
-        for k in body.keys():
+        for k in list(body.keys()):
             if k in Model._immutables:
-                abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
+                # abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
+                del body[k]
             if k not in Model._cols:
                 abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
 

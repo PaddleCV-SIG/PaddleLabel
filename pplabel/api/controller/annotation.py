@@ -41,21 +41,54 @@ def get_by_data(data_id):
 
 
 def set_all_by_data(data_id):
+    # 1. ensure data exists
     _, data = Data._exists(data_id)
-    delete_by_data(data_id)
 
-    anns = connexion.request.json
-    task = Task._get(task_id=data.task_id)
-
-    # print("anns", task.project_id, task.task_id, anns)
-
+    # 2. load and parse all new anns
     schema = AnnotationSchema()
+    anns = connexion.request.json
+    for idx in range(len(anns)):
+        del anns[idx]["label"]
+        # del anns[idx]["created"]
+        # del anns[idx]["modified"]
+        print("+_+_+", anns[idx])
+        anns[idx] = schema.load(anns[idx])
+
+    # 3. add new ann and update existing ann
+    task = Task._get(task_id=data.task_id)
+    new_ann_ids = []
     for ann in anns:
-        ann = schema.load(ann)
-        # print("====", ann)
-        ann.task_id = task.task_id
-        ann.project_id = task.project_id
-        data.annotations.append(ann)
+        # TODO: check its right
+        if ann.annotation_id is None:
+            ann.task_id = task.task_id
+            ann.project_id = task.project_id
+            db.session.add(ann)
+        else:
+            new_ann_ids.append(anns[idx].annotation_id)
+            ann_dict = schema.dump(ann)
+            del ann_dict["created"]
+            del ann_dict["modified"]
+            del ann_dict["annotation_id"]
+            del ann_dict["label"]
+            print(ann_dict, type(ann_dict))
+
+            Annotation.query.filter(
+                Annotation.annotation_id == ann.annotation_id
+            ).update(ann_dict)
+
+    # 4. remove anns that are in db, but not in anns
+    curr_anns = Annotation._get(data_id=data.data_id, many=True)
+    for curr_ann in curr_anns:
+        if curr_ann.annotation_id not in new_ann_ids:
+            db.session.delete(curr_ann)
+
+    # schema = AnnotationSchema()
+    # for ann in anns:
+    #     ann = schema.load(ann)
+    #     # print("====", ann)
+    #     ann.task_id = task.task_id
+    #     ann.project_id = task.project_id
+    #     data.annotations.append(ann)
     db.session.commit()
 
 

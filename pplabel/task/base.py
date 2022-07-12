@@ -145,9 +145,13 @@ class BaseTask:
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
-                    label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
+                    label = self.add_label(
+                        ann["label_name"], ann.get("color"), commit=True
+                    )
                 del ann["label_name"]
-                ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
+                ann = Annotation(
+                    label_id=label.label_id, project_id=project.project_id, **ann
+                )
                 task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
@@ -169,6 +173,12 @@ class BaseTask:
                 return label.id
         return None
 
+    def label_name2label_id(self, label_name):
+        for label in self.project.labels:
+            if label.name == label_name:
+                return label.label_id
+        return None
+
     def read_split(self, data_dir=None, delimiter=" "):
         if data_dir is None:
             data_dir = self.project.data_dir
@@ -186,7 +196,13 @@ class BaseTask:
         return sets
 
     def export_split(
-        self, export_dir, tasks, new_paths, delimiter=" ", with_labels=True, annotation_ext=None
+        self,
+        export_dir,
+        tasks,
+        new_paths,
+        delimiter=" ",
+        with_labels=True,
+        annotation_ext=None,
     ):
         # only used in file-file split, not in file-class split
         if annotation_ext is not None and annotation_ext[0] == ".":
@@ -211,9 +227,12 @@ class BaseTask:
                 else:
                     annotation_path = new_path.replace("JPEGImages", "Annotations")
                     annotation_path = (
-                        annotation_path[: -annotation_path[::-1].find(".")] + annotation_ext
+                        annotation_path[: -annotation_path[::-1].find(".")]
+                        + annotation_ext
                     )
-                    print(new_path + delimiter + annotation_path, file=set_files[task.set])
+                    print(
+                        new_path + delimiter + annotation_path, file=set_files[task.set]
+                    )
 
         for f in set_files:
             f.close()
@@ -353,7 +372,9 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(self, export_dir:str, background_line: str = None, with_id:bool=False):
+    def export_labels(
+        self, export_dir: str, background_line: str = None, with_id: bool = False
+    ):
         label_names_path = osp.join(export_dir, "labels.txt")
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)
@@ -362,7 +383,7 @@ class BaseTask:
                 print(background_line.strip(), file=f)
             for lab in labels:
                 print(lab)
-                print(lab.name, end=" " if with_id else "\n" , file=f)
+                print(lab.name, end=" " if with_id else "\n", file=f)
                 if with_id:
                     print(lab.id, file=f)
         return labels
@@ -413,25 +434,33 @@ class BaseTask:
             catgs.append(catg)
 
         tried_names = []  # guard against invalid dependency graph
-        while len(catgs) != 0:
+        for _ in range(len(catgs) * 2):
+            if len(catgs) == 0:
+                break
             catg = catgs.popleft()
+            if self.label_name2id(catg["name"]) is not None:
+                continue
+
             color = catg.get("color", None)
             if color is not None:
                 color = name_to_hex(color)
             if catg["supercategory"] == "none" or len(catg["supercategory"]) == 0:
                 self.add_label(
-                    name=catg["name"], id=catg["id"], super_category_id=None, color=color
+                    name=catg["name"],
+                    id=catg["id"],
+                    super_category_id=None,
+                    color=color,
                 )
             else:
-                super_category_id = self.label_name2id(catg["supercategory"])
+                super_category_id = self.label_name2label_id(catg["supercategory"])
                 if super_category_id is None and catg["name"] not in tried_names:
                     catgs.append(catg)
                     tried_names.append(catg["name"])
-                    continue
-                self.add_label(
-                    name=catg["name"],
-                    id=catg["id"],
-                    super_category_id=super_category_id,
-                    color=color,
-                )
+                else:
+                    self.add_label(
+                        name=catg["name"],
+                        id=catg["id"],
+                        super_category_id=super_category_id,
+                        color=color,
+                    )
             db.session.commit()

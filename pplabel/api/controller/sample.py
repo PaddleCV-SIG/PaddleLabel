@@ -11,7 +11,8 @@ import connexion
 import pplabel
 from pplabel.config import data_base_dir
 from pplabel.api.schema import ProjectSchema
-from pplabel.api.model import TaskCategory
+from pplabel.api.model import TaskCategory, Project
+from pplabel.api.util import abort
 from pplabel.config import basedir
 from pplabel.task.util.file import copy, copycontent
 
@@ -74,10 +75,21 @@ def load_sample():
         "semantic_segmentation": ["semantic_seg", "mask"],
         "instance_segmentation": ["instance_seg", "polygon"],
     }
+    label_formats = {
+        "classification": "single_class",
+        "detection": "voc",
+        "semantic_segmentation": "mask",
+        "instance_segmentation": "polygon",
+    }
     task_category = TaskCategory._get(task_category_id=task_category_id)
     data_dir = osp.join(
         osp.expanduser("~"), ".pplabel", "sample", *sample_folder[task_category.name]
     )
+    curr_project = Project._get(data_dir=data_dir)
+    if curr_project is not None:
+        # abort(f"Sample project for {task_category.name} is already created. Please visit home page to enter the project.", 500)
+        return {"project_id": curr_project.project_id}, 200
+    
     print(task_category.name, task_category)
 
     project = {
@@ -85,6 +97,7 @@ def load_sample():
         "description": f"A {task_category.name} sample project created by PP-Label",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,
+        "label_format": label_formats[task_category.name],
     }
     project = ProjectSchema().load(project)
 

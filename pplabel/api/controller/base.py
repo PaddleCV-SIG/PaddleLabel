@@ -26,7 +26,7 @@ def crud(Model, Schema, triggers=[]):
         order = parse_order_by(Model, order_by)
 
         items = Model.query.order_by(order).all()
-        print(items)
+        # print(items)
         if post_get_all is not None:
             post_get_all(items, db.session)
         return Schema(many=True).dump(items), 200

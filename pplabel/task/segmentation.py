@@ -27,7 +27,7 @@ def parse_semantic_mask(annotation_path, labels):
     frontend_id = 1
     anns = []
     # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
-    print(labels)
+    # print(labels)
     if len(ann.shape) == 3:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
         ann_gray = np.zeros(ann.shape[:2], dtype="uint8")

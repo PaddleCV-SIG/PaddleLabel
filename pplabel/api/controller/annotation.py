@@ -51,7 +51,7 @@ def set_all_by_data(data_id):
         del anns[idx]["label"]
         # del anns[idx]["created"]
         # del anns[idx]["modified"]
-        print("+_+_+", anns[idx])
+        # print("+_+_+", anns[idx])
         anns[idx] = schema.load(anns[idx])
 
     # 3. add new ann and update existing ann
@@ -70,7 +70,7 @@ def set_all_by_data(data_id):
             del ann_dict["modified"]
             del ann_dict["annotation_id"]
             del ann_dict["label"]
-            print(ann_dict, type(ann_dict))
+            # print(ann_dict, type(ann_dict))
 
             Annotation.query.filter(
                 Annotation.annotation_id == ann.annotation_id

@@ -382,7 +382,7 @@ class BaseTask:
             if background_line is not None:
                 print(background_line.strip(), file=f)
             for lab in labels:
-                print(lab)
+                # print(lab)
                 print(lab.name, end=" " if with_id else "\n", file=f)
                 if with_id:
                     print(lab.id, file=f)
@@ -403,7 +403,6 @@ class BaseTask:
                 img = cv2.imread(osp.join(data_dir, data_path))
                 size = [1] + list(img.shape)
                 size = ",".join([str(s) for s in size])
-                print("+__+_+", size)
                 self.add_task([{"path": data_path, "size": size}])
             else:
                 self.add_task([{"path": data_path}])

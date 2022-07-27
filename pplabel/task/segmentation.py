@@ -220,6 +220,8 @@ class InstanceSegmentation(BaseTask):
                 try:
                     for idx in range(2, len(points), 2):
                         w, h = points[idx : idx + 2]
+                        if line_width == 0:
+                            line_width = 1
                         cv2.line(
                             label_mask,
                             (prev_w, prev_h),
@@ -558,6 +560,8 @@ class SemanticSegmentation(InstanceSegmentation):
                             color = hex_to_rgb(ann.label.color)[::-1]
                         else:
                             color = int(label_id)
+                        if line_width == 0:
+                            line_width = 1
                         cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
                         prev_w, prev_h = w, h
                 except Exception as e:

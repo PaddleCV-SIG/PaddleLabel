@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/35907364/181203626-24fd69d3-15aa-4e9e-9a1a-a35b55ad673d.png" align="middle" alt="LOGO" width = "500" />
 </p>
-  
+
 **An Effective and Flexible Tool for Data Annotation based on [PaddlePaddle](https://github.com/paddlepaddle/paddle).**
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/pplabel?color=blue) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PP-Label?color=orange)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PP-Label?color=orange)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/pplabel?color=orange) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg)]() 
@@ -48,12 +48,14 @@ PPLabel是基于飞桨PaddlePaddle各个套件的特性提供的配套标注工�
 ## 使用教程
 
 **文档**
-* [安装说明]()
-* [分类标注]()
-* [检测标注]()
-* [分割标注]()
+
+* [安装说明](doc/install.md)
+* [分类标注](doc/classification.md)
+* [检测标注](doc/detection.md)
+* [分割标注](doc/segmentation.md)
 
 **教程**
+
 * [快速体验]()
 * [如何用PaddleClas进行训练]()
 * [如何用PaddleDet进行训练]()

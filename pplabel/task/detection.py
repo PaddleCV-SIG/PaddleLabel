@@ -346,7 +346,7 @@ class Detection(BaseTask):
             )
 
         # 3. write coco json
-        coco_others = project._get_other_settings()["coco_others"]
+        coco_others = project._get_other_settings().get("coco_others", {})
         for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
             outcoco = deepcopy(coco)
             outcoco.dataset["images"] = [

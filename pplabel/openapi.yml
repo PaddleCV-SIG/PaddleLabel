@@ -1297,7 +1297,6 @@ components:
       properties:
         annotation_id:
           type: integer
-          readOnly: true
         frontend_id:
           type: integer
         task_id:

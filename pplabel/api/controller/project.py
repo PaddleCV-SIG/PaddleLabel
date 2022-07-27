@@ -78,7 +78,10 @@ def post_add(new_project, se):
         print(dir(e))
         db.session.delete(project)
         db.session.commit()
-        abort(e.detail, 500, e.title)
+        if "detail" in dir(e):
+            abort(e.detail, 500, e.title)
+        else:
+            abort(str(e), 500, str(e))
 
     return new_project
 
@@ -92,7 +95,12 @@ def export_dataset(project_id):
     else:
         exporter = handler.default_exporter
     req = connexion.request.json
-    exporter(req["export_dir"])
+
+    try:
+        exporter(req["export_dir"])
+    except Exception as e:
+        abort(str(e), 500, str(e))
+
 
 
 def import_dataset(project_id):

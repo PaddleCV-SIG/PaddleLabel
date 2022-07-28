@@ -48,7 +48,7 @@ python setup.py install
 完成上述的安装操作后，可以直接在终端使用如下指令启动PPLabel的前后端。
 
 ```shell
-pplabel  # 运行pplabel
+pplabel  # 启动pplabel
 ```
 
 目前PPLabel默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用下列指令将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。

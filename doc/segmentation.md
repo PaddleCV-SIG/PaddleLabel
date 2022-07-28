@@ -2,108 +2,55 @@
 
 ![segmentation](https://user-images.githubusercontent.com/71769312/181412646-44f6e3cf-39b6-47c6-ab47-48583c78099d.png)
 
+PPLabel支持语义分割与实例分割两种图像分割标注任务。
+
 ## 创建项目
 
-PPLabel支持语义分割与实例分割的图像分割标注任务。浏览器打开PPLabel后，可以通过创建项目下的“语义分割/实例分割”项目创建。点击卡片进入到对应的功能创建导航菜单，数据地址为本地数据文件夹的路径。完成后点击创建即可进入到标注界面。
+浏览器打开PPLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
+
+项目创建选项卡有如下选项需要填写：
+
+- 项目名称（必填）：填写该分类标注项目的项目名
+- 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到
+- 数据集描述（选填）：填写该分类标注项目的使用的数据集的描述文字
+- 标注类型（必选）：选择该任务为多边形标注任务还是掩膜标注任务
+
+### 数据导入
+
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使PPLabel能够正确的识别和处理数据集，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时PPLabel提供了参考数据集，语义分割的参考数据集位于`~/.pplabel/sample/semantic_seg`路径下，实例分割的参考数据集位于`~/.pplabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 
-PPLabel的界面分为图像显示区域，显示区域左右两侧的工具栏，界面右侧为标签列表，用于添加不同的标签和标注；下方为标注进度展示，上方为可以切换的标签页。使用时：
+完成后进入标注界面，PPLabel的界面分为五个区域，上方为可以切换的标签页，下方为标注进度展示，左侧包含图像显示区域与工具栏，右侧为标签列表，用于添加不同的标签和标注。在分割任务的标注中，可以按以下步骤进行使用：
 
-1. 在右侧创建标签，如果标签存在就选择
-2. 在左侧选择多边形，根据目标轮廓进行点击，自动保存结果
-3. 实例分割需要在完成一个实例标注后点击标签列表继续标注下一个实例（标注列表为实例列表）
-4. 完成后切换下一张图像，重复上述操作直到标注完成
+### 多边形标注
 
-## 数据结构
+1. 点击右侧“添加标签”，填写信息并创建标签
+2. 选择一个标签，点击左侧工具栏的“多边形”，在图像界面上点击需要标注的物体轮廓，形成多边形包围物体（实例分割可以反复选择同一标签标注不同的实例），需要修改多边形可以点击左侧工具栏的“编辑”进行修改
+3. 点击左右按钮切换图像，重复上述操作，直到所有数据标注完毕
+4. 下方进度展示可以查看标注进度
 
-基础结构请参考[这里](dataset_file_structure.md)。
+### 掩膜标注
 
-PPLabel 支持两种类型的分割任务（语义分割和实例分割）和两种数据集格式（掩膜格式和多边形格式）。语义分割和实例分割中，多边形格式中是完全相同的，二者保存掩膜格式存在区别。
+1. 点击右侧“添加标签”，填写信息并创建标签
+2. 选择一个标签，点击左侧工具栏的“笔刷”（鼠标悬浮可以修改笔刷大小），在图像界面上按住鼠标左键绘制需要标注的物体内部（实例分割可以反复选择同一标签标注不同的实例），需要删除掩膜可以点击左侧工具栏的“橡皮擦”进行修改
+3. 点击左右按钮切换图像，重复上述操作，直到所有数据标注完毕
+4. 下方进度展示可以查看标注进度
 
-### 多边形格式
+*注意：① 在PPLabel中，右侧标签栏有标签和标注两种。在图像分割中，标签对应的是类别，而标注对应的是该类别的一个实例。语义分割每一个类别只能创建一个实例，而实例分割每一个类别可以创建多个实例。② 多边形模式和掩膜模式不可同时使用，请在创建项目时确定使用某种格式。*
 
-PPLabel 使用 COCO 格式将分割结果存为多边形。其导入/导出过程与[目标检测项目中使用 COCO 格式](#coco)的过程基本相同。
+## 完成标注
 
-### 掩膜格式
+完成数据标注后，PPLabel提供了方便的数据划分功能，以便与Paddle其他工具套件（如PaddleSeg和PaddleDetection）进行快速衔接。点击右侧工具栏的“项目总览”按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。通过上方的快捷按钮可以进行指定操作。
 
-进行语义分割时，只需要确定输入图像中每个像素属于哪一类。输出是和输入图像大小相同的 png，每个像素的灰度或颜色代表其类别。而实例分割在此基础上更进一步。不仅需要确定每个像素的类别，而且还要区分同一类别的不同实例（如图像中的所有车属于同一类别，但每一辆车都是一个实例）。实力分割时每个像素都有两个标签，一个是类别标签，另一个是实例编号。
+### 数据划分
 
-### 语义分割
+点击“划分数据集”按钮弹出划分比例的设置，分别填入对应训练集、验证集和测试集的占比，点击确定即可完成数据集的划分。
 
-样例数据集：[视盘分割数据集](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz)（注意 PPLabel 不能直接导入此数据集。此数据集中的掩膜是伪颜色。您必须修改`labels.txt`文件以指定视盘类别的颜色）。
+### 数据导出
 
-语义分割中图像和标签都是图像文件，所以需要通过图像所在文件夹区分图像和标签。所有在`/Dataset Path/JPEGImages/`文件夹下的图像都会被导入，无论图像是否存在标签。所有在`/Dataset Path/Annotations/`文件夹下的图片将被作为标签导入。
+点击“导出数据集”，输入需要导出到的文件夹路径，点击确认，即可导出标注完成的数据到指定路径。
 
-示例格式如下：
+## *交互式分割标注
 
-```shell
-Dataset Path
-├── Annotations
-│   ├── A0001.png
-│   ├── B0001.png
-│   ├── H0002.png
-│   └── ...
-├── JPEGImages
-│   ├── A0001.jpg
-│   ├── B0001.png
-│   ├── H0002.bmp
-│   └── ...
-├── labels.txt
-├── test_list.txt
-├── train_list.txt
-└── val_list.txt
-
-# labels.txt
-background -
-optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
-```
-
-在语义分割数据集导入过程中，PPLabel 将从`labels.txt`中获取标签编号。`labels.txt` 中**第一个标签将被视为背景，并赋标签编号 0**。对于灰度标签，PPLabel 会将标签中的像素灰度值与标签编号匹配。而对于伪彩色标签，PPLabel 会将每个像素的颜色与`labels.txt`中指定的颜色进行匹配。如果掩膜中有标注没有对应的标签，导入将失败。
-
-标签图像通常用 PNG 格式。 PPLabel 在确定图像和标签对应关系时会去掉所有文件拓展名，同名的图像和标签为一组。如果存在多长图像对应一个标签（如图像 image.png 和 image.webp 都对应标签 image.png），导入将会失败。
-
-在导出过程中，**`labels.txt`的第一行固定是背景类**。掩膜图像中的值遵循与导入时相同的规则。对于灰度标签，输出将是一个单通道图像，灰度值对应分类标签。对于伪彩色标签，输出将是一个三通道图像，标签颜色作为每个像素的颜色。
-
-### 实例分割
-
-实例分割中导入和导出掩膜的过程与语义分割类似，区别是标签由单通道或三通道变为二通道，格式由 png 变为 tiff。tiff 标签中第一个通道（下标 0）是类别标签，第二个通道（下标 1）是实例编号。
-
-用[Napari](https://napari.org/)查看这种标签很方便。可以按照[官方文档](https://napari.org/#installation)进行安装。然后参照下面的步骤使用：
-
-- 打开图像：
-  ![image](https://user-images.githubusercontent.com/29757093/178112182-1b7ae5d7-ab7b-4fee-b851-da2c43676da5.png)
-- 打开图像对应的 tiff 掩膜：
-  ![image](https://user-images.githubusercontent.com/29757093/178112188-e9c2e081-6752-4137-b60d-e64d9e7a11b6.png)
-- 右键单击掩膜图层，选择`Split Stack`：
-  ![image](https://user-images.githubusercontent.com/29757093/178112212-13c84d24-d753-4037-8851-d3e09f8fe9c8.png)
-  ![image](https://user-images.githubusercontent.com/29757093/178112232-85feeec9-2ede-4045-9105-446b07454864.png)
-- 右键单击图层 0，选择`Convert to Label`，查看实例掩膜：
-  ![image](https://user-images.githubusercontent.com/29757093/178112305-6a0e36d2-3cab-4265-a88d-9ee55044b97e.png)
-- 右键单击图层 1，选择`Convert to Label`，可以看到类别掩膜。
-
-https://bj.bcebos.com/paddlex/datasets/xiaoduxiong_ins_det.tar.gz
-
-https://paddlex.readthedocs.io/zh_CN/release-1.3/data/format/index.html
-
-## 高级功能
-
-PPLabel带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持语义分割），使用方法如下：
-
-1. 进入到标注页面，打开右侧工具栏的智能标注功能，在Model Path和Weight Path中填入对应的`*.pdmodel`和`*.pdiparams`的文件路径，点击Save即可。
-2. 点击图像，鼠标左键为添加正样本点，鼠标右键为添加负样本点。
-
-### 模型下载
-
-| 模型类型     | 适用场景             | 模型结构            | 模型下载地址                                                 |
-| ------------ | -------------------- | ------------------- | ------------------------------------------------------------ |
-| 高精度模型   | 通用场景的图像标注   | HRNet18_OCR64       | [static_hrnet18_ocr64_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_cocolvis.zip) |
-| 轻量化模型   | 通用场景的图像标注   | HRNet18s_OCR48      | [static_hrnet18s_ocr48_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_cocolvis.zip) |
-| 高精度模型   | 通用图像标注场景     | EdgeFlow            | [static_edgeflow_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_edgeflow_cocolvis.zip) |
-| 高精度模型   | 人像标注场景         | HRNet18_OCR64       | [static_hrnet18_ocr64_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_human.zip) |
-| 轻量化模型   | 人像标注场景         | HRNet18s_OCR48      | [static_hrnet18s_ocr48_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_human.zip) |
-| 轻量化模型   | 遥感建筑物标注场景   | HRNet18s_OCR48      | [static_hrnet18_ocr48_rsbuilding_instance](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr48_rsbuilding_instance.zip) |
-| 高精度模型\* | x光胸腔标注场景      | Resnet50_Deeplabv3+ | [static_resnet50_deeplab_chest_xray](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_resnet50_deeplab_chest_xray.zip) |
-| 轻量化模型   | 医疗肝脏标注场景     | HRNet18s_OCR48      | [static_hrnet18s_ocr48_lits](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_lits.zip) |
-| 轻量化模型\* | MRI椎骨图像标注场景  | HRNet18s_OCR48      | [static_hrnet18s_ocr48_MRSpineSeg](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_MRSpineSeg.zip) |
-| 轻量化模型\* | 质检铝板瑕疵标注场景 | HRNet18s_OCR48      | [static_hrnet18s_ocr48_aluminium](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_aluminium.zip) |
+PPLabel带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持语义分割），使用方法参考[交互式分割标注](interactive_segmentation.md)。

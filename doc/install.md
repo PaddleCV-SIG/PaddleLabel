@@ -47,7 +47,7 @@ pplabel # 运行 pplabel
 
 # 如何使用
 
-完成上述的安装操作后，可以直接使用`pplabel`指令运行PP-Label的前后端。目前PP-Label默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用`pplabel --lan`将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。
+完成上述的安装操作后，可以直接使用`pplabel`指令运行PPLabel的前后端。目前PP-Label默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用`pplabel --lan`将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。
 
 ```shell
 pplabel --lan

@@ -23,7 +23,7 @@
 ## 简介
 
 PPLabel是基于飞桨PaddlePaddle各个套件的特性提供的配套标注工具。它涵盖分类、检测、分割三种常见的计算机视觉任务的标注能力，具有手动标注和交互式标注相结合的能力。用户可以使用PPLabel方便快捷的标注自定义数据集并将导出数据用于飞桨提供的其他套件的训练预测流程中。
-整个PPLabel包括三部分，本项目包含PP-Label的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的PP-Label前端，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的自动和交互式标注的机器学习后端。
+整个PPLabel包括三部分，本项目包含PPLabel的后端实现。 [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend)是基于React和Ant Design构建的PPLabel前端，[PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML)包含基于PaddlePaddle的自动和交互式标注的机器学习后端。
 
 ![demo](https://user-images.githubusercontent.com/71769312/181277273-0c1d6189-4a84-44c7-a0ae-f9816dcc32ae.png)
 
@@ -66,7 +66,7 @@ PPLabel是基于飞桨PaddlePaddle各个套件的特性提供的配套标注工�
 
 ### 贡献者
 
-感谢下列开发者参与或协助PP-Label的开发、维护、测试等：[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
+感谢下列开发者参与或协助PPLabel的开发、维护、测试等：[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
 
 ### 如何参与开源项目
 

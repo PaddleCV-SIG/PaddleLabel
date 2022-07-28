@@ -1,12 +1,12 @@
 # 数据集文件结构说明
 
-本页面介绍 PP-Label 可以导入/导出的数据集文件结构，以帮助您更好的使用 PP-Label。**首先需要注意，PP-Label 可能修改数据集文件夹下的文件**。比如在`导入更多数据`时，新的数据文件将被移动到这个项目的数据集文件夹中。这一设计的目的在于避免复制数据集以节省磁盘空间。目前 PP-Label 不会删除盘上的任何内容，**但建议您在导入之前复制数据集作为备份**。使用中 PP-Label 会在该数据集根文件夹下创建一个名为`pplabel.warning`的文件。请避免更改文件夹下的任何文件以防出现问题。
+本页面介绍 PPLabel 可以导入/导出的数据集文件结构，以帮助您更好的使用 PPLabel。**首先需要注意，PPLabel 可能修改数据集文件夹下的文件**。比如在`导入更多数据`时，新的数据文件将被移动到这个项目的数据集文件夹中。这一设计的目的在于避免复制数据集以节省磁盘空间。目前 PPLabel 不会删除盘上的任何内容，**但建议您在导入之前复制数据集作为备份**。使用中 PPLabel 会在该数据集根文件夹下创建一个名为`pplabel.warning`的文件。请避免更改文件夹下的任何文件以防出现问题。
 
-PP-Label 为每一种支持的标注项目都内置了样例数据集。可以通过点击欢迎页面的“样例项目”按钮，选择任务类型进行创建。创建一个样例项目后，所有样例项目数据将被解压到`~/.pplabel/sample`文件夹中，可以作为参考。
+PPLabel 为每一种支持的标注项目都内置了样例数据集。可以通过点击欢迎页面的“样例项目”按钮，选择任务类型进行创建。创建一个样例项目后，所有样例项目数据将被解压到`~/.pplabel/sample`文件夹中，可以作为参考。
 
 ## 无标注数据集
 
-如果您的数据集不包含任何标注，只需将所有图像文件放在一个文件夹下。 PP-Label 会遍历文件夹（及所有子文件夹）中所有文件，并按照**文件拓展名**判断其类型，导入所有图像文件。所有隐藏文件（文件名以`.`开头）将被忽略。
+如果您的数据集不包含任何标注，只需将所有图像文件放在一个文件夹下。 PPLabel 会遍历文件夹（及所有子文件夹）中所有文件，并按照**文件拓展名**判断其类型，导入所有图像文件。所有隐藏文件（文件名以`.`开头）将被忽略。
 
 ## 基础功能
 
@@ -14,7 +14,7 @@ PP-Label 为每一种支持的标注项目都内置了样例数据集。可以�
 
 ### labels.txt
 
-所有不使用 COCO 格式保存标注的项目都支持`labels.txt`。PP-Label 在导入过程中会在数据集路径下寻找`labels.txt`文件。您可以在这个文件中列出该项目的所有标签（每行一个）。例如下面这样:
+所有不使用 COCO 格式保存标注的项目都支持`labels.txt`。PPLabel 在导入过程中会在数据集路径下寻找`labels.txt`文件。您可以在这个文件中列出该项目的所有标签（每行一个）。例如下面这样:
 
 ```text
 # labels.txt
@@ -22,7 +22,7 @@ Monkey
 Mouse
 ```
 
-PP-Label 的标签名称支持任何字符串，但是标签名称可能被用作导出数据集的文件夹名，所以应避免任何您的操作系统不支持的字符串，可以参考[这篇回答](https://stackoverflow.com/a/31976060)。Paddle 生态中的其他工具对标签名可能有进一步限制，如[PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md)不支持中文字符作为标签名称。
+PPLabel 的标签名称支持任何字符串，但是标签名称可能被用作导出数据集的文件夹名，所以应避免任何您的操作系统不支持的字符串，可以参考[这篇回答](https://stackoverflow.com/a/31976060)。Paddle 生态中的其他工具对标签名可能有进一步限制，如[PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md)不支持中文字符作为标签名称。
 
 在导入过程中，`labels.txt`可以包含标签名以外的信息。目前支持 4 种格式，如下所示。其中`|`表示分隔符，默认为空格。
 
@@ -51,7 +51,7 @@ snake 12 255 0 0 // rgb color
 
 所有支持的颜色名称在[这里](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/task/util/color.py#L15)列出。
 
-在导入过程中，PP-Label 会首先创建`labels.txt`中指定的标签。因此这个文件中的标签的编号将从**0**开始并递增。在导出过程中也将生成此文件。
+在导入过程中，PPLabel 会首先创建`labels.txt`中指定的标签。因此这个文件中的标签的编号将从**0**开始并递增。在导出过程中也将生成此文件。
 
 ### xx_list.txt
 
@@ -77,6 +77,273 @@ JPEGImages/3.jpeg Annotations/3.xml
 
 需要注意的是，**大多数项目都只会用到`xx_list.txt`中的数据集划分信息**。
 
-如果标签类别为整数，PP-Label 将在`labels.txt`中查找标签，标签 id 从**0**开始。一些数据集中一条数据可以有多个类别，比如图像多分类。如果希望用数字作为标签名称，您可以将数字写在`labels.txt`中，并在`xx_list.txt`中提供标签 id。或者可以给数字标签加一个前缀，例如将`10`表示为`n10`。
+如果标签类别为整数，PPLabel 将在`labels.txt`中查找标签，标签 id 从**0**开始。一些数据集中一条数据可以有多个类别，比如图像多分类。如果希望用数字作为标签名称，您可以将数字写在`labels.txt`中，并在`xx_list.txt`中提供标签 id。或者可以给数字标签加一个前缀，例如将`10`表示为`n10`。
 
 这三个文件都将在导出过程中生成，即使其中一些文件是空的。注意，为了确保这些文件可以被 Paddle 生态系统中的其他工具读取，没有注释的数据**不会包含在`xx_list.txt`中**。
+
+## 图像分类
+
+PPLabel 支持单分类和多分类。
+
+### 单分类
+
+也称为 ImageNet 格式。样例数据集：[flowers102](https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip)、[vegetables_cls](https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz)。
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── Cat
+│   ├── cat-1.jpg
+│   ├── cat-2.png
+│   ├── cat-3.webp
+│   └── ...
+├── Dog
+│   ├── dog-1.jpg
+│   ├── dog-2.jpg
+│   ├── dog-3.jpg
+│   └── ...
+├── monkey.jpg
+├── train_list.txt
+├── val_list.txt
+├── test_list.txt
+└── label.txt
+
+# labels.txt
+Monkey
+Mouse
+```
+
+单分类中图像所在的文件夹名称将被视为它的类别。所以如上数据集导入后，三张猫和三张狗的图片会有分类，monkey.jpg 没有分类。如果与文件夹名同名的标签不存在，导入过程中会自动创建。
+
+为了避免冲突，PPLabel 只使用`xx_list.txt`中的数据集划分信息，**这三个文件中的类别信息将不会被考虑**。您可以使用[此脚本](../tool/clas/mv_image_acc_split.py)在导入数据之前根据三个`xx_list.txt`文件更改数据的位置。
+
+### 多分类
+
+在多分类项目中，一条数据可以有多个类别。
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── image
+│   ├── 9911.jpg
+│   ├── 9932.jpg
+│   └── monkey.jpg
+├── labels.txt
+├── test_list.txt
+├── train_list.txt
+└── val_list.txt
+
+# labels.txt
+cat
+dog
+yellow
+black
+
+# train_list.txt
+image/9911.jpg 0 3
+image/9932.jpg 4 0
+image/9928.jpg monkey
+```
+
+在多分类项目中，数据的类别仅由`xx_list.txt`决定，不会考虑文件夹名称。
+
+## 目标检测
+
+PPLabel 支持 PASCAL VOC 和 COCO 两种目标检测数据集格式。
+
+### PASCAL VOC
+
+PASCAL VOC 格式将标注信息保存在 xml 文件中，每个图像都对应一个 xml 文件。样例数据集：[昆虫检测数据集](https://bj.bcebos.com/paddlex/datasets/insect_det.tar.gz)。
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── Annotations
+│   ├── 0001.xml
+│   ├── 0002.xml
+│   ├── 0003.xml
+│   └── ...
+├── JPEGImages
+│   ├── 0001.jpg
+│   ├── 0002.jpg
+│   ├── 0003.jpg
+│   └── ...
+├── labels.txt
+├── test_list.txt
+├── train_list.txt
+└── val_list.txt
+```
+
+xml 文件格式如下：
+
+```text
+<annotation>
+	<folder>JPEGImages</folder>
+	<filename></filename>
+	<source>
+		<database></database>
+	</source>
+	<size>
+		<width></width>
+		<height></height>
+		<depth></depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name></name>
+		<pose></pose>
+		<truncated></truncated>
+		<difficult></difficult>
+		<bndbox>
+			<xmin></xmin>
+			<ymin></ymin>
+			<xmax></xmax>
+			<ymax></ymax>
+		</bndbox>
+	</object>
+</annotation>
+```
+
+导入 VOC 格式数据集时，PPLabel 将把数据集路径下所有 xml 结尾文件作为标签，并将该标签与位于`/数据集路径/folder/filename`的图像文件匹配。路径中的`folder`和`filename`将从该 xml 文件中解析。如果 xml 中没有`folder`节点，默认值是 JPEGImages。如果`folder`节点内容为空，将认为图像文件位于`/数据集路径/filename`。
+
+### COCO
+
+COCO 格式将整个数据集的所有标注信息存在一个`json`文件中。这里列出了 COCO 的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。注意，所有使用 COCO 格式的项目都不支持`xx_list.txt`和`labels.txt`。样例数据集：[Plane Detection]()。
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── image
+│   ├── 0001.jpg
+│   ├── 0002.jpg
+│   ├── 0003.jpg
+│   └── ...
+├── train.json
+├── val.json
+└── test.json
+```
+
+COCO 文件的格式如下：
+
+```text
+{
+    "info": info,
+    "images": [image],
+    "annotations": [annotation],
+    "licenses": [license],
+}
+
+image{
+    "id": int,
+    "width": int,
+    "height": int,
+    "file_name": str,
+    "license": int,
+    "flickr_url": str,
+    "coco_url": str,
+    "date_captured": datetime,
+}
+
+
+annotation{
+    "id": int,
+    "image_id": int,
+    "category_id": int,
+    "segmentation": RLE or [polygon],
+    "area": float,
+    "bbox": [x,y,width,height],
+    "iscrowd": 0 or 1,
+}
+
+categories[
+{
+	"id": int,
+	"name": str,
+	"supercategory": str,
+	"color": str // this feature is specific to PP Label. It's not in the coco spec.
+}
+]
+```
+
+PPLabel 使用[pycocotoolse](https://github.com/linhandev/cocoapie)解析标注文件。pycocotoolse 与原版 [pycocotools](https://github.com/cocodataset/cocoapi)基本相同，只是在其基础上增加了一些数据集管理功能。导入过程中 PPLabel 会在数据集路径下寻找三个 json 文件：`train.json`、`val.json`和`test.json`，并从这三个文件中解析解析出用于训练、验证和测试的数据。请确保**每个图像在三个 json 中只被定义一次**，否则将导入失败。
+
+PPLabel 会导入数据集文件夹下的所有图像。COCO json 中每张图有一个 `file_name`，如果一张图的路径以 COCO json 中某一条记录的`file_name`结尾，将认为二者匹配。比如一个路径为`\Dataset Path\folder\image.png`的图像将与`file_name`为“image.png”的图像记录匹配。如果发现一张图片有多条匹配的记录，导入会失败。例如路径为`\Dataset Path\folder1\image.png`和`\Dataset Path\folder2\image.png`的两张图像都将与`file_name`为“image.png”的图像匹配。建议将所有图像放在一个文件夹下，以避免图像重名。
+
+如果一个图像的记录中没有包含宽度或高度的信息，PPLabel 将在导入期间读取图像来获取。这将拖慢数据集导入速度。
+
+导出过程中，三个 COCO json 文件都会生成，就算其中一些是空的。
+
+在 COCO json 的分类部分，PPLabel 添加了一个颜色字段。这个字段不在标准的 COCO 结构中。颜色字段会导出保存，并在导入时使用。
+
+## 图像分割
+
+PPLabel 支持两种类型的分割任务（语义分割和实例分割）和两种数据集格式（掩膜格式和多边形格式）。语义分割和实例分割中，多边形格式中是完全相同的，二者保存掩膜格式存在区别。
+
+### 多边形格式
+
+PPLabel 使用 COCO 格式将分割结果存为多边形。其导入/导出过程与[目标检测项目中使用 COCO 格式](#coco)的过程基本相同。
+
+### 掩膜格式
+
+进行语义分割时，只需要确定输入图像中每个像素属于哪一类。输出是和输入图像大小相同的 png，每个像素的灰度或颜色代表其类别。而实例分割在此基础上更进一步。不仅需要确定每个像素的类别，而且还要区分同一类别的不同实例（如图像中的所有车属于同一类别，但每一辆车都是一个实例）。实力分割时每个像素都有两个标签，一个是类别标签，另一个是实例编号。
+
+### 语义分割
+
+样例数据集：[视盘分割数据集](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz)（注意 PPLabel 不能直接导入此数据集。此数据集中的掩膜是伪颜色。您必须修改`labels.txt`文件以指定视盘类别的颜色）。
+
+语义分割中图像和标签都是图像文件，所以需要通过图像所在文件夹区分图像和标签。所有在`/Dataset Path/JPEGImages/`文件夹下的图像都会被导入，无论图像是否存在标签。所有在`/Dataset Path/Annotations/`文件夹下的图片将被作为标签导入。
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── Annotations
+│   ├── A0001.png
+│   ├── B0001.png
+│   ├── H0002.png
+│   └── ...
+├── JPEGImages
+│   ├── A0001.jpg
+│   ├── B0001.png
+│   ├── H0002.bmp
+│   └── ...
+├── labels.txt
+├── test_list.txt
+├── train_list.txt
+└── val_list.txt
+
+# labels.txt
+background -
+optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
+```
+
+在语义分割数据集导入过程中，PPLabel 将从`labels.txt`中获取标签编号。`labels.txt` 中**第一个标签将被视为背景，并赋标签编号 0**。对于灰度标签，PPLabel 会将标签中的像素灰度值与标签编号匹配。而对于伪彩色标签，PPLabel 会将每个像素的颜色与`labels.txt`中指定的颜色进行匹配。如果掩膜中有标注没有对应的标签，导入将失败。
+
+标签图像通常用 PNG 格式。 PPLabel 在确定图像和标签对应关系时会去掉所有文件拓展名，同名的图像和标签为一组。如果存在多长图像对应一个标签（如图像 image.png 和 image.webp 都对应标签 image.png），导入将会失败。
+
+在导出过程中，**`labels.txt`的第一行固定是背景类**。掩膜图像中的值遵循与导入时相同的规则。对于灰度标签，输出将是一个单通道图像，灰度值对应分类标签。对于伪彩色标签，输出将是一个三通道图像，标签颜色作为每个像素的颜色。
+
+### 实例分割
+
+实例分割中导入和导出掩膜的过程与语义分割类似，区别是标签由单通道或三通道变为二通道，格式由 png 变为 tiff。tiff 标签中第一个通道（下标 0）是类别标签，第二个通道（下标 1）是实例编号。
+
+用[Napari](https://napari.org/)查看这种标签很方便。可以按照[官方文档](https://napari.org/#installation)进行安装。然后参照下面的步骤使用：
+
+- 打开图像：
+  ![image](https://user-images.githubusercontent.com/29757093/178112182-1b7ae5d7-ab7b-4fee-b851-da2c43676da5.png)
+- 打开图像对应的 tiff 掩膜：
+  ![image](https://user-images.githubusercontent.com/29757093/178112188-e9c2e081-6752-4137-b60d-e64d9e7a11b6.png)
+- 右键单击掩膜图层，选择`Split Stack`：
+  ![image](https://user-images.githubusercontent.com/29757093/178112212-13c84d24-d753-4037-8851-d3e09f8fe9c8.png)
+  ![image](https://user-images.githubusercontent.com/29757093/178112232-85feeec9-2ede-4045-9105-446b07454864.png)
+- 右键单击图层 0，选择`Convert to Label`，查看实例掩膜：
+  ![image](https://user-images.githubusercontent.com/29757093/178112305-6a0e36d2-3cab-4265-a88d-9ee55044b97e.png)
+- 右键单击图层 1，选择`Convert to Label`，可以看到类别掩膜。
+
+https://bj.bcebos.com/paddlex/datasets/xiaoduxiong_ins_det.tar.gz
+
+https://paddlex.readthedocs.io/zh_CN/release-1.3/data/format/index.html

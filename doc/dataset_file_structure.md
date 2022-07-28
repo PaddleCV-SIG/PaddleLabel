@@ -269,17 +269,19 @@ categories[
 ]
 ```
 
-关于COCO格式的使用，需要注意以下问题：
+#### 数据导入
 
-1. PPLabel 使用[pycocotoolse](https://github.com/linhandev/cocoapie)解析标注文件。pycocotoolse 与原版 [pycocotools](https://github.com/cocodataset/cocoapi)基本相同，只是在其基础上增加了一些数据集管理功能。导入过程中 PPLabel 会在数据集路径下寻找三个 json 文件：`train.json`、`val.json`和`test.json`，并从这三个文件中解析出用于训练、验证和测试的数据。请确保**每个图像在三个 json 中只被定义一次**，否则将导入失败。
+PPLabel 使用[pycocotoolse](https://github.com/linhandev/cocoapie)解析标注文件。pycocotoolse 与原版 [pycocotools](https://github.com/cocodataset/cocoapi)基本相同，仅在其基础上增加了一些数据集管理功能。导入过程中 PPLabel 会在数据集路径下寻找三个 json 文件：`train.json`、`val.json`和`test.json`，并从这三个文件中解析出用于训练、验证和测试的数据。请确保**每个图像在三个 json 中只被定义一次**，否则将导入失败。
 
-2. PPLabel 会导入数据集文件夹下的所有图像。COCO json 中每张图有一个 `file_name`，如果一张图的路径以 COCO json 中某一条记录的`file_name`结尾，将认为二者匹配。比如一个路径为`\Dataset Path\folder\image.png`的图像将与`file_name`为“image.png”的图像记录匹配。如果发现一张图片有多条匹配的记录，导入会失败。例如路径为`\Dataset Path\folder1\image.png`和`\Dataset Path\folder2\image.png`的两张图像都将与`file_name`为“image.png”的图像匹配。**建议将所有图像放在一个文件夹下，以避免图像重名**。
+在导入时PPLabel 会导入数据集文件夹下的所有图像。COCO json 中每张图有一个 `file_name`，对应匹配一张图的路径。因此如果发现一张图片有多条匹配的记录，导入会失败。例如路径为`\Dataset Path\folder1\image.png`和`\Dataset Path\folder2\image.png`的两张图像都将与`file_name`为“image.png”的图像匹配。**建议将所有图像放在一个文件夹下，以避免图像重名**。
 
-3. 如果一个图像的记录中没有包含宽度或高度的信息，PPLabel 将在导入期间读取图像来获取。这将拖慢数据集导入速度。
+如果一个图像的记录中没有包含宽度或高度的信息，PPLabel 将在导入期间读取图像来获取。这将拖慢数据集导入速度。
 
-4. 导出过程中，即使将所有数据都划分为训练集，上述三个 COCO json 文件也都会生成。
+#### 数据导出
 
-5. 在 COCO json 的分类部分，PPLabel 添加了一个颜色字段。这个字段不在标准的 COCO 结构中。颜色字段会导出保存，并在导入时使用。
+导出过程中，即使将所有数据都划分为同一子集（如训练集），上述三个 COCO json 文件也都会生成。
+
+在 COCO json 的分类部分，PPLabel 添加了一个颜色字段。这个字段不在标准的 COCO 结构中。颜色字段会导出保存，并在导入时使用。
 
 ## 图像分割
 
@@ -323,11 +325,17 @@ background -
 optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
 ```
 
+#### 数据导入
+
 在语义分割数据集导入过程中，PPLabel 将从`labels.txt`中获取标签编号。`labels.txt` 中**第一个标签将被视为背景，并赋标签编号 0**。对于灰度标签，PPLabel 会将标签中的像素灰度值与标签编号匹配。而对于伪彩色标签，PPLabel 会将每个像素的颜色与`labels.txt`中指定的颜色进行匹配。如果掩膜中有标注没有对应的标签，导入将失败。
 
 标签图像通常用 PNG 格式。 PPLabel 在确定图像和标签对应关系时会去掉所有文件拓展名，同名的图像和标签为一组。如果存在多长图像对应一个标签（如图像 image.png 和 image.webp 都对应标签 image.png），导入将会失败。
 
+#### 数据导出
+
 在导出过程中，**`labels.txt`的第一行固定是背景类**。掩膜图像中的值遵循与导入时相同的规则。对于灰度标签，输出将是一个单通道图像，灰度值对应分类标签。对于伪彩色标签，输出将是一个三通道图像，标签颜色作为每个像素的颜色。
+
+对于不同格式的导出，多边形格式就只会保存多边形，而不会保存掩膜；反之只保存掩膜不保存多边形，多边形将转换成掩膜进行保存。因此不建议您在选择了多边形标注或掩膜标注之后仍然将两种标注形式混用。
 
 ### 实例分割
 

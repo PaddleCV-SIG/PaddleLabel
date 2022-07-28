@@ -295,7 +295,7 @@ PPLabel 使用 COCO 格式将分割结果存为多边形。其导入/导出过�
 
 ### 语义分割
 
-样例数据集：[视盘分割数据集](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz)（注意 PPLabel 不能直接导入此数据集。此数据集中的掩膜是伪颜色。您必须修改`labels.txt`文件以指定视盘类别的颜色）。
+样例数据集：[视盘分割数据集](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz)。
 
 语义分割中图像和标签都是图像文件，所以需要通过图像所在文件夹区分图像和标签。所有在`/Dataset Path/JPEGImages/`文件夹下的图像都会被导入，无论图像是否存在标签。所有在`/Dataset Path/Annotations/`文件夹下的图片将被作为标签导入。
 

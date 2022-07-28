@@ -11,7 +11,6 @@ conda activate pplabel
 
 ```shell
 pip install pplabel
-pplabel # 运行 pplabel
 ```
 
 ## 通过源码安装
@@ -42,13 +41,18 @@ mkdir pplabel/static/
 cp -r ../PP-Label-Frontend/dist/* pplabel/static/
 
 python setup.py install
-pplabel # 运行 pplabel
 ```
 
-# 如何使用
+# 启动
 
-完成上述的安装操作后，可以直接使用`pplabel`指令运行PPLabel的前后端。目前PP-Label默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用`pplabel --lan`将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。
+完成上述的安装操作后，可以直接在终端使用如下指令启动PPLabel的前后端。
 
 ```shell
-pplabel --lan
+pplabel  # 运行pplabel
+```
+
+目前PPLabel默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用下列指令将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行pplabel时也需要添加该选项。
+
+```shell
+pplabel --lan  # 运行并将服务暴露到局域网
 ```

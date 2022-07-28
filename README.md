@@ -56,7 +56,7 @@ PPLabel是基于飞桨PaddlePaddle各个套件的特性提供的配套标注工�
 
 **教程**
 
-* [快速体验]()
+* [快速体验](doc/quick_experience.md)
 * [如何用PaddleClas进行训练]()
 * [如何用PaddleDet进行训练]()
 * [如何使用PaddleSeg进行训练]()

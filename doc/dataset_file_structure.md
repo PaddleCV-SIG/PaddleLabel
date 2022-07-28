@@ -269,15 +269,17 @@ categories[
 ]
 ```
 
-PPLabel 使用[pycocotoolse](https://github.com/linhandev/cocoapie)解析标注文件。pycocotoolse 与原版 [pycocotools](https://github.com/cocodataset/cocoapi)基本相同，只是在其基础上增加了一些数据集管理功能。导入过程中 PPLabel 会在数据集路径下寻找三个 json 文件：`train.json`、`val.json`和`test.json`，并从这三个文件中解析解析出用于训练、验证和测试的数据。请确保**每个图像在三个 json 中只被定义一次**，否则将导入失败。
+关于COCO格式的使用，需要注意以下问题：
 
-PPLabel 会导入数据集文件夹下的所有图像。COCO json 中每张图有一个 `file_name`，如果一张图的路径以 COCO json 中某一条记录的`file_name`结尾，将认为二者匹配。比如一个路径为`\Dataset Path\folder\image.png`的图像将与`file_name`为“image.png”的图像记录匹配。如果发现一张图片有多条匹配的记录，导入会失败。例如路径为`\Dataset Path\folder1\image.png`和`\Dataset Path\folder2\image.png`的两张图像都将与`file_name`为“image.png”的图像匹配。建议将所有图像放在一个文件夹下，以避免图像重名。
+1. PPLabel 使用[pycocotoolse](https://github.com/linhandev/cocoapie)解析标注文件。pycocotoolse 与原版 [pycocotools](https://github.com/cocodataset/cocoapi)基本相同，只是在其基础上增加了一些数据集管理功能。导入过程中 PPLabel 会在数据集路径下寻找三个 json 文件：`train.json`、`val.json`和`test.json`，并从这三个文件中解析出用于训练、验证和测试的数据。请确保**每个图像在三个 json 中只被定义一次**，否则将导入失败。
 
-如果一个图像的记录中没有包含宽度或高度的信息，PPLabel 将在导入期间读取图像来获取。这将拖慢数据集导入速度。
+2. PPLabel 会导入数据集文件夹下的所有图像。COCO json 中每张图有一个 `file_name`，如果一张图的路径以 COCO json 中某一条记录的`file_name`结尾，将认为二者匹配。比如一个路径为`\Dataset Path\folder\image.png`的图像将与`file_name`为“image.png”的图像记录匹配。如果发现一张图片有多条匹配的记录，导入会失败。例如路径为`\Dataset Path\folder1\image.png`和`\Dataset Path\folder2\image.png`的两张图像都将与`file_name`为“image.png”的图像匹配。**建议将所有图像放在一个文件夹下，以避免图像重名**。
 
-导出过程中，三个 COCO json 文件都会生成，就算其中一些是空的。
+3. 如果一个图像的记录中没有包含宽度或高度的信息，PPLabel 将在导入期间读取图像来获取。这将拖慢数据集导入速度。
 
-在 COCO json 的分类部分，PPLabel 添加了一个颜色字段。这个字段不在标准的 COCO 结构中。颜色字段会导出保存，并在导入时使用。
+4. 导出过程中，即使将所有数据都划分为训练集，上述三个 COCO json 文件也都会生成。
+
+5. 在 COCO json 的分类部分，PPLabel 添加了一个颜色字段。这个字段不在标准的 COCO 结构中。颜色字段会导出保存，并在导入时使用。
 
 ## 图像分割
 
@@ -289,7 +291,7 @@ PPLabel 使用 COCO 格式将分割结果存为多边形。其导入/导出过�
 
 ### 掩膜格式
 
-进行语义分割时，只需要确定输入图像中每个像素属于哪一类。输出是和输入图像大小相同的 png，每个像素的灰度或颜色代表其类别。而实例分割在此基础上更进一步。不仅需要确定每个像素的类别，而且还要区分同一类别的不同实例（如图像中的所有车属于同一类别，但每一辆车都是一个实例）。实力分割时每个像素都有两个标签，一个是类别标签，另一个是实例编号。
+进行语义分割时，只需要确定输入图像中每个像素属于哪一类。输出是和输入图像大小相同的 png，每个像素的灰度或颜色代表其类别。而实例分割在此基础上更进一步。不仅需要确定每个像素的类别，而且还要区分同一类别的不同实例（如图像中的所有车属于同一类别，但每一辆车都是一个实例）。实例分割时每个像素都有两个标签，一个是类别标签，另一个是实例编号。
 
 ### 语义分割
 

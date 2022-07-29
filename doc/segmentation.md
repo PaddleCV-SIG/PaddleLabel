@@ -4,6 +4,33 @@
 
 PPLabel支持语义分割与实例分割两种图像分割标注任务。
 
+## <div id="test3">数据结构</div>
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── Annotations
+│   ├── A0001.png
+│   ├── B0001.png
+│   ├── H0002.png
+│   └── ...
+├── JPEGImages
+│   ├── A0001.jpg
+│   ├── B0001.png
+│   ├── H0002.bmp
+│   └── ...
+├── labels.txt
+├── test_list.txt
+├── train_list.txt
+└── val_list.txt
+
+# labels.txt
+background -
+optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
+```
+
+
 ## 创建项目
 
 浏览器打开PPLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。

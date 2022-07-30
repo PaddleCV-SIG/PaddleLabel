@@ -30,6 +30,7 @@ setup(
     entry_points={
         "console_scripts": [
             "paddlelabel=paddlelabel.__main__:run",
+            "pdlabel=paddlelabel.__main__:run",
         ]
     },
 )

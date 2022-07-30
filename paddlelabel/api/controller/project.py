@@ -5,6 +5,8 @@ import requests
 import os
 import os.path as osp
 import base64
+from copy import deepcopy
+import traceback
 
 import numpy as np
 import connexion
@@ -70,14 +72,13 @@ def post_add(new_project, se):
     try:
         _import_dataset(new_project)
     except Exception as e:
-        project = Project.query.filter(
-            Project.project_id == new_project.project_id
-        ).one()
-        print("Create project failed")
-        print(e.with_traceback)
-        print(dir(e))
+        project = Project.query.filter(Project.project_id == new_project.project_id).one()
         db.session.delete(project)
         db.session.commit()
+
+        print("Create project failed")
+        print(traceback.format_exc())
+
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)
         else:
@@ -100,7 +101,6 @@ def export_dataset(project_id):
         exporter(req["export_dir"])
     except Exception as e:
         abort(str(e), 500, str(e))
-
 
 
 def import_dataset(project_id):
@@ -134,11 +134,9 @@ def import_dataset(project_id):
         filters={"exclude_prefix": ["."]},
     )
     all_copy_paths = [p for p in all_paths if p not in new_data_paths]
-    new_data_paths = [
-        p for p in new_data_paths if osp.basename(p) not in curr_data_names
-    ]
+    new_data_paths = [p for p in new_data_paths if osp.basename(p) not in curr_data_names]
     all_copy_paths += new_data_paths
-    print(all_copy_paths)
+    # print(all_copy_paths)
     for p in all_copy_paths:
         copy(osp.join(import_dir, p), osp.join(import_temp, p))
 
@@ -237,9 +235,7 @@ def predict(project_id):
             if params["same_server"]:
                 body = {"img": osp.join(project.data_dir, data.path), "format": "path"}
             else:
-                img_b64 = base64.b64encode(
-                    open(osp.join(project.data_dir, data.path), "rb").read()
-                ).decode("utf-8")
+                img_b64 = base64.b64encode(open(osp.join(project.data_dir, data.path), "rb").read()).decode("utf-8")
                 body = {"img": img_b64, "format": "b64"}
             res = requests.post(url, headers=headers, json=body)
             res = json.loads(res.text)

@@ -4,8 +4,6 @@
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg?style=for-the-badge)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/pplabel?color=blue&style=for-the-badge) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/pplabel?color=orange&style=for-the-badge) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg?style=for-the-badge)]() 
 
-
-
 <!-- project informations -->
 
 <div align="center">
@@ -21,6 +19,9 @@
     <a href="https://github.com/PaddleCV-SIG/PP-Label"><strong>浏览文档 »</strong></a>
     <br />
     <br />
+    简体中文 · <a href="doc/README_en.md">English</a>
+    <br />
+    <br />
     <a href="https://paddlecv-sig.github.io/PP-Label-Frontend/#/PP-Label-Frontend/welcome">查看演示</a>
     ·
     <a href="https://github.com/PaddleCV-SIG/PP-Label/issues">报告错误</a>
@@ -28,10 +29,6 @@
     <a href="https://github.com/PaddleCV-SIG/PP-Label/issues">请求功能</a>
   </p>
 </div>
-
-
-
-
 <!-- contents -->
 
 <details>
@@ -59,9 +56,6 @@
     <li><a href="#学术引用">学术引用</a></li>
   </ol>
 </details>
-
-
-
 
 <!-- about project -->
 
@@ -139,7 +133,7 @@ PP-Label支持图像分类、语义/实例分割以及目标/关键点检测的�
 
 #### 数据标注
 
-PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏（不同任务有不同的工具栏，不同任务的使用详情请参考[数据集文件结构文档](doc/dataset_file_structure.md)）；界面右侧为标签列表，用于添加不同的标签和标注；下方为标注进度展示，上方为可以切换的标签页。使用时：
+PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏（不同任务有不同的工具栏，不同任务的使用详情请参考[数据集文件结构说明](doc/dataset_file_structure.md)）；界面右侧为标签列表，用于添加不同的标签和标注；下方为标注进度展示，上方为可以切换的标签页。使用时：
 
 1. 在右侧创建标签或标注
 2. 在工具栏中移动和缩放图像，找到对应的需要标注的目标（图像分类除外）
@@ -152,10 +146,48 @@ PP-Label的界面分为图像显示区域，显示区域左右两侧的工具栏
 
 ### 高级功能
 
-PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现自动化或半交互式数据标注，使用方法如下：
+PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持语义分割），使用方法如下：
 
-1. XXXXXXX
-2. XXXXXXX
+1. 安装PP-Label-ML：
+
+   1. 通过pip安装：
+
+       ```shell
+       pip install pplabel-ml
+       ```
+
+   2. 通过源码安装：
+
+       ```shell
+       git clone https://github.com/PaddleCV-SIG/PP-Label-ML
+       cd PP-Label-ML
+       python setup.py install
+       ```
+
+2. 开启ML后端：
+
+   ```shell
+   pplabel-ml # 运行 pplabel-ml
+   ```
+
+3. 进入到标注页面，打开右侧工具栏的智能标注功能，在Backend URL中填入ML后端提供的URL。若通过pip方式安装的PP-Label-ML，则自带一个通用的交互式分割模型参数。如果需要针对不同任务选择不同的交互式模型参数，可以通过下方“模型下载”处下载模型参数到本地，并在Model Path和Weight Path中填入对应的`*.pdmodel`和`*.pdiparams`的文件绝对路径，完成后点击Save即可。
+
+4. 点击图像，鼠标左键为添加正样本点，鼠标右键为添加负样本点。
+
+#### 模型下载
+
+| 模型类型     | 适用场景             | 模型结构            | 模型下载地址                                                 |
+| ------------ | -------------------- | ------------------- | ------------------------------------------------------------ |
+| 高精度模型   | 通用场景的图像标注   | HRNet18_OCR64       | [static_hrnet18_ocr64_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_cocolvis.zip) |
+| 轻量化模型   | 通用场景的图像标注   | HRNet18s_OCR48      | [static_hrnet18s_ocr48_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_cocolvis.zip) |
+| 高精度模型   | 通用图像标注场景     | EdgeFlow            | [static_edgeflow_cocolvis](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_edgeflow_cocolvis.zip) |
+| 高精度模型   | 人像标注场景         | HRNet18_OCR64       | [static_hrnet18_ocr64_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr64_human.zip) |
+| 轻量化模型   | 人像标注场景         | HRNet18s_OCR48      | [static_hrnet18s_ocr48_human](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_human.zip) |
+| 轻量化模型   | 遥感建筑物标注场景   | HRNet18s_OCR48      | [static_hrnet18_ocr48_rsbuilding_instance](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18_ocr48_rsbuilding_instance.zip) |
+| 高精度模型\* | x光胸腔标注场景      | Resnet50_Deeplabv3+ | [static_resnet50_deeplab_chest_xray](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_resnet50_deeplab_chest_xray.zip) |
+| 轻量化模型   | 医疗肝脏标注场景     | HRNet18s_OCR48      | [static_hrnet18s_ocr48_lits](https://paddleseg.bj.bcebos.com/eiseg/0.4/static_hrnet18s_ocr48_lits.zip) |
+| 轻量化模型\* | MRI椎骨图像标注场景  | HRNet18s_OCR48      | [static_hrnet18s_ocr48_MRSpineSeg](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_MRSpineSeg.zip) |
+| 轻量化模型\* | 质检铝板瑕疵标注场景 | HRNet18s_OCR48      | [static_hrnet18s_ocr48_aluminium](https://paddleseg.bj.bcebos.com/eiseg/0.5/static_hrnet18s_ocr48_aluminium.zip) |
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 
@@ -181,9 +213,7 @@ PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载
 
 ### 贡献者
 
-感谢下列开发者参与或协助PP-Label的开发、维护、测试等：
-
-[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
+感谢下列开发者参与或协助PP-Label的开发、维护、测试等：[linhandev](https://github.com/linhandev)、[cheneyveron](https://github.com/cheneyveron)、[Youssef-Harby](https://github.com/Youssef-Harby)、[geoyee](https://github.com/geoyee)、[yzl19940819](https://github.com/yzl19940819)、[haoyuying](https://github.com/haoyuying)
 
 ### 鸣谢
 

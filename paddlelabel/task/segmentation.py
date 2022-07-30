@@ -27,7 +27,7 @@ def parse_semantic_mask(annotation_path, labels):
     frontend_id = 1
     anns = []
     # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
-    print(labels)
+    # print(labels)
     if len(ann.shape) == 3:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
         ann_gray = np.zeros(ann.shape[:2], dtype="uint8")
@@ -36,10 +36,13 @@ def parse_semantic_mask(annotation_path, labels):
             label_mask = np.all(ann == color, axis=2)
             ann_gray[label_mask == 1] = label.id
             ann[label_mask == 1] = 0
-        
-        if ann.sum()!= 0:
+
+        if ann.sum() != 0:
             ann = ann.reshape((-1, ann.shape[-1]))
-            abort(f"Mask {annotation_path} contains unspecified labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?", 404)
+            abort(
+                f"Mask {annotation_path} contains unspecified labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?",
+                404,
+            )
 
         ann = ann_gray
 
@@ -49,10 +52,10 @@ def parse_semantic_mask(annotation_path, labels):
         label_mask[label_mask != 0] = 255
 
         # print(np.unique(ann))
-        
+
         if label_mask.sum() == 0:
             continue
-        
+
         ann[ann == label.id] = 0
         (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(
             label_mask, connectivity=8
@@ -61,11 +64,21 @@ def parse_semantic_mask(annotation_path, labels):
             h, w = np.where(cc_mask == cc_id)
             result = ",".join([f"{w},{h}" for h, w in zip(h, w)])
             result = f"{1},{frontend_id}," + result
-            anns.append({"label_name": label.name, "result": result, "type": "brush"})
+            anns.append(
+                {
+                    "label_name": label.name,
+                    "result": result,
+                    "type": "brush",
+                    "frontend_id": frontend_id,
+                }
+            )
             frontend_id += 1
-    
+
     if ann.sum() != 0:
-        abort(f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?", 404)
+        abort(
+            f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?",
+            404,
+        )
 
     s = [1] + list(ann.shape)
     s = [str(s) for s in s]
@@ -207,9 +220,21 @@ class InstanceSegmentation(BaseTask):
                 try:
                     for idx in range(2, len(points), 2):
                         w, h = points[idx : idx + 2]
-                        cv2.line(label_mask, (prev_w, prev_h), (w, h), int(label_id), line_width)
+                        if line_width == 0:
+                            line_width = 1
                         cv2.line(
-                            instance_mask, (prev_w, prev_h), (w, h), int(frontend_id), line_width
+                            label_mask,
+                            (prev_w, prev_h),
+                            (w, h),
+                            int(label_id),
+                            line_width,
+                        )
+                        cv2.line(
+                            instance_mask,
+                            (prev_w, prev_h),
+                            (w, h),
+                            int(frontend_id),
+                            line_width,
                         )
                         prev_w, prev_h = w, h
                 except Exception as e:
@@ -222,7 +247,11 @@ class InstanceSegmentation(BaseTask):
             export_label_paths.append([export_label_path])
 
         self.export_split(
-            export_dir, tasks, export_data_paths, with_labels=False, annotation_ext=".tiff"
+            export_dir,
+            tasks,
+            export_data_paths,
+            with_labels=False,
+            annotation_ext=".tiff",
         )
         background_line = project._get_other_settings().get("background_line")
         if background_line is None or len(background_line) == 0:
@@ -230,7 +259,9 @@ class InstanceSegmentation(BaseTask):
         self.export_labels(export_dir, background_line, with_id=True)
 
     def coco_importer(
-        self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
         project = self.project
@@ -253,7 +284,9 @@ class InstanceSegmentation(BaseTask):
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
+                full_path = filter(
+                    lambda p: p[-len(file_name) :] == file_name, data_paths
+                )
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     abort(
@@ -275,7 +308,9 @@ class InstanceSegmentation(BaseTask):
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
                 if coco.imgs.get(ann["image_id"]) is None:
-                    print(f"No image with id {ann['image_id']} found, skipping this annotation.")
+                    print(
+                        f"No image with id {ann['image_id']} found, skipping this annotation."
+                    )
                     continue
 
                 label_name = coco.cats[ann["category_id"]]["name"]
@@ -303,7 +338,9 @@ class InstanceSegmentation(BaseTask):
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
                 size = "1," + coco.imgs[img_id]["size"]
-                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
+                self.add_task(
+                    [{"path": data_path, "size": size}], [annotations], split=set
+                )
             return data_paths, json.dumps({"info": info, "licenses": licenses})
 
         # 2. find all images under data_dir
@@ -311,7 +348,9 @@ class InstanceSegmentation(BaseTask):
         coco_others = {}
         for split_idx, label_file_path in enumerate(label_file_paths):
             if osp.exists(label_file_path):
-                data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
+                data_paths, others = _coco_importer(
+                    data_paths, label_file_path, split_idx
+                )
                 coco_others[split_idx] = others
         other_settings = project._get_other_settings()
         other_settings["coco_others"] = coco_others
@@ -384,14 +423,16 @@ class InstanceSegmentation(BaseTask):
             )
 
         # 3. write coco json
-        coco_others = project._get_other_settings()["coco_others"]
+        coco_others = project._get_other_settings().get("coco_others", {})
         for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
             outcoco = deepcopy(coco)
             outcoco.dataset["images"] = [
                 img for img in coco.dataset["images"] if img["id"] in split[split_idx]
             ]
             outcoco.dataset["annotations"] = [
-                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
+                ann
+                for ann in coco.dataset["annotations"]
+                if ann["image_id"] in split[split_idx]
             ]
 
             coco_others_split = coco_others.get(str(split_idx), "{}")
@@ -519,6 +560,8 @@ class SemanticSegmentation(InstanceSegmentation):
                             color = hex_to_rgb(ann.label.color)[::-1]
                         else:
                             color = int(label_id)
+                        if line_width == 0:
+                            line_width = 1
                         cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
                         prev_w, prev_h = w, h
                 except Exception as e:
@@ -530,7 +573,11 @@ class SemanticSegmentation(InstanceSegmentation):
             export_label_paths.append([export_label_path])
 
         self.export_split(
-            export_dir, tasks, export_data_paths, with_labels=False, annotation_ext=".png"
+            export_dir,
+            tasks,
+            export_data_paths,
+            with_labels=False,
+            annotation_ext=".png",
         )
         bg = project._get_other_settings().get("background_line", "background")
         self.export_labels(export_dir, bg)

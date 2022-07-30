@@ -8,18 +8,18 @@ from pathlib import Path
 from tqdm import tqdm
 import connexion
 
-import pplabel
-from pplabel.config import data_base_dir
-from pplabel.api.schema import ProjectSchema
-from pplabel.api.model import TaskCategory, Project
-from pplabel.api.util import abort
-from pplabel.config import basedir
-from pplabel.task.util.file import copy, copycontent
+import paddlelabel
+from paddlelabel.config import data_base_dir
+from paddlelabel.api.schema import ProjectSchema
+from paddlelabel.api.model import TaskCategory, Project
+from paddlelabel.api.util import abort
+from paddlelabel.config import basedir
+from paddlelabel.task.util.file import copy, copycontent
 
 
 def prep_samples(sample_dst: str = None):
     if sample_dst is None:
-        sample_dst = osp.join(osp.expanduser("~"), ".pplabel", "sample")
+        sample_dst = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
     sample_source = osp.join(basedir, "sample")
     copycontent(sample_source, sample_dst)
 
@@ -83,7 +83,7 @@ def load_sample():
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
     data_dir = osp.join(
-        osp.expanduser("~"), ".pplabel", "sample", *sample_folder[task_category.name]
+        osp.expanduser("~"), ".paddlelabel", "sample", *sample_folder[task_category.name]
     )
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
@@ -102,7 +102,7 @@ def load_sample():
     project = ProjectSchema().load(project)
 
     if task_category is None:
-        handler = pplabel.task.BaseTask(project)
+        handler = paddlelabel.task.BaseTask(project)
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 

@@ -1,9 +1,9 @@
 import connexion
-from pplabel.config import db
+from paddlelabel.config import db
 from .base import crud
 from ..model import Task, Project
 from ..schema import TaskSchema
-from pplabel.api.util import abort, parse_order_by
+from paddlelabel.api.util import abort, parse_order_by
 
 # TODO: reject tasks with same datas
 get_all, get, post, put, delete = crud(Task, TaskSchema)

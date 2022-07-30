@@ -9,22 +9,22 @@ import base64
 import numpy as np
 import connexion
 
-from pplabel.config import db
-from pplabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
-from pplabel.api.schema import ProjectSchema
-from pplabel.api.controller.base import crud
-from pplabel.api.controller import label
-from pplabel.api.util import abort
-from pplabel.task.util import rand_hex_color
-from pplabel.util import camel2snake
-from pplabel.task.util.file import (
+from paddlelabel.config import db
+from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
+from paddlelabel.api.schema import ProjectSchema
+from paddlelabel.api.controller.base import crud
+from paddlelabel.api.controller import label
+from paddlelabel.api.util import abort
+from paddlelabel.task.util import rand_hex_color
+from paddlelabel.util import camel2snake
+from paddlelabel.task.util.file import (
     image_extensions,
     listdir,
     create_dir,
     remove_dir,
     copy,
 )
-import pplabel
+import paddlelabel
 
 
 def pre_add(new_project, se):
@@ -45,7 +45,7 @@ def _import_dataset(project, data_dir=None):
 
     # 1. create handler
     if task_category is None:
-        handler = pplabel.task.BaseTask(project)
+        handler = paddlelabel.task.BaseTask(project)
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
@@ -263,7 +263,7 @@ def predict(project_id):
 
 
 def post_delete(project, se):
-    warning_path = osp.join(project.data_dir, "pplabel.warning")
+    warning_path = osp.join(project.data_dir, "paddlelabel.warning")
     if osp.exists(warning_path):
         os.remove(warning_path)
 

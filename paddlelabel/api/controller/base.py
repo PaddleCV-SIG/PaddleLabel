@@ -7,8 +7,8 @@ from flask import abort  # TODO: change to connextion abort
 import sqlalchemy
 import marshmallow
 
-from pplabel.config import db
-from pplabel.api.util import parse_order_by
+from paddlelabel.config import db
+from paddlelabel.api.util import parse_order_by
 
 # TODO: implement a search method
 def crud(Model, Schema, triggers=[]):

@@ -2,8 +2,8 @@ import os.path as osp
 
 from functools import total_ordering
 
-from pplabel.config import db
-from pplabel.api.util import nncol
+from paddlelabel.config import db
+from paddlelabel.api.util import nncol
 from .base import BaseModel
 
 

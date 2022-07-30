@@ -1,7 +1,7 @@
 import json
 
-from pplabel.config import db
-from pplabel.api.util import nncol
+from paddlelabel.config import db
+from paddlelabel.api.util import nncol
 
 # TODO: circular risk
 from .base import BaseModel

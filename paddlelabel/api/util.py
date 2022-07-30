@@ -4,7 +4,7 @@ import time
 import connexion
 import sqlalchemy as sa
 
-from pplabel.util import camel2snake
+from paddlelabel.util import camel2snake
 
 # sa default to nullable=True
 nncol = functools.partial(sa.Column, nullable=False)
@@ -22,7 +22,7 @@ def abort(detail: str, status: int, title: str = ""):
 
 
 # TODO: move to config
-JWT_ISSUER = "pplabel"
+JWT_ISSUER = "paddlelabel"
 JWT_SECRET = "change_this"
 JWT_LIFETIME_SECONDS = 43200  # 12h
 JWT_ALGORITHM = "HS256"

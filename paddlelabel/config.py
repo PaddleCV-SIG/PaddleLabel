@@ -10,7 +10,7 @@ from .util import rand_string
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-db_path = f"{osp.join(os.path.expanduser('~'), '.pplabel/pplabel.db')}"
+db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel/paddlelabel.db')}"
 
 if not osp.exists(osp.dirname(db_path)):
     os.makedirs(osp.dirname(db_path))
@@ -35,4 +35,4 @@ ma = Marshmallow(app)
 # reject requests with the same request_id within request_id_timeout seconds
 request_id_timeout = 2
 
-data_base_dir = osp.join(os.path.expanduser('~'), '.pplabel')
+data_base_dir = osp.join(os.path.expanduser('~'), '.paddlelabel')

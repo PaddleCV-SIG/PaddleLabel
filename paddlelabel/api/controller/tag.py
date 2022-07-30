@@ -1,6 +1,6 @@
 import connexion
 
-from pplabel.config import db
+from paddlelabel.config import db
 from .base import crud
 from ..model import Tag, Project, Task, TagTask
 from ..schema import TagSchema, TagTaskSchema

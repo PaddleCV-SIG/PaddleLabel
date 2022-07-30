@@ -12,7 +12,7 @@ servers:
     description: Same origion
   - url: 'http://localhost:17995/api'
     description: Local server
-  - url: 'https://pplabel.herokuapp.com/api'
+  - url: 'https://paddlelabel.herokuapp.com/api'
     description: heroku
 paths:
   /projects:
@@ -1045,7 +1045,7 @@ paths:
       tags:
         - User
       summary: Login and get JWT
-      operationId: pplabel.api.controller.user.login
+      operationId: paddlelabel.api.controller.user.login
       responses:
         '200':
           description: OK
@@ -1165,7 +1165,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      x-bearerInfoFunc: pplabel.api.decode_token
+      x-bearerInfoFunc: paddlelabel.api.decode_token
   schemas:
     Project:
       type: object
@@ -1176,8 +1176,8 @@ components:
           name: Classification Example
           description: Example Project Descreption
           task_category: 1
-          data_dir: ~/pplabel/project_name/data
-          label_dir: ~/pplabel/project_name/label
+          data_dir: ~/paddlelabel/project_name/data
+          label_dir: ~/paddlelabel/project_name/label
           label_config: '[''class1'', ''class2'', ''class3'']'
           created: null
           modified: null

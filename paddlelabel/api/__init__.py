@@ -2,8 +2,8 @@ import time
 
 from flask import abort, session, request
 
-import pplabel
-from pplabel.config import app, request_id_timeout
+import paddlelabel
+from paddlelabel.config import app, request_id_timeout
 
 from . import controller
 from .model import Project, Label, Task, Data, Annotation, TaskCategory

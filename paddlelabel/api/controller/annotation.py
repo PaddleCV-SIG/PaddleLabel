@@ -5,7 +5,7 @@ from ..model import Annotation, Task, Project, Data
 from ..schema import AnnotationSchema
 from ..util import abort
 
-from pplabel.config import db
+from paddlelabel.config import db
 
 # TODO: don't create label if exists.
 

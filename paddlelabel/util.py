@@ -74,34 +74,34 @@ class Resolver(connexion.resolver.RestyResolver):
         # TODO: auto resolve /collection/{item}/collection
 
         special = {
-            "/projects/{project_id}/tasks getTasks": "pplabel.api.controller.task.get_by_project",
-            "/projects/{project_id}/labels getLabels": "pplabel.api.controller.label.get_by_project",
-            "/projects/{project_id}/labels setLabels": "pplabel.api.controller.label.set_by_project",
-            "/projects/{project_id}/labels removeLabels": "pplabel.api.controller.label.delete_by_project",
-            "/projects/{project_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_project",
-            "/projects/{project_id}/tags getTags": "pplabel.api.controller.tag.get_by_project",
-            "/projects/{project_id}/progress getProgress": "pplabel.api.controller.task.get_stat_by_project",
-            "/projects/{project_id}/split splitDataset": "pplabel.api.controller.project.split_dataset",
-            "/projects/{project_id}/export exportDataset": "pplabel.api.controller.project.export_dataset",
-            "/projects/{project_id}/import importDataset": "pplabel.api.controller.project.import_dataset",
-            "/projects/{project_id}/predict predict": "pplabel.api.controller.project.predict",
-            "/tasks/{task_id}/tags getTags": "pplabel.api.controller.tag.get_by_task",
-            "/tasks/{task_id}/tags addTag": "pplabel.api.controller.tag.add_to_task",
-            "/datas/{data_id}/image getImage": "pplabel.api.controller.data.get_image",
-            "/tasks/{task_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_task",
-            "/tasks/{task_id}/datas getDatas": "pplabel.api.controller.data.get_by_task",
-            "/datas/{data_id}/annotations getAnnotations": "pplabel.api.controller.annotation.get_by_data",
-            "/datas/{data_id}/annotations setAnnotations": "pplabel.api.controller.annotation.set_all_by_data",
-            "/datas/{data_id}/annotations deleteAnnotations": "pplabel.api.controller.annotation.delete_by_data",
-            "/rpc/folders getFolders": "pplabel.api.rpc.file.get_folders",
-            "/rpc/seg/polygon2points polygon2points": "pplabel.api.rpc.seg.polygon2points_str",
-            "/rpc/seg/points2polygon points2polygon": "pplabel.api.rpc.seg.points2polygon_str",
-            "/version getVersion": "pplabel.api.rpc.monitor.get_version",
-            "/samples loadSample": "pplabel.api.controller.sample.load_sample",
+            "/projects/{project_id}/tasks getTasks": "paddlelabel.api.controller.task.get_by_project",
+            "/projects/{project_id}/labels getLabels": "paddlelabel.api.controller.label.get_by_project",
+            "/projects/{project_id}/labels setLabels": "paddlelabel.api.controller.label.set_by_project",
+            "/projects/{project_id}/labels removeLabels": "paddlelabel.api.controller.label.delete_by_project",
+            "/projects/{project_id}/annotations getAnnotations": "paddlelabel.api.controller.annotation.get_by_project",
+            "/projects/{project_id}/tags getTags": "paddlelabel.api.controller.tag.get_by_project",
+            "/projects/{project_id}/progress getProgress": "paddlelabel.api.controller.task.get_stat_by_project",
+            "/projects/{project_id}/split splitDataset": "paddlelabel.api.controller.project.split_dataset",
+            "/projects/{project_id}/export exportDataset": "paddlelabel.api.controller.project.export_dataset",
+            "/projects/{project_id}/import importDataset": "paddlelabel.api.controller.project.import_dataset",
+            "/projects/{project_id}/predict predict": "paddlelabel.api.controller.project.predict",
+            "/tasks/{task_id}/tags getTags": "paddlelabel.api.controller.tag.get_by_task",
+            "/tasks/{task_id}/tags addTag": "paddlelabel.api.controller.tag.add_to_task",
+            "/datas/{data_id}/image getImage": "paddlelabel.api.controller.data.get_image",
+            "/tasks/{task_id}/annotations getAnnotations": "paddlelabel.api.controller.annotation.get_by_task",
+            "/tasks/{task_id}/datas getDatas": "paddlelabel.api.controller.data.get_by_task",
+            "/datas/{data_id}/annotations getAnnotations": "paddlelabel.api.controller.annotation.get_by_data",
+            "/datas/{data_id}/annotations setAnnotations": "paddlelabel.api.controller.annotation.set_all_by_data",
+            "/datas/{data_id}/annotations deleteAnnotations": "paddlelabel.api.controller.annotation.delete_by_data",
+            "/rpc/folders getFolders": "paddlelabel.api.rpc.file.get_folders",
+            "/rpc/seg/polygon2points polygon2points": "paddlelabel.api.rpc.seg.polygon2points_str",
+            "/rpc/seg/points2polygon points2polygon": "paddlelabel.api.rpc.seg.points2polygon_str",
+            "/version getVersion": "paddlelabel.api.rpc.monitor.get_version",
+            "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
         }
         opid = None
 
-        if operation.operation_id and operation.operation_id.startswith("pplabel"):
+        if operation.operation_id and operation.operation_id.startswith("paddlelabel"):
             opid = operation.operation_id
 
         path = operation.path

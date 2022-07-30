@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pplabel.config import db
+from paddlelabel.config import db
 from ..util import nncol
 from .base import BaseModel
 

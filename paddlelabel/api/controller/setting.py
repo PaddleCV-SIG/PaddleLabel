@@ -2,7 +2,7 @@ import json
 
 from ..model import TaskCategory
 
-from pplabel.config import se
+from paddlelabel.config import se
 
 
 # TODO: change task_categories to project_category

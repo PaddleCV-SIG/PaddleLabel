@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import backref
 
-from pplabel.config import db
+from paddlelabel.config import db
 from ..util import nncol
 from .annotation import Annotation
 from .project import Project

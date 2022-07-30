@@ -6,11 +6,11 @@ import random
 import cv2
 import flask
 
-from pplabel.config import db
+from paddlelabel.config import db
 from .base import crud
 from ..model import Data, Project, Task
 from ..schema import DataSchema
-from pplabel.api.util import abort
+from paddlelabel.api.util import abort
 
 
 get_all, get, post, put, delete = crud(Data, DataSchema)

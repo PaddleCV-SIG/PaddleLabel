@@ -1,12 +1,12 @@
 {
   "site": {
     "task_categories": {
-      "1": ["classification", "pplabel.task.Classification"],
-      "2": ["detection", "pplabel.task.Detection"],
-      "3": ["semantic_segmentation", "pplabel.task.SemanticSegmentation"],
-      "4": ["instance_segmentation", "pplabel.task.InstanceSegmentation"],
-      "5": ["keypoint_detection", "pplabel.task.BaseTask"],
-      "6": ["remote_sensing", "pplabel.task.BaseTask"]
+      "1": ["classification", "paddlelabel.task.Classification"],
+      "2": ["detection", "paddlelabel.task.Detection"],
+      "3": ["semantic_segmentation", "paddlelabel.task.SemanticSegmentation"],
+      "4": ["instance_segmentation", "paddlelabel.task.InstanceSegmentation"],
+      "5": ["keypoint_detection", "paddlelabel.task.BaseTask"],
+      "6": ["remote_sensing", "paddlelabel.task.BaseTask"]
     }
   }
 }

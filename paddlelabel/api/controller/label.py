@@ -4,13 +4,13 @@ import numpy as np
 from sqlalchemy.sql.expression import func
 import connexion
 
-from pplabel.config import db
-from pplabel.api.util import abort
+from paddlelabel.config import db
+from paddlelabel.api.util import abort
 from .base import crud
 from ..model import Label, Project, Annotation
 from ..schema import LabelSchema
 from ..util import abort
-from pplabel.task.util import rand_hex_color
+from paddlelabel.task.util import rand_hex_color
 
 
 # TODO: simplify with _get

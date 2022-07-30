@@ -1,9 +1,9 @@
-recursive-include pplabel/sample/ *
-recursive-include pplabel/static/ *
+recursive-include paddlelabel/sample/ *
+recursive-include paddlelabel/static/ *
 
-include pplabel/version
-include pplabel/default_setting.json
-include pplabel/openapi.yml
+include paddlelabel/version
+include paddlelabel/default_setting.json
+include paddlelabel/openapi.yml
 include requirements.txt
 
 exclude test/

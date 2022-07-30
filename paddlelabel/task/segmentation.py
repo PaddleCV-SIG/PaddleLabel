@@ -132,6 +132,7 @@ class InstanceSegmentation(BaseTask):
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        1/0
         # 1. set params
         project = self.project
         if data_dir is None:

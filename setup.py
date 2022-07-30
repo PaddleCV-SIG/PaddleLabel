@@ -10,8 +10,8 @@ with open("requirements.txt", "r") as fin:
     REQUIRED_PACKAGES = fin.read()
 
 setup(
-    name="pplabel",
-    version=open((HERE / "pplabel" / "version"), "r").read().strip(),
+    name="paddlelabel",
+    version=open((HERE / "paddlelabel" / "version"), "r").read().strip(),
     description="Web Based Multi Purpose Annotation",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -29,7 +29,7 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     entry_points={
         "console_scripts": [
-            "pplabel=pplabel.__main__:run",
+            "paddlelabel=paddlelabel.__main__:run",
         ]
     },
 )

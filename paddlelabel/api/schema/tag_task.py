@@ -1,7 +1,7 @@
 from marshmallow import fields
 
 
-from pplabel.api.model import TagTask
+from paddlelabel.api.model import TagTask
 from .base import BaseSchema
 
 

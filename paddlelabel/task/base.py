@@ -5,11 +5,11 @@ from collections import deque
 
 import cv2
 
-from pplabel.api import Annotation, Data, Label, Project, Task
-from pplabel.api.util import abort
-from pplabel.config import db
-from pplabel.task.util import image_extensions, listdir, create_dir
-from pplabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
+from paddlelabel.api import Annotation, Data, Label, Project, Task
+from paddlelabel.api.util import abort
+from paddlelabel.config import db
+from paddlelabel.task.util import image_extensions, listdir, create_dir
+from paddlelabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
 
 """
 Base for import/export and other task specific operations.
@@ -414,7 +414,7 @@ class BaseTask:
         if not osp.exists(dir):
             abort(detail=f"Dataset Path specified {dir} doesn't exist.", status=404)
 
-        warning_path = osp.join(dir, "pplabel.warning")
+        warning_path = osp.join(dir, "paddlelabel.warning")
         if not osp.exists(warning_path):
             print(
                 "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues.",
@@ -422,7 +422,7 @@ class BaseTask:
             )
 
     def remove_warning(self, dir):
-        warning_path = osp.join(dir, "pplabel.warning")
+        warning_path = osp.join(dir, "paddlelabel.warning")
         if osp.exists(warning_path):
             os.remove(warning_path)
 

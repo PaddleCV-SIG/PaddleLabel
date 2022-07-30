@@ -1,4 +1,4 @@
-from pplabel.api.model import TaskCategory
+from paddlelabel.api.model import TaskCategory
 from .base import BaseSchema
 
 

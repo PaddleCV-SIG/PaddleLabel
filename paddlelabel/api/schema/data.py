@@ -1,8 +1,8 @@
 from marshmallow import fields, post_dump
 
-from pplabel.api.model import Data
+from paddlelabel.api.model import Data
 from .base import BaseSchema
-from pplabel.api.schema.util import path2sault
+from paddlelabel.api.schema.util import path2sault
 
 
 class DataSchema(BaseSchema):

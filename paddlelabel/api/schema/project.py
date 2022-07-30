@@ -2,7 +2,7 @@ import json
 
 from marshmallow import pre_load, post_dump, fields
 
-from pplabel.api.model import Project
+from paddlelabel.api.model import Project
 from .base import BaseSchema
 
 

@@ -26,15 +26,15 @@ npm run build
 # cross-env REACT_APP_ENV=deploy umi build
 
 cd ../PP-Label
-rm -rf pplabel/static/
-mkdir pplabel/static/
-cp -r ../PP-Label-Frontend/dist/* pplabel/static/
+rm -rf paddlelabel/static/
+mkdir paddlelabel/static/
+cp -r ../PP-Label-Frontend/dist/* paddlelabel/static/
 
 pip install --upgrade pip
 rm -rf dist/
 rm -rf build/
 python setup.py sdist bdist_wheel
-pip install --upgrade "dist/pplabel-$(cat pplabel/version).tar.gz"
+pip install --upgrade "dist/paddlelabel-$(cat paddlelabel/version).tar.gz"
 cd
-rm -rf ~/.pplabel/
-pplabel
+rm -rf ~/.paddlelabel/
+paddlelabel

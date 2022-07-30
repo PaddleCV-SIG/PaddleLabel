@@ -1,4 +1,4 @@
-import pplabel
+import paddlelabel
 
 def get_version():
-    return pplabel.version, 200
+    return paddlelabel.version, 200

@@ -7,14 +7,14 @@ import numpy as np
 import cv2
 from pycocotoolse.coco import COCO
 
-from pplabel.task.util import create_dir, listdir, image_extensions
-from pplabel.task.base import BaseTask
-from pplabel.config import db
-from pplabel.task.util.color import hex_to_rgb
-from pplabel.task.util import copy
-from pplabel.api.model import Task, Label, Annotation
-from pplabel.api.util import abort
-from pplabel.api.rpc.seg import polygon2points
+from paddlelabel.task.util import create_dir, listdir, image_extensions
+from paddlelabel.task.base import BaseTask
+from paddlelabel.config import db
+from paddlelabel.task.util.color import hex_to_rgb
+from paddlelabel.task.util import copy
+from paddlelabel.api.model import Task, Label, Annotation
+from paddlelabel.api.util import abort
+from paddlelabel.api.rpc.seg import polygon2points
 
 # debug
 # import matplotlib

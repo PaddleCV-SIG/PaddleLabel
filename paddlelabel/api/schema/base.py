@@ -1,4 +1,4 @@
-from pplabel.config import ma, db
+from paddlelabel.config import ma, db
 
 
 class BaseSchema(ma.SQLAlchemyAutoSchema):

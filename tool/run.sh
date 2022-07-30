@@ -22,8 +22,8 @@ export PATH=$PATH:node_modules/.bin/
 cross-env REACT_APP_ENV=deploy umi build
 
 cd ../PP-Label
-rm -rf pplabel/static/
-mkdir pplabel/static/
-cp -r ../PP-Label-Frontend/dist/* pplabel/static/
+rm -rf paddlelabel/static/
+mkdir paddlelabel/static/
+cp -r ../PP-Label-Frontend/dist/* paddlelabel/static/
 
-python -m pplabel
+python -m paddlelabel

@@ -1,7 +1,7 @@
 from marshmallow import fields
 
 
-from pplabel.api.model import Annotation
+from paddlelabel.api.model import Annotation
 from .base import BaseSchema
 
 

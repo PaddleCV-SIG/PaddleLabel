@@ -1,6 +1,6 @@
 from marshmallow import fields
 
-from pplabel.api.model import Label
+from paddlelabel.api.model import Label
 from .base import BaseSchema
 
 

@@ -4,8 +4,8 @@ import time
 from marshmallow import post_load, pre_load, pre_dump, post_dump, fields
 from marshmallow.fields import Nested
 
-from pplabel.api.model import Task
-from pplabel.api.schema.util import path2sault
+from paddlelabel.api.model import Task
+from paddlelabel.api.schema.util import path2sault
 from .base import BaseSchema
 
 

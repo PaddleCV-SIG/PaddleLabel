@@ -1,9 +1,9 @@
 import os.path as osp
 import shutil
 
-from pplabel.config import db
-from pplabel.api import Task
-from pplabel.task.util.file import copycontent
+from paddlelabel.config import db
+from paddlelabel.api import Task
+from paddlelabel.task.util.file import copycontent
 from .util import create_dir, listdir, copy, image_extensions
 from .base import BaseTask
 

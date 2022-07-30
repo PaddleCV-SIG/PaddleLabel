@@ -3,8 +3,8 @@ import os.path as osp
 
 import connexion
 
-from pplabel.config import data_base_dir
-from pplabel.api.util import abort
+from paddlelabel.config import data_base_dir
+from paddlelabel.api.util import abort
 
 
 def get_folders():

@@ -5,11 +5,11 @@ from copy import deepcopy
 from pycocotoolse.coco import COCO
 import cv2
 
-from pplabel.api import Task, Annotation, Label
-from pplabel.task.util import create_dir, listdir, copy, image_extensions
-from pplabel.task.base import BaseTask
-from pplabel.config import db
-from pplabel.api.util import abort
+from paddlelabel.api import Task, Annotation, Label
+from paddlelabel.task.util import create_dir, listdir, copy, image_extensions
+from paddlelabel.task.base import BaseTask
+from paddlelabel.config import db
+from paddlelabel.api.util import abort
 
 # TODO: move to io
 def parse_voc_label(label_path):

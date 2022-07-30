@@ -1,4 +1,4 @@
-name: Publish PP-Label to pypi
+name: Publish PaddleLabel to pypi
 
 on: [workflow_dispatch]
 

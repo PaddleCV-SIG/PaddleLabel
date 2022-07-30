@@ -32,8 +32,7 @@ def polygon2mask(poly):
     poly[:, 1] -= hmin
 
     poly = [(p[0], p[1]) for p in poly.tolist()]
-    
-    
+
     img = Image.new("L", [width, height], 0)
     ImageDraw.Draw(img).polygon(poly, outline=1, fill=1)  # col, row
     mask = np.array(img) == 1

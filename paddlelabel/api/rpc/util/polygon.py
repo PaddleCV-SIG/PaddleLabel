@@ -20,6 +20,7 @@ import math
 
 # import matplotlib.pyplot as plt
 
+
 def __change_list(polygons, idx):
     if idx == -1:
         return polygons
@@ -36,9 +37,7 @@ def __find_min_point(i_list, o_list):
     idx_o = -1
     for i in range(len(i_list)):
         for o in range(len(o_list)):
-            dis = math.sqrt(
-                (i_list[i][0] - o_list[o][0]) ** 2 + (i_list[i][1] - o_list[o][1]) ** 2
-            )
+            dis = math.sqrt((i_list[i][0] - o_list[o][0]) ** 2 + (i_list[i][1] - o_list[o][1]) ** 2)
             if dis <= min_dis:
                 min_dis = dis
                 idx_i = i
@@ -52,9 +51,7 @@ def __cal_ang(p1, p2, p3):
     a = math.sqrt((p2[0] - p3[0]) * (p2[0] - p3[0]) + (p2[1] - p3[1]) * (p2[1] - p3[1]))
     b = math.sqrt((p1[0] - p3[0]) * (p1[0] - p3[0]) + (p1[1] - p3[1]) * (p1[1] - p3[1]))
     c = math.sqrt((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]))
-    ang = math.degrees(
-        math.acos((b**2 - a**2 - c**2) / (-2 * a * c + eps))
-    )  # p2对应
+    ang = math.degrees(math.acos((b**2 - a**2 - c**2) / (-2 * a * c + eps)))  # p2对应
     return ang
 
 
@@ -141,9 +138,7 @@ def mask2polygon(label, sample="Dynamic", img_size=None):
         for idx, (contour, hierarchy) in enumerate(zip(contours, hierarchys[0])):
             # print(hierarchy)
             # opencv实现边界简化
-            epsilon = (
-                0.005 * cv2.arcLength(contour, True) if sample == "Dynamic" else sample
-            )
+            epsilon = 0.005 * cv2.arcLength(contour, True) if sample == "Dynamic" else sample
             if not isinstance(epsilon, float) and not isinstance(epsilon, int):
                 epsilon = 0
             # print("epsilon:", epsilon)

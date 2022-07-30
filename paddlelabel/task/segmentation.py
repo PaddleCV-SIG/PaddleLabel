@@ -57,9 +57,7 @@ def parse_semantic_mask(annotation_path, labels):
             continue
 
         ann[ann == label.id] = 0
-        (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(
-            label_mask, connectivity=8
-        )
+        (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(label_mask, connectivity=8)
         for cc_id in range(1, cc_num):
             h, w = np.where(cc_mask == cc_id)
             result = ",".join([f"{w},{h}" for h, w in zip(h, w)])
@@ -146,9 +144,7 @@ class InstanceSegmentation(BaseTask):
 
         ann_dict = {
             osp.basename(p).split(".")[0]: p
-            for p in listdir(
-                ann_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]}
-            )
+            for p in listdir(ann_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]})
         }
 
         # 2. import records
@@ -186,9 +182,7 @@ class InstanceSegmentation(BaseTask):
             data_path = osp.join(project.data_dir, data.path)
             export_data_path = osp.join("JPEGImages", osp.basename(data.path))
             # TODO: strip ext
-            export_label_path = osp.join(
-                export_label_dir, osp.basename(data_path).split(".")[0] + ".tiff"
-            )
+            export_label_path = osp.join(export_label_dir, osp.basename(data_path).split(".")[0] + ".tiff")
 
             copy(data_path, export_data_dir)
             height, width = map(int, data.size.split(",")[1:3])
@@ -284,9 +278,7 @@ class InstanceSegmentation(BaseTask):
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(
-                    lambda p: p[-len(file_name) :] == file_name, data_paths
-                )
+                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     abort(
@@ -308,9 +300,7 @@ class InstanceSegmentation(BaseTask):
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
                 if coco.imgs.get(ann["image_id"]) is None:
-                    print(
-                        f"No image with id {ann['image_id']} found, skipping this annotation."
-                    )
+                    print(f"No image with id {ann['image_id']} found, skipping this annotation.")
                     continue
 
                 label_name = coco.cats[ann["category_id"]]["name"]
@@ -338,9 +328,7 @@ class InstanceSegmentation(BaseTask):
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["full_path"]
                 size = "1," + coco.imgs[img_id]["size"]
-                self.add_task(
-                    [{"path": data_path, "size": size}], [annotations], split=set
-                )
+                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
             return data_paths, json.dumps({"info": info, "licenses": licenses})
 
         # 2. find all images under data_dir
@@ -348,9 +336,7 @@ class InstanceSegmentation(BaseTask):
         coco_others = {}
         for split_idx, label_file_path in enumerate(label_file_paths):
             if osp.exists(label_file_path):
-                data_paths, others = _coco_importer(
-                    data_paths, label_file_path, split_idx
-                )
+                data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
                 coco_others[split_idx] = others
         other_settings = project._get_other_settings()
         other_settings["coco_others"] = coco_others
@@ -426,13 +412,9 @@ class InstanceSegmentation(BaseTask):
         coco_others = project._get_other_settings().get("coco_others", {})
         for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
             outcoco = deepcopy(coco)
-            outcoco.dataset["images"] = [
-                img for img in coco.dataset["images"] if img["id"] in split[split_idx]
-            ]
+            outcoco.dataset["images"] = [img for img in coco.dataset["images"] if img["id"] in split[split_idx]]
             outcoco.dataset["annotations"] = [
-                ann
-                for ann in coco.dataset["annotations"]
-                if ann["image_id"] in split[split_idx]
+                ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
             ]
 
             coco_others_split = coco_others.get(str(split_idx), "{}")
@@ -522,9 +504,7 @@ class SemanticSegmentation(InstanceSegmentation):
             export_data_path = osp.join("JPEGImages", osp.basename(data.path))
 
             # TODO: strip ext
-            export_label_path = osp.join(
-                export_label_dir, osp.basename(data_path).split(".")[0] + ".png"
-            )
+            export_label_path = osp.join(export_label_dir, osp.basename(data_path).split(".")[0] + ".png")
 
             copy(data_path, export_data_dir)
             height, width = map(int, data.size.split(",")[1:3])

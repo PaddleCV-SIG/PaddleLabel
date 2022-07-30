@@ -82,14 +82,12 @@ def load_sample():
         "instance_segmentation": "polygon",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
-    data_dir = osp.join(
-        osp.expanduser("~"), ".paddlelabel", "sample", *sample_folder[task_category.name]
-    )
+    data_dir = osp.join(osp.expanduser("~"), ".paddlelabel", "sample", *sample_folder[task_category.name])
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         # abort(f"Sample project for {task_category.name} is already created. Please visit home page to enter the project.", 500)
         return {"project_id": curr_project.project_id}, 200
-    
+
     print(task_category.name, task_category)
 
     project = {

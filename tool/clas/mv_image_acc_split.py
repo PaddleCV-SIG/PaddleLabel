@@ -15,9 +15,7 @@ parser.add_argument(
     required=True,
     help="Dataset path, should have labels.txt, and at least one of train_list.txt, val_list.txt and test_list.txt",
 )
-parser.add_argument(
-    "-o", "--output_path", type=str, required=True, help="The path to export dataset to"
-)
+parser.add_argument("-o", "--output_path", type=str, required=True, help="The path to export dataset to")
 parser.add_argument(
     "-id",
     "--input_delimiter",
@@ -31,7 +29,7 @@ parser.add_argument(
     "--output_delimiter",
     default=" ",
     type=str,
-    help='Delimiter for output labels.txt, same format as input_delimiter. Defaults to space',
+    help="Delimiter for output labels.txt, same format as input_delimiter. Defaults to space",
 )
 
 args = parser.parse_args()
@@ -41,9 +39,7 @@ labes_txt_path = osp.join(args.dataset_path, "labels.txt")
 assert osp.exists(labes_txt_path), f"labels.txt not found under {args.dataset_path}"
 
 xx_list_found = 0
-list_paths = [
-    osp.join(args.dataset_path, n) for n in ("train_list.txt", "val_list.txt", "test_list.txt")
-]
+list_paths = [osp.join(args.dataset_path, n) for n in ("train_list.txt", "val_list.txt", "test_list.txt")]
 for list_path in list_paths:
     if osp.exists(list_path):
         xx_list_found += 1
@@ -80,4 +76,3 @@ for img_path, label_id in tqdm(list_info):
 # move all remaining files
 for file in all_files:
     copy(osp.join(args.dataset_path, file), osp.join(args.output_path, file))
-

@@ -11,9 +11,7 @@ from ..util import abort, generate_token
 
 
 def validata_email(email):
-    regex = re.compile(
-        r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
-    )
+    regex = re.compile(r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+")
     if re.fullmatch(regex, email):
         return True
     return False
@@ -32,9 +30,7 @@ def pre_put(curr_user, new_user, se):
         if not validata_email(new_user["email"]):
             abort("Email is not valid", 400)
     if "password" in new_user.keys():
-        new_user["password"] = generate_password_hash(
-            new_user["password"], method="sha256"
-        )
+        new_user["password"] = generate_password_hash(new_user["password"], method="sha256")
 
 
 get_all, get, post, put, delete = crud(User, UserSchema, [pre_add, pre_put])

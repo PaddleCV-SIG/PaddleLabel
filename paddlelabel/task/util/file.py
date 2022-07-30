@@ -110,4 +110,3 @@ def copycontent(src, dst):
             if osp.exists(fdst):
                 continue
             copy(fsrc, fdst)
-

@@ -60,9 +60,7 @@ class Resolver(connexion.resolver.RestyResolver):
         def get_function_name():
             method = operation.method
 
-            is_collection_endpoint = (
-                method.lower() == "get" and len(resource_name) and not is_var(path_components[-1])
-            )
+            is_collection_endpoint = method.lower() == "get" and len(resource_name) and not is_var(path_components[-1])
 
             return self.collection_endpoint_name if is_collection_endpoint else method.lower()
 

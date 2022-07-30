@@ -1,6 +1,7 @@
 import random
 import time
 
+
 def rgb_to_hex(rgb):
     rgb = tuple(int(c) for c in rgb)
     return ("#%02x%02x%02x" % rgb).upper()

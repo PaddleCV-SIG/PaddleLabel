@@ -35,4 +35,4 @@ ma = Marshmallow(app)
 # reject requests with the same request_id within request_id_timeout seconds
 request_id_timeout = 2
 
-data_base_dir = osp.join(os.path.expanduser('~'), '.paddlelabel')
+data_base_dir = osp.join(os.path.expanduser("~"), ".paddlelabel")

@@ -9,9 +9,11 @@ from paddlelabel.config import sqlite_url, db, connexion_app, db_path
 import paddlelabel.api
 import paddlelabel.task
 
+
 @connexion_app.app.route("/")
 def index():
-    return flask.redirect('/static/index.html')
+    return flask.redirect("/static/index.html")
+
 
 if not osp.exists(db_path):
     print("Creating db")

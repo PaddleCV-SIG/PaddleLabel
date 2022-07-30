@@ -45,8 +45,8 @@ def set_all_by_data(data_id):
 
     Args:
         data_id (int): data_id
-    """    
-    
+    """
+
     # 1. ensure data exists
     _, data = Data._exists(data_id)
 
@@ -59,15 +59,11 @@ def set_all_by_data(data_id):
         # del anns[idx]["modified"]
         # print("+_+_+", anns[idx])
         anns[idx] = schema.load(anns[idx])
-    
-    # print("anns", anns)
-
 
     # 3. add new ann and update existing ann
     task = Task._get(task_id=data.task_id)
-    keep_ann_ids = [] # anns to keep, newly created anns don't need to be included in this
+    keep_ann_ids = []  # anns to keep, newly created anns don't need to be included in this
     for ann in anns:
-        print(ann)
         if ann.annotation_id is None:
             ann.task_id = task.task_id
             ann.project_id = task.project_id
@@ -81,11 +77,7 @@ def set_all_by_data(data_id):
             del ann_dict["label"]
             # print(ann_dict, type(ann_dict))
 
-            Annotation.query.filter(
-                Annotation.annotation_id == ann.annotation_id
-            ).update(ann_dict)
-    
-    print(keep_ann_ids)
+            Annotation.query.filter(Annotation.annotation_id == ann.annotation_id).update(ann_dict)
 
     # 4. remove anns that are in db, but not in anns
     curr_anns = Annotation._get(data_id=data.data_id, many=True)

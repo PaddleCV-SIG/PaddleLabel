@@ -18,8 +18,6 @@ class Task(BaseModel):
         db.ForeignKey("project.project_id", ondelete="CASCADE"),
     )
     datas = db.relationship("Data", lazy="selectin", backref="task", cascade="all, delete-orphan")
-    annotations = db.relationship(
-        "Annotation", lazy="selectin", backref="task", cascade="all, delete-orphan"
-    )
+    annotations = db.relationship("Annotation", lazy="selectin", backref="task", cascade="all, delete-orphan")
     # TODO: split with tag!
     set = nncol(db.Integer())  # 0 train, 1 val, 2 test

@@ -7,7 +7,7 @@
             <width>756</width>
             <height>1008</height>
         </size>
-        
+
             <object>
             <name>bear</name>
             <bndbox>
@@ -17,7 +17,7 @@
             <ymax>344</ymax>
             </bndbox>
             </object>
-        
+
             <object>
             <name>bear</name>
             <bndbox>
@@ -27,7 +27,7 @@
             <ymax>469</ymax>
             </bndbox>
             </object>
-        
+
             <object>
             <name>bear</name>
             <bndbox>
@@ -37,7 +37,7 @@
             <ymax>770</ymax>
             </bndbox>
             </object>
-        
+
             <object>
             <name>bear</name>
             <bndbox>
@@ -47,5 +47,5 @@
             <ymax>603</ymax>
             </bndbox>
             </object>
-        
+
         </annotation>

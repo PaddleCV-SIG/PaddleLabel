@@ -276,7 +276,7 @@ For saving semantic or instance segmentation information as polygon we use the C
 
 ### MASK
 
-In semantic segmentation, we only try to decide which category each pixel in the input image belongs to. The output will be a png image of the same size as the input image. Each pixel will be assigned a grayscale or color indicating a category. 
+In semantic segmentation, we only try to decide which category each pixel in the input image belongs to. The output will be a png image of the same size as the input image. Each pixel will be assigned a grayscale or color indicating a category.
 
 Instance segmentation takes this one step further. We not only try to decide each pixel's category, but also differenciate between different instances of the same category. So each pixel will have two labels: it's cagtegory id and it's instance id.
 

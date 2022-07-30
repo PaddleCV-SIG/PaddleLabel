@@ -259,12 +259,7 @@ class Detection(BaseTask):
 
         # 2. get all data and label
         data_paths = set(p for p in listdir(base_dir, filters=filters))
-        label_paths = [
-            p
-            for p in listdir(
-                base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]}
-            )
-        ]
+        label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
 
         # print("data_paths", data_paths)
         # print("label_paths", label_paths)
@@ -349,9 +344,7 @@ class Detection(BaseTask):
         coco_others = project._get_other_settings().get("coco_others", {})
         for split_idx, fname in enumerate(["train.json", "val.json", "test.json"]):
             outcoco = deepcopy(coco)
-            outcoco.dataset["images"] = [
-                img for img in coco.dataset["images"] if img["id"] in split[split_idx]
-            ]
+            outcoco.dataset["images"] = [img for img in coco.dataset["images"] if img["id"] in split[split_idx]]
             outcoco.dataset["annotations"] = [
                 ann for ann in coco.dataset["annotations"] if ann["image_id"] in split[split_idx]
             ]

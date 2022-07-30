@@ -75,11 +75,7 @@ def pre_add(new_label, se):
             maxid = 0
         new_label.id = maxid + 1
     if new_label.color is None:
-        colors = (
-            Label.query.with_entities(Label.color)
-            .filter(Label.project_id == new_label.project_id)
-            .all()
-        )
+        colors = Label.query.with_entities(Label.color).filter(Label.project_id == new_label.project_id).all()
         colors = [c[0] for c in colors]
         new_label.color = rand_hex_color(colors)
 

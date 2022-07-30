@@ -2,7 +2,7 @@
 
 <!-- shields -->
 
-[![Python](https://img.shields.io/badge/python-3.9+-blue.svg?style=for-the-badge)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/pplabel?color=blue&style=for-the-badge) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/pplabel?color=orange&style=for-the-badge) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg?style=for-the-badge)]() 
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg?style=for-the-badge)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/pplabel?color=blue&style=for-the-badge) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PP-Label?color=orange&style=for-the-badge)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/pplabel?color=orange&style=for-the-badge) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg?style=for-the-badge)]()
 
 <!-- project informations -->
 
@@ -195,7 +195,7 @@ PP-Label带有基于PaddlePaddle的机器学习标注功能，可以通过加载
 
 ## 发行说明
 
-- [2022.7.XX] [alpha] 测试版本发布。 
+- [2022.7.XX] [alpha] 测试版本发布。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

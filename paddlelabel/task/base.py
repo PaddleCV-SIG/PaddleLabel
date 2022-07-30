@@ -145,19 +145,13 @@ class BaseTask:
                 # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
-                    label = self.add_label(
-                        ann["label_name"], ann.get("color"), commit=True
-                    )
+                    label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
                 del ann["label_name"]
-                ann = Annotation(
-                    label_id=label.label_id, project_id=project.project_id, **ann
-                )
+                ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
                 task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
-            print(
-                f"==== {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} ===="
-            )
+            print(f"==== {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} ====")
 
         db.session.add(task)
 
@@ -226,13 +220,8 @@ class BaseTask:
                     )
                 else:
                     annotation_path = new_path.replace("JPEGImages", "Annotations")
-                    annotation_path = (
-                        annotation_path[: -annotation_path[::-1].find(".")]
-                        + annotation_ext
-                    )
-                    print(
-                        new_path + delimiter + annotation_path, file=set_files[task.set]
-                    )
+                    annotation_path = annotation_path[: -annotation_path[::-1].find(".")] + annotation_ext
+                    print(new_path + delimiter + annotation_path, file=set_files[task.set])
 
         for f in set_files:
             f.close()
@@ -350,9 +339,7 @@ class BaseTask:
             """
             valid_lengths = [1, 2, 3, 5]
             if len(label) not in valid_lengths:
-                raise RuntimeError(
-                    f"After split got {label}. It's not in valid lengths {valid_lengths}"
-                )
+                raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
                 print("==== Adding label", label, "====")
                 if len(label) == 5:
@@ -372,9 +359,7 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(
-        self, export_dir: str, background_line: str = None, with_id: bool = False
-    ):
+    def export_labels(self, export_dir: str, background_line: str = None, with_id: bool = False):
         label_names_path = osp.join(export_dir, "labels.txt")
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)

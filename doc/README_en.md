@@ -79,4 +79,3 @@ PP-Label currently support image classification, object detection and image segm
 ## Contribute
 
 Please refer to the [Developers Guide](./doc/developers_guide.md) for details on backend implementation.
-

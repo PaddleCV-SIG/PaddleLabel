@@ -23,7 +23,12 @@ class BaseModel(db.Model):
     def __repr__(self):
         s = f"Object {self.__tablename__}:  "
         for att in dir(self):
-            if att[0] != "_" and att[-1] != 's' and att not in ["query", "registry", "metadata", "query_class"] and att not in self._nested:
+            if (
+                att[0] != "_"
+                and att[-1] != "s"
+                and att not in ["query", "registry", "metadata", "query_class"]
+                and att not in self._nested
+            ):
                 s += f"{att}: {getattr(self, att)}  "
         s += "\n"
         return s
@@ -58,4 +63,3 @@ class BaseModel(db.Model):
 
         item = cls.query.filter_by(**conditions).one_or_none()
         return item
-

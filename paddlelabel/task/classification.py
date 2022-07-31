@@ -77,11 +77,11 @@ class Classification(BaseTask):
                     # if str, use str as name
                     labs.append(lab)
 
-            labels_dict[l[0]] = labs
+            labels_dict[osp.normpath(l[0])] = labs
 
         data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
-            labels = labels_dict.get(data_path, [])
+            labels = labels_dict.get(osp.normpath(data_path), [])
             self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
 
         db.session.commit()

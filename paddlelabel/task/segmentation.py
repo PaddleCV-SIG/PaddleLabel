@@ -274,11 +274,12 @@ class InstanceSegmentation(BaseTask):
             # 1. create all labels
             self.create_coco_labels(coco.cats.values())
 
+            print("=====", data_paths)
             ann_by_task = {}
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(lambda p: p[-len(file_name) :] == file_name, data_paths)
+                full_path = filter(lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths)
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     abort(

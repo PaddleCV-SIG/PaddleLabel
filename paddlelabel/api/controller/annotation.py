@@ -55,10 +55,8 @@ def set_all_by_data(data_id):
     anns = connexion.request.json
     for idx in range(len(anns)):
         del anns[idx]["label"]
-        # del anns[idx]["created"]
-        # del anns[idx]["modified"]
-        # print("+_+_+", anns[idx])
         anns[idx] = schema.load(anns[idx])
+    curr_anns = Annotation._get(data_id=data.data_id, many=True)  # query before the first edit
 
     # 3. add new ann and update existing ann
     task = Task._get(task_id=data.task_id)
@@ -75,23 +73,14 @@ def set_all_by_data(data_id):
             del ann_dict["modified"]
             del ann_dict["annotation_id"]
             del ann_dict["label"]
-            # print(ann_dict, type(ann_dict))
-
             Annotation.query.filter(Annotation.annotation_id == ann.annotation_id).update(ann_dict)
 
     # 4. remove anns that are in db, but not in anns
-    curr_anns = Annotation._get(data_id=data.data_id, many=True)
+    print("curr_anns", curr_anns)
     for curr_ann in curr_anns:
         if curr_ann.annotation_id not in keep_ann_ids:
             db.session.delete(curr_ann)
 
-    # schema = AnnotationSchema()
-    # for ann in anns:
-    #     ann = schema.load(ann)
-    #     # print("====", ann)
-    #     ann.task_id = task.task_id
-    #     ann.project_id = task.project_id
-    #     data.annotations.append(ann)
     db.session.commit()
 
 

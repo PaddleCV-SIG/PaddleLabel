@@ -2,12 +2,9 @@ name: Publish PaddleLabel to pypi
 
 on: [workflow_dispatch]
 
-# on:
-#   workflow_dispatch:
 
 jobs:
   build:
-    environment: paddlelabel-publish
     runs-on: ubuntu-latest
     strategy:
       matrix:

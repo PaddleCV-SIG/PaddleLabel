@@ -127,7 +127,8 @@ def crud(Model, Schema, triggers=[]):
         item = Model.query.filter(getattr(Model, id_name) == id_val).one_or_none()
 
         if item is None:
-            abort(404, f"No {Model.__tablename__} with {id_name} == {id_val}")
+            # abort(404, f"No {Model.__tablename__} with {id_name} == {id_val}")
+            return
 
         if pre_delete is not None:
             item = pre_delete(item, db.session)

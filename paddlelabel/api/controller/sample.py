@@ -88,7 +88,7 @@ def load_sample():
         # abort(f"Sample project for {task_category.name} is already created. Please visit home page to enter the project.", 500)
         return {"project_id": curr_project.project_id}, 200
 
-    print(task_category.name, task_category)
+    # print(task_category.name, task_category)
 
     project = {
         "name": f"Sample Project - {task_category.name}",
@@ -106,6 +106,6 @@ def load_sample():
 
     handler.default_importer()
 
-    print(handler.project)
+    # print(handler.project)
 
     return {"project_id": handler.project.project_id}, 200

@@ -179,7 +179,7 @@ def split_dataset(project_id, epsilon=1e-3):
 
     tasks = Task._get(project_id=project_id, many=True)
     split = [math.ceil(s * len(tasks)) for s in split]
-    print("split numbers: ", len(tasks), split)
+    # print("split numbers: ", len(tasks), split)
     random.shuffle(tasks)
     for set in range(3):
         for idx in range(split[set], split[set + 1]):
@@ -221,7 +221,7 @@ def predict(project_id):
     if url[-1] != "/":
         url += "/"
     url += params["model"] + "/predict"
-    print("request url", url)
+    # print("request url", url)
 
     headers = {"content-type": "application/json"}
 

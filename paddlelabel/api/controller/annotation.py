@@ -76,7 +76,7 @@ def set_all_by_data(data_id):
             Annotation.query.filter(Annotation.annotation_id == ann.annotation_id).update(ann_dict)
 
     # 4. remove anns that are in db, but not in anns
-    print("curr_anns", curr_anns)
+    # print("curr_anns", curr_anns)
     for curr_ann in curr_anns:
         if curr_ann.annotation_id not in keep_ann_ids:
             db.session.delete(curr_ann)
@@ -102,7 +102,6 @@ def set_all_by_task_and_frontend(task_id):
     schema = AnnotationSchema()
     for ann in anns:
         ann = schema.load(ann)
-        # print("====", ann)
         ann.task_id = task.task_id
         ann.project_id = task.project_id
         task.annotations.append(ann)

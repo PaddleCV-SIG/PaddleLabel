@@ -37,7 +37,8 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
         if osp.basename(root).startswith("."):  # skip all hidden folders
             continue
         for f in fs:
-            files.append(osp.normpath(osp.join(root, f)))
+            # files.append(osp.normpath(osp.join(root, f)))
+            files.append(osp.join(root, f))
     files = [osp.relpath(f, folder) for f in files]
     # TODO: support regx
     include_prefix = filters.get("include_prefix", [])
@@ -71,13 +72,13 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
 
     files = list(filter(exclude, files))
     files.sort()
-    files = [osp.normpath(p) for p in files]
+    # files = [osp.normpath(p) for p in files]
     return files
 
 
 def copy(src, dst, make_dir=False):
-    src = osp.normpath(src)
-    dst = osp.normpath(dst)
+    # src = osp.normpath(src)
+    # dst = osp.normpath(dst)
     if dst == osp.dirname(src):
         return
     if make_dir:

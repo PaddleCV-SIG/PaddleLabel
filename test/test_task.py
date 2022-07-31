@@ -11,7 +11,7 @@ if not osp.exists(sqlite_url):
     from paddlelabel.config import basedir
     from paddlelabel.api.controller.setting import init_site_settings
 
-    init_site_settings(osp.normpath(osp.join(basedir, "default_setting.json")))
+    init_site_settings(osp.join(basedir, "default_setting.json"))
 
 # paddlelabel.task.classification.test()
 

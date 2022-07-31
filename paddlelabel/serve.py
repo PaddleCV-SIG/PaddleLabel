@@ -23,7 +23,7 @@ if not osp.exists(db_path):
     from paddlelabel.config import basedir
     from paddlelabel.api.controller.setting import init_site_settings
 
-    init_site_settings(osp.normpath(osp.join(basedir, "default_setting.json")))
+    init_site_settings(osp.join(basedir, "default_setting.json"))
 
 
 connexion_app.add_api(

@@ -10,7 +10,7 @@ from .util import rand_string
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel/paddlelabel.db')}"
+db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')}"
 
 if not osp.exists(osp.dirname(db_path)):
     os.makedirs(osp.dirname(db_path))

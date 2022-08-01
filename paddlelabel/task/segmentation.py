@@ -51,8 +51,6 @@ def parse_semantic_mask(annotation_path, labels):
         label_mask[label_mask != label.id] = 0
         label_mask[label_mask != 0] = 255
 
-        # print(np.unique(ann))
-
         if label_mask.sum() == 0:
             continue
 
@@ -67,7 +65,7 @@ def parse_semantic_mask(annotation_path, labels):
                     "label_name": label.name,
                     "result": result,
                     "type": "brush",
-                    "frontend_id": frontend_id,
+                    "frontend_id": label.id,
                 }
             )
             frontend_id += 1
@@ -279,7 +277,9 @@ class InstanceSegmentation(BaseTask):
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths)
+                full_path = filter(
+                    lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths
+                )
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     abort(
@@ -402,7 +402,7 @@ class InstanceSegmentation(BaseTask):
 
             coco.addAnnotation(
                 ann.data_id,
-                ann.label_id,
+                ann.label.id,
                 segmentation=r,
                 id=ann.annotation_id,
                 # area=area,

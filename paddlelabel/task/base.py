@@ -428,7 +428,12 @@ class BaseTask:
             color = catg.get("color", None)
             if color is not None:
                 color = name_to_hex(color)
-            if catg["supercategory"] == "none" or len(catg["supercategory"]) == 0:
+            if (
+                "supercategory" not in catg.keys()
+                or catg["supercategory"] == "none"
+                or catg["supercategory"] is None
+                or len(catg["supercategory"]) == 0
+            ):
                 self.add_label(
                     name=catg["name"],
                     id=catg["id"],

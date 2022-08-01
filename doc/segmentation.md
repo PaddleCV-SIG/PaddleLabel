@@ -4,6 +4,8 @@
 
 PPLabel支持语义分割与实例分割两种图像分割标注任务。
 
+
+
 ## <div id="test3">数据结构</div>
 
 示例格式如下：
@@ -30,8 +32,9 @@ background -
 optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
 ```
 
-
 ## 创建项目
+
+### 新项目创建
 
 浏览器打开PPLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
 
@@ -44,7 +47,7 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 
 ### 数据导入
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使PPLabel能够正确的识别和处理数据集，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时PPLabel提供了参考数据集，语义分割的参考数据集位于`~/.pplabel/sample/semantic_seg`路径下，实例分割的参考数据集位于`~/.pplabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使PPLabel能够正确的识别和处理数据集，请参考[数据结构](#test3)组织数据。具体txt文件的说明可参考[数据集文件结构说明](dataset_file_structure.md)。同时PPLabel提供了参考数据集，语义分割的参考数据集位于`~/.pplabel/sample/semantic_seg`路径下，实例分割的参考数据集位于`~/.pplabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 
@@ -68,15 +71,15 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 
 ## 完成标注
 
-完成数据标注后，PPLabel提供了方便的数据划分功能，以便与Paddle其他工具套件（如PaddleSeg和PaddleDetection）进行快速衔接。点击右侧工具栏的“项目总览”按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。通过上方的快捷按钮可以进行指定操作。
+完成数据标注后，PPLabel提供了方便的数据划分功能，以便与Paddle其他工具套件（如PaddleSeg和PaddleDetection）进行快速衔接。点击右侧工具栏的**项目总览**按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。通过上方的快捷按钮可以进行指定操作。
 
 ### 数据划分
 
-点击“划分数据集”按钮弹出划分比例的设置，分别填入对应训练集、验证集和测试集的占比，点击确定即可完成数据集的划分。
+点击**划分数据集**按钮弹出划分比例的设置，分别填入对应训练集、验证集和测试集的占比，点击确定即可完成数据集的划分。
 
 ### 数据导出
 
-点击“导出数据集”，输入需要导出到的文件夹路径，点击确认，即可导出标注完成的数据到指定路径。
+点击**导出数据集**，输入需要导出到的文件夹路径，点击确认，即可导出标注完成的数据到指定路径。
 
 ## *交互式分割标注
 

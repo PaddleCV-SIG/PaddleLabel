@@ -2,7 +2,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/35907364/181203626-24fd69d3-15aa-4e9e-9a1a-a35b55ad673d.png" align="middle" alt="LOGO" width = "500" />
+  <img src="https://user-images.githubusercontent.com/35907364/182084617-ea94f744-3a34-4193-98fe-5d6869a118fc.png" align="middle" alt="LOGO" width = "500" />
 </p>
 
 **An Effective and Flexible Tool for Data Annotation based on [PaddlePaddle](https://github.com/paddlepaddle/paddle).**
@@ -56,10 +56,10 @@ PaddleLabel是基于飞桨PaddlePaddle各个套件的特性提供的配套标注
 **教程**
 
 * [快速体验](doc/quick_experience.md)
-* [如何用PaddleClas进行训练]()
-* [如何用PaddleDet进行训练]()
-* [如何使用PaddleSeg进行训练]()
-* [如何使用PaddleX进行训练]()
+* [如何用PaddleClas进行训练](doc/PPLabel_PaddleClas.md)
+* [如何用PaddleDet进行训练](doc/PPLabel_PaddleDet.md)
+* [如何使用PaddleSeg进行训练](doc/PPLabel_PaddleSeg.md)
+* [如何使用PaddleX进行训练](doc/PPLabel_PaddleX.md)
 
 ## 社区贡献
 

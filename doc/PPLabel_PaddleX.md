@@ -1,9 +1,9 @@
-# 一、图像分类（快速在PPLabel标注的花朵分类数据集上展示如何应用PaddleX训练MobileNetV3_ssld网络）
-PPLabel标注数据+PaddleX训练预测=快速完成一次图像分类的任务
+# 一、图像分类（快速在PaddleLabel标注的花朵分类数据集上展示如何应用PaddleX训练MobileNetV3_ssld网络）
+PaddleLabel标注数据+PaddleX训练预测=快速完成一次图像分类的任务
 
 ## 1. 数据准备
-* 首先使用```PPLabel```对自制的花朵数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PPLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/flower_clas_dataset```，其目录结构如下：  
+* 首先使用```PaddleLabel```对自制的花朵数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/flower_clas_dataset```，其目录结构如下：  
 ```
 ├── flower_clas_dataset
 │   ├── image
@@ -109,12 +109,12 @@ print("Predict Result:", result)
 
 ***
 
-# 二、目标检测（快速在PPLabel标注的道路标志检测数据集上展示如何应用PaddleX训练YOLOv3网络
-PPLabel标注数据+PaddleX训练预测=快速完成一次目标检测的任务
+# 二、目标检测（快速在PaddleLabel标注的道路标志检测数据集上展示如何应用PaddleX训练YOLOv3网络
+PaddleLabel标注数据+PaddleX训练预测=快速完成一次目标检测的任务
 
 ## 1. 数据准备
-* 首先使用```PPLabel```对自制的路标数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PPLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/roadsign_det_dataset```，其目录结构如下：  
+* 首先使用```PaddleLabel```对自制的路标数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/roadsign_det_dataset```，其目录结构如下：  
 ```
 ├── roadsign_det_dataset
 │   ├── Annotations
@@ -219,12 +219,12 @@ pdx.det.visualize(image_path, result, threshold=0.5, save_dir='./output/yolov3_d
 > speedlimit 0.77 预测正确✔  
 ***
 
-# 三、图像分割（快速在PPLabel标注的狗子分割数据集上展示如何应用PaddleX训练DeepLabV3网络）
-PPLabel标注数据+PaddleX训练预测=快速完成一次图像语义分割的任务
+# 三、图像分割（快速在PaddleLabel标注的狗子分割数据集上展示如何应用PaddleX训练DeepLabV3网络）
+PaddleLabel标注数据+PaddleX训练预测=快速完成一次图像语义分割的任务
 
 ## 1. 数据准备
-* 首先使用```PPLabel```对自制的狗子数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PPLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/dog_seg_dataset```，其目录结构如下：  
+* 首先使用```PaddleLabel```对自制的狗子数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dataset/dog_seg_dataset```，其目录结构如下：  
 ```
 ├── dog_seg_dataset
 │   ├── Annotations
@@ -323,3 +323,7 @@ pdx.seg.visualize(image_name, result, weight=0.4, save_dir='./output/deeplab')
 
 <img src="https://ai-studio-static-online.cdn.bcebos.com/fec970f0e0fd4ddd96ad3d07b318d24c4f004376597946efbed4a599b652ffda" width="50%" height="50%">  
 <img src="https://ai-studio-static-online.cdn.bcebos.com/783581c1e2f345029cccfc382e0dedc70b58f9b48120467383c923a7ab0401a7" width="50%" height="50%">  
+
+
+## AI Studio第三方教程推荐
+[快速体验演示案例](https://aistudio.baidu.com/aistudio/projectdetail/4383953)

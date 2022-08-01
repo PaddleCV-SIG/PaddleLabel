@@ -1,9 +1,9 @@
-# 道路标志检测：从PPLabel到PaddleDetection
-PPLabel标注数据+PaddleDetection训练预测=快速完成一次目标检测的任务
+# 道路标志检测：从PaddleLabel到PaddleDetection
+PaddleLabel标注数据+PaddleDetection训练预测=快速完成一次目标检测的任务
 ***
 ## 1. 数据准备
-* 首先使用```PPLabel```对自制的路标数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PPLabel```导出后的内容全部放到自己的建立的文件夹下，例如```roadsign_det_dataset```，其目录结构如下：  
+* 首先使用```PaddleLabel```对自制的路标数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```roadsign_det_dataset```，其目录结构如下：  
 ```
 ├── roadsign_det_dataset
 │   ├── Annotations
@@ -97,3 +97,7 @@ python PeddleDetection/tools/infer.py \
   
 预测的结果是：  
 > speedlimit 0.77 预测正确✔  
+
+
+## AI Studio第三方教程推荐
+[快速体验演示案例](https://aistudio.baidu.com/aistudio/projectdetail/4349280)

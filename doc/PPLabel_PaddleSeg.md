@@ -1,9 +1,9 @@
-# 图像分割：从PPLabel到PaddleSeg
-PPLabel标注数据+PaddleSeg训练预测=快速完成一次图像分割的任务
+# 图像分割：从PaddleLabel到PaddleSeg
+PaddleLabel标注数据+PaddleSeg训练预测=快速完成一次图像分割的任务
 ***
 ## 1. 数据准备
-* 首先使用```PPLabel```对自制的狗子数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PPLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dog_seg_dataset```，其目录结构如下：  
+* 首先使用```PaddleLabel```对自制的狗子数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dog_seg_dataset```，其目录结构如下：  
 ```
 ├── dog_seg_dataset
 │   ├── Annotations
@@ -142,3 +142,5 @@ python PaddleSeg/predict.py \
 <img src="https://ai-studio-static-online.cdn.bcebos.com/8d6dea0d5fa24912a58612839026b255652d7d3ccf0a40aaa5e6056750f8f75b" width="50%" height="50%">  
 <img src="https://ai-studio-static-online.cdn.bcebos.com/6dfc7c24edda4a489b7f1629957be44be44d3b9c94d14becb88aa22e42a41d50" width="50%" height="50%">  
   
+## AI Studio第三方教程推荐
+[快速体验演示案例](https://aistudio.baidu.com/aistudio/projectdetail/4353528)

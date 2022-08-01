@@ -71,10 +71,9 @@ def parse_semantic_mask(annotation_path, labels):
             frontend_id += 1
 
     if ann.sum() != 0:
-        abort(
-            f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?",
-            404,
-        )
+        msg = f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?"
+        print(msg)
+        abort(msg, 404)
 
     s = [1] + list(ann.shape)
     s = [str(s) for s in s]
@@ -196,7 +195,10 @@ class InstanceSegmentation(BaseTask):
                 label_id = ann.label.id
                 frontend_id = ann.frontend_id
                 result = ann.result.split(",")
-                result = [int(float(p)) for p in result]
+                try:
+                    result = [int(float(p)) for p in result]
+                except:
+                    print(result, "to float error, plz open an issue for this")
                 if ann.type == "brush":
                     points = result[2:]
                     line_width = result[0]
@@ -405,8 +407,6 @@ class InstanceSegmentation(BaseTask):
                 ann.label.id,
                 segmentation=r,
                 id=ann.annotation_id,
-                # area=area,
-                # bbox=bbox,
             )
 
         # 3. write coco json
@@ -521,7 +521,10 @@ class SemanticSegmentation(InstanceSegmentation):
 
                 label_id = ann.label.id
                 result = ann.result.strip().split(",")
-                result = [int(float(p)) for p in result]
+                try:
+                    result = [int(float(p)) for p in result]
+                except:
+                    print(result, "to float error, plz open an issue for this")
                 if ann.type == "brush":
                     points = result[2:]
                     line_width = result[0]

@@ -2,16 +2,16 @@
 
 ![interactive_segmentation](https://user-images.githubusercontent.com/71769312/181561624-de3f74e4-ca86-4764-a7a5-9043b9a1c363.png)
 
-PPLabel基于[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)后端支持交互式分割。
+PaddleLabel基于[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)后端支持交互式分割。
 
 ## 安装说明
 
-要使用交互式分割功能，需要安装PPLabel ML扩展。
+要使用交互式分割功能，需要安装PaddleLabel ML扩展。
 
 ### 通过PIP安装
 
 ```shell
-pip install pplabel-ml
+pip install paddlelabel-ml
 ```
 
 ### 通过源码安装
@@ -19,22 +19,22 @@ pip install pplabel-ml
 首先需要将ML代码克隆到本地：
 
 ```shell
-git clone https://github.com/PaddleCV-SIG/PP-Label-ML
+git clone https://github.com/PaddleCV-SIG/PaddleLabel-ML
 ```
 
 接下来需要安装ML：
 
 ```shell
-cd PP-Label-ML
+cd PaddleLabel-ML
 python setup.py install
 ```
 
 ## 启动
 
-完成上述的安装操作后，可以直接在终端使用如下指令启动PPLabel的机器学习端。
+完成上述的安装操作后，可以直接在终端使用如下指令启动PaddleLabel的机器学习端。
 
 ```shell
-pplabel_ml  # 启动ml后端
+paddlelabel_ml  # 启动ml后端
 ```
 
 ## 数据标注

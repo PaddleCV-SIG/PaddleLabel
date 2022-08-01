@@ -1,0 +1,1466 @@
+openapi: 3.0.0
+info:
+  title: PP-Label API Spec
+  version: 0.1.0
+  description: Back end APIs for PP-Label
+  contact:
+    name: PP-Label Team
+    url: 'https://github.com/PaddleCV-SIG/PP-Label/issues'
+    email: me@linhan.email
+servers:
+  - url: /api
+    description: Same origion
+  - url: 'http://localhost:17995/api'
+    description: Local server
+  - url: 'https://paddlelabel.herokuapp.com/api'
+    description: heroku
+paths:
+  /projects:
+    parameters:
+      - $ref: '#/components/parameters/request_id'
+    get:
+      tags:
+        - Project
+      summary: 'Read all projects, sort by last modify date'
+      description: ''
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+      operationId: getAll
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
+    post:
+      tags:
+        - Project
+      summary: Create a new project
+      description: ''
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+      operationId: create
+  '/projects/{project_id}':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+      - $ref: '#/components/parameters/request_id'
+    get:
+      tags:
+        - Project
+      summary: Get info of a specific project
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Project not fond
+      operationId: get
+    delete:
+      summary: Delete a project record and ALL TASKS RECORDS under the project.
+      description: Delete a project record and ALL TASKS RECORDS under the project. Won't delete file on file system
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: No project with such project id
+      operationId: remove
+    put:
+      tags:
+        - Project
+      summary: Edit multiple project properties
+      description: Edit multiple project properties. Empty strings will be set. Properties not in request body won't be changed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: 'Project with project id not fond, or project dont have requested property'
+      operationId: update
+  '/projects/{project_id}/tasks':
+    parameters:
+      - name: project_id
+        in: path
+        schema:
+          type: string
+        description: Id of a project
+        required: true
+    get:
+      summary: Get all tasks under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      operationId: getTasks
+      description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
+  '/projects/{project_id}/labels':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    get:
+      summary: Get all labels under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+      operationId: getLabels
+      description: ''
+    post:
+      summary: 'Set all labels under a project, will delete previous labels'
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+      operationId: setLabels
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Label'
+    delete:
+      summary: Delete all labels under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+      operationId: removeLabels
+      description: ''
+  '/projects/{project_id}/annotations':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    get:
+      summary: Get all annotations under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: getAnnotations
+      description: ''
+  '/projects/{project_id}/tags':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    get:
+      summary: Get all tags under a project
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      operationId: getTags
+      description: ''
+  '/projects/{project_id}/progress':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    get:
+      summary: Get project progress
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  finished:
+                    type: integer
+                  total:
+                    type: integer
+      operationId: getProgress
+      description: ''
+  '/projects/{project_id}/split':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: 'Split this project''s data into train, validation and test dataset.'
+      tags:
+        - Project
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  train:
+                    type: integer
+                  val:
+                    type: integer
+                  test:
+                    type: integer
+      operationId: splitDataset
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                train:
+                  type: number
+                val:
+                  type: number
+                test:
+                  type: number
+        description: ''
+  '/projects/{project_id}/export':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: Export dataset to specified directory
+      tags:
+        - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                export_dir:
+                  type: string
+      responses:
+        '200':
+          description: success
+      operationId: exportDataset
+      description: ''
+  '/projects/{project_id}/import':
+    parameters:
+      - schema:
+          type: string
+        name: project_id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: importDataset
+      tags:
+        - Project
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                import_dir:
+                  type: string
+        description: ''
+  '/projects/{project_id}/predict':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: Run prediction on all data in the dataset
+      tags:
+        - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ml_backend_url:
+                  type: string
+                model:
+                  type: string
+                same_server:
+                  type: boolean
+                  description: |-
+                    Default false. Will b64 encode image and send to ml backend in this case. Images are directly encoded as file.
+                    If the ml backend has read access to project data dir, set same_server to true. This case web backend will send file path to ml backend. Reduce b64 en/decode overhead.
+                create_label:
+                  type: boolean
+                  description: Default false. Create label if model prediction not in current labels. Won't save prediction result in db if prediciont label not present in current labels
+              required:
+                - ml_backend_url
+                - model
+      responses:
+        '200':
+          description: success
+      operationId: predict
+      description: ''
+  /labels:
+    get:
+      tags:
+        - Label
+      summary: 'Get all labels, sort by last modify'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
+      operationId: getAll
+    post:
+      tags:
+        - Label
+      summary: Create a new label
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      operationId: create
+  '/labels/{label_id}':
+    parameters:
+      - $ref: '#/components/parameters/label_id'
+    get:
+      tags:
+        - Label
+      summary: Get info about a specific label
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '404':
+          description: Label not fond
+      operationId: get
+    delete:
+      summary: Delete a label
+      description: Delete a label. Labels in use (have annotation pointing at them) are not allowed to be deleted.
+      tags:
+        - Label
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The label specified is not found
+      operationId: remove
+    put:
+      tags:
+        - Label
+      summary: Edit label info
+      description: Edit label info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '404':
+          description: 'Label with specified label id not fond, or project dont have requested property'
+      operationId: update
+  /tasks:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      operationId: getAll
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: order_by
+    post:
+      tags:
+        - Task
+      summary: Create a new task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+      operationId: create
+  '/tasks/{task_id}':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get info of a specific task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not fond
+      operationId: get
+    delete:
+      summary: Delete a task and ALL DATA and ANNOTATIONS under the task.
+      description: Delete a task and ALL DATA and ANNOTATIONS under the project. Won't delete file on file system
+      tags:
+        - Task
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The task specified is not found
+      operationId: remove
+    put:
+      tags:
+        - Task
+      summary: Edit task info
+      description: Edit task info. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: task_id
+          in: path
+          description: Id of the task to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: 'Task with task id not fond, or task dont have requested property'
+      operationId: update
+  '/tasks/{task_id}/tags':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get all tags of the task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      operationId: getTags
+      description: ''
+    post:
+      tags:
+        - Task
+      summary: Add a new tag to the task
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      description: 'Add a tag to a task, the tag has to exist.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                tag_id:
+                  type: integer
+      operationId: addTag
+  '/tasks/{task_id}/datas':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get all datas of a task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Data'
+      operationId: getDatas
+      description: ''
+  '/tasks/{task_id}/annotations':
+    parameters:
+      - $ref: '#/components/parameters/task_id'
+    get:
+      tags:
+        - Task
+      summary: Get all annotations of a task
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: getAnnotations
+      description: ''
+  /datas/:
+    get:
+      tags:
+        - Data
+      summary: 'Get all data, sort by last modified'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+      operationId: getAll
+    post:
+      tags:
+        - Data
+      summary: Create a new data record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+      operationId: create
+  '/datas/{data_id}/':
+    parameters:
+      - $ref: '#/components/parameters/data_id'
+    get:
+      tags:
+        - Data
+      summary: Get info of a specific data record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+        '404':
+          description: Data record not fond
+      operationId: get
+    delete:
+      summary: Delete a data record
+      description: 'Delete a data record, file on file system will not be deleted'
+      tags:
+        - Data
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The data record specified is not found
+      operationId: remove
+    put:
+      tags:
+        - Data
+      summary: Edit data record
+      description: Edit data record. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+        '404':
+          description: 'Data record with data id not fond, or data dont have requested property'
+      operationId: update
+  '/datas/{data_id}/image':
+    parameters:
+      - name: data_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of a data record
+    get:
+      summary: Get the image of a data record
+      tags:
+        - Data
+      responses:
+        '200':
+          description: success
+      operationId: getImage
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: sault
+  '/datas/{data_id}/annotations':
+    parameters:
+      - name: data_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of a data record
+    get:
+      summary: Get the annotations of a data record
+      tags:
+        - Data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: getAnnotations
+    delete:
+      summary: Delete all annotations of a data record
+      tags:
+        - Data
+      operationId: deleteAnnotations
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Set the annotations of a data record
+      tags:
+        - Data
+      operationId: setAnnotations
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Annotation'
+  /annotations/:
+    get:
+      tags:
+        - Annotation
+      summary: 'Get all annotations, sort by last modified'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
+      operationId: getAll
+    post:
+      tags:
+        - Annotation
+      summary: Create a new annotation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Annotation'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      operationId: create
+  '/annotations/{annotation_id}':
+    get:
+      tags:
+        - Annotation
+      summary: Get info of a specific annotation
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+        '404':
+          description: Annotation not fond
+      operationId: get
+    delete:
+      summary: Delete an annotation
+      description: Delete an annotation
+      tags:
+        - Annotation
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation to delete
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The annotation record specified is not found
+      operationId: remove
+    put:
+      tags:
+        - Annotation
+      summary: Edit annotation
+      description: Edit annotation. Provide key value pair to change one value only. Provide all changed values to change multiple. Empty string will be set. Leave values don't intend to change out of request body.
+      parameters:
+        - name: annotation_id
+          in: path
+          description: Id of the annotation to edit
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Annotation'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+        '404':
+          description: 'Annotation record with data id not fond, or data dont have requested property'
+      operationId: update
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id of an annotation record
+  /tags:
+    get:
+      tags:
+        - Tag
+      summary: 'Get all tags, sort by last modify date'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+      operationId: getAll
+    post:
+      tags:
+        - Tag
+      summary: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      description: ''
+      operationId: create
+  '/tags/{tag_id}':
+    parameters:
+      - $ref: '#/components/parameters/tag_id'
+    get:
+      tags:
+        - Tag
+      summary: Get info of a specific tag
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not fond
+      operationId: get
+    delete:
+      summary: Delete a tag and ALL TAGGING RECORDS under this tag.
+      description: Delete a tag and ALL TAGGING RECORDS under this tag.
+      tags:
+        - Tag
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The tag specified is not found
+      operationId: remove
+    put:
+      tags:
+        - Tag
+      summary: Edit tag properties
+      description: Edit tag properties. Empty strings will be set. Properties not in request body won't be changed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: 'Tag with tag id not fond, or tag dont have requested property'
+      operationId: update
+  /users:
+    get:
+      summary: Get all users
+      tags:
+        - User
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      operationId: getAll
+    post:
+      tags:
+        - User
+      summary: Add a new user
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      description: ''
+      operationId: create
+  '/users/{uuid}':
+    parameters:
+      - $ref: '#/components/parameters/uuid'
+    get:
+      tags:
+        - User
+      summary: Get info of a specific user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not fond
+      description: ''
+      operationId: get
+    delete:
+      summary: Delete a user
+      description: Delete a user
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The task specified is not found
+      operationId: remove
+    put:
+      tags:
+        - User
+      summary: Edit user info
+      description: Edit user info.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Use with user id not fond, or user dont have requested property'
+      operationId: update
+  /users/login:
+    post:
+      tags:
+        - User
+      summary: Login and get JWT
+      operationId: paddlelabel.api.controller.user.login
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+  /rpc/folders:
+    post:
+      summary: ''
+      tags:
+        - rpc
+      operationId: getFolders
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+  /rpc/seg/polygon2points:
+    post:
+      summary: ''
+      tags:
+        - rpc
+      operationId: polygon2points
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                polygon:
+                  type: string
+  /rpc/seg/points2polygon:
+    post:
+      summary: ''
+      operationId: points2polygon
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                points:
+                  type: string
+        description: ''
+  /version:
+    get:
+      summary: Get backend version
+      tags:
+        - manage
+      operationId: getVersion
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /samples:
+    post:
+      summary: Download and import sample project
+      tags:
+        - manage
+      operationId: loadSample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_category_id:
+                  type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project_id:
+                    type: integer
+components:
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: paddlelabel.api.decode_token
+  schemas:
+    Project:
+      type: object
+      description: Contains project details and settings
+      x-examples:
+        Classification_Example:
+          project_id: null
+          name: Classification Example
+          description: Example Project Descreption
+          task_category: 1
+          data_dir: ~/paddlelabel/project_name/data
+          label_dir: ~/paddlelabel/project_name/label
+          label_config: '[''class1'', ''class2'', ''class3'']'
+          created: null
+          modified: null
+          other_settings: '{''multiclass_classification'':true}'
+      additionalProperties: false
+      title: ''
+      properties:
+        project_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+          description: Project name
+        description:
+          type: string
+          description: Optional project description
+        task_category_id:
+          type: integer
+          description: 'Top level annotation task category, see TODO for int <-> category map'
+        task_category:
+          type: string
+          readOnly: true
+        data_dir:
+          type: string
+          description: Absolute directory path where all the data file is stored
+        label_dir:
+          type: string
+          description: Absolute directory path where all the label files are stored
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
+        label_format:
+          type: string
+          description: 'eg: single_class/multi_class for classification'
+        created:
+          type: string
+          description: Project creation timestamp in UTC
+          format: timestamp
+          nullable: true
+          readOnly: true
+        modified:
+          type: string
+          description: Last time the project detail or ANY TASK of the project is modified
+          format: timestamp
+          nullable: true
+          readOnly: true
+        other_settings:
+          type: object
+          properties:
+            mlBackendUrl:
+              type: string
+            perviousModel:
+              type: string
+            models:
+              type: object
+    Task:
+      title: Task
+      type: object
+      description: An annotation task
+      additionalProperties: false
+      properties:
+        task_id:
+          type: integer
+          readOnly: true
+        project_id:
+          type: integer
+        data_paths:
+          type: array
+          items:
+            type: string
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Annotation'
+        project:
+          $ref: '#/components/schemas/Project'
+        set:
+          type: integer
+        modified:
+          type: string
+          format: timestamp
+          readOnly: true
+        created:
+          type: string
+          format: timestamp
+          readOnly: true
+      required:
+        - project_id
+    Data:
+      title: Data
+      type: object
+      properties:
+        data_id:
+          type: integer
+          readOnly: true
+        task_id:
+          type: integer
+        size:
+          type: string
+        task:
+          $ref: '#/components/schemas/Task'
+        created:
+          type: string
+          readOnly: true
+        modified:
+          type: string
+          readOnly: true
+        sault:
+          type: string
+    Annotation:
+      type: object
+      title: Annotation
+      description: ''
+      additionalProperties: false
+      properties:
+        annotation_id:
+          type: integer
+        frontend_id:
+          type: integer
+        task_id:
+          type: integer
+        label_id:
+          type: integer
+        label:
+          $ref: '#/components/schemas/Label'
+        project_id:
+          type: integer
+        data_id:
+          type: integer
+        result:
+          type: string
+        type:
+          type: string
+        created:
+          type: string
+          readOnly: true
+        modified:
+          type: string
+          readOnly: true
+      required:
+        - data_id
+    Label:
+      title: Label
+      type: object
+      description: ''
+      properties:
+        label_id:
+          type: integer
+        project_id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        comment:
+          type: string
+        created:
+          type: string
+          readOnly: true
+        modified:
+          type: string
+          readOnly: true
+        super_category_id:
+          type: integer
+      required:
+        - name
+    Tag:
+      title: Tag
+      type: object
+      properties:
+        tag_id:
+          type: integer
+        project_id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        comment:
+          type: string
+    TagTask:
+      title: TagTask
+      type: object
+      properties:
+        tag_task_id:
+          type: integer
+        project_id:
+          type: integer
+        tag_id:
+          type: integer
+        task_id:
+          type: integer
+    User:
+      title: User
+      type: object
+      description: ''
+      properties:
+        user_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        role_id:
+          type: integer
+    ProjectOtherSettings:
+      title: ProjectOtherSettings
+      type: object
+      properties:
+        label_names_path:
+          type: string
+        split_file_paths:
+          type: array
+          items:
+            type: string
+  parameters:
+    request_id:
+      name: request_id
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 30
+      description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
+    project_id:
+      name: project_id
+      in: path
+      schema:
+        type: string
+      description: Id of a project
+      required: true
+    label_id:
+      name: label_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a label
+    task_id:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a task
+    data_id:
+      name: data_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a data record
+    annotation_id:
+      name: annotation_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of an annotation record
+    frontend_id:
+      name: frontend_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a frontend-annotation record
+    tag_id:
+      name: tag_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id of a tag
+    uuid:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Unique id of user

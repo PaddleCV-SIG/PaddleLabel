@@ -8,9 +8,9 @@ node --version
 npm run build
 
 cd ../PP-Label
-rm -rf pplabel/static/
-mkdir pplabel/static/
-cp -r ../PP-Label-Frontend/dist/* pplabel/static/
+rm -rf paddlelabel/static/
+mkdir paddlelabel/static/
+cp -r ../PP-Label-Frontend/dist/* paddlelabel/static/
 
 python tool/bumpversion.py
 pip install twine

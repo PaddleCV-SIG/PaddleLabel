@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+        <annotation>
+        <folder>JPEGImages</folder>
+        <filename>4.jpeg</filename>
+        <object_num>4</object_num>
+        <size>
+            <width>756</width>
+            <height>1008</height>
+        </size>
+
+            <object>
+            <name>bear</name>
+            <bndbox>
+            <xmin>384</xmin>
+            <ymin>88</ymin>
+            <xmax>566</xmax>
+            <ymax>344</ymax>
+            </bndbox>
+            </object>
+
+            <object>
+            <name>bear</name>
+            <bndbox>
+            <xmin>147</xmin>
+            <ymin>271</ymin>
+            <xmax>369</xmax>
+            <ymax>469</ymax>
+            </bndbox>
+            </object>
+
+            <object>
+            <name>bear</name>
+            <bndbox>
+            <xmin>114</xmin>
+            <ymin>603</ymin>
+            <xmax>351</xmax>
+            <ymax>770</ymax>
+            </bndbox>
+            </object>
+
+            <object>
+            <name>bear</name>
+            <bndbox>
+            <xmin>408</xmin>
+            <ymin>445</ymin>
+            <xmax>636</xmax>
+            <ymax>603</ymax>
+            </bndbox>
+            </object>
+
+        </annotation>

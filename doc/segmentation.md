@@ -32,15 +32,9 @@ background -
 optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
 ```
 
-## 创建项目
-
-<<<<<<< HEAD
-浏览器打开PaddleLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
-=======
 ### 新项目创建
 
-浏览器打开PPLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
->>>>>>> dcccd808700aa8f5e0878e9829c928ddc5a6e121
+浏览器打开PaddleLabel后，可以通过创建项目下的“语义分割”或“实例分割”卡片创建一个新的图像分割标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
 
 项目创建选项卡有如下选项需要填写：
 
@@ -51,11 +45,8 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 
 ### 数据导入
 
-<<<<<<< HEAD
+
 在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使PaddleLabel能够正确的识别和处理数据集，请参考[数据结构](#test3)组织数据集，对于txt文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时PaddleLabel提供了参考数据集，语义分割的参考数据集位于`~/.paddlelabel/sample/semantic_seg`路径下，实例分割的参考数据集位于`~/.paddlelabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
-=======
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使PPLabel能够正确的识别和处理数据集，请参考[数据结构](#test3)组织数据。具体txt文件的说明可参考[数据集文件结构说明](dataset_file_structure.md)。同时PPLabel提供了参考数据集，语义分割的参考数据集位于`~/.pplabel/sample/semantic_seg`路径下，实例分割的参考数据集位于`~/.pplabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
->>>>>>> dcccd808700aa8f5e0878e9829c928ddc5a6e121
 
 ## 数据标注
 
@@ -78,12 +69,7 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 *注意：① 在PaddleLabel中，右侧标签栏有标签和标注两种。在图像分割中，标签对应的是类别，而标注对应的是该类别的一个实例。语义分割每一个类别只能创建一个实例，而实例分割每一个类别可以创建多个实例。② 多边形模式和掩膜模式不可同时使用，请在创建项目时确定使用某种格式。*
 
 ## 完成标注
-
-<<<<<<< HEAD
 完成数据标注后，PaddleLabel提供了方便的数据划分功能，以便与Paddle其他工具套件（如PaddleSeg和PaddleDetection）进行快速衔接。点击右侧工具栏的“项目总览”按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。通过上方的快捷按钮可以进行指定操作。
-=======
-完成数据标注后，PPLabel提供了方便的数据划分功能，以便与Paddle其他工具套件（如PaddleSeg和PaddleDetection）进行快速衔接。点击右侧工具栏的**项目总览**按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。通过上方的快捷按钮可以进行指定操作。
->>>>>>> dcccd808700aa8f5e0878e9829c928ddc5a6e121
 
 ### 数据划分
 

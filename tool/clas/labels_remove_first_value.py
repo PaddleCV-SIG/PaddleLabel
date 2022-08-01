@@ -26,7 +26,7 @@ parser.add_argument(
     "--output_delimiter",
     default=" ",
     type=str,
-    help='Delimiter for output labels.txt, same format as input_delimiter. Defaults to space',
+    help="Delimiter for output labels.txt, same format as input_delimiter. Defaults to space",
 )
 
 args = parser.parse_args()

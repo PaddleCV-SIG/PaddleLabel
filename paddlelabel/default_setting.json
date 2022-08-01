@@ -1,0 +1,12 @@
+{
+  "site": {
+    "task_categories": {
+      "1": ["classification", "paddlelabel.task.Classification"],
+      "2": ["detection", "paddlelabel.task.Detection"],
+      "3": ["semantic_segmentation", "paddlelabel.task.SemanticSegmentation"],
+      "4": ["instance_segmentation", "paddlelabel.task.InstanceSegmentation"],
+      "5": ["keypoint_detection", "paddlelabel.task.BaseTask"],
+      "6": ["remote_sensing", "paddlelabel.task.BaseTask"]
+    }
+  }
+}

@@ -27,4 +27,4 @@ RUN pip install -r requirements.txt
 # ENV FLASK_APP=setup.py
 
 # Run
-ENTRYPOINT [ "python", "-m", "pplabel" ]
+ENTRYPOINT [ "python", "-m", "paddlelabel" ]

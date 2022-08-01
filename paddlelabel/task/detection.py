@@ -164,7 +164,9 @@ class Detection(BaseTask):
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths)
+                full_path = filter(
+                    lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths
+                )
                 full_path = list(full_path)
                 if len(full_path) != 1:
                     raise RuntimeError(
@@ -334,7 +336,7 @@ class Detection(BaseTask):
             bb[3] -= bb[1]
             coco.addAnnotation(
                 ann.data_id,
-                ann.label_id,
+                ann.label.id,
                 segmentation=[],
                 id=ann.annotation_id,
                 bbox=bb,

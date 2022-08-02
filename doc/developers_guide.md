@@ -1,6 +1,6 @@
 # Developer Guide
 
-PP-label's backend development centers around [connexion](https://github.com/spec-first/connexion). Unlike other tool that generate openapi spec based on your code, with connexion you write openapi spec first and connexion takes care of routing and integrity check based on openapi spec.
+PaddleLabel's backend development centers around [connexion](https://github.com/spec-first/connexion). Unlike other tool that generate openapi spec based on your code, with connexion you write openapi spec first and connexion takes care of routing and integrity check based on openapi spec.
 
 Other important dependencies are [SQLAlchemy](https://www.sqlalchemy.org/) for ORM, [marshmallow](https://marshmallow.readthedocs.io/en/stable/) for serialization and [Flask](https://flask.palletsprojects.com/en/2.0.x/).
 
@@ -17,7 +17,7 @@ Useful softwares for development
 This structure is chosen to avoid circular import.
 
 ```shell
-PP-Label
+PaddleLabel
 ├── README.md
 ├── docker-compose-dev.yml # docker support
 ├── Dockerfile.dev
@@ -109,7 +109,7 @@ We provide a standard CRUD template in pplabel.controller.base.crud. It also sup
 
 To add a new endpoint just add a new file under pplabel/controller folder and implement get_all, get, post, put, delete functions in it.
 
-In order to customize method name while generating frontend api calls with openapi-generator, the operationId field is used. The [openapi.yaml](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/openapi.yml) may not be valid in some openapi spec editors (duplicate operationId) but this type of error can be safely ignored. The routing for /collection/item/collection type endpoints, eg: /projects/{project_id}/tasks, receive special treatment in [resolving](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/util.py#L12). In Resolver.resolve_operation_id, the special dict defines the routing for such endpoints. The key is in format f'{endpoint url} {operationId}' and the value is a function for handling the endpoint.
+In order to customize method name while generating frontend api calls with openapi-generator, the operationId field is used. The [openapi.yaml](https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/pplabel/openapi.yml) may not be valid in some openapi spec editors (duplicate operationId) but this type of error can be safely ignored. The routing for /collection/item/collection type endpoints, eg: /projects/{project_id}/tasks, receive special treatment in [resolving](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/util.py#L12). In Resolver.resolve_operation_id, the special dict defines the routing for such endpoints. The key is in format f'{endpoint url} {operationId}' and the value is a function for handling the endpoint.
 
 ## Naming Scheme
 
@@ -125,7 +125,7 @@ Generally, singular for one item, plural for a collection of items
 
 ## Testing
 
-Unit test is not yet implemented. For API and import/export testing see [pp-label-test](https://github.com/linhandev/pp-label-test) repo.
+Unit test is not yet implemented. For API and import/export testing see [paddlelabel-test](https://github.com/linhandev/pp-label-test) repo.
 
 ## Response Code
 

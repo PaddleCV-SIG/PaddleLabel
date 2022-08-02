@@ -1,12 +1,12 @@
 # Dataset File Structure
 
-This page describes the dataset file structures that PP Label can import and export. **PP Label may make modifications to files under the dataset folder.** Like during "Import Additional Data", new data files will be moved to this project's dataset path folder. Currently we won't delete anything. This behavior is intended to save disk space. **You should consider making a copy of the dataset as backup before import.** There will be a file named pplabel.warning under the dataset root folder that PP Label is using. Avoid making changes to any file under the folder to avoid bugs.
+This page describes the dataset file structures that PPLabel can import and export. **PPLabel may make modifications to files under the dataset folder.** Like during "Import Additional Data", new data files will be moved to this project's dataset path folder. Currently we won't delete anything. This behavior is intended to save disk space. **You should consider making a copy of the dataset as backup before import.** There will be a file named pplabel.warning under the dataset root folder that PPLabel is using. Avoid making changes to any file under the folder to avoid bugs.
 
-PP Label ships with sample datasets for each type of project. First create a sample dataset of any kind by clicking the "Sample Dataset" button on welcome page and then select a category. All sample datasets will be under ~/.pplabel/sample folder.
+PPLabel ships with sample datasets for each type of project. First create a sample dataset of any kind by clicking the "Sample Dataset" button on welcome page and then select a category. All sample datasets will be under ~/.pplabel/sample folder.
 
 ## Without Annotation
 
-If the dataset doesn't contain any annotation, simply put all files under a single folder. PP Label will walk through the folder (and all subfolders) to import all files it can annotate based on **file name extension**. All hidden files (whoses file name starts with .) will be ignored.
+If the dataset doesn't contain any annotation, simply put all files under a single folder. PPLabel will walk through the folder (and all subfolders) to import all files it can annotate based on **file name extension**. All hidden files (whoses file name starts with .) will be ignored.
 
 ## Globally Supported Features
 
@@ -14,7 +14,7 @@ Dataset file structure varies across different types of projects but some featur
 
 ### labels.txt
 
-labels.txt is supported in all project types not using COCO format annotation. PP Label will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
+labels.txt is supported in all project types not using COCO format annotation. PPLabel will look for a labels.txt file under the `Dataset Path` during import. You can list labels in this file, one for each line. For example:
 
 ```text
 # labels.txt
@@ -22,7 +22,7 @@ Monkey
 Mouse
 ```
 
-PP Label supports any string as label name. But label names may be used as folder names during dataset export, so avoid anything your os won't support like listed [here](https://stackoverflow.com/a/31976060). Other toolkits in the PaddlePaddle ecosystem, like [PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md), may also not support Chinese chracters as label names.
+PPLabel supports any string as label name. But label names may be used as folder names during dataset export, so avoid anything your os won't support like listed [here](https://stackoverflow.com/a/31976060). Other toolkits in the PaddlePaddle ecosystem, like [PaddleX](https://github.com/PaddlePaddle/PaddleX/blob/develop/docs/data/format/classification.md), may also not support Chinese chracters as label names.
 
 During import, labels.txt can contain more information than just label name. Currently, 4 formats are supported as listed below. | represents delimiter which defaults to space.
 
@@ -51,7 +51,7 @@ snake 12 255 0 0 // rgb color
 
 See [here](https://github.com/PaddleCV-SIG/PP-Label/blob/develop/pplabel/task/util/color.py#L15) for all supported color names.
 
-During import, PP Label will first create labels specified in labels.txt. So you are guarenteed the id for labels in this file will start from **0** and increase. During export this file will also be generated.
+During import, PPLabel will first create labels specified in labels.txt. So you are guarenteed the id for labels in this file will start from **0** and increase. During export this file will also be generated.
 
 ### xx_list.txt
 
@@ -64,11 +64,11 @@ image/9932.jpg 4
 image/9928.jpg Cat
 ```
 
-For integers, PP Label will look for the label in `labels.txt`, index starts from **0**. There can be multiple categories for one piece of data like in multi class image classification. To use a number as label name, you can either write the number down in `labels.txt` and provide label index in xx_list.txt. Or you can add a prefix to make it not a number like 10 -> n10. All three files will be generated during export, even when some of them are empty. Note that to ensure these files can be read by other toolkits in the PaddlePaddle ecosystem, datas having no annotation **won't** be included in `xx_list.txt`.
+For integers, PPLabel will look for the label in `labels.txt`, index starts from **0**. There can be multiple categories for one piece of data like in multi class image classification. To use a number as label name, you can either write the number down in `labels.txt` and provide label index in xx_list.txt. Or you can add a prefix to make it not a number like 10 -> n10. All three files will be generated during export, even when some of them are empty. Note that to ensure these files can be read by other toolkits in the PaddlePaddle ecosystem, datas having no annotation **won't** be included in `xx_list.txt`.
 
 ## Classification
 
-PP Label supports single class and multi class classification.
+PPLabel supports single class and multi class classification.
 
 ### Single Class Classification
 
@@ -136,7 +136,7 @@ In multi class classification, data's categories are only decided by xx_list.txt
 
 ## Detection
 
-PP Label supports two object detection dataset format: PASCAL VOC and COCO.
+PPLabel supports two object detection dataset format: PASCAL VOC and COCO.
 
 ### PASCAL VOC
 
@@ -249,7 +249,7 @@ categories[
 	"id": int,
 	"name": str,
 	"supercategory": str,
-	"color": str // this feature is specific to PP Label. It's not in the coco spec.
+	"color": str // this feature is specific to PPLabel. It's not in the coco spec.
 }
 ]
 ```
@@ -282,7 +282,7 @@ Instance segmentation takes this one step further. We not only try to decide eac
 
 ### Semantic Segmentation
 
-Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) (Note PP Label cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify the color for the optic disk class.)
+Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) (Note PPLabel cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify the color for the optic disk class.)
 
 Images and annotations are both image files in this format, so we placed more restrictions on the folder structure to tell them apart. We expect all images to be placed under `/Dataset Path/JPEGImages/` folder. All images under this folder will be imported, with or without annotation. Annotations should be placed in `/Dataset Path/Annotations`. Sample Layout:
 
@@ -321,7 +321,7 @@ The process of importing and exporting instance segmentation masks is similar to
 [Napari](https://napari.org/#) is a convenient tool for inspecting tiff images. Install it following [official documentation](https://napari.org/#installation). Then:
 - Open a image
 ![image](https://user-images.githubusercontent.com/29757093/178112182-1b7ae5d7-ab7b-4fee-b851-da2c43676da5.png)
-- Open it's corresponding tiff mask PP Label exports
+- Open it's corresponding tiff mask PPLabel exports
 ![image](https://user-images.githubusercontent.com/29757093/178112188-e9c2e081-6752-4137-b60d-e64d9e7a11b6.png)
 - Right click on the mask layer and select "Split Stack"
 ![image](https://user-images.githubusercontent.com/29757093/178112212-13c84d24-d753-4037-8851-d3e09f8fe9c8.png)

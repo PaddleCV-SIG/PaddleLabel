@@ -15,7 +15,7 @@ jobs:
       - name: Check out frontend project
         uses: actions/checkout@master
         with:
-          repository: PaddleCV-SIG/PP-Label-Frontend
+          repository: PaddleCV-SIG/PaddleLabel-Frontend
 
       - name: ls
         run: |

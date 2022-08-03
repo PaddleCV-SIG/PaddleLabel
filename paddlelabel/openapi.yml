@@ -1187,7 +1187,7 @@ paths:
           name: path
           required: true
     parameters: []
-  /sampes/file:
+  /samples/file:
     get:
       summary: Your GET endpoint
       tags:
@@ -1201,6 +1201,7 @@ paths:
             type: string
           in: query
           name: path
+    parameters: []
 components:
   securitySchemes:
     jwt:

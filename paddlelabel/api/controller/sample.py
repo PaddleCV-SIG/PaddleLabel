@@ -134,6 +134,7 @@ def sample_folder_structure(path):
                 temp["key"] = osp.relpath(full_path, base_path)
                 temp["isLeaf"] = True
             res.append(temp)
+        # res.sort()
         return res
 
     res = dfs(path)

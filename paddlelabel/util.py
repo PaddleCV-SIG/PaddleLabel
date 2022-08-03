@@ -97,7 +97,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/version getVersion": "paddlelabel.api.rpc.monitor.get_version",
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
             "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",
-            "/sampes/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
+            "/samples/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
         }
         opid = None
 

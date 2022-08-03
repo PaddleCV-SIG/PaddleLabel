@@ -57,12 +57,15 @@ def set_all_by_data(data_id):
         del anns[idx]["label"]
         anns[idx] = schema.load(anns[idx])
     curr_anns = Annotation._get(data_id=data.data_id, many=True)  # query before the first edit
+    curr_ann_ids = set([ann.annotation_id for ann in curr_anns])
 
     # 3. add new ann and update existing ann
     task = Task._get(task_id=data.task_id)
     keep_ann_ids = []  # anns to keep, newly created anns don't need to be included in this
     for ann in anns:
-        if ann.annotation_id is None:
+        # if ann doesn't have id or id not in curr ids, it's new
+        if ann.annotation_id is None or ann.annotation_id not in curr_ann_ids:
+            ann.annotation_id = None
             ann.task_id = task.task_id
             ann.project_id = task.project_id
             db.session.add(ann)
@@ -82,6 +85,10 @@ def set_all_by_data(data_id):
             db.session.delete(curr_ann)
 
     db.session.commit()
+
+    curr_anns = Annotation._get(data_id=data.data_id, many=True)
+    schema = AnnotationSchema(many=True)
+    return schema.dump(curr_anns), 200
 
 
 def delete_by_data(data_id):

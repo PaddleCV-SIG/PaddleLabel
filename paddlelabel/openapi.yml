@@ -1165,20 +1165,21 @@ paths:
                 properties:
                   project_id:
                     type: integer
-  /samples/static:
+  /samples/structure:
     get:
       summary: Get sample file or folder
       tags:
-        - manage
+        - sample
       responses:
         '200':
           description: OK
           content:
-            text/html:
+            application/json:
               schema:
-                type: object
-                properties: {}
-      operationId: static
+                type: array
+                items:
+                  type: object
+      operationId: getStructure
       parameters:
         - schema:
             type: string
@@ -1186,6 +1187,20 @@ paths:
           name: path
           required: true
     parameters: []
+  /sampes/file:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - sample
+      responses:
+        '200':
+          description: OK
+      operationId: getFile
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: path
 components:
   securitySchemes:
     jwt:

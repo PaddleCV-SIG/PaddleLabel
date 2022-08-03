@@ -96,7 +96,8 @@ class Resolver(connexion.resolver.RestyResolver):
             "/rpc/seg/points2polygon points2polygon": "paddlelabel.api.rpc.seg.points2polygon_str",
             "/version getVersion": "paddlelabel.api.rpc.monitor.get_version",
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
-            "/samples/static static": "paddlelabel.api.controller.sample.serve_sample",
+            "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",
+            "/sampes/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
         }
         opid = None
 

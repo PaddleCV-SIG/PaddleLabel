@@ -7,6 +7,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 import connexion
+import flask
 
 import paddlelabel
 from paddlelabel.config import data_base_dir
@@ -109,3 +110,49 @@ def load_sample():
     # print(handler.project)
 
     return {"project_id": handler.project.project_id}, 200
+
+
+def serve_sample(path):
+    # path = connexion.request.args['path']
+    base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel", "sample"))
+    path.replace("/", osp.sep)
+    print(path)
+    path = osp.join(base_path, path)
+    print(path)
+    if osp.isdir(path):
+        paths = os.listdir(path)
+        folders = []
+        files = []
+        for p in os.listdir(path):
+            rel_path = osp.relpath(osp.join(path, p), base_path)
+            if osp.isdir(osp.join(path, p)):
+                folders.append(rel_path)
+            else:
+                files.append(rel_path)
+        print(folders, files)
+        res = ""
+        for fdr in folders:
+            res += f"""<a href='/api/samples/static?path={fdr}'>{osp.basename(fdr)}</a> <br>"""
+
+        for f in files:
+            res += f"""<a href='/api/samples/static?path={f}'>{osp.basename(f)}</a> <br>"""
+        return (
+            f"""
+        <!DOCTYPE html>
+            <html lang="en-US">
+            <head>
+                <meta charset="utf-8">
+                <title>Sample</title>
+            </head>
+            <body>
+                {res}
+            </body>
+        </html>
+        """,
+            200,
+        )
+    else:
+        file_name = osp.basename(path)
+        folder = osp.dirname(path)
+        print(folder, file_name)
+        return flask.send_from_directory(folder, file_name)

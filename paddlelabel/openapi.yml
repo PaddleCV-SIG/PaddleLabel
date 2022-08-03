@@ -1165,6 +1165,27 @@ paths:
                 properties:
                   project_id:
                     type: integer
+  /samples/static:
+    get:
+      summary: Get sample file or folder
+      tags:
+        - manage
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: object
+                properties: {}
+      operationId: static
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: path
+          required: true
+    parameters: []
 components:
   securitySchemes:
     jwt:

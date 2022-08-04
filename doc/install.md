@@ -44,14 +44,15 @@ python setup.py install
 
 # 启动
 
-完成上述的安装操作后，可以直接在终端使用如下指令启动PaddleLabel的前后端。
+完成上述的安装操作后，可以直接在终端使用如下指令启动PaddleLabel
 
 ```shell
 paddlelabel  # 启动paddlelabel
+pdlabel # 缩写，和paddlelabel完全相同
 ```
 
-目前PaddleLabel默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上。同时也可以使用下列指令将服务暴露到局域网。这样可以在计算机上运行该服务，并用平板电脑进行注释。在docker中运行paddlelabel时也需要添加该选项。
+目前PaddleLabel默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上，可以通过`--port`或`-p`参数指定端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。这样可以实现在电脑上运行PaddleLabel，在平板上进行标注。在docker中运行PaddleLabel时也需要添加`--lan`参数。
 
 ```shell
-paddlelabel --lan  # 运行并将服务暴露到局域网
+paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局域网
 ```

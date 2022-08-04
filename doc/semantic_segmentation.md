@@ -1,6 +1,6 @@
 # 语义分割标注
 
-![segmentation](https://user-images.githubusercontent.com/71769312/181412646-44f6e3cf-39b6-47c6-ab47-48583c78099d.png)
+![image](https://user-images.githubusercontent.com/29757093/182841499-85b9df06-f793-4831-b3f5-54c013ce531c.png)
 
 PaddleLabel支持多边形和掩膜两种语义分割标注任务。
 

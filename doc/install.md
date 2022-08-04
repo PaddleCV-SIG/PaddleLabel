@@ -21,7 +21,7 @@ pip install paddlelabel
 git clone https://github.com/PaddleCV-SIG/PaddleLabel
 ```
 
-接下来需要克隆并构建前端：
+接下来需要克隆并构建前端，需要首先安装[Node.js](https://nodejs.org/en/)和npm：
 
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend

@@ -130,9 +130,10 @@ class InstanceSegmentation(BaseTask):
         # 1. set params
         project = self.project
         if data_dir is None:
-            base_dir = project.data_dir
-            data_dir = osp.join(base_dir, "JPEGImages")
-            ann_dir = osp.join(base_dir, "Annotations")
+            # base_dir = project.data_dir
+            data_dir = project.data_dir
+            # data_dir = osp.join(base_dir, "JPEGImages")
+            # ann_dir = osp.join(base_dir, "Annotations")
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
@@ -141,7 +142,7 @@ class InstanceSegmentation(BaseTask):
 
         ann_dict = {
             osp.basename(p).split(".")[0]: p
-            for p in listdir(ann_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]})
+            for p in listdir(data_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]})
         }
 
         # 2. import records
@@ -202,6 +203,9 @@ class InstanceSegmentation(BaseTask):
                 if ann.type == "brush":
                     points = result[2:]
                     line_width = result[0]
+                    if result[1] == 0:
+                        frontend_id = 0
+                        label_id = 0
                     prev_w, prev_h = points[0:2]
                 else:
                     for idx in range(0, len(result), 2):
@@ -529,6 +533,10 @@ class SemanticSegmentation(InstanceSegmentation):
                 if ann.type == "brush":
                     points = result[2:]
                     line_width = result[0]
+                    if result[1] == 0:
+                        frontend_id = 0
+                        label_id = 0
+
                     prev_w, prev_h = points[0:2]
                 else:
                     for idx in range(0, len(result), 2):

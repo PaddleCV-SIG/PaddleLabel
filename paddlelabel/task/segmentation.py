@@ -30,6 +30,9 @@ def draw_mask(data, type="pesudo"):
         mask = np.zeros((height, width))
 
     for ann in data.annotations:
+        if ann.type != "brush":
+            continue
+
         # TODO: remove
         if ann.result[:2] == "[[":
             continue

@@ -42,6 +42,8 @@ def get_image(data_id):
 def get_mask(data_id):
     _, data = Data._exists(data_id)
     mask = draw_mask(data)
+    if mask is None:
+        abort("This data probably doesn't have segmentation mask", 500)
 
     tempf = tempfile.NamedTemporaryFile(suffix=".png")
     cv2.imwrite(tempf.name, mask)

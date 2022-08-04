@@ -15,9 +15,9 @@ PaddleLabel支持多边形和掩膜两种实例分割标注任务。
 ```shell
 Dataset Path
 ├── Annotations
-│   ├── A0001.png
-│   ├── B0001.png
-│   ├── H0002.png
+│   ├── A0001.tif
+│   ├── B0001.tif
+│   ├── H0002.tif
 │   └── ...
 ├── JPEGImages
 │   ├── A0001.jpg

@@ -117,12 +117,13 @@ def sample_folder_structure(path):
     base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel", "sample"))
     path.replace("/", osp.sep)
     path = osp.join(base_path, path)
-    print(path)
 
     def dfs(path):
         res = []
         names = os.listdir(path)
         for name in names:
+            if name == "paddlelabel.warning":
+                continue
             temp = {}
             full_path = osp.join(path, name)
             if osp.isdir(full_path):
@@ -146,9 +147,7 @@ def serve_sample_file(path):
     base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel", "sample"))
     path.replace("/", osp.sep)
     path = osp.join(base_path, path)
-    print(path)
 
     file_name = osp.basename(path)
     folder = osp.dirname(path)
-    print(folder, file_name)
     return flask.send_from_directory(folder, file_name)

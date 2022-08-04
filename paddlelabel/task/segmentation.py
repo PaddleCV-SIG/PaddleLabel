@@ -216,6 +216,7 @@ class InstanceSegmentation(BaseTask):
                         w, h = points[idx : idx + 2]
                         if line_width == 0:
                             line_width = 1
+
                         cv2.line(
                             label_mask,
                             (prev_w, prev_h),

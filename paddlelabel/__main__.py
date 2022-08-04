@@ -7,12 +7,14 @@ from paddlelabel.api.controller.sample import prep_samples
 parser = argparse.ArgumentParser(description="PP Label")
 parser.add_argument(
     "--lan",
+    "-l",
     default=False,
     action="store_true",
     help="Whether to expose the service to lan",
 )
 parser.add_argument(
     "--port",
+    "-p",
     default=17995,
     type=int,
     help="The port to use",

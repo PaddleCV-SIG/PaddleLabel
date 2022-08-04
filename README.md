@@ -22,7 +22,7 @@
 ## 简介
 
 PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。它涵盖分类、检测、分割三种常见的计算机视觉任务的标注能力，具有手动标注和交互式标注相结合的能力。用户可以使用 PaddleLabel 方便快捷的标注自定义数据集并将导出数据用于飞桨提供的其他套件的训练预测流程中。
-整个 PaddleLabel 包括三部分，本项目包含 PaddleLabel 的后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)包含基于 PaddlePaddle 的自动和交互式标注的机器学习后端。
+整个 PaddleLabel 包括三部分，本项目包含 PaddleLabel 的后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于 PaddlePaddle 的自动和交互式标注的机器学习后端。
 
 ![image](https://user-images.githubusercontent.com/29757093/182839020-6eacfcbe-eae6-477c-bfcb-48a5ae094754.png)
 
@@ -35,7 +35,7 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 
 ## 技术交流
 
-- 如果大家有使用问题、产品建议、功能需求, 可以通过[GitHub Issues](https://github.com/PaddlePaddle/PaddleSeg/issues)提 issues。
+- 任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流。
 - 欢迎大家扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。
 
 <div align="center">

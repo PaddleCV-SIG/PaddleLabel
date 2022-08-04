@@ -8,6 +8,8 @@ PaddleLabel支持多边形和掩膜两种语义分割标注任务。
 
 ## <div id="test3">数据结构</div>
 
+#### 掩膜格式
+
 示例格式如下：
 
 ```shell
@@ -30,6 +32,64 @@ Dataset Path
 # labels.txt
 background -
 optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
+```
+
+#### 多边形格式
+
+示例格式如下：
+
+```shell
+Dataset Path
+├── image
+│   ├── 0001.jpg
+│   ├── 0002.jpg
+│   ├── 0003.jpg
+│   └── ...
+├── train.json
+├── val.json
+└── test.json
+```
+
+COCO 文件的格式如下：
+
+```text
+{
+    "info": info,
+    "images": [image],
+    "annotations": [annotation],
+    "licenses": [license],
+}
+
+image{
+    "id": int,
+    "width": int,
+    "height": int,
+    "file_name": str,
+    "license": int,
+    "flickr_url": str,
+    "coco_url": str,
+    "date_captured": datetime,
+}
+
+
+annotation{
+    "id": int,
+    "image_id": int,
+    "category_id": int,
+    "segmentation": RLE or [polygon],
+    "area": float,
+    "bbox": [x,y,width,height],
+    "iscrowd": 0 or 1,
+}
+
+categories[
+{
+	"id": int,
+	"name": str,
+	"supercategory": str,
+	"color": str // this feature is specific to PP Label. It's not in the coco spec.
+}
+]
 ```
 
 ### 新项目创建

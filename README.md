@@ -6,7 +6,7 @@
   <img src="https://user-images.githubusercontent.com/35907364/182084617-ea94f744-3a34-4193-98fe-5d6869a118fc.png" align="middle" alt="LOGO" width = "500" />
 </p>
 
-**An Effective and Flexible Tool for Data Annotation based on [PaddlePaddle](https://github.com/paddlepaddle/paddle).**
+**飞桨高效图像数据标注工具，无缝衔接其它飞桨图像处理套件。**
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/paddlelabel?color=blue) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=orange)]() [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=orange)]() ![PyPI - Downloads](https://img.shields.io/pypi/dm/paddlelabel?color=orange) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg)]()
 
@@ -46,10 +46,11 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 
 **文档**
 
-- [安装说明](doc/install.md)
-- [分类标注](doc/classification.md)
-- [检测标注](doc/detection.md)
-- [分割标注](doc/segmentation.md)
+* [安装说明](doc/install.md)
+* [图像分类标注](doc/classification.md)
+* [目标检测标注](doc/object_detection.md)
+* [语义分割标注](doc/semantic_segmentation.md)
+* [实例分割标注](doc/instance_segmentation.md)
 
 **教程**
 
@@ -58,6 +59,13 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 - [如何用 PaddleDet 进行训练](doc/PPLabel_PaddleDet.md)
 - [如何使用 PaddleSeg 进行训练](doc/PPLabel_PaddleSeg.md)
 - [如何使用 PaddleX 进行训练](doc/PPLabel_PaddleX.md)
+
+**AI Studio链接**
+
+- [花朵分类](https://aistudio.baidu.com/aistudio/projectdetail/4337003)
+- [道路标志检测](https://aistudio.baidu.com/aistudio/projectdetail/4349280)
+- [图像分割](https://aistudio.baidu.com/aistudio/projectdetail/4353528)
+- [如何使用PaddleX进行训练](https://aistudio.baidu.com/aistudio/projectdetail/4383953)
 
 ## 社区贡献
 

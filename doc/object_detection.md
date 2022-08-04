@@ -1,4 +1,4 @@
-# 检测标注
+# 目标检测标注
 
 ![detection](https://user-images.githubusercontent.com/71769312/181412379-42721d08-aba2-4e73-a2ae-f925721b4b03.png)
 

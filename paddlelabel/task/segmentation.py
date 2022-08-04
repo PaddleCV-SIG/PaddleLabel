@@ -535,7 +535,7 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir: str, type: str = "gray"):
+    def mask_exporter(self, export_dir: str):
         """Export semantic segmentation dataset in mask format
 
         Args:
@@ -545,6 +545,9 @@ class SemanticSegmentation(InstanceSegmentation):
 
         # 1. set params
         project = self.project
+        other_settings = project._get_other_settings()
+        print(other_settings)
+        type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")
         export_label_dir = osp.join(export_dir, "Annotations")
@@ -581,13 +584,3 @@ class SemanticSegmentation(InstanceSegmentation):
         )
         bg = project._get_other_settings().get("background_line", "background")
         self.export_labels(export_dir, bg)
-
-
-"""
-{
-            "id": 2,
-            "name": "toy",
-            "color": "#64F3BE",
-            "supercategory": "none"
-        },
-"""

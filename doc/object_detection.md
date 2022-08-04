@@ -1,6 +1,7 @@
 # 目标检测标注
 
-![detection](https://user-images.githubusercontent.com/71769312/181412379-42721d08-aba2-4e73-a2ae-f925721b4b03.png)
+![image](https://user-images.githubusercontent.com/29757093/182841361-eb53e726-fa98-4e02-88ba-30172efac8eb.png)
+
 
 PaddleLabel支持图像目标检测标注任务。
 

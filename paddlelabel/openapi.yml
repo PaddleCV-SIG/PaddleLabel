@@ -722,6 +722,27 @@ paths:
             type: string
           in: query
           name: sault
+  '/datas/{data_id}/mask':
+      parameters:
+        - name: data_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of a data record
+      get:
+        summary: Get the segmentation mask of a data record
+        tags:
+          - Data
+        responses:
+          '200':
+            description: success
+        operationId: getMask
+        parameters:
+          - schema:
+              type: string
+            in: query
+            name: sault
   '/datas/{data_id}/annotations':
     parameters:
       - name: data_id
@@ -1145,7 +1166,7 @@ paths:
     post:
       summary: Download and import sample project
       tags:
-        - manage
+        - sample
       operationId: loadSample
       requestBody:
         content:

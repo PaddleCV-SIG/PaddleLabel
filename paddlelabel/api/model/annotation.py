@@ -13,7 +13,6 @@ class Annotation(BaseModel):
     result = db.Column(db.String())
     type = db.Column(db.String())
     label_id = nncol(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
-    # label = db.relationship("Label")
     data_id = db.Column(db.Integer(), db.ForeignKey("data.data_id", ondelete="CASCADE"))
 
     # TODO: remove

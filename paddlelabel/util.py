@@ -98,6 +98,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
             "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",
             "/samples/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
+            "/datas/{data_id}/mask getMask": "paddlelabel.api.controller.data.get_mask",
         }
         opid = None
 

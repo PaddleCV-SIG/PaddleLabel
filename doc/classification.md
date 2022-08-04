@@ -1,4 +1,4 @@
-# 分类标注
+# 图像分类标注
 
 ![classification](https://user-images.githubusercontent.com/71769312/181412360-2a190e7f-6508-432d-9a87-0517e6874a45.png)
 

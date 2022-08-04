@@ -121,7 +121,9 @@ def import_dataset(project_id):
             curr_data_names.add(osp.basename(data.path))
 
     # 3. move all new images and all other files to import temp
-    import_temp = osp.join(project.data_dir, "import_temp")
+
+    import_temp = osp.join(osp.expanduser("~"), ".paddlelabel", "import_temp")
+    remove_dir(import_temp)
     create_dir(import_temp)
 
     import_dir = req["import_dir"]
@@ -138,14 +140,14 @@ def import_dataset(project_id):
     all_copy_paths += new_data_paths
     # print(all_copy_paths)
     for p in all_copy_paths:
-        copy(osp.join(import_dir, p), osp.join(import_temp, p))
+        copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
 
     _import_dataset(project, import_temp)
 
     for p in new_data_paths:
-        copy(osp.join(import_temp, p), osp.join(project.data_dir, p))
+        copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)
 
-    remove_dir(import_temp)
+    # remove_dir(import_temp)
 
 
 def pre_put(project, body, se):

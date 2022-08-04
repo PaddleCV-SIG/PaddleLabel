@@ -17,6 +17,8 @@ def create_dir(path):
 
 
 def remove_dir(path):
+    if not osp.exists(path):
+        return
     shutil.rmtree(path)
 
 

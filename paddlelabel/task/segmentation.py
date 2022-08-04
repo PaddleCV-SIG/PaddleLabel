@@ -509,8 +509,10 @@ class SemanticSegmentation(InstanceSegmentation):
         project = self.project
         if data_dir is None:
             base_dir = project.data_dir
-            data_dir = osp.join(base_dir, "JPEGImages")
-            ann_dir = osp.join(base_dir, "Annotations")
+        else:
+            base_dir = data_dir
+        data_dir = osp.join(base_dir, "JPEGImages")
+        ann_dir = osp.join(base_dir, "Annotations")
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()

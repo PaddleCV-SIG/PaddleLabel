@@ -27,7 +27,7 @@ git clone https://github.com/PaddleCV-SIG/PaddleLabel
 cd ..
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PaddleLabel-Frontend
-npm install -g yarn
+npm install --location=global yarn
 yarn
 npm run build
 ```

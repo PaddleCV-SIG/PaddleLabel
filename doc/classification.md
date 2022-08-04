@@ -1,6 +1,6 @@
 # 图像分类标注
 
-![classification](https://user-images.githubusercontent.com/71769312/181412360-2a190e7f-6508-432d-9a87-0517e6874a45.png)
+![image](https://user-images.githubusercontent.com/29757093/182839949-e032d095-759f-40c5-9d38-c6c506e024c4.png)
 
 PaddleLabel支持单类别分类与多类别分类两种图像分类标注任务。
 
@@ -10,7 +10,7 @@ PaddleLabel支持单类别分类与多类别分类两种图像分类标注任务
 
 ### 单分类
 
-也称为 ImageNet 格式。样例数据集：[flowers102](https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip)、[vegetables_cls](https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz)。
+也称为 ImageNet 格式，每条数据只有一个类别。样例数据集：[vegetables_cls](https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz)，[flowers102](https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip)(需经预处理)
 
 示例格式如下：
 
@@ -39,7 +39,7 @@ Mouse
 
 单分类中图像所在的文件夹名称将被视为它的类别。所以如上数据集导入后，三张猫和三张狗的图片会有分类，monkey.jpg 没有分类。如果与文件夹名同名的标签不存在，导入过程中会自动创建。
 
-为了避免冲突，PP-Label 只使用`xx_list.txt`中的数据集划分信息，**这三个文件中的类别信息将不会被考虑**。您可以使用[此脚本](../tool/clas/mv_image_acc_split.py)在导入数据之前根据三个`xx_list.txt`文件更改数据的位置。
+为了避免冲突，单分类项目只导入`xx_list.txt`中的数据集划分信息，**这三个文件中的类别信息不会被导入**。您可以使用[此脚本](../tool/clas/mv_image_acc_split.py)在导入数据之前根据三个`xx_list.txt`文件更改数据的位置。
 
 ### 多分类
 

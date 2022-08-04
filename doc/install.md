@@ -24,7 +24,6 @@ git clone https://github.com/PaddleCV-SIG/PaddleLabel
 接下来需要克隆并构建前端：
 
 ```shell
-cd ..
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PaddleLabel-Frontend
 npm install --location=global yarn

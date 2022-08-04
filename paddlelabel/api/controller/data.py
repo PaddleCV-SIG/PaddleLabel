@@ -5,13 +5,14 @@ import random
 
 import cv2
 import flask
+import tempfile
 
 from paddlelabel.config import db
 from .base import crud
 from ..model import Data, Project, Task
 from ..schema import DataSchema
 from paddlelabel.api.util import abort
-
+from paddlelabel.task.segmentation import draw_mask
 
 get_all, get, post, put, delete = crud(Data, DataSchema)
 
@@ -20,11 +21,7 @@ get_all, get, post, put, delete = crud(Data, DataSchema)
 def get_image(data_id):
     # if random.random()<0.9:
     #     abort("Mimic package loss", 404)
-    if data_id is None:
-        abort("Have to provide data_id", 500)
-    data = Data._get(data_id=data_id)
-    if data is None:
-        abort(f"Data with data_id {data_id} doesn't exist", 500)
+    _, data = Data._exists(data_id)
     path = data.path
     project_id = data.task.project_id
     data_dir = Project._get(project_id=project_id).data_dir
@@ -40,6 +37,18 @@ def get_image(data_id):
     # image_png = cv2.imencode(".png", image)
     # b64_string = base64.b64encode(image_png[1]).decode("utf-8")
     # return json.dumps({"image": b64_string}), 200
+
+
+def get_mask(data_id):
+    _, data = Data._exists(data_id)
+    mask = draw_mask(data)
+    if mask is None:
+        abort("This data probably doesn't have segmentation mask", 500)
+
+    tempf = tempfile.NamedTemporaryFile(suffix=".png")
+    cv2.imwrite(tempf.name, mask)
+
+    return flask.send_from_directory(osp.dirname(tempf.name), osp.basename(tempf.name))
 
 
 def get_by_task(task_id):

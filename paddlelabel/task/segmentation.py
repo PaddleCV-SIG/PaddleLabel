@@ -22,6 +22,58 @@ from paddlelabel.api.rpc.seg import polygon2points
 # import matplotlib.pyplot as plt
 
 
+def draw_mask(data, type="pesudo"):
+    height, width = map(int, data.size.split(",")[1:3])
+    if type == "pesudo":
+        mask = np.zeros((height, width, 3))
+    else:
+        mask = np.zeros((height, width))
+
+    for ann in data.annotations:
+        if ann.type != "brush":
+            continue
+
+        # TODO: remove
+        if ann.result[:2] == "[[":
+            continue
+
+        label_id = ann.label.id
+        result = ann.result.strip().split(",")
+        try:
+            result = [int(float(p)) for p in result]
+        except:
+            print(result, "to float error, plz open an issue for this")
+        if ann.type == "brush":
+            points = result[2:]
+            line_width = result[0]
+            if result[1] == 0:
+                frontend_id = 0
+                label_id = 0
+            prev_w, prev_h = points[0:2]
+        else:
+            for idx in range(0, len(result), 2):
+                result[idx] = int(result[idx] + width / 2)
+                result[idx + 1] = int(result[idx + 1] + height / 2)
+            points = polygon2points(result)
+            points = np.array(points).reshape((-1))
+            line_width = 1
+            prev_w, prev_h = points[0:2]
+        try:
+            for idx in range(2, len(points), 2):
+                w, h = points[idx : idx + 2]
+                if type == "pesudo":
+                    color = hex_to_rgb(ann.label.color)[::-1]
+                else:
+                    color = int(label_id)
+                if line_width == 0:
+                    line_width = 1
+                cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
+                prev_w, prev_h = w, h
+        except Exception as e:
+            abort(detail=e.msg, status=500, title="cv2 error")
+    return mask
+
+
 def parse_semantic_mask(annotation_path, labels):
     ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
     frontend_id = 1
@@ -130,9 +182,10 @@ class InstanceSegmentation(BaseTask):
         # 1. set params
         project = self.project
         if data_dir is None:
-            base_dir = project.data_dir
-            data_dir = osp.join(base_dir, "JPEGImages")
-            ann_dir = osp.join(base_dir, "Annotations")
+            # base_dir = project.data_dir
+            data_dir = project.data_dir
+            # data_dir = osp.join(base_dir, "JPEGImages")
+            # ann_dir = osp.join(base_dir, "Annotations")
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
@@ -141,7 +194,7 @@ class InstanceSegmentation(BaseTask):
 
         ann_dict = {
             osp.basename(p).split(".")[0]: p
-            for p in listdir(ann_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]})
+            for p in listdir(data_dir, {"exclude_prefix": ["."], "include_postfix": [".tiff", ".tif"]})
         }
 
         # 2. import records
@@ -202,6 +255,9 @@ class InstanceSegmentation(BaseTask):
                 if ann.type == "brush":
                     points = result[2:]
                     line_width = result[0]
+                    if result[1] == 0:
+                        frontend_id = 0
+                        label_id = 0
                     prev_w, prev_h = points[0:2]
                 else:
                     for idx in range(0, len(result), 2):
@@ -216,6 +272,7 @@ class InstanceSegmentation(BaseTask):
                         w, h = points[idx : idx + 2]
                         if line_width == 0:
                             line_width = 1
+
                         cv2.line(
                             label_mask,
                             (prev_w, prev_h),
@@ -478,7 +535,7 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir: str, type: str = "gray"):
+    def mask_exporter(self, export_dir: str):
         """Export semantic segmentation dataset in mask format
 
         Args:
@@ -488,6 +545,9 @@ class SemanticSegmentation(InstanceSegmentation):
 
         # 1. set params
         project = self.project
+        other_settings = project._get_other_settings()
+        print(other_settings)
+        type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")
         export_label_dir = osp.join(export_dir, "Annotations")
@@ -508,49 +568,8 @@ class SemanticSegmentation(InstanceSegmentation):
             export_label_path = osp.join(export_label_dir, osp.basename(data_path).split(".")[0] + ".png")
 
             copy(data_path, export_data_dir)
-            height, width = map(int, data.size.split(",")[1:3])
-            if type == "pesudo":
-                mask = np.zeros((height, width, 3))
-            else:
-                mask = np.zeros((height, width))
 
-            for ann in task.annotations:
-                # TODO: remove
-                if ann.result[:2] == "[[":
-                    continue
-
-                label_id = ann.label.id
-                result = ann.result.strip().split(",")
-                try:
-                    result = [int(float(p)) for p in result]
-                except:
-                    print(result, "to float error, plz open an issue for this")
-                if ann.type == "brush":
-                    points = result[2:]
-                    line_width = result[0]
-                    prev_w, prev_h = points[0:2]
-                else:
-                    for idx in range(0, len(result), 2):
-                        result[idx] = int(result[idx] + width / 2)
-                        result[idx + 1] = int(result[idx + 1] + height / 2)
-                    points = polygon2points(result)
-                    points = np.array(points).reshape((-1))
-                    line_width = 1
-                    prev_w, prev_h = points[0:2]
-                try:
-                    for idx in range(2, len(points), 2):
-                        w, h = points[idx : idx + 2]
-                        if type == "pesudo":
-                            color = hex_to_rgb(ann.label.color)[::-1]
-                        else:
-                            color = int(label_id)
-                        if line_width == 0:
-                            line_width = 1
-                        cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
-                        prev_w, prev_h = w, h
-                except Exception as e:
-                    abort(detail=e.msg, status=500, title="cv2 error")
-
+            mask = draw_mask(data, type=type)
             cv2.imwrite(export_label_path, mask)
 
             export_data_paths.append([export_data_path])
@@ -565,13 +584,3 @@ class SemanticSegmentation(InstanceSegmentation):
         )
         bg = project._get_other_settings().get("background_line", "background")
         self.export_labels(export_dir, bg)
-
-
-"""
-{
-            "id": 2,
-            "name": "toy",
-            "color": "#64F3BE",
-            "supercategory": "none"
-        },
-"""

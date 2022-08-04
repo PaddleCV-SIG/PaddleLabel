@@ -3,7 +3,7 @@ PaddleLabel标注数据+PaddleDetection训练预测=快速完成一次目标检�
 ***
 ## 1. 数据准备
 * 首先使用```PaddleLabel```对自制的路标数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```roadsign_det_dataset```，其目录结构如下：  
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```roadsign_det_dataset```，其目录结构如下：
 ```
 ├── roadsign_det_dataset
 │   ├── Annotations
@@ -44,7 +44,7 @@ cp -r ./roadsign_det_dataset/* ./PaddleClas/dataset/roadsign_det_dataset
 3. 定义公共参数：runtime.yml
 4. 定义优化器的策略：optimizer_40e.yml
 5. 定义模型和主干网络：yolov3_mobilenet_v1.yml
-6. 定义数据预处理方式：yolov3_reader.yml  
+6. 定义数据预处理方式：yolov3_reader.yml
 
 这里我们只需要改动一个配置文件即定义训练数据的路径的配置文件：
 
@@ -91,12 +91,12 @@ python PeddleDetection/tools/infer.py \
     --infer_img=demo/road554.png
 ```
 
-预测的样例图片如下图：  
+预测的样例图片如下图：
 
-<img src="https://ai-studio-static-online.cdn.bcebos.com/8fb35c64f3424a098858a3f75255f0d56c6f9c9d7e24438c8d1bc2cd71e838d4" width="50%" height="50%">  
-  
-预测的结果是：  
-> speedlimit 0.77 预测正确✔  
+<img src="https://ai-studio-static-online.cdn.bcebos.com/8fb35c64f3424a098858a3f75255f0d56c6f9c9d7e24438c8d1bc2cd71e838d4" width="50%" height="50%">
+
+预测的结果是：
+> speedlimit 0.77 预测正确✔
 
 
 ## AI Studio第三方教程推荐

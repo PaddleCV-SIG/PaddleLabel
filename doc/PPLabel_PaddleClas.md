@@ -3,7 +3,7 @@ PaddleLabel标注数据+PaddleClas训练预测=快速完成一次花朵分类的
 ***
 ## 1. 数据准备
 * 首先使用```PaddleLabel```对自制的花朵数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```flower_clas_dataset```，其目录结构如下：  
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```flower_clas_dataset```，其目录结构如下：
 ```
 ├── flower_clas_dataset
 │   ├── image
@@ -62,7 +62,7 @@ Global:
 Arch:
   name: ShuffleNetV2_x0_25
   class_num: 3
- 
+
 # loss function config for traing/eval process
 Loss:
   Train:
@@ -116,7 +116,7 @@ DataLoader:
       use_shared_memory: True
 
   Eval:
-    dataset: 
+    dataset:
       name: ImageNetDataset
       image_root: ./dataset/
       cls_label_path: ./dataset/val_list.txt
@@ -196,12 +196,12 @@ python3 PaddleClas/tools/infer.py \
     -o Infer.infer_imgs=dataset/predict_demo.jpg \
     -o Global.pretrained_model=output/ShuffleNetV2_x0_25/latest
 ```
-预测的样例图片是：  
+预测的样例图片是：
 
-<img src="https://ai-studio-static-online.cdn.bcebos.com/e7d6cabc46434205891cfc0c125b8dcec511e622469c49a5b8ec48051f7dd997" width="50%" height="50%">  
+<img src="https://ai-studio-static-online.cdn.bcebos.com/e7d6cabc46434205891cfc0c125b8dcec511e622469c49a5b8ec48051f7dd997" width="50%" height="50%">
 
-预测的结果是：  
-> {'class_ids': [0, 1, 2], 'scores': [0.89812, 0.09476, 0.00712], 'file_name': 'dataset/predict_demo.jpg', 'label_names': []}  
+预测的结果是：
+> {'class_ids': [0, 1, 2], 'scores': [0.89812, 0.09476, 0.00712], 'file_name': 'dataset/predict_demo.jpg', 'label_names': []}
 > 也就是说0的概率最大，为0.89812，0对应的结果是向日葵，也就是说结果是向日葵，预测无误。
 
 ## AI Studio第三方教程推荐

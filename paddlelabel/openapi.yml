@@ -705,10 +705,10 @@ paths:
     parameters:
       - name: data_id
         in: path
-        required: true
         schema:
           type: string
         description: Id of a data record
+        required: true
     get:
       summary: Get the image of a data record
       tags:
@@ -1145,7 +1145,7 @@ paths:
     post:
       summary: Download and import sample project
       tags:
-        - manage
+        - sample
       operationId: loadSample
       requestBody:
         content:
@@ -1165,26 +1165,42 @@ paths:
                 properties:
                   project_id:
                     type: integer
-  /samples/static:
+  /samples/structure:
     get:
       summary: Get sample file or folder
       tags:
-        - manage
+        - sample
       responses:
         '200':
           description: OK
           content:
-            text/html:
+            application/json:
               schema:
-                type: object
-                properties: {}
-      operationId: static
+                type: array
+                items:
+                  type: object
+      operationId: getStructure
       parameters:
         - schema:
             type: string
           in: query
           name: path
           required: true
+    parameters: []
+  /samples/file:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - sample
+      responses:
+        '200':
+          description: OK
+      operationId: getFile
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: path
     parameters: []
 components:
   securitySchemes:
@@ -1262,6 +1278,8 @@ components:
               type: string
             models:
               type: object
+            segMaskType:
+              type: string
     Task:
       title: Task
       type: object

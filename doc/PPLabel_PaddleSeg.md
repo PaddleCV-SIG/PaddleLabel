@@ -3,7 +3,7 @@ PaddleLabel标注数据+PaddleSeg训练预测=快速完成一次图像分割的�
 ***
 ## 1. 数据准备
 * 首先使用```PaddleLabel```对自制的狗子数据集进行标注，其次使用```Split Dataset```功能分割数据集，最后导出数据集
-* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dog_seg_dataset```，其目录结构如下：  
+* 从```PaddleLabel```导出后的内容全部放到自己的建立的文件夹下，例如```dog_seg_dataset```，其目录结构如下：
 ```
 ├── dog_seg_dataset
 │   ├── Annotations
@@ -91,7 +91,7 @@ loss: # 损失函数设置
   coef: [1] # 当使用了多种损失函数，可在 coef 中为每种损失指定配比
 
 model: # 使用何种语义分割模型
-  type: FCN 
+  type: FCN
   backbone: # 使用何种骨干网络
     type: HRNet_W48
     pretrained: https://bj.bcebos.com/paddleseg/dygraph/hrnet_w48_ssld.tar.gz # 预训练模型
@@ -136,11 +136,11 @@ python PaddleSeg/predict.py \
 
 预测的原图是```data/dog_seg_dataset/JPEGImages/e619b17a9c1b9f085dc2712eb603171f.jpeg```
 
-<img src="https://ai-studio-static-online.cdn.bcebos.com/f9efa53cf0334146a0963d6033c2cb84c3540525b565454199f2a859f86b501e" width="50%" height="50%">  
-  
-预测的结果```PaddleSeg/output/result```目录里面，如下图所示：  
-<img src="https://ai-studio-static-online.cdn.bcebos.com/8d6dea0d5fa24912a58612839026b255652d7d3ccf0a40aaa5e6056750f8f75b" width="50%" height="50%">  
-<img src="https://ai-studio-static-online.cdn.bcebos.com/6dfc7c24edda4a489b7f1629957be44be44d3b9c94d14becb88aa22e42a41d50" width="50%" height="50%">  
-  
+<img src="https://ai-studio-static-online.cdn.bcebos.com/f9efa53cf0334146a0963d6033c2cb84c3540525b565454199f2a859f86b501e" width="50%" height="50%">
+
+预测的结果```PaddleSeg/output/result```目录里面，如下图所示：
+<img src="https://ai-studio-static-online.cdn.bcebos.com/8d6dea0d5fa24912a58612839026b255652d7d3ccf0a40aaa5e6056750f8f75b" width="50%" height="50%">
+<img src="https://ai-studio-static-online.cdn.bcebos.com/6dfc7c24edda4a489b7f1629957be44be44d3b9c94d14becb88aa22e42a41d50" width="50%" height="50%">
+
 ## AI Studio第三方教程推荐
 [快速体验演示案例](https://aistudio.baidu.com/aistudio/projectdetail/4353528)

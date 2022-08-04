@@ -25,8 +25,8 @@ git clone https://github.com/PaddleCV-SIG/PaddleLabel
 
 ```shell
 cd ..
-git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
-cd PP-Label-Frontend
+git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
+cd PaddleLabel-Frontend
 npm install -g yarn
 yarn
 npm run build
@@ -38,7 +38,7 @@ npm run build
 cd ../PaddleLabel
 pip install -r requirements.txt
 mkdir paddlelabel/static/
-cp -r ../PP-Label-Frontend/dist/* paddlelabel/static/
+cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
 
 python setup.py install
 ```

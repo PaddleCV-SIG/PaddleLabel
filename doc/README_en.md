@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-360/) [![PyPI version](https://badge.fury.io/py/pplabel.svg)](https://badge.fury.io/py/pplabel) [![Downloads](https://pepy.tech/badge/pplabel)](https://pepy.tech/project/pplabel) <a href=""><img src="https://img.shields.io/badge/os-linux%2C%20win%2C%20mac-blue.svg"></a> <a href=""><img src="https://img.shields.io/badge/QQ_Group-1234567-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20"></a>
 
-PP Label aims to become an effective and flexible data annotation tool. There are three parts to this project. This repo contains backend implementation. [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PP-Label-Frontend) contains the React/Antd frontend. [PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML) contains the machine learning backend for automatic and interactive models.
+PP Label aims to become an effective and flexible data annotation tool. There are three parts to this project. This repo contains backend implementation. [PP-Label-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend) contains the React/Antd frontend. [PP-Label-ML](https://github.com/PaddleCV-SIG/PP-Label-ML) contains the machine learning backend for automatic and interactive models.
 
 ## Install
 
@@ -33,7 +33,7 @@ git clone https://github.com/PaddleCV-SIG/PP-Label
 Then clone and build frontend
 
 ```shell
-git clone https://github.com/PaddleCV-SIG/PP-Label-Frontend
+git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PP-Label-Frontend
 npm install -g yarn
 yarn

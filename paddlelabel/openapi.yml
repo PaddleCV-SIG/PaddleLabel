@@ -1233,11 +1233,12 @@ components:
           readOnly: true
         name:
           type: string
-          maxLength: 64
           description: Project name
+          maxLength: 128
         description:
           type: string
           description: Optional project description
+          maxLength: 256
         task_category_id:
           type: integer
           description: 'Top level annotation task category, see TODO for int <-> category map'

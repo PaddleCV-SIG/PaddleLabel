@@ -52,8 +52,11 @@ class Classification(BaseTask):
         if data_dir is None:
             data_dir = project.data_dir
         self.create_warning(data_dir)
-        if self.project.other_settings is not None:
-            delimiter = self.project.other_settings.get("xx_list_delimiter", " ")
+
+        other_settings = self.project._get_other_settings()
+        print("other_settings", other_settings)
+        if other_settings is not None:
+            delimiter = other_settings.get("xx_list_delimiter", " ")
         else:
             delimiter = " "
 

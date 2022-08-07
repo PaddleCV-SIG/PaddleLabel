@@ -182,10 +182,7 @@ class InstanceSegmentation(BaseTask):
         # 1. set params
         project = self.project
         if data_dir is None:
-            # base_dir = project.data_dir
             data_dir = project.data_dir
-            # data_dir = osp.join(base_dir, "JPEGImages")
-            # ann_dir = osp.join(base_dir, "Annotations")
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
@@ -202,7 +199,7 @@ class InstanceSegmentation(BaseTask):
             id = osp.basename(data_path).split(".")[0]
             data_path = osp.join(data_dir, data_path)
             if id in ann_dict.keys():
-                ann_path = osp.join(ann_dir, ann_dict[id])
+                ann_path = osp.join(data_dir, ann_dict[id])
                 size, anns = parse_instance_mask(ann_path, project.labels)
             else:
                 anns = []

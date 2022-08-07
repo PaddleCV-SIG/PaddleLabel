@@ -2,7 +2,7 @@ from marshmallow import fields, post_dump
 
 from paddlelabel.api.model import Data
 from .base import BaseSchema
-from paddlelabel.api.schema.util import path2sault
+from paddlelabel.api.schema.util import str2sault
 
 
 class DataSchema(BaseSchema):
@@ -11,7 +11,7 @@ class DataSchema(BaseSchema):
 
     @post_dump
     def post_dump_action(self, data, **kwargs):
-        data["sault"] = path2sault(data["path"])
+        data["sault"] = str2sault(data["path"]+data["created"])
         return data
 
     # task = fields.Nested("TaskSchema", exclude=("datas", "annotations"))

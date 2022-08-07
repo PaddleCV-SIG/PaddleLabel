@@ -5,7 +5,7 @@ from marshmallow import post_load, pre_load, pre_dump, post_dump, fields
 from marshmallow.fields import Nested
 
 from paddlelabel.api.model import Task
-from paddlelabel.api.schema.util import path2sault
+from paddlelabel.api.schema.util import str2sault
 from .base import BaseSchema
 
 
@@ -23,10 +23,7 @@ class TaskSchema(BaseSchema):
     def output(self, task, **kwargs):
         paths = []
         for data in task.datas:
-            paths.append(f"/datas/{data.data_id}/image?sault={path2sault(data.path)}")
+            paths.append(f"/datas/{data.data_id}/image?sault={str2sault(data.path)}")
         task.data_paths = paths
         return task
 
-    # @post_dump
-    # def post(self, task, **kwargs):
-    #     print("post dump", task)

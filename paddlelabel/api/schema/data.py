@@ -11,7 +11,7 @@ class DataSchema(BaseSchema):
 
     @post_dump
     def post_dump_action(self, data, **kwargs):
-        data["sault"] = str2sault(data["path"]+data["created"])
+        data["sault"] = str2sault(data["path"] + data["created"])
         return data
 
     # task = fields.Nested("TaskSchema", exclude=("datas", "annotations"))

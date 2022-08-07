@@ -26,4 +26,3 @@ class TaskSchema(BaseSchema):
             paths.append(f"/datas/{data.data_id}/image?sault={str2sault(data.path)}")
         task.data_paths = paths
         return task
-

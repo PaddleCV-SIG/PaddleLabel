@@ -1,5 +1,6 @@
 # build frontend
 cd ../PaddleLabel-Frontend/
+npx browserslist@latest --update-db
 npm run build
 
 # copy frontend to backend pj

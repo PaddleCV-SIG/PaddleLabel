@@ -25,15 +25,13 @@ from paddlelabel.task.util.file import (
     create_dir,
     remove_dir,
     copy,
+    expand_home,
 )
 import paddlelabel
 
 
 def pre_add(new_project, se):
-
-    if new_project.data_dir[0] == '~':
-        new_project.data_dir = osp.join(osp.expanduser("~"), new_project.data_dir[2:])
-    print(new_project.data_dir)
+    new_project.data_dir = expand_home(new_project.data_dir)
 
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
@@ -55,7 +53,7 @@ def _import_dataset(project, data_dir=None):
         handler = paddlelabel.task.BaseTask(project)
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
-    
+
     # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer
     if project.label_format is not None:
         if project.label_format not in handler.importers.keys():
@@ -94,17 +92,24 @@ def post_add(new_project, se):
 
 
 def export_dataset(project_id):
+    # 1. ensure project exists
     _, project = Project._exists(project_id)
+
+    # 2. get handler and exporter
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project)
     if project.label_format is not None:
         exporter = handler.exporters[project.label_format]
     else:
         exporter = handler.default_exporter
-    req = connexion.request.json
 
+    # 3. get export path
+    export_dir = connexion.request.json["export_dir"]
+    export_dir = expand_home(export_dir)
+
+    # 4. export
     try:
-        exporter(req["export_dir"])
+        exporter(export_dir)
     except Exception as e:
         abort(str(e), 500, str(e))
 
@@ -144,7 +149,6 @@ def import_dataset(project_id):
     all_copy_paths = [p for p in all_paths if p not in new_data_paths]
     new_data_paths = [p for p in new_data_paths if osp.basename(p) not in curr_data_names]
     all_copy_paths += new_data_paths
-    # print(all_copy_paths)
     for p in all_copy_paths:
         copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
 

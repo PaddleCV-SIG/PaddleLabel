@@ -1,9 +1,7 @@
-# build frontend
+# build frontend and copy to backend pj
 cd ../PaddleLabel-Frontend/
 npx browserslist@latest --update-db
 npm run build
-
-# copy frontend to backend pj
 cd ../PaddleLabel
 rm -rf paddlelabel/static/
 mkdir paddlelabel/static/
@@ -18,9 +16,14 @@ pip uninstall -y paddlelabel
 pip uninstall -y paddlelabel
 pip install --upgrade "dist/paddlelabel-$(cat paddlelabel/version).tar.gz"
 
-
 # clear pdlabel files and run test
 rm -rf ~/.paddlelabel/
-paddlelabel &
+paddlelabel -q &
 cd ../PaddleLabel-Frontend/
-npx cypress $1
+
+if [ "$1" = "" ]
+then
+    npx cypress run
+else
+    npx cypress $1
+fi

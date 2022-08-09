@@ -1,5 +1,6 @@
 import os.path as osp
 import shutil
+import logging
 
 from paddlelabel.config import db
 from paddlelabel.api import Task
@@ -54,7 +55,6 @@ class Classification(BaseTask):
         self.create_warning(data_dir)
 
         other_settings = self.project._get_other_settings()
-        print("other_settings", other_settings)
         if other_settings is not None:
             delimiter = other_settings.get("xx_list_delimiter", " ")
         else:

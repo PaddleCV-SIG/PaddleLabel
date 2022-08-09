@@ -27,7 +27,7 @@ if not osp.exists(db_path):
 
 
 connexion_app.add_api(
-    "openapi.yml",
+    "paddlelabel/openapi.yml",
     resolver=Resolver("paddlelabel.api", collection_endpoint_name="get_all"),
     # request with undefined param returns error, dont enforce body
     strict_validation=True,

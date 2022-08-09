@@ -328,7 +328,6 @@ class InstanceSegmentation(BaseTask):
             # 1. create all labels
             self.create_coco_labels(coco.cats.values())
 
-            print("=====", data_paths)
             ann_by_task = {}
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
@@ -545,7 +544,7 @@ class SemanticSegmentation(InstanceSegmentation):
         # 1. set params
         project = self.project
         other_settings = project._get_other_settings()
-        print(other_settings)
+        # print(other_settings)
         type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")

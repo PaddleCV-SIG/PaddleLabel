@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import json
 from collections import deque
+import logging
 
 import cv2
 
@@ -14,6 +15,9 @@ from paddlelabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
 """
 Base for import/export and other task specific operations.
 """
+
+log = logging.getLogger("PaddleLabel")
+
 
 
 class BaseTask:
@@ -103,7 +107,6 @@ class BaseTask:
         """
         project = self.project
         assert len(datas) != 0, "can't add task without data"
-        # print(datas, project.data_dir)
 
         for idx in range(len(datas)):
             if osp.isabs(datas[idx]["path"]):
@@ -151,7 +154,7 @@ class BaseTask:
                 task.annotations.append(ann)  # TODO: remove
                 data.annotations.append(ann)
                 total_anns += 1
-            print(f"==== {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} ====")
+            log.info(f"= {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} =")
 
         db.session.add(task)
 
@@ -257,7 +260,7 @@ class BaseTask:
         current_names = set(l.name for l in self.project.labels)
         if name in current_names:
             # raise RuntimeError(f"Label name {name} is not unique")
-            print(f"Label {name} already exist, skipping.")
+            log.warning(f"Label {name} already exist, skipping.")
             return
 
         # 2. check or assign color
@@ -341,7 +344,7 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                print("==== Adding label", label, "====")
+                log.info(f"= Adding label {label} =")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]
@@ -367,7 +370,6 @@ class BaseTask:
             if background_line is not None:
                 print(background_line.strip(), file=f)
             for lab in labels:
-                # print(lab)
                 print(lab.name, end=" " if with_id else "\n", file=f)
                 if with_id:
                     print(lab.id, file=f)

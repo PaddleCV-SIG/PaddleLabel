@@ -1,22 +1,25 @@
-# cd ../PaddleLabel-Frontend/
-# # export PATH=$PATH:node_modules/.bin/
-# # rm -rf dist/ src/.umi-production src/.umi
-# # npx browserslist@latest --update-db
-# npm run build
-# # cross-env REACT_APP_ENV=deploy umi build
+# build frontend
+cd ../PaddleLabel-Frontend/
+npm run build
 
-# cd ../PaddleLabel
-# rm -rf paddlelabel/static/
-# mkdir paddlelabel/static/
-# cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
+# copy frontend to backend pj
+cd ../PaddleLabel
+rm -rf paddlelabel/static/
+mkdir paddlelabel/static/
+cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
 
-# pip install --upgrade pip
-# rm -rf dist/
-# rm -rf build/
-# python setup.py sdist bdist_wheel
-# pip install --upgrade "dist/paddlelabel-$(cat paddlelabel/version).tar.gz"
-# rm -rf ~/.paddlelabel/
+# make python package and install
+pip install --upgrade pip
+rm -rf dist/
+rm -rf build/
+python setup.py sdist bdist_wheel
+pip uninstall -y paddlelabel
+pip uninstall -y paddlelabel
+pip install --upgrade "dist/paddlelabel-$(cat paddlelabel/version).tar.gz"
 
+
+# clear pdlabel files and run test
+rm -rf ~/.paddlelabel/
 paddlelabel &
 cd ../PaddleLabel-Frontend/
-npx cypress run
+npx cypress $1

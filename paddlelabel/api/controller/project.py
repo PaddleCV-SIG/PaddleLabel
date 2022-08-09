@@ -30,6 +30,11 @@ import paddlelabel
 
 
 def pre_add(new_project, se):
+
+    if new_project.data_dir[0] == '~':
+        new_project.data_dir = osp.join(osp.expanduser("~"), new_project.data_dir[2:])
+    print(new_project.data_dir)
+
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
 
@@ -50,7 +55,7 @@ def _import_dataset(project, data_dir=None):
         handler = paddlelabel.task.BaseTask(project)
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
-
+    
     # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer
     if project.label_format is not None:
         if project.label_format not in handler.importers.keys():
@@ -69,6 +74,7 @@ def _import_dataset(project, data_dir=None):
 
 def post_add(new_project, se):
     """run task import after project creation"""
+
     try:
         _import_dataset(new_project)
     except Exception as e:

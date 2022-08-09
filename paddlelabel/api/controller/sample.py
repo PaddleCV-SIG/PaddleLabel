@@ -25,38 +25,38 @@ def prep_samples(sample_dst: str = None):
     copycontent(sample_source, sample_dst)
 
     dsts = [
-        "clas/multi/image/1.jpeg",
-        "clas/multi/image/2.jpeg",
-        "clas/multi/image/3.jpeg",
-        "clas/multi/image/4.jpeg",
-        "clas/single/1/1.jpeg",
-        "clas/single/2/2.jpeg",
-        "clas/single/3/3.jpeg",
-        "clas/single/4/4.jpeg",
-        "det/coco/JPEGImages/1.jpeg",
-        "det/coco/JPEGImages/2.jpeg",
-        "det/coco/JPEGImages/3.jpeg",
-        "det/coco/JPEGImages/4.jpeg",
-        "det/voc/JPEGImages/1.jpeg",
-        "det/voc/JPEGImages/2.jpeg",
-        "det/voc/JPEGImages/3.jpeg",
-        "det/voc/JPEGImages/4.jpeg",
-        "instance_seg/mask/JPEGImages/1.jpeg",
-        "instance_seg/mask/JPEGImages/2.jpeg",
-        "instance_seg/mask/JPEGImages/3.jpeg",
-        "instance_seg/mask/JPEGImages/4.jpeg",
-        "instance_seg/polygon/image/1.jpeg",
-        "instance_seg/polygon/image/2.jpeg",
-        "instance_seg/polygon/image/3.jpeg",
-        "instance_seg/polygon/image/4.jpeg",
-        "semantic_seg/mask/JPEGImages/1.jpeg",
-        "semantic_seg/mask/JPEGImages/2.jpeg",
-        "semantic_seg/mask/JPEGImages/3.jpeg",
-        "semantic_seg/mask/JPEGImages/4.jpeg",
-        "semantic_seg/polygon/image/1.jpeg",
-        "semantic_seg/polygon/image/2.jpeg",
-        "semantic_seg/polygon/image/3.jpeg",
-        "semantic_seg/polygon/image/4.jpeg",
+        "classification/multiClass/image/1.jpeg",
+        "classification/multiClass/image/2.jpeg",
+        "classification/multiClass/image/3.jpeg",
+        "classification/multiClass/image/4.jpeg",
+        "classification/singleClass/1/1.jpeg",
+        "classification/singleClass/2/2.jpeg",
+        "classification/singleClass/3/3.jpeg",
+        "classification/singleClass/4/4.jpeg",
+        "detection/coco/JPEGImages/1.jpeg",
+        "detection/coco/JPEGImages/2.jpeg",
+        "detection/coco/JPEGImages/3.jpeg",
+        "detection/coco/JPEGImages/4.jpeg",
+        "detection/voc/JPEGImages/1.jpeg",
+        "detection/voc/JPEGImages/2.jpeg",
+        "detection/voc/JPEGImages/3.jpeg",
+        "detection/voc/JPEGImages/4.jpeg",
+        "instanceSegmentation/mask/JPEGImages/1.jpeg",
+        "instanceSegmentation/mask/JPEGImages/2.jpeg",
+        "instanceSegmentation/mask/JPEGImages/3.jpeg",
+        "instanceSegmentation/mask/JPEGImages/4.jpeg",
+        "instanceSegmentation/polygon/image/1.jpeg",
+        "instanceSegmentation/polygon/image/2.jpeg",
+        "instanceSegmentation/polygon/image/3.jpeg",
+        "instanceSegmentation/polygon/image/4.jpeg",
+        "semanticSegmentation/mask/JPEGImages/1.jpeg",
+        "semanticSegmentation/mask/JPEGImages/2.jpeg",
+        "semanticSegmentation/mask/JPEGImages/3.jpeg",
+        "semanticSegmentation/mask/JPEGImages/4.jpeg",
+        "semanticSegmentation/polygon/image/1.jpeg",
+        "semanticSegmentation/polygon/image/2.jpeg",
+        "semanticSegmentation/polygon/image/3.jpeg",
+        "semanticSegmentation/polygon/image/4.jpeg",
     ]
     img_path = osp.join(sample_source, "imgs")
     for dst in dsts:
@@ -71,10 +71,10 @@ def load_sample():
     task_category_id = connexion.request.json.get("task_category_id")
 
     sample_folder = {
-        "classification": ["clas", "single"],
-        "detection": ["det", "voc"],
-        "semantic_segmentation": ["semantic_seg", "mask"],
-        "instance_segmentation": ["instance_seg", "polygon"],
+        "classification": ["classification", "singleClass"],
+        "detection": ["detection", "voc"],
+        "semantic_segmentation": ["semanticSegmentation", "mask"],
+        "instance_segmentation": ["instanceSegmentation", "polygon"],
     }
     label_formats = {
         "classification": "single_class",
@@ -114,7 +114,7 @@ def load_sample():
 
 def sample_folder_structure(path):
     # path = connexion.request.args['path']
-    base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel", "sample"))
+    base_path = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
     path.replace("/", osp.sep)
     path = osp.join(base_path, path)
 

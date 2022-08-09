@@ -10,8 +10,8 @@ from .base import BaseTask
 
 
 class Classification(BaseTask):
-    def __init__(self, project, data_dir=None):
-        super(Classification, self).__init__(project, data_dir=data_dir)
+    def __init__(self, project, data_dir=None, is_export=False):
+        super(Classification, self).__init__(project, data_dir=data_dir, is_export=is_export)
         self.importers = {
             "single_class": self.single_class_importer,
             "multi_class": self.multi_class_importer,
@@ -126,8 +126,8 @@ class Classification(BaseTask):
         project = self.project
 
         # 1. all images
-        # with annotation go to export_dir/image
-        # without annotation go to export_dir/no_annotation
+        # - with annotation go to export_dir/image
+        # - without annotation go to export_dir/no_annotation
         create_dir(osp.join(export_dir, "image"))
         create_dir(osp.join(export_dir, "no_annotation"))
         have_no_annotation = False

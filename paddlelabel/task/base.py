@@ -19,9 +19,8 @@ Base for import/export and other task specific operations.
 log = logging.getLogger("PaddleLabel")
 
 
-
 class BaseTask:
-    def __init__(self, project, skip_label_import=False, data_dir=None):
+    def __init__(self, project, data_dir=None, skip_label_import=False, is_export=False):
         """
         Args:
             project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
@@ -52,10 +51,11 @@ class BaseTask:
             self.label_max_id = max(self.label_max_id, label.id)
 
         # 3. read dataset split
-        self.split = self.read_split(data_dir)
+        if not is_export:
+            self.split = self.read_split(data_dir)
 
         # 4. create labels specified in labels.txt
-        if not skip_label_import:
+        if not skip_label_import and not is_export:
             self.import_labels()
 
         # 5. polupate label colors

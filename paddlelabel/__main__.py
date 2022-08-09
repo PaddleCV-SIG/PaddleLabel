@@ -5,6 +5,7 @@ import logging
 from .serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description="PP Label")
     parser.add_argument(
@@ -41,7 +42,7 @@ def parse_args():
 
 def run():
     args = parse_args()
-    
+
     prep_samples()
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"
@@ -56,11 +57,11 @@ def run():
     if args.quiet:
         logging.getLogger("werkzeug").setLevel(logging.ERROR)
         logging.getLogger("PaddleLabel").setLevel(logging.ERROR)
-    
+
     if args.debug:
         logging.getLogger("werkzeug").setLevel(logging.INFO)
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
-    
+
     logger.info("App starting")
 
     connexion_app.run(host=host, port=args.port, debug=args.debug)

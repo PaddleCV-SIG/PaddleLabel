@@ -161,8 +161,8 @@ def parse_instance_mask(annotation_path, labels):
 
 
 class InstanceSegmentation(BaseTask):
-    def __init__(self, project, data_dir=None):
-        super().__init__(project, skip_label_import=True, data_dir=data_dir)
+    def __init__(self, project, data_dir=None, is_export=False):
+        super().__init__(project, skip_label_import=True, data_dir=data_dir, is_export=is_export)
         self.importers = {
             "mask": self.mask_importer,
             "polygon": self.coco_importer,

@@ -98,8 +98,7 @@ def in_use(label_id):
 def pre_delete(label, se):
     if in_use(label.label_id):
         abort(f"Can't delete label {label.name} with annotation record", 409)
-    sub_catgs = Label._get(super_category_id=label.label_id, many=True)
-    # print("sub_catgs", sub_catgs)
+    sub_catgs = Label._get(super_category_id=label.label_id, project_id=label.project_id, many=True)
     if len(sub_catgs) != 0:
         abort(f"Can't delete label {label.name} which is super category to other labels", 409)
     return label

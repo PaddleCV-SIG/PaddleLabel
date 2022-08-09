@@ -57,10 +57,6 @@ def prep_samples(sample_dst: str = None):
         "semanticSegmentation/polygon/image/2.jpeg",
         "semanticSegmentation/polygon/image/3.jpeg",
         "semanticSegmentation/polygon/image/4.jpeg",
-        "additional/JPEGImages/1.jpeg",
-        "additional/JPEGImages/2.jpeg",
-        "additional/JPEGImages/3.jpeg",
-        "additional/JPEGImages/4.jpeg",
     ]
     img_path = osp.join(sample_source, "imgs")
     for dst in dsts:

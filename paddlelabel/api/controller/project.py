@@ -97,7 +97,7 @@ def export_dataset(project_id):
 
     # 2. get handler and exporter
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
-    handler = eval(task_category.handler)(project)
+    handler = eval(task_category.handler)(project, is_export=True)
     if project.label_format is not None:
         exporter = handler.exporters[project.label_format]
     else:
@@ -106,6 +106,8 @@ def export_dataset(project_id):
     # 3. get export path
     export_dir = connexion.request.json["export_dir"]
     export_dir = expand_home(export_dir)
+    if osp.exists(osp.join(export_dir, 'paddlelabel.warning')):
+        abort("This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500)
 
     # 4. export
     try:

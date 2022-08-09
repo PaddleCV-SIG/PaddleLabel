@@ -81,7 +81,7 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
 def copy(src, dst, make_dir=False):
     # src = osp.normpath(src)
     # dst = osp.normpath(dst)
-    if dst == osp.dirname(src):
+    if dst == osp.dirname(src) or src == dst:
         return
     if make_dir:
         os.makedirs(osp.dirname(dst), exist_ok=True)

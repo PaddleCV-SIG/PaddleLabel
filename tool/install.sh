@@ -10,6 +10,7 @@ fi
 if [ "$1" = "" ]
 then
     # build frontend and copy to backend pj
+    echo "Building frontend"
     cd ../PaddleLabel-Frontend/
     npx browserslist@latest --update-db
     npm run build

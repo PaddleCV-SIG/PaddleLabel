@@ -114,7 +114,7 @@ def prep_samples(sample_dst: str = None):
         copy(src, dst, make_dir=True)
 
 
-def load_sample():
+def load_sample(sample_family="bear"):
     prep_samples()
 
     task_category_id = connexion.request.json.get("task_category_id")
@@ -132,7 +132,9 @@ def load_sample():
         "instance_segmentation": "polygon",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
-    data_dir = osp.join(osp.expanduser("~"), ".paddlelabel", "sample", "bear", *sample_folder[task_category.name])
+    data_dir = osp.join(
+        osp.expanduser("~"), ".paddlelabel", "sample", sample_family, *sample_folder[task_category.name]
+    )
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         return {"project_id": curr_project.project_id}, 200

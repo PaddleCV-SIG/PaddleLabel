@@ -36,9 +36,10 @@ class Classification(BaseTask):
         self.create_warning(data_dir)
         # 2. import all datas
         data_paths = listdir(data_dir, filters)
-        print(data_paths)
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
+            if label_name == "no_annotation":
+                label_name = ""
             label = [{"label_name": label_name}] if len(label_name) != 0 else []
             self.add_task([{"path": data_path}], [label])
 

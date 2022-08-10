@@ -139,7 +139,9 @@ def parse_semantic_mask(annotation_path, labels):
         for cc_id in range(1, cc_num):
             h, w = np.where(cc_mask == cc_id)
             result = ",".join([f"{w},{h}" for h, w in zip(h, w)])
-            result = f"{1},{frontend_id}," + result
+            # result = f"{1},{frontend_id}," + result
+            # TODO: patch. points type will be set by ann.type
+            result = f"{0},{0}," + result
             anns.append(
                 {
                     "label_name": label.name,

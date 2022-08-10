@@ -16,18 +16,31 @@ from paddlelabel.api.model import Task, Label, Annotation
 from paddlelabel.api.util import abort
 from paddlelabel.api.rpc.seg import polygon2points
 
-# debug
-# import matplotlib
-# matplotlib.use("TkAgg")
-# import matplotlib.pyplot as plt
-
 
 def draw_mask(data, mask_type="pesudo"):
+    """Draw a segmentation mask
+
+    Args:
+        data (data record): include data info, annotataion info and label info
+        mask_type (str, optional): mask type, pesudo, gray or instance. Defaults to "pesudo".
+
+    Returns:
+        mask: 
+            - gray: [h, w, 1]
+            - pesudo: [h, w, 3] rbg
+            - instance: [h, w, 2] 0: instance, 1: category
+    """    
     height, width = map(int, data.size.split(",")[1:3])
+    instance_id = 0
     if mask_type == "pesudo":
-        mask = np.zeros((height, width, 3))
+        catg_mask = np.zeros((height, width, 3))
+    elif mask_type == "gray":
+        catg_mask = np.zeros((height, width))
+    elif mask_type == "instance":
+        catg_mask = np.zeros((height, width))
+        instance_mask = np.zeros((height, width))
     else:
-        mask = np.zeros((height, width))
+        abort(f"Unsupported mask type: {mask_type}", 500)
 
     for ann in data.annotations:
         if ann.type not in ["brush", "polygon", "points", "rubber"]:
@@ -41,12 +54,12 @@ def draw_mask(data, mask_type="pesudo"):
         result = ann.result.strip().split(",")
 
         # TODO: path, remove this. frontend eiseg returns result that are 0,0,
-        # ===
         result = [r for r in result if r != ""]
         if len(result) == 2:
             continue
-        # ===
-        
+
+        instance_id += 1
+
         try:
             result = [int(float(p)) for p in result]
         except:
@@ -54,13 +67,8 @@ def draw_mask(data, mask_type="pesudo"):
             print(result, "to float error, plz open an issue for this")
 
         # TODO: patch. [0,0,...] means points. to be changed
-        print("======")
-        print(result[0:2])
         if result[0] == 0 and result[1] == 0:
             ann.type = "points"
-            print("in")
-        print(ann.type)
-        print("=====")
 
         # TODO: patch. [not 0, 0] means brush. to be changed
         if result[0] != 0 and result[1] == 0:
@@ -71,7 +79,6 @@ def draw_mask(data, mask_type="pesudo"):
         else:
             color = 0 if ann.type == "rubber" else int(label_id)
 
-        
         if ann.type in ["brush", "rubber"]:
             points = result[2:]
             line_width = result[0]
@@ -82,7 +89,9 @@ def draw_mask(data, mask_type="pesudo"):
             try:
                 for idx in range(2, len(points), 2):
                     w, h = points[idx : idx + 2]
-                    cv2.line(mask, (prev_w, prev_h), (w, h), color, line_width)
+                    cv2.line(catg_mask, (prev_w, prev_h), (w, h), color, line_width)
+                    if mask_type == "instance":
+                        cv2.line(instance_mask, (prev_w, prev_h), (w, h), instance_id, line_width)
                     prev_w, prev_h = w, h
             except Exception as e:
                 abort(detail=e.msg, status=500, title="cv2 error")
@@ -95,19 +104,28 @@ def draw_mask(data, mask_type="pesudo"):
                     result[idx + 1] = int(result[idx + 1] + height / 2)
                 points = polygon2points(result)
                 points = np.array(points).reshape((-1))
-            
+
             for idx in range(0, len(points), 2):
-                mask[points[idx+1]][points[idx]] = color
+                catg_mask[points[idx + 1]][points[idx]] = color
+                if mask_type == "instance":
+                    instance_mask[points[idx + 1]][points[idx]] = instance_id
+    
+    if mask_type == "instance":
+        return np.stack([instance_mask, catg_mask], axis=0)
+    return catg_mask
 
-    return mask
 
-
-def parse_semantic_mask(annotation_path, labels):
+def parse_semantic_mask(annotation_path, labels, image_path=None):
     ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+    if image_path is not None:
+        img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+        if img.shape[:3] != ann.shape[:3]:
+            abort(
+                f"Image {img.shape[:3]} and annotation {ann.shape[:3]} has different shape, please check image {image_path} and annotation {annotation_path}",
+                500,
+            )
     frontend_id = 1
     anns = []
-    # TODO: len(ann.shape == 3) and ann.shape[-1] == 1 necessary?
-    # print(labels)
     if len(ann.shape) == 3:
         ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
         ann_gray = np.zeros(ann.shape[:2], dtype="uint8")
@@ -154,7 +172,6 @@ def parse_semantic_mask(annotation_path, labels):
 
     if ann.sum() != 0:
         msg = f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?"
-        print(msg)
         abort(msg, 404)
 
     s = [1] + list(ann.shape)
@@ -163,8 +180,17 @@ def parse_semantic_mask(annotation_path, labels):
     return size, anns
 
 
-def parse_instance_mask(annotation_path, labels):
+def parse_instance_mask(annotation_path, labels, image_path=None):
     mask = tif.imread(annotation_path)
+    if image_path is not None:
+        img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+        # TODO: remove two paths' common prefix
+        if img.shape[:3] != mask.shape[1:]:
+            abort(
+                f"Image {img.shape[:3]} and annotation {mask.shape[1:]} has different shape, please check image {image_path} and annotation {annotation_path}",
+                500,
+            )
+
     instance_mask = mask[0]
     label_mask = mask[1]
     anns = []
@@ -175,7 +201,9 @@ def parse_instance_mask(annotation_path, labels):
         for instance_id in instance_ids:
             h, w = np.where(instance_mask == instance_id)
             result = ",".join([f"{w},{h}" for w, h in zip(w, h)])
-            result = f"{1},{instance_id}," + result
+            # result = f"{1},{instance_id}," + result
+            # TODO: patch. points format will be added
+            result = f"{0},{0}," + result
             anns.append(
                 {
                     "label_name": label.name,
@@ -230,7 +258,7 @@ class InstanceSegmentation(BaseTask):
             data_path = osp.join(data_dir, data_path)
             if id in ann_dict.keys():
                 ann_path = osp.join(data_dir, ann_dict[id])
-                size, anns = parse_instance_mask(ann_path, project.labels)
+                size, anns = parse_instance_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
                 img = cv2.imread(data_path)
@@ -264,61 +292,7 @@ class InstanceSegmentation(BaseTask):
             copy(data_path, export_data_dir)
             height, width = map(int, data.size.split(",")[1:3])
 
-            instance_mask = np.zeros((height, width), dtype="uint8")
-            label_mask = np.zeros((height, width), dtype="uint8")
-            for ann in task.annotations:
-
-                # TODO: skip eiseg result, remove this
-                if ann.result[:2] == "[[":
-                    continue
-
-                label_id = ann.label.id
-                frontend_id = ann.frontend_id
-                result = ann.result.split(",")
-                try:
-                    result = [int(float(p)) for p in result]
-                except:
-                    print(result, "to float error, plz open an issue for this")
-                if ann.type == "brush":
-                    points = result[2:]
-                    line_width = result[0]
-                    if result[1] == 0:
-                        frontend_id = 0
-                        label_id = 0
-                    prev_w, prev_h = points[0:2]
-                else:
-                    for idx in range(0, len(result), 2):
-                        result[idx] = int(result[idx] + width / 2)
-                        result[idx + 1] = int(result[idx + 1] + height / 2)
-                    points = polygon2points(result)
-                    points = np.array(points).reshape((-1))
-                    line_width = 1
-                    prev_w, prev_h = points[0:2]
-                try:
-                    for idx in range(2, len(points), 2):
-                        w, h = points[idx : idx + 2]
-                        if line_width == 0:
-                            line_width = 1
-
-                        cv2.line(
-                            label_mask,
-                            (prev_w, prev_h),
-                            (w, h),
-                            int(label_id),
-                            line_width,
-                        )
-                        cv2.line(
-                            instance_mask,
-                            (prev_w, prev_h),
-                            (w, h),
-                            int(frontend_id),
-                            line_width,
-                        )
-                        prev_w, prev_h = w, h
-                except Exception as e:
-                    abort(detail=e.msg, status=500, title="cv2 error")
-
-            mask = np.stack([instance_mask, label_mask], axis=0)
+            mask = draw_mask(data, mask_type="instance")
             tif.imwrite(export_label_path, mask, compression="zlib")
 
             export_data_paths.append([export_data_path])
@@ -553,13 +527,11 @@ class SemanticSegmentation(InstanceSegmentation):
             data_path = osp.join(data_dir, data_path)
             if id in ann_dict.keys():
                 ann_path = osp.join(ann_dir, ann_dict[id])
-                size, anns = parse_semantic_mask(ann_path, project.labels)
-                print("size", size)
+                size, anns = parse_semantic_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
                 img = cv2.imread(data_path)
                 s = [1] + list(img.shape)
-                print(s)
                 size = ",".join([str(s) for s in s])
 
             self.add_task([{"path": data_path, "size": size}], [anns])

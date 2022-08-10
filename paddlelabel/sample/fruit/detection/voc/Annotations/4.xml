@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+        <annotation>
+        <folder>JPEGImages</folder>
+        <filename>4.jpeg</filename>
+        <object_num>4</object_num>
+        <size>
+            <width>756</width>
+            <height>1008</height>
+        </size>
+        
+            <object>
+            <name>梨</name>
+            <bndbox>
+            <xmin>243</xmin>
+            <ymin>269</ymin>
+            <xmax>453</xmax>
+            <ymax>468</ymax>
+            </bndbox>
+            </object>
+        
+            <object>
+            <name>梨</name>
+            <bndbox>
+            <xmin>159</xmin>
+            <ymin>380</ymin>
+            <xmax>329</xmax>
+            <ymax>658</ymax>
+            </bndbox>
+            </object>
+        
+            <object>
+            <name>梨</name>
+            <bndbox>
+            <xmin>276</xmin>
+            <ymin>367</ymin>
+            <xmax>518</xmax>
+            <ymax>679</ymax>
+            </bndbox>
+            </object>
+        
+            <object>
+            <name>梨</name>
+            <bndbox>
+            <xmin>425</xmin>
+            <ymin>381</ymin>
+            <xmax>594</xmax>
+            <ymax>631</ymax>
+            </bndbox>
+            </object>
+        
+        </annotation>

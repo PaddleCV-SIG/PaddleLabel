@@ -23,6 +23,6 @@ class TaskSchema(BaseSchema):
     def output(self, task, **kwargs):
         paths = []
         for data in task.datas:
-            paths.append(f"/datas/{data.data_id}/image?sault={str2sault(data.path)}")
+            paths.append(f"/datas/{data.data_id}/image?sault={str2sault(data.path+str(data.created))}")
         task.data_paths = paths
         return task

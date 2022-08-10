@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+        <annotation>
+        <folder>JPEGImages</folder>
+        <filename>1.jpeg</filename>
+        <object_num>1</object_num>
+        <size>
+            <width>756</width>
+            <height>1008</height>
+        </size>
+        
+            <object>
+            <name>苹果</name>
+            <bndbox>
+            <xmin>182</xmin>
+            <ymin>322</ymin>
+            <xmax>538</xmax>
+            <ymax>709</ymax>
+            </bndbox>
+            </object>
+        
+        </annotation>

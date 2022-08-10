@@ -1,0 +1,2 @@
+JPEGImages/2.jpeg Annotations/2.png
+JPEGImages/3.jpeg Annotations/3.png

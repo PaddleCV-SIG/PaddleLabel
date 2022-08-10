@@ -22,19 +22,19 @@ def draw_mask(data, mask_type="pesudo"):
 
     Args:
         data (data record): include data info, annotataion info and label info
-        mask_type (str, optional): mask type, pesudo, gray or instance. Defaults to "pesudo".
+        mask_type (str, optional): mask type, pesudo, grayscale or instance. Defaults to "pesudo".
 
     Returns:
-        mask: 
-            - gray: [h, w, 1]
+        mask:
+            - grayscale: [h, w, 1]
             - pesudo: [h, w, 3] rbg
             - instance: [h, w, 2] 0: instance, 1: category
-    """    
+    """
     height, width = map(int, data.size.split(",")[1:3])
     instance_id = 0
     if mask_type == "pesudo":
         catg_mask = np.zeros((height, width, 3))
-    elif mask_type == "gray":
+    elif mask_type == "grayscale":
         catg_mask = np.zeros((height, width))
     elif mask_type == "instance":
         catg_mask = np.zeros((height, width))
@@ -46,11 +46,7 @@ def draw_mask(data, mask_type="pesudo"):
         if ann.type not in ["brush", "polygon", "points", "rubber"]:
             continue
 
-        # # TODO: patch. some eiseg result remove
-        # if ann.result[:2] == "[[":
-        #     continue
-
-        label_id = ann.label.label_id
+        label_id = ann.label.id
         result = ann.result.strip().split(",")
 
         # TODO: path, remove this. frontend eiseg returns result that are 0,0,
@@ -109,7 +105,7 @@ def draw_mask(data, mask_type="pesudo"):
                 catg_mask[points[idx + 1]][points[idx]] = color
                 if mask_type == "instance":
                     instance_mask[points[idx + 1]][points[idx]] = instance_id
-    
+
     if mask_type == "instance":
         return np.stack([instance_mask, catg_mask], axis=0)
     return catg_mask
@@ -146,13 +142,13 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
 
     for label in labels:
         label_mask = deepcopy(ann)
-        label_mask[label_mask != label.label_id] = 0
+        label_mask[label_mask != label.id] = 0
         label_mask[label_mask != 0] = 255
 
         if label_mask.sum() == 0:
             continue
 
-        ann[ann == label.label_id] = 0
+        ann[ann == label.id] = 0
         (cc_num, cc_mask, values, centroid) = cv2.connectedComponentsWithStats(label_mask, connectivity=8)
         for cc_id in range(1, cc_num):
             h, w = np.where(cc_mask == cc_id)
@@ -165,7 +161,7 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
                     "label_name": label.name,
                     "result": result,
                     "type": "brush",
-                    "frontend_id": label.label_id,
+                    "frontend_id": label.id,
                 }
             )
             frontend_id += 1
@@ -349,9 +345,7 @@ class InstanceSegmentation(BaseTask):
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("height", 0), img.get("width", 0)]
-                if s == [0, 0]:
-                    s = cv2.imread(full_path).shape[:2]
+                s = cv2.imread(osp.join(data_dir, full_path)).shape[:2]
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []

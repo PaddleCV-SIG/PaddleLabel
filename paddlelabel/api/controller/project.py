@@ -79,7 +79,7 @@ def post_add(new_project, se):
         project = Project.query.filter(Project.project_id == new_project.project_id).one()
         db.session.delete(project)
         db.session.commit()
-
+        
         print("Create project failed")
         print(traceback.format_exc())
 
@@ -112,8 +112,16 @@ def export_dataset(project_id):
     # 4. export
     try:
         exporter(export_dir)
+    
     except Exception as e:
-        abort(str(e), 500, str(e))
+        print("Create project failed")
+        print(traceback.format_exc())
+
+        if "detail" in dir(e):
+            abort(e.detail, 500, e.title)
+        else:
+            abort(str(e), 500, str(e))
+        # abort(str(e), 500, str(e))
 
 
 def import_dataset(project_id):

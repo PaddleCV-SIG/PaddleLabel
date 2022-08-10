@@ -86,6 +86,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/tasks/{task_id}/tags getTags": "paddlelabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "paddlelabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "paddlelabel.api.controller.data.get_image",
+            "/datas/{data_id}/mask getMask": "paddlelabel.api.controller.data.get_mask",
             "/tasks/{task_id}/annotations getAnnotations": "paddlelabel.api.controller.annotation.get_by_task",
             "/tasks/{task_id}/datas getDatas": "paddlelabel.api.controller.data.get_by_task",
             "/datas/{data_id}/annotations getAnnotations": "paddlelabel.api.controller.annotation.get_by_data",
@@ -98,7 +99,6 @@ class Resolver(connexion.resolver.RestyResolver):
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
             "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",
             "/samples/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
-            "/datas/{data_id}/mask getMask": "paddlelabel.api.controller.data.get_mask",
         }
         opid = None
 

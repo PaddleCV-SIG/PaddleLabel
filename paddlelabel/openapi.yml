@@ -722,6 +722,21 @@ paths:
             type: string
           in: query
           name: sault
+  '/datas/{data_id}/mask':
+    parameters:
+      - schema:
+          type: string
+        name: data_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: 
+        - Data
+      responses:
+        '200':
+          description: OK
+      operationId: getMask
   '/datas/{data_id}/annotations':
     parameters:
       - name: data_id

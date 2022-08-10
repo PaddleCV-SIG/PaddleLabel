@@ -34,8 +34,9 @@ class Classification(BaseTask):
             data_dir = project.data_dir
 
         self.create_warning(data_dir)
-        # 2. import all datas,
+        # 2. import all datas
         data_paths = listdir(data_dir, filters)
+        print(data_paths)
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
             label = [{"label_name": label_name}] if len(label_name) != 0 else []

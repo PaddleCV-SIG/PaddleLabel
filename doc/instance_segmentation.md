@@ -10,7 +10,8 @@ PaddleLabel支持多边形和掩膜两种实例分割标注任务。
 
 #### 掩膜格式
 
-示例格式如下：
+新建掩膜格式标注任务时，待标注的图片放于`JPEGImages`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。
+标注完成后，导出示例格式如下：
 
 ```shell
 Dataset Path
@@ -36,7 +37,8 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 
 #### 多边形格式
 
-示例格式如下：
+新建多边形格式标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`image`上层目录`Dataset Path`即可。
+标注完成后，导出示例格式如下：
 
 ```shell
 Dataset Path

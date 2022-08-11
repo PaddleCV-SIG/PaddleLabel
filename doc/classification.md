@@ -10,9 +10,9 @@ PaddleLabel支持单类别分类与多类别分类两种图像分类标注任务
 
 ### 单分类
 
-也称为 ImageNet 格式，每条数据只有一个类别。样例数据集：[vegetables_cls](https://bj.bcebos.com/paddlex/datasets/vegetables_cls.tar.gz)，[flowers102](https://paddle-imagenet-models-name.bj.bcebos.com/data/flowers102.zip)(需经预处理)
+也称为 ImageNet 格式，每条数据只有一个类别。新建单分类标注任务时，输入待标注的图片所在文件夹绝对路径即可。
 
-示例格式如下：
+标注后导出格式示例如下：
 
 ```shell
 Dataset Path
@@ -43,7 +43,7 @@ Mouse
 
 ### 多分类
 
-在多分类项目中，一条数据可以有多个类别。
+在多分类项目中，一条数据可以有多个类别。新建多分类标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`image`上层目录`Dataset Path`即可。
 
 示例格式如下：
 

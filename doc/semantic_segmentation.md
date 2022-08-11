@@ -38,7 +38,7 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 #### 多边形格式
 
 新建掩多边形式标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`image`上层目录`Dataset Path`即可。
-示例格式如下：
+标注完成后，导出示例格式如下：
 
 ```shell
 Dataset Path

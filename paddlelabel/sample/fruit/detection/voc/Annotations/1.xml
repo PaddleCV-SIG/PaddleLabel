@@ -7,7 +7,7 @@
             <width>756</width>
             <height>1008</height>
         </size>
-        
+
             <object>
             <name>苹果</name>
             <bndbox>
@@ -17,5 +17,5 @@
             <ymax>709</ymax>
             </bndbox>
             </object>
-        
+
         </annotation>

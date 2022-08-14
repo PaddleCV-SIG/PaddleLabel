@@ -10,6 +10,9 @@ import paddlelabel.api
 import paddlelabel.task
 
 
+curr_dir = osp.abspath(osp.dirname(__file__))
+
+
 @connexion_app.app.route("/")
 def index():
     return flask.redirect("/static/index.html")
@@ -27,7 +30,7 @@ if not osp.exists(db_path):
 
 
 connexion_app.add_api(
-    "paddlelabel/openapi.yml",
+    osp.join(curr_dir, "openapi.yml"),
     resolver=Resolver("paddlelabel.api", collection_endpoint_name="get_all"),
     # request with undefined param returns error, dont enforce body
     strict_validation=True,

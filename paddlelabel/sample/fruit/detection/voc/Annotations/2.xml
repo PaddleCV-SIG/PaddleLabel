@@ -7,7 +7,7 @@
             <width>756</width>
             <height>1008</height>
         </size>
-        
+
             <object>
             <name>梨</name>
             <bndbox>
@@ -17,7 +17,7 @@
             <ymax>741</ymax>
             </bndbox>
             </object>
-        
+
             <object>
             <name>梨</name>
             <bndbox>
@@ -27,5 +27,5 @@
             <ymax>677</ymax>
             </bndbox>
             </object>
-        
+
         </annotation>

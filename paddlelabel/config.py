@@ -11,7 +11,7 @@ from .util import rand_string
 
 log = logging.getLogger("PaddleLabel")
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = osp.abspath(osp.dirname(__file__))
 
 db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')}"
 

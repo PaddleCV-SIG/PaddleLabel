@@ -33,6 +33,5 @@ pip uninstall -y paddlelabel
 pip uninstall -y paddlelabel
 pip install --upgrade "dist/paddlelabel-$(cat paddlelabel/version).tar.gz"
 
-# clear pdlabel files 
+# clear pdlabel files
 rm -rf ~/.paddlelabel/
-

@@ -731,7 +731,7 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: 
+      tags:
         - Data
       responses:
         '200':

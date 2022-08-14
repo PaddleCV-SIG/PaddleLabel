@@ -79,7 +79,7 @@ def post_add(new_project, se):
         project = Project.query.filter(Project.project_id == new_project.project_id).one()
         db.session.delete(project)
         db.session.commit()
-        
+
         print("Create project failed")
         print(traceback.format_exc())
 
@@ -106,13 +106,15 @@ def export_dataset(project_id):
     # 3. get export path
     export_dir = connexion.request.json["export_dir"]
     export_dir = expand_home(export_dir)
-    if osp.exists(osp.join(export_dir, 'paddlelabel.warning')):
-        abort("This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500)
+    if osp.exists(osp.join(export_dir, "paddlelabel.warning")):
+        abort(
+            "This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500
+        )
 
     # 4. export
     try:
         exporter(export_dir)
-    
+
     except Exception as e:
         print("Create project failed")
         print(traceback.format_exc())

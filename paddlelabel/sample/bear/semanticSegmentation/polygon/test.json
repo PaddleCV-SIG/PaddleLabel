@@ -289,16 +289,16 @@
     ],
     "categories": [
         {
-            "color": "#64F3BE",
-            "id": 2,
-            "name": "toy",
-            "supercategory": "none"
-        },
-        {
             "color": "#05AF56",
             "id": 1,
             "name": "xiaoduxiong",
             "supercategory": "toy"
+        },
+        {
+            "color": "#64F3BE",
+            "id": 2,
+            "name": "toy",
+            "supercategory": "none"
         }
     ],
     "images": [

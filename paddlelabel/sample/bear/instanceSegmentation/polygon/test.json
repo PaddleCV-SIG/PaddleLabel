@@ -8,7 +8,7 @@
                 162.0,
                 211.0
             ],
-            "category_id": 2,
+            "category_id": 1,
             "id": 14,
             "image_id": 2,
             "iscrowd": 0,
@@ -79,7 +79,7 @@
                 168.0,
                 178.0
             ],
-            "category_id": 2,
+            "category_id": 1,
             "id": 15,
             "image_id": 2,
             "iscrowd": 0,
@@ -156,7 +156,7 @@
                 190.0,
                 128.0
             ],
-            "category_id": 2,
+            "category_id": 1,
             "id": 16,
             "image_id": 2,
             "iscrowd": 0,
@@ -227,7 +227,7 @@
                 181.0,
                 139.0
             ],
-            "category_id": 2,
+            "category_id": 1,
             "id": 17,
             "image_id": 2,
             "iscrowd": 0,
@@ -289,16 +289,16 @@
     ],
     "categories": [
         {
-            "color": "#64F3BE",
-            "id": 2,
-            "name": "toy",
-            "supercategory": "none"
-        },
-        {
             "color": "#05AF56",
             "id": 1,
             "name": "xiaoduxiong",
             "supercategory": "toy"
+        },
+        {
+            "color": "#64F3BE",
+            "id": 2,
+            "name": "toy",
+            "supercategory": "none"
         }
     ],
     "images": [

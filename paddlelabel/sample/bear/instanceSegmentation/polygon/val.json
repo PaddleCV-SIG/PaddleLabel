@@ -8,7 +8,7 @@
                 250.0,
                 176.0
             ],
-            "category_id": 2,
+            "category_id": 1,
             "id": 10,
             "image_id": 4,
             "iscrowd": 0,
@@ -78,16 +78,16 @@
     ],
     "categories": [
         {
-            "color": "#64F3BE",
-            "id": 2,
-            "name": "toy",
-            "supercategory": "none"
-        },
-        {
             "color": "#05AF56",
             "id": 1,
             "name": "xiaoduxiong",
             "supercategory": "toy"
+        },
+        {
+            "color": "#64F3BE",
+            "id": 2,
+            "name": "toy",
+            "supercategory": "none"
         }
     ],
     "images": [

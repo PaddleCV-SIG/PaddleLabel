@@ -10,7 +10,8 @@ PaddleLabel支持多边形和掩膜两种语义分割标注任务。
 
 #### 掩膜格式
 
-示例格式如下：
+新建掩膜格式标注任务时，待标注的图片放于`JPEGImages`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。
+导出后示例格式如下：
 
 ```shell
 Dataset Path
@@ -36,7 +37,8 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 
 #### 多边形格式
 
-示例格式如下：
+新建掩多边形式标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`image`上层目录`Dataset Path`即可。
+标注完成后，导出示例格式如下：
 
 ```shell
 Dataset Path
@@ -99,7 +101,7 @@ categories[
 项目创建选项卡有如下选项需要填写：
 
 - 项目名称（必填）：填写该分类标注项目的项目名
-- 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到
+- 数据地址（必填）：新建掩膜格式标注任务时，待标注的图片放于`JPEGImages`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。新建掩多边形式标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`image`上层目录`Dataset Path`即可。具体组织形式请参考[数据结构](#test3)。
 - 数据集描述（选填）：填写该分类标注项目的使用的数据集的描述文字
 - 标注类型（必选）：选择该任务为多边形标注任务还是掩膜标注任务
 

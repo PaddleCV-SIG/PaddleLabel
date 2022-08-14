@@ -48,7 +48,7 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 
 * [安装说明](doc/install.md)
 * [图像分类标注](doc/classification.md)
-* [目标检测标注](doc/object_detection.md)
+* [目标检测标注](doc/detection.md)
 * [语义分割标注](doc/semantic_segmentation.md)
 * [实例分割标注](doc/instance_segmentation.md)
 

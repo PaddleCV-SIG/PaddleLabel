@@ -13,8 +13,7 @@ PaddleLabel 支持 PASCAL VOC 和 COCO 两种目标检测数据集格式。
 
 ### PASCAL VOC
 
-PASCAL VOC 格式将标注信息保存在 xml 文件中，每个图像都对应一个 xml 文件。样例数据集：[昆虫检测数据集](https://bj.bcebos.com/paddlex/datasets/insect_det.tar.gz)。
-
+PASCAL VOC 格式将标注信息保存在 xml 文件中，每个图像都对应一个 xml 文件。新建标注任务时，待标注的图片放于`JPEGImages`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。
 示例格式如下：
 
 ```shell
@@ -69,7 +68,7 @@ xml 文件格式如下：
 
 ### COCO
 
-COCO 格式将整个数据集的所有标注信息存在一个`json`文件中。这里列出了 COCO 的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。注意，所有使用 COCO 格式的项目都不支持`xx_list.txt`和`labels.txt`。样例数据集：[Plane Detection]()。
+COCO 格式将整个数据集的所有标注信息存在一个`json`文件中。这里列出了 COCO 的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。注意，所有使用 COCO 格式的项目都不支持`xx_list.txt`和`labels.txt`。新建标注任务时，待标注的图片放于`image`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。
 
 示例格式如下：
 
@@ -135,7 +134,7 @@ categories[
 项目创建选项卡有如下选项需要填写：
 
 - 项目名称（必填）：填写该检测标注项目的项目名
-- 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到
+- 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到，或者参考[数据结构](#test2)组织待标注图片目录。
 - 数据集描述（选填）：填写该检测标注项目的使用的数据集的描述文字
 - 标签格式（必选）：选择该任务的数据集格式为COCO还是VOC
 

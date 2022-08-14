@@ -1,20 +1,25 @@
-cd ../PP-Label-Frontend/
-git pull
-rm -rf dist/ src/.umi-production # src/.umi
+res=$(lsof -i :17995)
+if ["$res" = ""]
+then
+    echo "No running process found"
+else
+    echo $res
+    exit -1
+fi
 
-# node 16 latest is suggested
-node --version
-# npx browserslist@latest --update-db
-npm run build
 
-cd ../PP-Label
-rm -rf paddlelabel/static/
-mkdir paddlelabel/static/
-cp -r ../PP-Label-Frontend/dist/* paddlelabel/static/
+pip uninstall -y paddlelabel
+pip uninstall -y paddlelabel
+pip uninstall -y paddlelabel
 
-python tool/bumpversion.py
-pip install twine
-rm -rf dist/*
-rm -rf build/*
-python setup.py sdist bdist_wheel
-twine upload dist/*.tar.gz
+pip install --upgrade paddlelabel
+
+paddlelabel -q &
+
+cd ../PaddleLabel-Frontend/
+if [ "$1" = "" ]
+then
+    npx cypress run
+else
+    npx cypress $1
+fi

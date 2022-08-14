@@ -1,36 +1,17 @@
 {
-    "categories": [
-        {
-            "id": 2,
-            "name": "toy",
-            "color": "#64F3BE",
-            "supercategory": "none"
-        },
-        {
-            "id": 1,
-            "name": "xiaoduxiong",
-            "color": "#05AF56",
-            "supercategory": "toy"
-        }
-    ],
-    "images": [
-        {
-            "id": 2,
-            "width": 756,
-            "height": 1008,
-            "file_name": "image/4.jpeg",
-            "license": "",
-            "flickr_url": "",
-            "coco_url": "",
-            "date_captured": ""
-        }
-    ],
     "annotations": [
         {
-            "id": 14,
-            "iscrowd": 0,
-            "image_id": 2,
+            "area": 17441.0,
+            "bbox": [
+                398.0,
+                114.0,
+                162.0,
+                211.0
+            ],
             "category_id": 1,
+            "id": 14,
+            "image_id": 2,
+            "iscrowd": 0,
             "segmentation": [
                 [
                     457.0,
@@ -88,20 +69,20 @@
                     431.0,
                     156.0
                 ]
-            ],
-            "area": 17441.0,
-            "bbox": [
-                398.0,
-                114.0,
-                162.0,
-                211.0
             ]
         },
         {
-            "id": 15,
-            "iscrowd": 0,
-            "image_id": 2,
+            "area": 16453.5,
+            "bbox": [
+                188.0,
+                294.0,
+                168.0,
+                178.0
+            ],
             "category_id": 1,
+            "id": 15,
+            "image_id": 2,
+            "iscrowd": 0,
             "segmentation": [
                 [
                     270.0,
@@ -165,20 +146,20 @@
                     268.0,
                     315.0
                 ]
-            ],
-            "area": 16453.5,
-            "bbox": [
-                188.0,
-                294.0,
-                168.0,
-                178.0
             ]
         },
         {
-            "id": 16,
-            "iscrowd": 0,
-            "image_id": 2,
+            "area": 15708.5,
+            "bbox": [
+                431.0,
+                461.0,
+                190.0,
+                128.0
+            ],
             "category_id": 1,
+            "id": 16,
+            "image_id": 2,
+            "iscrowd": 0,
             "segmentation": [
                 [
                     505.0,
@@ -236,20 +217,20 @@
                     485.0,
                     492.0
                 ]
-            ],
-            "area": 15708.5,
-            "bbox": [
-                431.0,
-                461.0,
-                190.0,
-                128.0
             ]
         },
         {
-            "id": 17,
-            "iscrowd": 0,
-            "image_id": 2,
+            "area": 16030.0,
+            "bbox": [
+                150.0,
+                622.0,
+                181.0,
+                139.0
+            ],
             "category_id": 1,
+            "id": 17,
+            "image_id": 2,
+            "iscrowd": 0,
             "segmentation": [
                 [
                     228.0,
@@ -303,14 +284,33 @@
                     200.0,
                     747.0
                 ]
-            ],
-            "area": 16030.0,
-            "bbox": [
-                150.0,
-                622.0,
-                181.0,
-                139.0
             ]
+        }
+    ],
+    "categories": [
+        {
+            "color": "#64F3BE",
+            "id": 2,
+            "name": "toy",
+            "supercategory": "none"
+        },
+        {
+            "color": "#05AF56",
+            "id": 1,
+            "name": "xiaoduxiong",
+            "supercategory": "toy"
+        }
+    ],
+    "images": [
+        {
+            "coco_url": "",
+            "date_captured": "",
+            "file_name": "image/4.jpeg",
+            "flickr_url": "",
+            "height": 1008,
+            "id": 2,
+            "license": "",
+            "width": 756
         }
     ],
     "info": "",

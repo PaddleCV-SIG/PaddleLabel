@@ -1,36 +1,17 @@
 {
-    "categories": [
-        {
-            "id": 2,
-            "name": "toy",
-            "color": "#64F3BE",
-            "supercategory": "none"
-        },
-        {
-            "id": 1,
-            "name": "xiaoduxiong",
-            "color": "#05AF56",
-            "supercategory": "toy"
-        }
-    ],
-    "images": [
-        {
-            "id": 4,
-            "width": 756,
-            "height": 1008,
-            "file_name": "image/1.jpeg",
-            "license": "",
-            "flickr_url": "",
-            "coco_url": "",
-            "date_captured": ""
-        }
-    ],
     "annotations": [
         {
-            "id": 10,
-            "iscrowd": 0,
-            "image_id": 4,
+            "area": 30124.5,
+            "bbox": [
+                258.0,
+                403.0,
+                250.0,
+                176.0
+            ],
             "category_id": 1,
+            "id": 10,
+            "image_id": 4,
+            "iscrowd": 0,
             "segmentation": [
                 [
                     481.0,
@@ -92,14 +73,33 @@
                     489.0,
                     420.0
                 ]
-            ],
-            "area": 30124.5,
-            "bbox": [
-                258.0,
-                403.0,
-                250.0,
-                176.0
             ]
+        }
+    ],
+    "categories": [
+        {
+            "color": "#64F3BE",
+            "id": 2,
+            "name": "toy",
+            "supercategory": "none"
+        },
+        {
+            "color": "#05AF56",
+            "id": 1,
+            "name": "xiaoduxiong",
+            "supercategory": "toy"
+        }
+    ],
+    "images": [
+        {
+            "coco_url": "",
+            "date_captured": "",
+            "file_name": "image/1.jpeg",
+            "flickr_url": "",
+            "height": 1008,
+            "id": 4,
+            "license": "",
+            "width": 756
         }
     ],
     "info": "",

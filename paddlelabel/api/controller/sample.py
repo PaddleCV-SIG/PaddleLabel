@@ -25,6 +25,10 @@ def prep_samples(sample_dst: str = None):
     copycontent(sample_source, sample_dst)
 
     dsts = [
+        "bear/placeholder/1/1.jpeg",
+        "bear/placeholder/2/2.jpeg",
+        "bear/placeholder/3/3.jpeg",
+        "bear/placeholder/4/4.jpeg",
         "bear/classification/multiClass/image/1.jpeg",
         "bear/classification/multiClass/image/2.jpeg",
         "bear/classification/multiClass/image/3.jpeg",
@@ -66,6 +70,10 @@ def prep_samples(sample_dst: str = None):
         "fruit/classification/multiClass/image/3.jpeg",
         "fruit/classification/multiClass/image/4.jpeg",
         "fruit/classification/multiClass/image/5.jpeg",
+        "fruit/placeholder/梨/2.jpeg",
+        "fruit/placeholder/梨/4.jpeg",
+        "fruit/placeholder/苹果/1.jpeg",
+        "fruit/placeholder/苹果/3.jpeg",
         "fruit/classification/singleClass/梨/2.jpeg",
         "fruit/classification/singleClass/梨/4.jpeg",
         "fruit/classification/singleClass/苹果/1.jpeg",

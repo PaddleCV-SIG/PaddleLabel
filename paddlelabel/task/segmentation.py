@@ -516,7 +516,11 @@ class SemanticSegmentation(InstanceSegmentation):
         ann_dict = {osp.basename(p).split(".")[0]: p for p in listdir(ann_dir, filters)}
 
         # 2. import records
-        for data_path in listdir(data_dir, filters):
+        data_paths = listdir(data_dir, filters)
+        if len(data_paths) == 0:
+            abort("No image found. Did you forget to put images under JPEGImages folder?", 500)
+
+        for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]
             data_path = osp.join(data_dir, data_path)
             if id in ann_dict.keys():

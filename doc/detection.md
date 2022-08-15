@@ -92,6 +92,7 @@ COCO 文件的格式如下：
     "images": [image],
     "annotations": [annotation],
     "licenses": [license],
+	"categories": [category],
 }
 
 image{
@@ -116,14 +117,13 @@ annotation{
     "iscrowd": 0 or 1,
 }
 
-categories[
-{
+
+category{
 	"id": int,
 	"name": str,
 	"supercategory": str,
 	"color": str // this feature is specific to PP Label. It's not in the coco spec.
 }
-]
 ```
 
 ### 创建新项目

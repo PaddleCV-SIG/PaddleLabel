@@ -344,16 +344,15 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 用[Napari](https://napari.org/)查看这种标签很方便。可以按照[官方文档](https://napari.org/#installation)进行安装。然后参照下面的步骤使用：
 
 - 打开图像：
-  ![image](https://user-images.githubusercontent.com/29757093/178112182-1b7ae5d7-ab7b-4fee-b851-da2c43676da5.png)
+  ![image](https://user-images.githubusercontent.com/29757093/184568424-e6925671-8057-4fc2-9a41-dfabcfccdc68.png)
 - 打开图像对应的 tiff 掩膜：
-  ![image](https://user-images.githubusercontent.com/29757093/178112188-e9c2e081-6752-4137-b60d-e64d9e7a11b6.png)
-- 右键单击掩膜图层，选择`Split Stack`：
-  ![image](https://user-images.githubusercontent.com/29757093/178112212-13c84d24-d753-4037-8851-d3e09f8fe9c8.png)
-  ![image](https://user-images.githubusercontent.com/29757093/178112232-85feeec9-2ede-4045-9105-446b07454864.png)
-- 右键单击图层 0，选择`Convert to Label`，查看实例掩膜：
-  ![image](https://user-images.githubusercontent.com/29757093/178112305-6a0e36d2-3cab-4265-a88d-9ee55044b97e.png)
-- 右键单击图层 1，选择`Convert to Label`，可以看到类别掩膜。
-
-https://bj.bcebos.com/paddlex/datasets/xiaoduxiong_ins_det.tar.gz
-
-https://paddlex.readthedocs.io/zh_CN/release-1.3/data/format/index.html
+  ![image](https://user-images.githubusercontent.com/29757093/184568545-eb9365b1-4c8f-400c-a7d8-876a97d07a6e.png)
+- 右键单击掩膜图层，点击`Split Stack`，标签由一个图层变为两个：
+  ![image](https://user-images.githubusercontent.com/29757093/184568622-30128ff2-9cd8-4963-940f-fa54f6077f17.png)
+  ![image](https://user-images.githubusercontent.com/29757093/184568735-51da72f7-64fc-43f1-9ac5-28f34511d460.png)
+- 在两个标签图层中任一个上右键单击，选择`Convert to Label`，将灰度标签转为伪彩色，方便查看：
+  ![image](https://user-images.githubusercontent.com/29757093/184569020-2c1ac1fa-3b0f-47da-9b0d-07936b827c53.png)
+  ![image](https://user-images.githubusercontent.com/29757093/184569082-ed76582b-abed-4b85-9290-a0e0a1228f25.png)
+- 两个图层中，layer 1为类别掩膜，layer 0为实例掩膜
+  ![image](https://user-images.githubusercontent.com/29757093/184569144-a1b11662-7615-4251-a7a7-6f665443d67e.png)
+  ![image](https://user-images.githubusercontent.com/29757093/184569158-302cc9ba-1669-4f18-8e91-effddd642778.png)

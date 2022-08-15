@@ -235,6 +235,7 @@ COCO 文件的格式如下：
     "images": [image],
     "annotations": [annotation],
     "licenses": [license],
+    "categories": [category],
 }
 
 image{
@@ -248,7 +249,6 @@ image{
     "date_captured": datetime,
 }
 
-
 annotation{
     "id": int,
     "image_id": int,
@@ -259,14 +259,12 @@ annotation{
     "iscrowd": 0 or 1,
 }
 
-categories[
-{
+category{
 	"id": int,
 	"name": str,
 	"supercategory": str,
 	"color": str // this feature is specific to PP Label. It's not in the coco spec.
 }
-]
 ```
 
 #### 数据导入

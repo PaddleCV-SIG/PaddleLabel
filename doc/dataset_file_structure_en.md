@@ -329,8 +329,3 @@ The process of importing and exporting instance segmentation masks is similar to
 - Right click on layer 0, select "Convert to Label" to see instance mask
 ![image](https://user-images.githubusercontent.com/29757093/178112305-6a0e36d2-3cab-4265-a88d-9ee55044b97e.png)
 - Right click on layer 1, select "Convert to Label" to see category mask
-
-
-https://bj.bcebos.com/paddlex/datasets/xiaoduxiong_ins_det.tar.gz
-
-https://paddlex.readthedocs.io/zh_CN/release-1.3/data/format/index.html

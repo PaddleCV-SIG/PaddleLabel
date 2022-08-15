@@ -46,11 +46,11 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 
 **文档**
 
-* [安装说明](doc/install.md)
-* [图像分类标注](doc/classification.md)
-* [目标检测标注](doc/detection.md)
-* [语义分割标注](doc/semantic_segmentation.md)
-* [实例分割标注](doc/instance_segmentation.md)
+- [安装说明](doc/install.md)
+- [图像分类标注](doc/classification.md)
+- [目标检测标注](doc/detection.md)
+- [语义分割标注](doc/semantic_segmentation.md)
+- [实例分割标注](doc/instance_segmentation.md)
 
 **教程**
 
@@ -60,12 +60,12 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 - [如何使用 PaddleSeg 进行训练](doc/PPLabel_PaddleSeg.md)
 - [如何使用 PaddleX 进行训练](doc/PPLabel_PaddleX.md)
 
-**AI Studio链接**
+**AI Studio 链接**
 
 - [花朵分类](https://aistudio.baidu.com/aistudio/projectdetail/4337003)
 - [道路标志检测](https://aistudio.baidu.com/aistudio/projectdetail/4349280)
 - [图像分割](https://aistudio.baidu.com/aistudio/projectdetail/4353528)
-- [如何使用PaddleX进行训练](https://aistudio.baidu.com/aistudio/projectdetail/4383953)
+- [如何使用 PaddleX 进行训练](https://aistudio.baidu.com/aistudio/projectdetail/4383953)
 
 ## 社区贡献
 

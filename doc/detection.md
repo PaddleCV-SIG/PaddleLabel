@@ -103,7 +103,6 @@ image{
     "date_captured": datetime,
 }
 
-
 annotation{
     "id": int,
     "image_id": int,
@@ -113,7 +112,6 @@ annotation{
     "bbox": [x,y,width,height],
     "iscrowd": 0 or 1,
 }
-
 
 category{
 	"id": int,

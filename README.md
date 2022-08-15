@@ -1,1 +1,1 @@
-doc/README_cn.md
+doc/CN/README.md

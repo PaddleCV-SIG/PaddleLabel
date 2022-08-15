@@ -89,7 +89,7 @@ COCO 文件的格式如下：
     "images": [image],
     "annotations": [annotation],
     "licenses": [license],
-	"categories": [category],
+    "categories": [category],
 }
 
 image{

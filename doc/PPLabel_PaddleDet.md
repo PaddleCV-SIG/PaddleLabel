@@ -35,7 +35,7 @@ python setup.py install
 cd ./PaddleDection/dataset/
 mkdir roadsign_det_dataset
 cd ../../
-cp -r ./roadsign_det_dataset/* ./PaddleClas/dataset/roadsign_det_dataset
+cp -r ./roadsign_det_dataset/* ./PaddleDection/dataset/roadsign_det_dataset
 ```
 ### 2.3 修改配置文件
 该任务主要涉及6个配置文件，分别是:

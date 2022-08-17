@@ -40,6 +40,7 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 <div align="center">
 <img src="https://user-images.githubusercontent.com/35907364/184839654-7434cf57-9446-40b0-954a-6087fb0cfca5.jpg"  width = "200" />
 </div>
+
 ## 使用教程
 
 **文档**

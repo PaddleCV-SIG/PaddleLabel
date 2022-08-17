@@ -161,7 +161,9 @@ python PaddleSeg/predict.py \
 <img src="https://ai-studio-static-online.cdn.bcebos.com/f9efa53cf0334146a0963d6033c2cb84c3540525b565454199f2a859f86b501e" width="50%" height="50%">
 
 预测的结果`PaddleSeg/output/result`目录里面，如下图所示：
+
 <img src="https://ai-studio-static-online.cdn.bcebos.com/8d6dea0d5fa24912a58612839026b255652d7d3ccf0a40aaa5e6056750f8f75b" width="50%" height="50%">
+
 <img src="https://ai-studio-static-online.cdn.bcebos.com/6dfc7c24edda4a489b7f1629957be44be44d3b9c94d14becb88aa22e42a41d50" width="50%" height="50%">
 
 ## AI Studio 第三方教程推荐

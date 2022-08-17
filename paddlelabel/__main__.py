@@ -23,11 +23,11 @@ def parse_args():
         help="The port to use",
     )
     parser.add_argument(
-        "--quiet",
-        "-q",
+        "--verbose",
+        "-v",
         default=False,
         action="store_true",
-        help="Run quietly, when set, cmd will only output error",
+        help="Output more log in command line, if not set, cmd will only output error",
     )
     parser.add_argument(
         "--debug",
@@ -54,16 +54,15 @@ def run():
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
-    if args.quiet:
-        logging.getLogger("werkzeug").setLevel(logging.ERROR)
-        logging.getLogger("PaddleLabel").setLevel(logging.ERROR)
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+    logging.getLogger("PaddleLabel").setLevel(logging.ERROR)
 
-    if args.debug:
+    if args.debug or args.verbose:
         logging.getLogger("werkzeug").setLevel(logging.INFO)
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
 
     logger.info("App starting")
-
+    print(f"PaddleLabel is running at http://localhost:{args.port}")
     connexion_app.run(host=host, port=args.port, debug=args.debug)
 
 

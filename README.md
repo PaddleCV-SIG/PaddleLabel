@@ -23,7 +23,7 @@
 PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。它涵盖分类、检测、分割三种常见的计算机视觉任务的标注能力，具有手动标注和交互式标注相结合的能力。用户可以使用 PaddleLabel 方便快捷的标注自定义数据集并将导出数据用于飞桨提供的其他套件的训练预测流程中。
 整个 PaddleLabel 包括三部分，本项目包含 PaddleLabel 的后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于 PaddlePaddle 的自动和交互式标注的机器学习后端。
 
-![image](https://user-images.githubusercontent.com/29757093/182839020-6eacfcbe-eae6-477c-bfcb-48a5ae094754.png)
+<video src="https://user-images.githubusercontent.com/71769312/185095658-1443ffd0-fe7c-49b1-ac74-883c6f7d9268.mp4"></video>
 
 ## 特性
 

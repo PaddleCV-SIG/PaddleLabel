@@ -78,7 +78,7 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 
 ### 如何参与开源项目
 
-如果你有任何好的想法或发现了任何问题，欢迎参与到我们的开发和维护中。有关后端实现的详细信息，请参阅[开发者指南](doc/EN/developers_guide.md)。
+如果你有任何好的想法或发现了任何问题，欢迎参与到我们的开发和维护中。有关后端实现的详细信息，请参阅[开发者指南](doc/CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

@@ -12,9 +12,11 @@ pip uninstall -y paddlelabel
 pip uninstall -y paddlelabel
 pip uninstall -y paddlelabel
 
+rm -rf ~/.paddlelabel
+
 pip install --upgrade paddlelabel
 
-paddlelabel -q &
+paddlelabel  &
 
 cd ../PaddleLabel-Frontend/
 if [ "$1" = "" ]

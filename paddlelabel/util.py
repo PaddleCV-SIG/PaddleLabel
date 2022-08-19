@@ -37,7 +37,6 @@ def portInUse(port: int) -> bool:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     res = sock.connect_ex(("localhost", int(port)))
     sock.close()
-    print("+_+_+", res)
     return res == 0
 
 

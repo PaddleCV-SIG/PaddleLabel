@@ -57,7 +57,7 @@ def run():
     args = parse_args()
 
     # 1. ensuer port not in use
-    if not args.debug and portInUse(args.port):
+    if not args.debug and not args.verbose and portInUse(args.port):
         print(
             f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
         )

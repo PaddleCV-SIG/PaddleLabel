@@ -12,10 +12,10 @@ with open("requirements.txt", "r") as fin:
 setup(
     name="paddlelabel",
     version=open((HERE / "paddlelabel" / "version"), "r").read().strip(),
-    description="Web Based Multi Purpose Annotation",
+    description="Web Based Multi Purpose Annotation Software",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/PaddleCV-SIG/PP-Label",
+    url="https://github.com/PaddleCV-SIG/PaddleLabel",
     author="PaddleCV-SIG",
     author_email="me@linhan.email",
     license="Apache Software License",
@@ -24,7 +24,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
     ],
-    packages=find_packages(exclude=("test", "tool")),
+    packages=find_packages(exclude=("tool.*", "tool")),
     include_package_data=True,
     install_requires=REQUIRED_PACKAGES,
     entry_points={

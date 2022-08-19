@@ -1,6 +1,4 @@
 # build frontend and copy to backend folder
-echo "in build frontend"
-pwd
 echo "Building frontend"
 cd ../PaddleLabel-Frontend/
 npx browserslist@latest --update-db

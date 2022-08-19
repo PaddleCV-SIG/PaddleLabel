@@ -1217,6 +1217,20 @@ paths:
           in: query
           name: path
     parameters: []
+  '/debug/printid/{debug_id}':
+    parameters:
+      - schema:
+          type: string
+        name: debug_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+      operationId: printDebugId
 components:
   securitySchemes:
     jwt:

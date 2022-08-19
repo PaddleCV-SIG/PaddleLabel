@@ -34,8 +34,11 @@ def pyVerGt(version: str = "3.9.0") -> bool:
 def portInUse(port: int) -> bool:
     import socket
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex(("localhost", port)) == 0
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    res = sock.connect_ex(("localhost", int(port)))
+    sock.close()
+    print("+_+_+", res)
+    return res == 0
 
 
 class Resolver(connexion.resolver.RestyResolver):
@@ -109,6 +112,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/rpc/folders getFolders": "paddlelabel.api.rpc.file.get_folders",
             "/rpc/seg/polygon2points polygon2points": "paddlelabel.api.rpc.seg.polygon2points_str",
             "/rpc/seg/points2polygon points2polygon": "paddlelabel.api.rpc.seg.points2polygon_str",
+            "/debug/printid/{debug_id} printDebugId": "paddlelabel.api.rpc.debug.cmdOutputDebugId",
             "/version getVersion": "paddlelabel.api.rpc.monitor.get_version",
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
             "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",

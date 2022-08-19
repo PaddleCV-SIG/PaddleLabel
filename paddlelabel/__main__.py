@@ -1,6 +1,7 @@
 import os
 import argparse
 import logging
+import webbrowser
 
 from paddlelabel.serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
@@ -56,7 +57,7 @@ def run():
     args = parse_args()
 
     # 1. ensuer port not in use
-    if portInUse(args.port):
+    if not args.debug and portInUse(args.port):
         print(
             f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
         )
@@ -71,6 +72,7 @@ def run():
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"
 
+    # 4. configure logger and logging levels
     logger = logging.getLogger("PaddleLabel")
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
@@ -81,11 +83,20 @@ def run():
     logging.getLogger("werkzeug").setLevel(logging.ERROR)
     logging.getLogger("PaddleLabel").setLevel(logging.ERROR)
 
-    if args.debug or args.verbose:
+    if args.verbose:
         logging.getLogger("werkzeug").setLevel(logging.INFO)
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
 
+    if args.debug:
+        logging.getLogger("werkzeug").setLevel(logging.ERROR)
+        logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
+
     logger.info("App starting")
+
+    # 5. run
+    if not args.debug:
+        webbrowser.open(f"http://localhost:{args.port}")
+
     print(f"PaddleLabel is running at http://localhost:{args.port}")
     connexion_app.run(host=host, port=args.port, debug=args.debug)
 

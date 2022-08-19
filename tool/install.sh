@@ -10,7 +10,7 @@ exit_if_fail() {
 }
 
 echo "Running local install script"
-echo "Current conda env is: $CONDA_DEFAULT_ENV, python version is $(python --version)"
+echo "Current conda env is: $CONDA_DEFAULT_ENV, python version is $(python -c 'import platform; print(platform.python_version())')"
 
 if [ "$1" = "bf" ]
 then
@@ -20,7 +20,6 @@ then
     echo "Finished building frontend"
 else
     echo "Skip front end build"
-    sleep 2
 fi
 
 

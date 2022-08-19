@@ -1,7 +1,7 @@
 bash tool/install.sh
 if [ $? -eq 0 ]
 then
-    paddlelabel -q &
+    paddlelabel &
 
     cd ../PaddleLabel-Frontend/
     if [ "$1" = "" ]

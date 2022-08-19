@@ -1,5 +1,6 @@
 import string
 import random
+import platform
 
 import connexion
 
@@ -22,6 +23,19 @@ def camel2snake(string):
         else:
             new_string += c
     return new_string
+
+
+def pyVerGt(version: str = "3.9.0") -> bool:
+    pyVer = list(map(int, platform.python_version().split(".")))
+    version = list(map(int, version.split(".")))
+    return pyVer[1] >= version[1]
+
+
+def portInUse(port: int) -> bool:
+    import socket
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("localhost", port)) == 0
 
 
 class Resolver(connexion.resolver.RestyResolver):

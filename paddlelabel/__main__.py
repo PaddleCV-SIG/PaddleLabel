@@ -2,8 +2,9 @@ import os
 import argparse
 import logging
 
-from .serve import connexion_app
+from paddlelabel.serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
+from paddlelabel.util import pyVerGt, portInUse
 
 
 def parse_args():
@@ -13,7 +14,7 @@ def parse_args():
         "-l",
         default=False,
         action="store_true",
-        help="Whether to expose the service to lan",
+        help="Whether to expose PaddleLabel to lan",
     )
     parser.add_argument(
         "--port",
@@ -40,9 +41,32 @@ def parse_args():
     return parser.parse_args()
 
 
+pyVerWarning = """
+It's recommended to run PaddleLabel with Python>=3.9.0. Please consider creating a new virtual enviroment and run PaddleLabel with:
+
+conda create -y -n paddlelabel python=3.9
+conda activate paddlelabel
+pip install --upgrade paddlelabel
+paddlelabel
+
+"""
+
+
 def run():
     args = parse_args()
 
+    # 1. ensuer port not in use
+    if portInUse(args.port):
+        print(
+            f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
+        )
+        exit()
+
+    # 2. warn if low py version
+    if not pyVerGt():
+        print(pyVerWarning)
+
+    # 3. create sample datasets
     prep_samples()
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"

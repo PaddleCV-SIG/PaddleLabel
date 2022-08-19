@@ -1,8 +1,9 @@
 from datetime import datetime
+import platform
 
 from paddlelabel.config import db
-from paddlelabel.api.util import nncol
-from ..util import abort
+from paddlelabel.api.util import nncol, abort
+from paddlelabel.util import pyVerGt
 
 # TODO: nn string col cant be ""
 class BaseModel(db.Model):
@@ -48,9 +49,11 @@ class BaseModel(db.Model):
         many = kwargs.get("many", False)
         if "many" in kwargs.keys():
             del kwargs["many"]
-        for key in kwargs.keys():
-            if key not in cls._cols:
-                raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
+
+        if pyVerGt():  # skip check for py < 3.9
+            for key in kwargs.keys():
+                if key not in cls._cols:
+                    raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
 
         # TODO: none value
 

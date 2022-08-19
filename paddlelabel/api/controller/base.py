@@ -9,6 +9,7 @@ import marshmallow
 
 from paddlelabel.config import db
 from paddlelabel.api.util import parse_order_by
+from paddlelabel.util import pyVerGt
 
 # TODO: implement a search method
 def crud(Model, Schema, triggers=[]):
@@ -26,7 +27,7 @@ def crud(Model, Schema, triggers=[]):
         order = parse_order_by(Model, order_by)
 
         items = Model.query.order_by(order).all()
-        # print(items)
+
         if post_get_all is not None:
             post_get_all(items, db.session)
         return Schema(many=True).dump(items), 200
@@ -100,8 +101,9 @@ def crud(Model, Schema, triggers=[]):
             if k in Model._immutables:
                 # abort(403, f"{Model.__tablename__}.{k} doesn't allow edit")
                 del body[k]
-            if k not in Model._cols:
-                abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
+            if pyVerGt():
+                if k not in Model._cols:
+                    abort(404, f"{Model.__tablename__}.{k} doesn't have property {k}")
 
         if pre_put is not None:
             item, body = pre_put(item, body, db.session)

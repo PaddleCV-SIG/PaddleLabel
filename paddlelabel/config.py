@@ -18,7 +18,7 @@ db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')
 if not osp.exists(osp.dirname(db_path)):
     os.makedirs(osp.dirname(db_path))
 sqlite_url = f"sqlite:///{db_path}"
-print(f"Database url: {sqlite_url}")
+print(f"Database path: {sqlite_url}")
 
 connexion_app = connexion.App("PaddleLabel")
 app = connexion_app.app

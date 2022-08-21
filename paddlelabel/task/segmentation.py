@@ -304,7 +304,8 @@ class InstanceSegmentation(BaseTask):
         background_line = project._get_other_settings().get("background_line")
         if background_line is None or len(background_line) == 0:
             background_line = "background"
-        self.export_labels(export_dir, background_line, with_id=True)
+
+        self.export_labels(osp.join(export_dir, "labels.txt"), background_line, with_id=True)
 
     def coco_importer(
         self,
@@ -581,16 +582,4 @@ class SemanticSegmentation(InstanceSegmentation):
             annotation_ext=".png",
         )
         bg = project._get_other_settings().get("background_line", "background")
-        self.export_labels(export_dir, bg)
-
-
-# [INFO]base.347: = Adding label ['toy'] =
-# [1, 435, 486, 3]
-# [INFO]base.157: = JPEGImages/1.jpeg with 0 annotation(s) imported to set 1 =
-# [1, 569, 640, 3]
-# [INFO]base.157: = JPEGImages/2.jpeg with 0 annotation(s) imported to set 0 =
-# [1, 736, 1100, 3]
-# [INFO]base.157: = JPEGImages/3.jpeg with 0 annotation(s) imported to set 0 =
-# [1, 500, 500, 3]
-# [INFO]base.157: = JPEGImages/4.jpeg with 0 annotation(s) imported to set 2 =
-# 172.17.0.1 - - [09/Aug/2022 19:57:07] "POST /api/projects HTTP/1.1" 201 -
+        self.export_labels(osp.join(export_dir, "labels.txt"), bg)

@@ -162,6 +162,15 @@ class BaseTask:
         db.session.add(task)
 
     def label_id2name(self, label_id):
+        """Get label name by label.id
+        ATTENTION: label.id, not label.label_id
+
+        Args:
+            label_id (int): label.id
+
+        Returns:
+            str: label_name. None if not found
+        """
         for label in self.project.labels:
             if label.id == label_id:
                 return label.name
@@ -366,8 +375,7 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(self, export_dir: str, background_line: str = None, with_id: bool = False):
-        label_names_path = osp.join(export_dir, "labels.txt")
+    def export_labels(self, label_names_path: str, background_line: str = None, with_id: bool = False):
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)
         with open(label_names_path, "w") as f:

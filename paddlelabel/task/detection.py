@@ -156,9 +156,10 @@ class Detection(BaseTask):
 
             size = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
             height, width = size[0], size[1]
+            print(width, height)
             size = list(map(str, size))
             size[0], size[1] = size[1], size[0]
-            size = ",".join(size)
+            size = "1," + ",".join(size)
             ann_list = []
 
             if basename in label_dict.keys():
@@ -175,19 +176,58 @@ class Detection(BaseTask):
                     res[2] *= width
                     res[3] *= height
                     res = ",".join(map(str, res))
+
                     ann_list.append(
                         {
                             "label_name": self.label_id2name(int(ann[0]) + 1),
                             "result": res,
                             "type": "rectangle",
-                            "frontend_id": fid,
+                            "frontend_id": fid + 1,
                         }
                     )
+
             self.add_task([{"path": str(data_path), "size": size}], [ann_list])
         db.session.commit()
 
-    def yolo_exporter(self):
-        pass
+    def yolo_exporter(self, export_dir):
+        # 1. set params
+        project = self.project
+
+        export_data_dir = osp.join(export_dir, "JPEGImages")
+        export_label_dir = osp.join(export_dir, "Annotations")
+        create_dir(export_data_dir)
+        create_dir(export_label_dir)
+
+        self.export_labels(osp.join(export_dir, "classes.names"))
+
+        tasks = Task._get(project_id=project.project_id, many=True)
+        export_paths = []
+
+        for task in tasks:
+            data = task.datas[0]
+            data_path = osp.join(project.data_dir, data.path)
+            export_path = osp.join("JPEGImages", osp.basename(data.path))
+            copy(data_path, export_data_dir)
+
+            width, height = map(int, data.size.split(",")[1:3])
+            yolo_res = ""
+            print(width, height)
+            for ann in task.annotations:
+                r = [float(t) for t in ann.result.split(",")]
+                res = [0 for _ in range(4)]
+                res[0] = r[0] / width + 0.5
+                res[1] = r[1] / height + 0.5
+                res[2] = (r[2] - r[0]) / width
+                res[3] = (r[3] - r[1]) / height
+                res[0] += res[2] / 2
+                res[1] += res[3] / 2
+                yolo_res += f"{ann.label.id - 1} {' '.join(map(str, res))}\n"
+            with open(osp.join(export_dir, "Annotations", osp.basename(data.path).split(".")[0] + ".txt"), "w") as f:
+                print(yolo_res, file=f)
+
+            export_paths.append([export_path])
+
+        self.export_split(export_dir, tasks, export_paths, with_labels=False, annotation_ext=".txt")
 
     def coco_importer(
         self,
@@ -300,47 +340,6 @@ class Detection(BaseTask):
 
         db.session.commit()
 
-    def voc_importer(
-        self,
-        data_dir=None,
-        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-    ):
-        # 1. set params
-        project = self.project
-        base_dir = data_dir
-        allow_missing_image = data_dir is not None
-
-        if base_dir is None:
-            base_dir = project.data_dir
-        self.create_warning(base_dir)
-
-        # 2. get all data and label
-        data_paths = set(p for p in listdir(base_dir, filters=filters))
-        label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
-
-        # print("data_paths", data_paths)
-        # print("label_paths", label_paths)
-
-        for label_path in label_paths:
-            data, labels = parse_voc_label(osp.join(base_dir, label_path))
-            if not osp.exists(osp.join(base_dir, data["path"])):
-                if allow_missing_image:
-                    continue
-                else:
-                    raise RuntimeError(f"Image specified in {label_path} not found.")
-            self.add_task([data], [labels])
-            data_paths.remove(data["path"])
-
-        for data_path in data_paths:
-            img = cv2.imread(osp.join(base_dir, data_path))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
-            self.add_task([{"path": data_path, "size": size}])
-
-        db.session.commit()
-
     def coco_exporter(self, export_dir):
         # 1. set params
         project = self.project
@@ -415,6 +414,47 @@ class Detection(BaseTask):
             with open(osp.join(export_dir, fname), "w") as outf:
                 print(json.dumps(outcoco.dataset), file=outf)
 
+    def voc_importer(
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    ):
+        # 1. set params
+        project = self.project
+        base_dir = data_dir
+        allow_missing_image = data_dir is not None
+
+        if base_dir is None:
+            base_dir = project.data_dir
+        self.create_warning(base_dir)
+
+        # 2. get all data and label
+        data_paths = set(p for p in listdir(base_dir, filters=filters))
+        label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
+
+        # print("data_paths", data_paths)
+        # print("label_paths", label_paths)
+
+        for label_path in label_paths:
+            data, labels = parse_voc_label(osp.join(base_dir, label_path))
+            if not osp.exists(osp.join(base_dir, data["path"])):
+                if allow_missing_image:
+                    continue
+                else:
+                    raise RuntimeError(f"Image specified in {label_path} not found.")
+            self.add_task([data], [labels])
+            data_paths.remove(data["path"])
+
+        for data_path in data_paths:
+            img = cv2.imread(osp.join(base_dir, data_path))
+            s = img.shape
+            size = [1, s[1], s[0], s[2]]
+            size = [str(s) for s in size]
+            size = ",".join(size)
+            self.add_task([{"path": data_path, "size": size}])
+
+        db.session.commit()
+
     def voc_exporter(self, export_dir):
         # 1. set params
         project = self.project
@@ -424,7 +464,7 @@ class Detection(BaseTask):
         create_dir(export_data_dir)
         create_dir(export_label_dir)
 
-        self.export_labels(export_dir)
+        self.export_labels(osp.join(export_dir, "labels.txt"))
 
         tasks = Task._get(project_id=project.project_id, many=True)
         export_paths = []
@@ -439,7 +479,7 @@ class Detection(BaseTask):
             width, height = data.size.split(",")[1:3]
             with open(osp.join(export_label_dir, f"{id}.xml"), "w") as f:
                 print(
-                    create_voc_label(export_path, width, height, task.annotations),
+                    create_voc_label(export_path, width, height, data.annotations),
                     file=f,
                 )
             export_paths.append([export_path])

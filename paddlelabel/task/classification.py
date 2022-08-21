@@ -98,7 +98,7 @@ class Classification(BaseTask):
         have_no_annotation = False
 
         # 1. write labels.txt
-        labels = self.export_labels(export_dir)
+        labels = self.export_labels(osp.join(export_dir, "labels.txt"))
 
         # 2. create label dirs
         for label in labels:
@@ -135,7 +135,7 @@ class Classification(BaseTask):
         have_no_annotation = False
 
         # 2. write labels.txt
-        self.export_labels(export_dir)
+        self.export_labels(osp.join(export_dir, "labels.txt"))
 
         # 3. move all images to image folder
         tasks = Task._get(project_id=project.project_id, many=True)

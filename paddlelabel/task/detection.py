@@ -1,12 +1,13 @@
 import os.path as osp
 import json
 from copy import deepcopy
+from pathlib import Path
 
 from pycocotoolse.coco import COCO
 import cv2
 
 from paddlelabel.api import Task, Annotation, Label
-from paddlelabel.task.util import create_dir, listdir, copy, image_extensions
+from paddlelabel.task.util import create_dir, listdir, copy, image_extensions, ensure_unique_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.config import db
 from paddlelabel.api.util import abort
@@ -126,13 +127,67 @@ def create_voc_label(filepath, width, height, annotations):
 class Detection(BaseTask):
     def __init__(self, project, data_dir=None, is_export=False):
         super(Detection, self).__init__(project, data_dir=data_dir, is_export=is_export)
-        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer}
-        self.exporters = {
-            "coco": self.coco_exporter,
-            "voc": self.voc_exporter,
-        }
+        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer, "yolo": self.yolo_importer}
+        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter, "yolo": self.yolo_exporter}
         self.default_importer = self.voc_importer
         self.default_exporter = self.voc_exporter  # default to voc
+
+    def yolo_importer(self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}):
+
+        # 1. set params
+        project = self.project
+        if data_dir is None:
+            data_dir = Path(project.data_dir)
+
+        # 2. get all data and labels, ensure all data basename unique
+        data_paths = listdir(data_dir, filters=filters)
+        label_paths = listdir(data_dir, filters={"exclude_prefix": [".", "labels.txt"], "include_postfix": [".txt"]})
+        label_paths = [Path(p) for p in label_paths]
+
+        ensure_unique_base_name([data_dir / Path(p) for p in data_paths])
+        data_paths = map(Path, listdir(data_dir, filters=filters))
+
+        label_dict = {}
+        for label_path in label_paths:
+            label_dict[label_path.name.split(".")[0]] = label_path
+
+        for data_path in data_paths:
+            basename = data_path.name.split(".")[0]
+
+            size = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
+            height, width = size[0], size[1]
+            size = list(map(str, size))
+            size[0], size[1] = size[1], size[0]
+            size = ",".join(size)
+            ann_list = []
+
+            if basename in label_dict.keys():
+                anns = (data_dir / label_dict[basename]).read_text().strip().split("\n")
+                anns = [a.strip().split(" ") for a in anns]
+                anns = [[float(num) for num in ann] for ann in anns if ann != ""]
+
+                for fid, ann in enumerate(anns):
+                    xmid, ymid, xlen, ylen = ann[1:]
+                    res = [xmid - xlen / 2, ymid - ylen / 2, xmid + xlen / 2, ymid + ylen / 2]
+                    res = [r - 0.5 for r in res]
+                    res[0] *= width
+                    res[1] *= height
+                    res[2] *= width
+                    res[3] *= height
+                    res = ",".join(map(str, res))
+                    ann_list.append(
+                        {
+                            "label_name": self.label_id2name(int(ann[0]) + 1),
+                            "result": res,
+                            "type": "rectangle",
+                            "frontend_id": fid,
+                        }
+                    )
+            self.add_task([{"path": str(data_path), "size": size}], [ann_list])
+        db.session.commit()
+
+    def yolo_exporter(self):
+        pass
 
     def coco_importer(
         self,

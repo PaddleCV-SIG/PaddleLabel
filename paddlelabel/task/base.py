@@ -38,6 +38,8 @@ class BaseTask:
                 db.session.commit()
                 curr_project = project
         self.project = curr_project
+        self.project.data_dir = self.project.data_dir.strip()
+        db.session.commit()
 
         if data_dir is None:
             data_dir = self.project.data_dir
@@ -78,7 +80,8 @@ class BaseTask:
         Parameters
         ----------
         datas : list. each item is a dict, path is required, specifying full or relative path to project.data_dir. Others are optional
-            [{"path": 'path1'}, {"path" : 'path2', "size": [1024, 768, 3]}, ...]
+            [{"path": 'path1'}, {"path" : 'path2', "size": [1, 1024, 768, 3]}, ...]
+            size is in format [slice count (1 for images), width, height, channel]
         annotations : list
             [
                 [ // labels for path1
@@ -301,20 +304,21 @@ class BaseTask:
         return label
 
     def import_labels(self, delimiter=" ", ignore_first=False):
+
         # 1. set params
         label_names_path = None
         project = self.project
-        if project.other_settings is not None:
-            if isinstance(project.other_settings, str):
-                other_settings = json.loads(project.other_settings)
-            else:
-                other_settings = project.other_settings
-            label_names_path = other_settings.get("label_names_path", None)
-
+        # 1.1 if label_names_path exist in project.other_settings, use that
+        label_names_path = project._get_other_settings().get("label_names_path", None)
+        # 1.2 if not, try: project.data_dir / labels.txt
         if label_names_path is None:
             label_names_path = osp.join(project.data_dir, "labels.txt")
-
-        if label_names_path is None or not osp.exists(label_names_path):
+        # 1.2 if labels.txt doesnt exist, try: project.data_dir / classes.names. this is intended for yolo format
+        if not osp.exists(label_names_path):
+            if osp.exists(osp.join(project.data_dir, "classes.names")):
+                label_names_path = osp.join(project.data_dir, "classes.names")
+        # 1.3 if label file doesn't exist, there's nothing to import
+        if not osp.exists(label_names_path):
             return
 
         # 2. import labels

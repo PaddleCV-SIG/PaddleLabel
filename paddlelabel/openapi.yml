@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  title: PP-Label API Spec
+  title: PaddleLabel API Specs
   version: 0.1.0
   description: Back end APIs for PP-Label
   contact:
-    name: PP-Label Team
+    name: PaddleLabel Team
     url: 'https://github.com/PaddleCV-SIG/PP-Label/issues'
     email: me@linhan.email
 servers:

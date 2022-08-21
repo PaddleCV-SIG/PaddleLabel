@@ -1,11 +1,44 @@
 import os
 import os.path as osp
 import shutil
+from pathlib import Path
 
 
 # TODO: switch to pathlib
 
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
+
+def ensure_unique_base_name(paths):
+    """Ensure all paths have unique base name, will change file name on disk
+
+    Args:
+        paths (str): Full paths
+    """
+
+    all_names = set()
+    curr_names = set()
+    changed_list = []
+    paths = [Path(p) for p in paths]
+
+    for path in paths:
+        all_names.add(path.name.split(".")[0])
+
+    for path in paths:
+        basename = path.name.split(".")[0]
+        if basename in curr_names:  # duplicate
+            idx = 1
+            while f"{basename}-{idx}" in all_names:
+                idx += 1
+            new_path = path.parent / Path(f"{basename}-{idx}{path.name[len(basename):]}")
+            path.rename(new_path)
+            all_names.add(new_path.name)
+            curr_names.add(new_path.name)
+            changed_list.append((path, new_path))
+        else:
+            curr_names.add(basename)
+
+    return changed_list
 
 
 def create_dir(path):

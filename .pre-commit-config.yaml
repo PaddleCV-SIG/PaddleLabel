@@ -2,6 +2,8 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
+    -   id: no-commit-to-branch
+        args: [--branch, stable]
     -   id: check-added-large-files
         args: [--maxkb=16]
     -   id: check-case-conflict

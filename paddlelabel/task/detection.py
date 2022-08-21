@@ -428,10 +428,10 @@ class Detection(BaseTask):
         # 1. set params
         project = self.project
         base_dir = data_dir
-        allow_missing_image = data_dir is not None
-
         if base_dir is None:
             base_dir = project.data_dir
+        allow_missing_image = data_dir is not None
+
         self.create_warning(base_dir)
 
         # 2. get all data and label
@@ -440,6 +440,13 @@ class Detection(BaseTask):
 
         for label_path in label_paths:
             data, labels = parse_voc_label(osp.join(base_dir, label_path))
+            if not osp.exists(osp.join(base_dir, data["path"])):
+                err_msg = f"Image specified in label xml file {label_path} not found."
+                if allow_missing_image:
+                    logging.error(err_msg)
+                else:
+                    raise RuntimeError(err_msg)
+
             img = cv2.imread(osp.join(base_dir, data["path"]))
             s = img.shape
             size = [1, s[1], s[0], s[2]]
@@ -448,11 +455,6 @@ class Detection(BaseTask):
             if size != data["size"]:
                 log.error(f"Image size read from disk {size} isn't the same with parsed from pascal xml {data['size']}")
                 data["size"] = size
-            if not osp.exists(osp.join(base_dir, data["path"])):
-                if allow_missing_image:
-                    continue
-                else:
-                    raise RuntimeError(f"Image specified in {label_path} not found.")
             self.add_task([data], [labels])
             data_paths.remove(data["path"])
 

@@ -2,6 +2,7 @@ import os.path as osp
 import json
 from copy import deepcopy
 from pathlib import Path
+import logging
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -11,6 +12,10 @@ from paddlelabel.task.util import create_dir, listdir, copy, image_extensions, e
 from paddlelabel.task.base import BaseTask
 from paddlelabel.config import db
 from paddlelabel.api.util import abort
+
+
+log = logging.getLogger("PaddleLabel")
+
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -156,7 +161,6 @@ class Detection(BaseTask):
 
             size = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
             height, width = size[0], size[1]
-            print(width, height)
             size = list(map(str, size))
             size[0], size[1] = size[1], size[0]
             size = "1," + ",".join(size)
@@ -210,8 +214,8 @@ class Detection(BaseTask):
             copy(data_path, export_data_dir)
 
             width, height = map(int, data.size.split(",")[1:3])
-            yolo_res = ""
             print(width, height)
+            yolo_res = ""
             for ann in task.annotations:
                 r = [float(t) for t in ann.result.split(",")]
                 res = [0 for _ in range(4)]
@@ -222,8 +226,11 @@ class Detection(BaseTask):
                 res[0] += res[2] / 2
                 res[1] += res[3] / 2
                 yolo_res += f"{ann.label.id - 1} {' '.join(map(str, res))}\n"
-            with open(osp.join(export_dir, "Annotations", osp.basename(data.path).split(".")[0] + ".txt"), "w") as f:
-                print(yolo_res, file=f)
+            if yolo_res != "":
+                with open(
+                    osp.join(export_dir, "Annotations", osp.basename(data.path).split(".")[0] + ".txt"), "w"
+                ) as f:
+                    print(yolo_res, file=f, end="")
 
             export_paths.append([export_path])
 
@@ -373,7 +380,6 @@ class Detection(BaseTask):
         for ann in annotations:
             r = ann.result.split(",")
             r = [float(t) for t in r]
-            # print(coco.imgs[ann.data_id])
             width, height = (
                 coco.imgs[ann.data_id]["width"],
                 coco.imgs[ann.data_id]["height"],
@@ -432,11 +438,16 @@ class Detection(BaseTask):
         data_paths = set(p for p in listdir(base_dir, filters=filters))
         label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
 
-        # print("data_paths", data_paths)
-        # print("label_paths", label_paths)
-
         for label_path in label_paths:
             data, labels = parse_voc_label(osp.join(base_dir, label_path))
+            img = cv2.imread(osp.join(base_dir, data["path"]))
+            s = img.shape
+            size = [1, s[1], s[0], s[2]]
+            size = [str(s) for s in size]
+            size = ",".join(size)
+            if size != data["size"]:
+                log.error(f"Image size read from disk {size} isn't the same with parsed from pascal xml {data['size']}")
+                data["size"] = size
             if not osp.exists(osp.join(base_dir, data["path"])):
                 if allow_missing_image:
                     continue

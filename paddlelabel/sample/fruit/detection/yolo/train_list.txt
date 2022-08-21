@@ -1,0 +1,3 @@
+JPEGImages/2.jpeg Annotations/2.txt
+JPEGImages/4.jpeg Annotations/4.txt
+JPEGImages/5.jpeg Annotations/5.txt

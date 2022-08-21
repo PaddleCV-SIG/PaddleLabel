@@ -3,7 +3,7 @@ import argparse
 
 from tqdm import tqdm
 
-from util.file import listdir, create_dir, copy
+from ..file import listdir, create_dir, copy
 
 parser = argparse.ArgumentParser(
     description="Move single class classification images to class name folders based on xx_list.txt and labels.txt\n Note: only support consecutive label id"

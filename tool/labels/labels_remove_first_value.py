@@ -1,6 +1,6 @@
 import argparse
-import os.path as osp
 import os
+import os.path as osp
 
 parser = argparse.ArgumentParser(description="Remove first value from labels.txt")
 parser.add_argument(
@@ -14,7 +14,7 @@ parser.add_argument(
     help="Path to output processed labels.txt. Use absolute path to be safe.",
 )
 parser.add_argument(
-    "-id",
+    "-inpd",
     "--input_delimiter",
     default=" ",
     type=str,
@@ -22,7 +22,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-od",
+    "-outd",
     "--output_delimiter",
     default=" ",
     type=str,

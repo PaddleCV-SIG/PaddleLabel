@@ -22,7 +22,9 @@ def parse_voc_label(label_path):
     from xml.dom import minidom
 
     def data(elements):
-        return elements[0].firstChild.data
+        if elements[0].firstChild is not None:
+            return elements[0].firstChild.data
+        return ""
 
     file = minidom.parse(label_path)
 
@@ -441,20 +443,32 @@ class Detection(BaseTask):
         for label_path in label_paths:
             data, labels = parse_voc_label(osp.join(base_dir, label_path))
             if not osp.exists(osp.join(base_dir, data["path"])):
-                err_msg = f"Image specified in label xml file {label_path} not found."
+                err_msg = f"Image specified in label xml file {label_path} not found at {data['path']}."
                 if allow_missing_image:
-                    logging.error(err_msg)
+                    log.error(err_msg)
                 else:
                     raise RuntimeError(err_msg)
 
             img = cv2.imread(osp.join(base_dir, data["path"]))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
-            if size != data["size"]:
-                log.error(f"Image size read from disk {size} isn't the same with parsed from pascal xml {data['size']}")
+            if img is not None:
+                s = img.shape
+                size = [1, s[1], s[0], s[2]]
+                size = [str(s) for s in size]
+                size = ",".join(size)
+            else:
+                log.error(f"Load image {data['path']} failed")
+                size = "0,0,0"
+
+            def wxh(size):
+                return "x".join(size.split(",")[1:3])
+
+            if wxh(size) != wxh(data["size"]):
+                log.error(
+                    f"Image size got by reading image: {wxh(size)} isn't the same as parsed from pascal xml({label_path}): {wxh(data['size'])}"
+                )
+                # log.error(f"{size} vs {data['size']}")
                 data["size"] = size
+
             self.add_task([data], [labels])
             data_paths.remove(data["path"])
 

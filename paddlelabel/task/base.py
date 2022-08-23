@@ -357,11 +357,18 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                log.info(f"= Adding label {label} =")
+                log.info(f"Adding label {label}")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]
                 label = [None if v == "-" else v for v in label]
+                if len(label) > 1 and label[1] is not None:
+                    try:
+                        int(label[1])
+                    except ValueError:
+                        raise RuntimeError(
+                            f"Got '{label[1]}' as label id which should be a number. PaddleLabel expects label name to be written before label id. e.g: 'Cat 1' is accepted, while '1 Cat' isn't"
+                        )
                 self.add_label(*label, comment=comment)
         db.session.commit()
 

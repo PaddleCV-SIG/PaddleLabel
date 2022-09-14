@@ -88,7 +88,7 @@ def run():
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
 
     if args.debug:
-        logging.getLogger("werkzeug").setLevel(logging.ERROR)
+        logging.getLogger("werkzeug").setLevel(logging.INFO)
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
 
     logger.info("App starting")

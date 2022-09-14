@@ -1,4 +1,5 @@
 import os.path as osp
+from importlib import resources
 
 from flask_cors import CORS
 import flask
@@ -26,10 +27,13 @@ if not osp.exists(db_path):
     from paddlelabel.config import basedir
     from paddlelabel.api.controller.setting import init_site_settings
 
-    init_site_settings(osp.join(basedir, "default_setting.json"))
+    init_site_settings(resources.path("paddlelabel", "default_setting.json"))
 
 
+# yml_path = resources.path("paddlelabel", "openapi.yml")
+# print(dir(yml_path))
 connexion_app.add_api(
+    # str(yml_path),
     osp.join(curr_dir, "openapi.yml"),
     resolver=Resolver("paddlelabel.api", collection_endpoint_name="get_all"),
     # request with undefined param returns error, dont enforce body

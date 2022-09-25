@@ -1,16 +1,21 @@
-opencv-python
-numpy
-# flask
-connexion[swagger-ui]
+# Web related
+connexion
 flask_sqlalchemy # to be removed
 flask_marshmallow # to be removed
-marshmallow_sqlalchemy
-# sqlalchemy>=
-uuid
-jwt
-werkzeug
 flask_cors # to be removed
+marshmallow_sqlalchemy
+
+# Task related
+opencv-python
+numpy
 pycocotoolse
 tqdm
 tifffile
-imagecodecs
+
+
+# connexion[swagger-ui]
+
+# imagecodecs
+# uuid
+# jwt
+# werkzeug

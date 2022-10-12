@@ -1,9 +1,10 @@
 # Web related
-connexion
-flask_sqlalchemy # to be removed
-flask_marshmallow # to be removed
-flask_cors # to be removed
+connexion[swagger-ui]
 marshmallow_sqlalchemy
+## currently needed, but will be removed in a future version
+flask_sqlalchemy==2.5.1 
+flask_marshmallow 
+flask_cors
 
 # Task related
 opencv-python

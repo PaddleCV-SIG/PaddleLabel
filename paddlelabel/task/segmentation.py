@@ -180,6 +180,8 @@ def parse_instance_mask(annotation_path, labels, image_path=None):
     mask = tif.imread(annotation_path)
     if image_path is not None:
         img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+        if img is None:
+            raise RuntimeError(f"Read image {annotation_path} failed.")
         # TODO: remove two paths' common prefix
         if img.shape[:3] != mask.shape[1:]:
             abort(

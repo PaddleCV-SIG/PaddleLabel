@@ -2,7 +2,7 @@ opencv-python
 numpy
 # flask
 connexion[swagger-ui]
-flask_sqlalchemy # to be removed
+flask_sqlalchemy==2.5.1 # to be removed
 flask_marshmallow # to be removed
 marshmallow_sqlalchemy
 # sqlalchemy>=

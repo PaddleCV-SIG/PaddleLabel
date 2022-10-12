@@ -22,7 +22,6 @@ paths:
       tags:
         - Project
       summary: 'Read all projects, sort by last modify date'
-      description: ''
       responses:
         '200':
           description: success
@@ -1241,33 +1240,28 @@ components:
   schemas:
     Project:
       type: object
-      description: Contains project details and settings
-      x-examples:
-        Classification_Example:
-          project_id: null
-          name: Classification Example
-          description: Example Project Descreption
-          task_category: 1
-          data_dir: ~/paddlelabel/project_name/data
-          label_dir: ~/paddlelabel/project_name/label
-          label_config: '[''class1'', ''class2'', ''class3'']'
-          created: null
-          modified: null
-          other_settings: '{''multiclass_classification'':true}'
+      x-examples: {}
       additionalProperties: false
       title: ''
+      description: 项目基本信息和设置
       properties:
         project_id:
           type: integer
+          minimum: 1
+          format: int32
+          example: 3
+          description: project表的主键，从1开始
           readOnly: true
         name:
           type: string
-          description: Project name
+          description: 项目名字
           maxLength: 128
+          example: A classification project
         description:
           type: string
           description: Optional project description
           maxLength: 256
+          example: This project is very cool
         task_category_id:
           type: integer
           description: 'Top level annotation task category, see TODO for int <-> category map'
@@ -1304,12 +1298,33 @@ components:
           properties:
             mlBackendUrl:
               type: string
+              description: 'ML后端地址，一般是 http://localhost:1234'
+              example: 'http://localhost:1234'
             perviousModel:
               type: string
+              deprecated: true
             models:
               type: object
+              deprecated: true
             segMaskType:
               type: string
+              deprecated: true
+            modelName:
+              type: string
+              description: 正在使用的模型名称
+              example: PicoDet
+            label_mapping:
+              type: array
+              description: 标签对应关系
+              items:
+                type: object
+                properties:
+                  model:
+                    type: string
+                    example: a coco category
+                  project:
+                    type: string
+                    example: a user defined category
     Task:
       title: Task
       type: object
@@ -1376,12 +1391,14 @@ components:
           type: integer
         task_id:
           type: integer
+          deprecated: true
         label_id:
           type: integer
         label:
           $ref: '#/components/schemas/Label'
         project_id:
           type: integer
+          deprecated: true
         data_id:
           type: integer
         result:
@@ -1394,8 +1411,13 @@ components:
         modified:
           type: string
           readOnly: true
+        predicted_by:
+          type: string
+          description: 推理出这个结果的模型的名字
+          example: PicoDet
       required:
         - data_id
+      x-examples: {}
     Label:
       title: Label
       type: object
@@ -1464,16 +1486,6 @@ components:
           type: string
         role_id:
           type: integer
-    ProjectOtherSettings:
-      title: ProjectOtherSettings
-      type: object
-      properties:
-        label_names_path:
-          type: string
-        split_file_paths:
-          type: array
-          items:
-            type: string
   parameters:
     request_id:
       name: request_id

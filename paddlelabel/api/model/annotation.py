@@ -7,7 +7,7 @@ from .base import BaseModel
 
 class Annotation(BaseModel):
     __tablename__ = "annotation"
-    __table_args__ = {"comment": "Contains all the annotations"}
+    __table_args__ = {"comment": "Contains all annotations"}
     annotation_id = nncol(db.Integer(), primary_key=True)
     frontend_id = db.Column(db.Integer())  # unique id within data, start from 1
     result = db.Column(db.String())

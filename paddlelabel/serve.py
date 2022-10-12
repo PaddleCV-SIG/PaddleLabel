@@ -1,5 +1,6 @@
 import os.path as osp
 from importlib import resources
+from pathlib import Path
 
 from flask_cors import CORS
 import flask
@@ -12,6 +13,7 @@ import paddlelabel.task
 
 
 curr_dir = osp.abspath(osp.dirname(__file__))
+HERE = Path(__file__).parent.absolute()
 
 
 @connexion_app.app.route("/")
@@ -27,7 +29,8 @@ if not osp.exists(db_path):
     from paddlelabel.config import basedir
     from paddlelabel.api.controller.setting import init_site_settings
 
-    init_site_settings(resources.path("paddlelabel", "default_setting.json"))
+    # init_site_settings(resources.path("paddlelabel", "default_setting.json"))
+    init_site_settings(HERE / "default_setting.json")
 
 
 # yml_path = resources.path("paddlelabel", "openapi.yml")

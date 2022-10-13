@@ -7,7 +7,6 @@
 # example:
 #   bash tool/cypress.sh dbf all local
 
-
 # colorful print helper
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -30,7 +29,8 @@ install_and_test() {
     fi
 
     python tool/kill_by_port.py
-    sleep 3
+    # rm -rf ~/.paddlelabel
+    sleep 30
     paddlelabel -d &
 
     cd ../PaddleLabel-Frontend/
@@ -42,13 +42,15 @@ install_and_test() {
         echo -e "\nRunning in firefox"
         # touch cypress/log/$py_version-firefox.log
         # code cypress/log/$py_version-firefox.log
-        time npx cypress run -b firefox >cypress/log/$py_version-firefox.log
+        echo "cypress/log/${dt}_$py_version-firefox.log"
+
+        time npx cypress run -b firefox >cypress/log/${dt}_$py_version-firefox.log
         print "Firefox test finished with code $?" $?
 
         echo -e "\nRunning in chromium"
         # touch cypress/log/$py_version-chromium.log
         # code cypress/log/$py_version-chromium.log
-        time npx cypress run -b chromium >cypress/log/$py_version-chromium.log
+        time npx cypress run -b chromium >cypress/log/${dt}_$py_version-chromium.log
         print "Chromium test finished with code $?" $?
 
     else
@@ -59,6 +61,7 @@ install_and_test() {
 
 clear
 echo -e "\n"
+dt=$(python -c 'import datetime; print(str(datetime.datetime.now()))')
 
 if [ "$2" = "all" ]; then
     echo "Testing on multiple py versions"
@@ -67,14 +70,14 @@ if [ "$2" = "all" ]; then
     source ~/miniconda3/etc/profile.d/conda.sh
 
     [ -d ../PaddleLabel-Frontend/cypress/log/ ] || mkdir ../PaddleLabel-Frontend/cypress/log/
-    rm ../PaddleLabel-Frontend/cypress/log/*
+    # rm ../PaddleLabel-Frontend/cypress/log/*
     if [ "$1" = 'bf' ]; then
         echo "Building frontend silently"
         bash tool/build_frontend.sh >/dev/null
     fi
 
-    # for ver in 6 7 8 9 10; do
-    for ver in 10; do
+    for ver in 6 7 8 9 10; do
+        # for ver in 10; do
         echo "Testing in py 3.$ver"
         conda env remove -n test
         conda create -y -n test python=3.$ver >/dev/null

@@ -291,7 +291,12 @@ class InstanceSegmentation(BaseTask):
             height, width = map(int, data.size.split(",")[1:3])
 
             mask = draw_mask(data, mask_type="instance")
-            tif.imwrite(export_label_path, mask, compression="zlib")
+            try:
+                # low version tifffile doen't have compression setting
+                tif.imwrite(export_label_path, mask, compression="zlib")
+            except TypeError:
+                tif.imwrite(export_label_path, mask)
+            
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])

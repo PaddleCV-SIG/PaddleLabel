@@ -1,9 +1,9 @@
 # Web related
 connexion[swagger-ui]
 marshmallow_sqlalchemy
-## currently needed, but will be removed in a future version
-flask_sqlalchemy==2.5.1 
-flask_marshmallow 
+## currently required, but will be removed in a future version
+flask_sqlalchemy==2.5.1
+flask_marshmallow
 flask_cors
 
 # Task related
@@ -12,9 +12,6 @@ numpy
 pycocotoolse
 tqdm
 tifffile
-
-
-# connexion[swagger-ui]
 
 # imagecodecs
 # uuid

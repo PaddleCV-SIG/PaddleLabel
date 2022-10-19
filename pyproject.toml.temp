@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["readme"]
+version = "0.0.30"
+
+name="paddlelabel",
+version=open((HERE / "paddlelabel" / "version"), "r").read().strip(),
+authors = [{ name="PaddleCV-SIG", email="me@linhan.email" }]
+description="Web Based Multi Purpose Annotation Software",
+long_description=README,
+long_description_content_type="text/markdown",
+url="https://github.com/PaddleCV-SIG/PaddleLabel",
+author="PaddleCV-SIG",
+author_email="me@linhan.email",
+license = { file="LICENSE" }
+classifiers=[
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+],
+requires-python = ">=3.6"
+packages=find_packages(exclude=("tool.*", "tool")),
+include_package_data=True,
+install_requires=REQUIRED_PACKAGES,
+entry_points={
+    "console_scripts": [
+        "paddlelabel=paddlelabel.__main__:run",
+        "pdlabel=paddlelabel.__main__:run",
+    ]
+},
+
+[project]
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''

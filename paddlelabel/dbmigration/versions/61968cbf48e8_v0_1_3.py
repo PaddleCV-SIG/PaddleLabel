@@ -1,4 +1,4 @@
-"""v0.1.3
+"""v0.2.0
 
 Revision ID: 61968cbf48e8
 Revises: 23c1bf9b7f48

@@ -48,36 +48,44 @@ def crud(Model, Schema, triggers=[]):
     ):
         schema = Schema()
         try:
-            new_item = schema.load(connexion.request.json)
+            if isinstance(connexion.request.json, list):
+                new_items = schema.load(connexion.request.json, many=True)
+            else:
+                new_items = [schema.load(connexion.request.json)]
         except marshmallow.exceptions.ValidationError as e:
             for field, msgs in e.messages.items():
                 if "Missing data for required field." in msgs:
-                    # TODO: change code
+                    # TODO: change return code
                     abort(
                         500,
                         f"Marshmallow catch: Missing data for required field: {field}",
                     )
             abort(500, e.messages)
-        if pre_add is not None:
-            new_item = pre_add(new_item, db.session)
-        try:
-            db.session.add(new_item)
-            db.session.commit()
-        except sqlalchemy.exc.IntegrityError as e:
-            msg = str(e.orig)
-            if msg.startswith("UNIQUE constraint failed"):
-                col = msg.split(":")[1].strip()
-                abort(
-                    409,
-                    f"{Model.__tablename__} doesn't allow duplicate {col}.",
-                )
-            else:
-                abort(500, msg)
 
-        if post_add is not None:
-            with db.session.no_autoflush:
-                post_add(new_item, db.session)
-        return schema.dump(new_item), 201
+        for new_item in new_items:
+            if pre_add is not None:
+                new_item = pre_add(new_item, db.session)
+            try:
+                db.session.add(new_item)
+                db.session.commit()
+            except sqlalchemy.exc.IntegrityError as e:
+                msg = str(e.orig)
+                if msg.startswith("UNIQUE constraint failed"):
+                    col = msg.split(":")[1].strip()
+                    abort(
+                        409,
+                        f"{Model.__tablename__} doesn't allow duplicate {col}.",
+                    )
+                else:
+                    abort(500, msg)
+
+            if post_add is not None:
+                with db.session.no_autoflush:
+                    post_add(new_item, db.session)
+        if isinstance(connexion.request.json, list):
+            return schema.dump(new_items, many=True), 201
+        else:
+            return schema.dump(new_item), 201
 
     def put(
         Model,

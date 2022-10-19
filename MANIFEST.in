@@ -1,6 +1,8 @@
 recursive-include paddlelabel/sample/ *
 recursive-include paddlelabel/static/ *
 
+include paddlelabel/alembic.ini
+include paddlelabel/dbmigration/script.py.mako
 include paddlelabel/version
 include paddlelabel/default_setting.json
 include paddlelabel/openapi.yml

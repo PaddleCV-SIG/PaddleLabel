@@ -24,14 +24,22 @@ install_and_test() {
         echo -e "\nInstalling PaddleLabel from pypi\n"
         pip install --upgrade paddlelabel >/dev/null
     else
+        # test upgrade
+        rm -rf ~/.paddlelabel/
+        pip install flask_sqlalchemy==2.5.1
+        pip install --upgrade paddlelabel >/dev/null
+        paddlelabel -d&
+        sleep 3
+        pip uninstall paddlelabel -y
+        python tool/kill_by_port.py
+        #
+
         echo -e "\nBuilding PaddleLabel from local code\n"
         source tool/install.sh $1
     fi
 
     python tool/kill_by_port.py
-    python tool/kill_by_port.py
 
-    # rm -rf ~/.paddlelabel
     sleep 5
     paddlelabel -d &
 
@@ -78,7 +86,7 @@ if [ "$2" = "all" ]; then
         bash tool/build_frontend.sh >/dev/null
     fi
 
-    for ver in 6 7 8 9 10; do
+    for ver in 7 8 9 10; do
     # for ver in 8; do
         echo "Testing in py 3.$ver"
         conda env remove -n test

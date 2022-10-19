@@ -41,4 +41,4 @@ exit_if_fail $? "Install failed"
 echo "Finish installing"
 
 # clear pdlabel files
-rm -rf ~/.paddlelabel/
+# rm -rf ~/.paddlelabel/

@@ -296,7 +296,6 @@ class InstanceSegmentation(BaseTask):
                 tif.imwrite(export_label_path, mask, compression="zlib")
             except TypeError:
                 tif.imwrite(export_label_path, mask)
-            
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])

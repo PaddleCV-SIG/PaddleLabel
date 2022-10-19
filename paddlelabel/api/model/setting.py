@@ -25,3 +25,8 @@ class TaskCategory(BaseModel):
             self.handler = None
         else:
             self.handler = handler
+
+
+class AlembicVersion(db.Model):
+    __tablename__ = "alembic_version"
+    version_num = db.Column(db.String(), primary_key=True)

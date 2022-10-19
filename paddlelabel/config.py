@@ -17,12 +17,12 @@ db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')
 
 if not osp.exists(osp.dirname(db_path)):
     os.makedirs(osp.dirname(db_path))
-sqlite_url = f"sqlite:///{db_path}"
-print(f"Database path: {sqlite_url}")
+db_url = f"sqlite:///{db_path}"
+print(f"Database path: {db_url}")
 
 connexion_app = connexion.App("PaddleLabel")
 app = connexion_app.app
-app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SECRET_KEY"] = rand_string(30)

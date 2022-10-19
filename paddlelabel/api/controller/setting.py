@@ -15,4 +15,4 @@ def init_site_settings(json_path):
         if curr_cat is None:
             curr_cat = TaskCategory(idx, cat, handler)
             se.add(curr_cat)
-            se.commit()
+        se.commit()

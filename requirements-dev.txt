@@ -1,0 +1,3 @@
+connexion[swagger-ui]
+black
+pre-commit

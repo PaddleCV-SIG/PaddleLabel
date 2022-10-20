@@ -176,7 +176,6 @@ def load_sample(sample_family="bear"):
 
 
 def sample_folder_structure(path):
-    # path = connexion.request.args['path']
     base_path = osp.join(osp.expanduser("~"), ".paddlelabel")
     path.replace("/", osp.sep)
     path = osp.join(base_path, path)
@@ -193,12 +192,13 @@ def sample_folder_structure(path):
                 temp["title"] = name
                 temp["key"] = osp.relpath(full_path, base_path)
                 temp["children"] = dfs(full_path)
+                temp["isLeaf"] = False
             else:
                 temp["title"] = name
                 temp["key"] = osp.relpath(full_path, base_path)
                 temp["isLeaf"] = True
             res.append(temp)
-        # res.sort()
+        res.sort(key=lambda v: v["isLeaf"], reverse=True)
         return res
 
     res = dfs(path)

@@ -378,18 +378,18 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - type: array
-                  items:
-                    $ref: '#/components/schemas/Label'
-                - $ref: '#/components/schemas/Label'
+              type: array
+              items:
+                $ref: '#/components/schemas/Label'
       responses:
         '201':
           description: success
           content:
             application/json:
               schema:
-                $ref: ''
+                type: array
+                items:
+                  $ref: '#/components/schemas/Label'
       parameters:
         - $ref: '#/components/parameters/request_id'
       operationId: create

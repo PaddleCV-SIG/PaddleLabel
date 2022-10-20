@@ -8,7 +8,7 @@ import alembic
 
 import paddlelabel
 from paddlelabel.util import Resolver
-from paddlelabel.config import db_url, db, connexion_app, db_path
+from paddlelabel.config import db_url, db_path, db, connexion_app
 import paddlelabel.api
 import paddlelabel.task
 from paddlelabel.api.controller.setting import init_site_settings
@@ -26,6 +26,7 @@ def index():
 db_exists = Path(db_path).exists()
 alembic_cfg = alembic.config.Config(HERE / "alembic.ini")
 alembic_cfg.set_main_option("script_location", str(HERE / "dbmigration"))
+alembic_cfg.set_main_option("sqlalchemy.url", db_url)
 alembic.command.ensure_version(alembic_cfg)
 print("Current database version: ", end="")
 alembic.command.current(alembic_cfg)

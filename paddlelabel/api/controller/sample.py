@@ -207,7 +207,7 @@ def sample_folder_structure(path):
 
 
 def serve_sample_file(path):
-    base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel", "sample"))
+    base_path = osp.join(osp.join(osp.expanduser("~"), ".paddlelabel"))
     path.replace("/", osp.sep)
     path = osp.join(base_path, path)
 

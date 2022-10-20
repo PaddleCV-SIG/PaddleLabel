@@ -1317,7 +1317,7 @@ components:
               type: string
               description: 正在使用的模型名称
               example: PicoDet
-            label_mapping:
+            labelMapping:
               type: array
               description: 标签对应关系
               items:
@@ -1329,6 +1329,19 @@ components:
                   project:
                     type: string
                     example: a user defined category
+            modelSettings:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  modelFilePath:
+                    type: string
+                  paramFilePath:
+                    type: string
+            modelFilePath:
+              type: string
+            paramFilePath:
+              type: string
     Task:
       title: Task
       type: object

@@ -292,6 +292,11 @@ paths:
               properties:
                 export_dir:
                   type: string
+                export_format:
+                  type: string
+              required:
+                - export_dir
+                - export_format
       responses:
         '200':
           description: success
@@ -815,14 +820,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Annotation'
+              type: array
+              items:
+                $ref: '#/components/schemas/Annotation'
       responses:
         '201':
           description: success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Annotation'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annotation'
       parameters:
         - $ref: '#/components/parameters/request_id'
       operationId: create

@@ -98,8 +98,9 @@ def export_dataset(project_id):
     # 2. get handler and exporter
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project, is_export=True)
-    if project.label_format is not None:
-        exporter = handler.exporters[project.label_format]
+    export_format = connexion.request.json.get("export_format", None)
+    if export_format is not None:
+        exporter = handler.exporters[export_format]
     else:
         exporter = handler.default_exporter
 

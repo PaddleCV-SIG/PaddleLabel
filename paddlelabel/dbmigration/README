@@ -1,1 +1,5 @@
 Generic single-database configuration.
+
+```shell
+alembic revision --autogenerate -m "v0.1.4"
+```

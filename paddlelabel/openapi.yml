@@ -1405,6 +1405,8 @@ components:
           readOnly: true
         sault:
           type: string
+        predicted:
+          type: boolean
     Annotation:
       type: object
       title: Annotation

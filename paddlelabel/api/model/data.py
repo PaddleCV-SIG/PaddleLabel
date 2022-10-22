@@ -14,5 +14,6 @@ class Data(BaseModel):
     annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
     path = nncol(db.String())
     size = db.Column(db.String())  # , seperated string. natural image: NHWC (C is optional)
+    predicted = db.Column(db.Boolean())
 
     _immutables = BaseModel._immutables + ["data_id", "task_id"]

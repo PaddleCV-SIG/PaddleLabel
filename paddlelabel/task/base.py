@@ -114,7 +114,7 @@ class BaseTask:
         for idx in range(len(datas)):
             if osp.isabs(datas[idx]["path"]):
                 datas[idx]["path"] = osp.relpath(datas[idx]["path"], project.data_dir)
-            datas[idx]["path"] = str(datas[idx]["path"] )
+            datas[idx]["path"] = str(datas[idx]["path"])
 
         # 1. find task split
         if split is None:

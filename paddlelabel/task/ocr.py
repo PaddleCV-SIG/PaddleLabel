@@ -78,7 +78,6 @@ class OpticalCharacterRecognition(BaseTask):
                     res += ann.get("transcription", "") + "|"
                     res += str(int(ann.get("illegibility", False))) + "|"
                     res += ann.get("language", "")
-                    print(ann, res)
                     return {
                         "label_name": label_name,
                         "result": res,
@@ -116,7 +115,7 @@ class OpticalCharacterRecognition(BaseTask):
         project = self.project
         export_dir = Path(export_dir)
 
-        # 2.2 export images
+        # 2 export images
         tasks = Task._get(project_id=project.project_id, many=True)
         data_dir = export_dir / "image"
         create_dir(data_dir)
@@ -126,12 +125,11 @@ class OpticalCharacterRecognition(BaseTask):
             copy(Path(project.data_dir) / data.path, data_dir)
             data_info[data.data_id] = [task.set, Path(data.path).name.split(".")[0]]
 
-        # 2.3 add annotations
+        # 3. export annotations
         annotations = Annotation._get(project_id=project.project_id, many=True)
         ann_dicts = [defaultdict(lambda: []), defaultdict(lambda: []), defaultdict(lambda: [])]
         for ann in annotations:
             r = ann.result.split("|")
-            # print(r)
             if r[0] == "no points":
                 points = []
                 r = r[2:]
@@ -143,7 +141,6 @@ class OpticalCharacterRecognition(BaseTask):
                 points = [list(map(ti, vs)) for vs in zip(r[:idx:2], r[1:idx:2])]
                 r = r[idx + 1 :]
             split, name = data_info[ann.data_id]
-            # {'transcription': '###', 'points': [[205, 367], [266, 382], [266, 389], [201, 372]], 'illegibility': True} 205|367|266|382|266|389|201|372|###|1
             ann_dicts[split][name].append(
                 {
                     "points": points,
@@ -155,4 +152,3 @@ class OpticalCharacterRecognition(BaseTask):
         names = ["train.json", "val.json", "test.json"]
         for d, name in zip(ann_dicts, names):
             print(json.dumps(d), file=open(export_dir / name, "w"))
-

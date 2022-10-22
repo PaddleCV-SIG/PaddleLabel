@@ -329,3 +329,15 @@ The process of importing and exporting instance segmentation masks is similar to
 - Right click on layer 0, select "Convert to Label" to see instance mask
 ![image](https://user-images.githubusercontent.com/29757093/178112305-6a0e36d2-3cab-4265-a88d-9ee55044b97e.png)
 - Right click on layer 1, select "Convert to Label" to see category mask
+
+
+## OCR
+
+{
+	"image_name": [
+		"transcription": "",
+		"illegibility": true/false, // is the line blurred
+		"points": [[w1, h1], ..., [wn, hn]], // w:horizontal, h:vertical
+		"language": "Latin" / "Chinese" / ...
+	]
+}

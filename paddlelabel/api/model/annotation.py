@@ -12,7 +12,7 @@ class Annotation(BaseModel):
     frontend_id = db.Column(db.Integer())  # unique id within data, start from 1
     result = db.Column(db.String())
     type = db.Column(db.String())
-    label_id = nncol(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
+    label_id = db.Column(db.Integer(), db.ForeignKey("label.label_id", ondelete="CASCADE"))
     data_id = db.Column(db.Integer(), db.ForeignKey("data.data_id", ondelete="CASCADE"))
     predicted_by = db.Column(db.String())
 

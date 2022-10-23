@@ -34,7 +34,7 @@ CORS(connexion_app.app)
 db = SQLAlchemy(app)
 se = db.session
 ma = Marshmallow(app)
-
+db_head_version = "a609821ce310"
 
 # reject requests with the same request_id within request_id_timeout seconds
 request_id_timeout = 2

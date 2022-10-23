@@ -1,12 +1,14 @@
 from pathlib import Path
 import logging
+import shutil
+from datetime import datetime
 
 from flask_cors import CORS # TODO: custom middleware, dont use this package
 from alembic.config import Config
 import alembic
 
 from paddlelabel.util import Resolver
-from paddlelabel.config import db_url, db_path, connexion_app, app
+from paddlelabel.config import db_url, db_path, connexion_app, db_head_version
 import paddlelabel.api
 import paddlelabel.task
 from paddlelabel.api.controller.setting import init_site_settings
@@ -25,11 +27,14 @@ alembic_cfg = alembic.config.Config(HERE / "alembic.ini")
 alembic_cfg.set_main_option("script_location", str(HERE / "dbmigration"))
 alembic_cfg.set_main_option("sqlalchemy.url", db_url)
 alembic.command.ensure_version(alembic_cfg)
-print("Current database version: ", end="")
-alembic.command.current(alembic_cfg)
-print()
-with app.app_context():
-    if len(AlembicVersion.query.all()) == 0 and db_exists:
+
+with connexion_app.app.app_context():
+    res = AlembicVersion.query.all()
+    curr_db_v = None if len(res) == 0 else res[0].version_num
+    if curr_db_v != db_head_version and db_exists:
+        shutil.copy(Path(db_path), Path(db_path).parent / f"{datetime.now()}-paddlelabel.db.bk")
+
+    if curr_db_v is None and db_exists:
         alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
     alembic.command.upgrade(alembic_cfg, "head")
 

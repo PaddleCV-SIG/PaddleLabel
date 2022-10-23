@@ -68,7 +68,7 @@ def parse_voc_label(label_path):
         # ann["result"] = json.dumps(ann["result"])
         names = ["xmin", "ymin", "xmax", "ymax"]
         r = [data(bndbox.getElementsByTagName(n)) for n in names]
-        r = [int(t) for t in r]
+        r = [int(float(t)) for t in r]
         r[0] -= width / 2
         r[1] -= height / 2
         r[2] -= width / 2
@@ -84,8 +84,8 @@ def parse_voc_label(label_path):
 
 def create_voc_label(filepath, width, height, annotations):
     object_labels = ""
-    width = int(width)
-    height = int(height)
+    width = int(float(width))
+    height = int(float(height))
     for ann in annotations:
         r = [float(t) for t in ann.result.split(",")]
         r[0] += width / 2
@@ -216,7 +216,7 @@ class Detection(BaseTask):
             copy(data_path, export_data_dir)
 
             width, height = map(int, data.size.split(",")[1:3])
-            print(width, height)
+            # print(width, height)
             yolo_res = ""
             for ann in task.annotations:
                 r = [float(t) for t in ann.result.split(",")]

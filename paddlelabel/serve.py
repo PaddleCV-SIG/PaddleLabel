@@ -1,18 +1,15 @@
 from pathlib import Path
 import logging
 
-from flask_cors import CORS
-import flask
+from flask_cors import CORS # TODO: custom middleware, dont use this package
 from alembic.config import Config
 import alembic
 
-import paddlelabel
 from paddlelabel.util import Resolver
-from paddlelabel.config import db_url, db_path, db, connexion_app, app
+from paddlelabel.config import db_url, db_path, connexion_app, app
 import paddlelabel.api
 import paddlelabel.task
 from paddlelabel.api.controller.setting import init_site_settings
-from paddlelabel.config import basedir
 from paddlelabel.api.model import AlembicVersion
 
 HERE = Path(__file__).parent.absolute()
@@ -20,7 +17,7 @@ HERE = Path(__file__).parent.absolute()
 
 @connexion_app.app.route("/")
 def index():
-    return flask.redirect("/static/index.html")
+    return "", 301, {"Location": "/static/index.html"}
 
 
 db_exists = Path(db_path).exists()
@@ -37,17 +34,6 @@ with app.app_context():
     alembic.command.upgrade(alembic_cfg, "head")
 
     init_site_settings(HERE / "default_setting.json")
-
-# if not osp.exists(db_path):
-#     print("Creating db")
-#     db.create_all()
-#     # TODO: move to base
-#     from paddlelabel.config import basedir
-#     from paddlelabel.api.controller.setting import init_site_settings
-#     init_site_settings(osp.join(basedir, "default_setting.json"))
-# else:
-#     from paddlelabel.api.controller.db_update import update
-#     update()
 
 connexion_app.add_api(
     HERE / "openapi.yml",

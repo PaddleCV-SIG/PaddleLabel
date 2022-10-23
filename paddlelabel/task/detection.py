@@ -33,13 +33,14 @@ def parse_voc_label(label_path):
 
     # 1.1 file path
     folder = file.getElementsByTagName("folder")
-    if len(folder) == 0:
-        folder = "JPEGImages"
-    else:
-        folder = data(folder)
+    folder = "JPEGImages" if len(folder) == 0 else data(folder)
+    # if len(folder) == 0:
+    #     folder = "JPEGImages"
+    # else:
+    #     folder = data(folder)
     filename = file.getElementsByTagName("filename")
     if len(filename) == 0:
-        abort(detail=f"Missing required field filename in annotation file {label_path}", status=404)
+        abort(detail=f"Missing required field filename in annotation file {label_path}", status=500)
     filename = data(filename)
     path = osp.join(folder, filename)
 
@@ -429,9 +430,10 @@ class Detection(BaseTask):
     ):
         # 1. set params
         project = self.project
-        base_dir = data_dir
-        if base_dir is None:
-            base_dir = project.data_dir
+        # base_dir = data_dir
+        # if base_dir is None:
+        #     base_dir = project.data_dir
+        base_dir = project.data_dir if data_dir is None else data_dir
         allow_missing_image = data_dir is not None
 
         self.create_warning(base_dir)

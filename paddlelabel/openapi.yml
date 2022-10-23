@@ -296,7 +296,6 @@ paths:
                   type: string
               required:
                 - export_dir
-                - export_format
       responses:
         '200':
           description: success

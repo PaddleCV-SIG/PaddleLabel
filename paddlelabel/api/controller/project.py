@@ -99,11 +99,13 @@ def export_dataset(project_id):
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project, is_export=True)
     export_format = connexion.request.json.get("export_format", None)
-    if export_format is not None:
-        exporter = handler.exporters[export_format]
-    else:
+    if export_format is None:
+        export_format = project.label_format
+    if export_format is None or len(export_format) == 0:
         exporter = handler.default_exporter
-
+    else:
+        exporter = handler.exporters[export_format]
+        
     # 3. get export path
     export_dir = connexion.request.json["export_dir"]
     export_dir = expand_home(export_dir)

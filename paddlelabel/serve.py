@@ -8,7 +8,7 @@ import alembic
 
 import paddlelabel
 from paddlelabel.util import Resolver
-from paddlelabel.config import db_url, db_path, db, connexion_app
+from paddlelabel.config import db_url, db_path, db, connexion_app, app
 import paddlelabel.api
 import paddlelabel.task
 from paddlelabel.api.controller.setting import init_site_settings
@@ -31,11 +31,12 @@ alembic.command.ensure_version(alembic_cfg)
 print("Current database version: ", end="")
 alembic.command.current(alembic_cfg)
 print()
-if len(AlembicVersion.query.all()) == 0 and db_exists:
-    alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
-alembic.command.upgrade(alembic_cfg, "head")
+with app.app_context():
+    if len(AlembicVersion.query.all()) == 0 and db_exists:
+        alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
+    alembic.command.upgrade(alembic_cfg, "head")
 
-init_site_settings(HERE / "default_setting.json")
+    init_site_settings(HERE / "default_setting.json")
 
 # if not osp.exists(db_path):
 #     print("Creating db")

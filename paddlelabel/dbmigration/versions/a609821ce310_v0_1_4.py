@@ -1,4 +1,4 @@
-"""v0.1.4
+"""v0.1.4. Add data.predicted
 
 Revision ID: a609821ce310
 Revises: 61968cbf48e8

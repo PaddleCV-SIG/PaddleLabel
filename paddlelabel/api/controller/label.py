@@ -61,6 +61,16 @@ def unique_within_project(project_id, new_labels=[], col_names=["id", "name"]):
     return rets, unique
 
 
+def pre_add_batch(new_labels, se):
+    if connexion.request.headers.get("remove_duplicate_by_name", False):
+        if len(new_labels) == 0:
+            return []
+        curr_labels = Label._get(project_id=new_labels[0].project_id, many=True)
+        curr_names = set(l.name for l in curr_labels)
+        new_labels = list(filter(lambda l: l.name not in curr_names, new_labels))
+    return new_labels
+
+
 def pre_add(new_label, se):
     # 1. label must have project_id and project must exist,
     if new_label.project_id is None:
@@ -131,7 +141,7 @@ def set_by_project(project_id):
     abort("Not implemented", 500, "Not implemented")
 
 
-get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add, pre_delete])
+get_all, get, post, put, delete = crud(Label, LabelSchema, triggers=[pre_add, pre_add_batch, pre_delete])
 
 
 # TODO: abstract to any column

@@ -412,6 +412,11 @@ paths:
                   $ref: '#/components/schemas/Label'
       parameters:
         - $ref: '#/components/parameters/request_id'
+        - schema:
+            type: string
+          in: header
+          name: remove_duplicate_by_name
+          description: 是否根据标签名去重，标签名如果存在不会创建
       operationId: create
   '/labels/{label_id}':
     parameters:

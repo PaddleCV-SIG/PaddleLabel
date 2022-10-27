@@ -39,7 +39,6 @@ def pre_add_batch(annotations, se):
                         se.delete(cann)
         se.commit()
 
-
     return annotations
 
 

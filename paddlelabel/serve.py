@@ -3,7 +3,7 @@ import logging
 import shutil
 from datetime import datetime
 
-from flask_cors import CORS # TODO: custom middleware, dont use this package
+from flask_cors import CORS  # TODO: custom middleware, dont use this package
 from alembic.config import Config
 import alembic
 

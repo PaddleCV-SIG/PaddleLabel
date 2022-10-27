@@ -105,7 +105,7 @@ def export_dataset(project_id):
         exporter = handler.default_exporter
     else:
         exporter = handler.exporters[export_format]
-        
+
     # 3. get export path
     export_dir = connexion.request.json["export_dir"]
     export_dir = expand_home(export_dir)

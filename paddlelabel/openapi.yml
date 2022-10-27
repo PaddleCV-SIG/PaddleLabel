@@ -135,6 +135,22 @@ paths:
             type: string
           in: query
           name: order_by
+    put:
+      summary: ''
+      tags:
+        - Task
+      operationId: setAll
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data_predicted:
+                  type: boolean
   '/projects/{project_id}/labels':
     parameters:
       - $ref: '#/components/parameters/project_id'

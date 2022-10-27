@@ -1,4 +1,5 @@
 import connexion
+
 from paddlelabel.config import db
 from .base import crud
 from ..model import Task, Project
@@ -29,3 +30,11 @@ def get_stat_by_project(project_id):
             ann_count += 1
     res = {"finished": ann_count, "total": len(tasks)}
     return res, 200, res
+
+
+def set_all_by_project(project_id):
+    if "data_predicted" in connexion.request.json.keys():
+        for task in Task._get(project_id=project_id, many=True):
+            for data in task.datas:
+                data.predicted = connexion.request.json["data_predicted"]
+    db.session.commit()

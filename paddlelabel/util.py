@@ -89,6 +89,7 @@ class Resolver(connexion.resolver.RestyResolver):
 
         special = {
             "/projects/{project_id}/tasks getTasks": "paddlelabel.api.controller.task.get_by_project",
+            "/projects/{project_id}/tasks setAll": "paddlelabel.api.controller.task.set_all_by_project",
             "/projects/{project_id}/labels getLabels": "paddlelabel.api.controller.label.get_by_project",
             "/projects/{project_id}/labels setLabels": "paddlelabel.api.controller.label.set_by_project",
             "/projects/{project_id}/labels removeLabels": "paddlelabel.api.controller.label.delete_by_project",

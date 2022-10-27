@@ -849,6 +849,11 @@ paths:
                   $ref: '#/components/schemas/Annotation'
       parameters:
         - $ref: '#/components/parameters/request_id'
+        - schema:
+            type: boolean
+          in: header
+          name: deduplicate
+          description: 是否进行去重操作
       operationId: create
   '/annotations/{annotation_id}':
     get:

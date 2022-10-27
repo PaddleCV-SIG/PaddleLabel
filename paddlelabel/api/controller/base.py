@@ -43,6 +43,7 @@ def crud(Model, Schema, triggers=[]):
     def post(
         Model,
         Schema,
+        pre_add_batch=tgs["pre_add_batch"],
         pre_add=tgs["pre_add"],
         post_add=tgs["post_add"],
     ):
@@ -50,6 +51,8 @@ def crud(Model, Schema, triggers=[]):
         try:
             if isinstance(connexion.request.json, list):
                 new_items = schema.load(connexion.request.json, many=True)
+                if pre_add_batch is not None:
+                    new_items = pre_add_batch(new_items, db.session)
             else:
                 new_items = [schema.load(connexion.request.json)]
         except marshmallow.exceptions.ValidationError as e:

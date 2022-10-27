@@ -16,10 +16,34 @@ def pre_add(annotation, se):
     annotation.task_id = data.task_id
     annotation.project_id = task.project_id
 
+    # TODO: ensure detection box is upper left, lower right
+
     return annotation
 
 
-get_all, get, post, put, delete = crud(Annotation, AnnotationSchema, [pre_add])
+def pre_add_batch(annotations, se):
+    if connexion.request.headers.get("deduplicate"):
+        if len(annotations) == 0:
+            return []
+        project_id = annotations[0].project_id
+        curr_annotations = Annotation._get(project_id=project_id, many=True)
+        for cann in curr_annotations:
+            for nann in annotations:
+                if cann.type == "rectangle" and nann.type == "rectangle":
+                    if cann.predicted_by is None:
+                        continue
+                    fi = lambda v: int(float(v))
+                    cresult = list(map(fi, cann.result.split(",")))
+                    nresult = list(map(fi, nann.result.split(",")))
+                    if cresult == nresult and cann.predicted_by == nann.predicted_by:
+                        se.delete(cann)
+        se.commit()
+
+
+    return annotations
+
+
+get_all, get, post, put, delete = crud(Annotation, AnnotationSchema, [pre_add, pre_add_batch])
 
 
 def get_by_project(project_id):

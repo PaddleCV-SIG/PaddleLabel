@@ -6,6 +6,7 @@
 #        $4: open or anything else
 # example:
 #   bash tool/cypress.sh dbf all local
+#   bash tool/cypress.sh dbf curr local open
 
 # colorful print helper
 RED='\033[0;31m'

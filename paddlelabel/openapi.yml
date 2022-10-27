@@ -138,7 +138,7 @@ paths:
     put:
       summary: ''
       tags:
-        - Task
+        - Project
       operationId: setAll
       responses:
         '200':

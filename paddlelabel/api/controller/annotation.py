@@ -22,11 +22,11 @@ def pre_add(annotation, se):
 
 
 def pre_add_batch(annotations, se):
-    if connexion.request.headers.get("deduplicate"):
+    if connexion.request.headers.get("deduplicate", False):
         if len(annotations) == 0:
             return []
-        project_id = annotations[0].project_id
-        curr_annotations = Annotation._get(project_id=project_id, many=True)
+        data_id = annotations[0].data_id
+        curr_annotations = Annotation._get(data_id=data_id, many=True)
         for cann in curr_annotations:
             for nann in annotations:
                 if cann.type == "rectangle" and nann.type == "rectangle":

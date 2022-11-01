@@ -184,7 +184,7 @@ def import_dataset(project_id):
         copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
 
     # TODO: may have annotation for
-    _import_dataset(project, import_temp, "default" if import_format is None else import_format )
+    _import_dataset(project, import_temp, "default" if import_format is None else import_format)
 
     for p in new_data_paths:
         copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)

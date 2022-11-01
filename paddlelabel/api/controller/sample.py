@@ -170,7 +170,7 @@ def load_sample(sample_family="bear"):
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
-    handler.default_importer()
+    handler.importers[label_formats[task_category.name]]()
 
     return {"project_id": handler.project.project_id}, 200
 

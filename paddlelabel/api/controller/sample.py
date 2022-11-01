@@ -158,7 +158,7 @@ def load_sample(sample_family="bear"):
 
     project = {
         "name": f"Sample Project - {task_category.name}",
-        "description": f"A {task_category.name} sample project created by PP-Label",
+        "description": f"A built in {task_category.name} sample project",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,
         "label_format": label_formats[task_category.name],

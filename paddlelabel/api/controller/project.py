@@ -7,6 +7,7 @@ import os.path as osp
 import base64
 from copy import deepcopy
 import traceback
+from pathlib import Path
 
 import numpy as np
 import connexion
@@ -45,7 +46,7 @@ def pre_add(new_project, se):
     return new_project
 
 
-def _import_dataset(project, data_dir=None):
+def _import_dataset(project, data_dir=None, label_format=None):
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
     # 1. create handler
@@ -55,16 +56,19 @@ def _import_dataset(project, data_dir=None):
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
     # 2. choose importer. if specified, use importer for new_project.label_format, else use default_importer
-    if project.label_format is not None:
-        if project.label_format not in handler.importers.keys():
-            abort(
-                f"Importer {project.label_format} for project category {task_category.name} not found",
-                404,
-                "No such importer",
-            )
-        importer = handler.importers[project.label_format]
-    else:
+    if label_format is None:
+        label_format = None if project.label_format is None else project.label_format
+
+    if label_format not in [None, "default"] and label_format not in handler.importers.keys():
+        abort(
+            f"Importer {project.label_format} for project category {task_category.name} not found",
+            404,
+            "No such importer",
+        )
+    if label_format in [None, "default"]:
         importer = handler.default_importer
+    else:
+        importer = handler.importers[project.label_format]
 
     # 3. run import
     importer(data_dir)
@@ -109,24 +113,27 @@ def export_dataset(project_id):
     # 3. get export path
     export_dir = connexion.request.json["export_dir"]
     export_dir = expand_home(export_dir)
+    if not Path(export_dir).is_absolute():
+        abort(f"Only support absolute paths, got '{export_dir}'", 500)
     if osp.exists(osp.join(export_dir, "paddlelabel.warning")):
         abort(
             "This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500
         )
+
+    # print(export_dir, export_format)
 
     # 4. export
     try:
         exporter(export_dir)
 
     except Exception as e:
-        print("Create project failed")
-        print(traceback.format_exc())
+        logging.error("Export dataset failed")
+        logging.error(traceback.format_exc())
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)
         else:
             abort(str(e), 500, str(e))
-        # abort(str(e), 500, str(e))
 
 
 def import_dataset(project_id):
@@ -153,6 +160,15 @@ def import_dataset(project_id):
     create_dir(import_temp)
 
     import_dir = req["import_dir"]
+    import_dir = expand_home(import_dir)
+    import_format = req.get("import_format", None)
+
+    if not Path(import_dir).is_absolute():
+        abort(f"Only supports absolute import dir", 500)
+
+    if not Path(import_dir).exists():
+        abort(f"Import directory '{import_dir}' doesn't exist", 404)
+
     new_data_paths = listdir(
         import_dir,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
@@ -167,7 +183,8 @@ def import_dataset(project_id):
     for p in all_copy_paths:
         copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
 
-    _import_dataset(project, import_temp)
+    # TODO: may have annotation for
+    _import_dataset(project, import_temp, "default" if import_format is None else import_format )
 
     for p in new_data_paths:
         copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)

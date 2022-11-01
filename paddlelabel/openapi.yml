@@ -340,6 +340,9 @@ paths:
               properties:
                 import_dir:
                   type: string
+                import_format:
+                  type: string
+                  nullable: true
         description: ''
   '/projects/{project_id}/predict':
     parameters:

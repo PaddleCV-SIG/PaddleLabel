@@ -137,7 +137,7 @@ class Detection(BaseTask):
         super(Detection, self).__init__(project, data_dir=data_dir, is_export=is_export)
         self.importers = {"coco": self.coco_importer, "voc": self.voc_importer, "yolo": self.yolo_importer}
         self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter, "yolo": self.yolo_exporter}
-        self.default_importer = self.voc_importer
+        # self.default_importer = self.voc_importer
         self.default_exporter = self.voc_exporter  # default to voc
 
     def yolo_importer(self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}):

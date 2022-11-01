@@ -227,7 +227,7 @@ class InstanceSegmentation(BaseTask):
             "mask": self.mask_exporter,
             "polygon": self.coco_exporter,
         }
-        self.default_importer = self.coco_importer
+        # self.default_importer = self.coco_importer
         self.default_exporter = self.coco_exporter
 
     def mask_importer(

@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Check out frontend project
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
-          path: fixbugs
+          ref: fixbugs
 
       - name: ls
         run: |

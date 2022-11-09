@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
-          ref: fixbugs
+          ref: develop
 
       - name: ls
         run: |

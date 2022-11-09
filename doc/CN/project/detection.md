@@ -66,7 +66,7 @@ xml 文件格式如下：
 
 ### COCO
 
-COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会被保存到数据库中和最终导出，比如图像的 date_captured 属性`。 注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.md#xxlisttxt)和[labels.txt](./common.md#labelstxt)。新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则在下一段详述。
+COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性。 `注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.md#xxlisttxt)和[labels.txt](./common.md#labelstxt)。`新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则在下一段详述。
 
 示例格式如下：
 
@@ -115,6 +115,8 @@ category{
 	"color": str // PaddleLabel加入功能，COCO官方定义中没有这一项。color会被导出，导入时如果存在PaddleLabel会给这一类别赋color指定的颜色
 }
 ```
+
+PaddleLabel将coco标注信息中的图片记录和盘上的图片对应起来的逻辑为：image['file_name']中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致coco标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的coco标注记录中，image['file_name']项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和'\'分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和'\'。
 
 ### YOLO
 

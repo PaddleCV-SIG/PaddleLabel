@@ -1,4 +1,5 @@
 import os.path as osp
+from pathlib import Path
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -8,7 +9,7 @@ from pycocotoolse.coco import COCO
 import cv2
 
 from paddlelabel.api import Task, Annotation, Label
-from paddlelabel.task.util import create_dir, listdir, copy, image_extensions, ensure_unique_base_name
+from paddlelabel.task.util import create_dir, listdir, copy, image_extensions, ensure_unique_base_name, get_fname
 from paddlelabel.task.base import BaseTask
 from paddlelabel.config import db
 from paddlelabel.api.util import abort
@@ -250,12 +251,13 @@ class Detection(BaseTask):
 
         # 1. set params
         project = self.project
-        if data_dir is None:
+        if data_dir is None:  # TODO: import info should be passed as params
             data_dir = project.data_dir
-        label_file_paths = ["train.json", "val.json", "test.json"]
-        label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
-
+        data_dir = Path(data_dir)
         self.create_warning(data_dir)
+
+        label_file_paths = ["train.json", "val.json", "test.json"]
+        label_file_paths = [data_dir / f for f in label_file_paths]
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
@@ -266,23 +268,28 @@ class Detection(BaseTask):
             self.create_coco_labels(coco.cats.values())
 
             ann_by_task = {}
-            # 2. get image full path and size
+            """
+            2. for each image record in coco annotation, get image full path and size
+                - match image record and image file path on disk by image name
+                - annotation records that dont't have matching image file on disk will be discarded
+                - all images under data dir will be imported
+            """
             for idx, img in coco.imgs.items():
-                file_name = img["file_name"]
-                full_path = filter(
-                    lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths
-                )
-                full_path = list(full_path)
-                if len(full_path) != 1:
-                    raise RuntimeError(
-                        f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}"
-                    )
+                file_name = get_fname(img["file_name"])
+                full_path = list(filter(lambda p: str(p)[-len(file_name) :] == file_name, data_paths))
+                # multiple match cause import failure
+                if len(full_path) > 1:
+                    raise RuntimeError(f"Multiple image(s) with path ending with {file_name} found under {data_dir}")
+                # no matching record on disk, this image record will be skipped
+                if len(full_path) == 0:
+                    continue
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("width", 0), img.get("height", 0)]
-                if s == [0, 0]:
-                    s = cv2.imread(full_path).shape[:2][::-1]
+                s = [img.get("width", None), img.get("height", None)]
+                if s == [None, None]:
+                    s = cv2.imread(full_path).shape[:2][::-1]  # w, h
+                    coco.imgs[idx]["width"], coco.imgs[idx]["height"] = s
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []
@@ -290,18 +297,19 @@ class Detection(BaseTask):
             # 3. get ann by image
             for ann_id in coco.getAnnIds():
                 ann = coco.anns[ann_id]
+                # if the image this ann belongs to isn't found on disk, skip this ann
+                if ann["image_id"] not in ann_by_task.keys():
+                    continue
                 label_name = coco.cats[ann["category_id"]]["name"]
                 # result = {}
                 # result["xmin"] = ann["bbox"][0]
                 # result["ymin"] = ann["bbox"][1]
                 # result["xmax"] = result["xmin"] + ann["bbox"][2]
                 # result["ymax"] = result["ymin"] + ann["bbox"][3]
+
                 # image center as origin, right x down y
                 res = ann["bbox"]
-                width, height = (
-                    coco.imgs[ann["image_id"]].get("width", None),
-                    coco.imgs[ann["image_id"]].get("height", None),
-                )
+                width, height = (coco.imgs[ann["image_id"]]["width"], coco.imgs[ann["image_id"]]["height"])
                 res[2] += res[0]
                 res[3] += res[1]
                 res[0] -= width / 2
@@ -311,7 +319,6 @@ class Detection(BaseTask):
 
                 res = [str(r) for r in res]
                 res = ",".join(res)
-                # curr_anns = ann_by_task.get(ann["image_id"], [])
                 ann_by_task[ann["image_id"]].append(
                     {
                         "label_name": label_name,
@@ -332,7 +339,7 @@ class Detection(BaseTask):
         data_paths = listdir(data_dir, filters=filters)
         coco_others = {}
         for split_idx, label_file_path in enumerate(label_file_paths):
-            if osp.exists(label_file_path):
+            if label_file_path.exists():
                 data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
                 coco_others[split_idx] = others
         other_settings = project._get_other_settings()
@@ -343,7 +350,7 @@ class Detection(BaseTask):
         for data_path in data_paths:
             img = cv2.imread(osp.join(data_dir, data_path))
             s = img.shape
-            size = [1, s[1], s[0], s[2]]
+            size = [1, s[1], s[0]]
             size = [str(s) for s in size]
             size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
@@ -359,11 +366,12 @@ class Detection(BaseTask):
         # 2.1 add categories
         labels = Label._get(project_id=project.project_id, many=True)
         for label in labels:
-            if label.super_category_id is None:
-                super_category_name = "none"
-            else:
-                super_category_name = self.label_id2name(label.super_category_id)
-            coco.addCategory(label.id, label.name, label.color, super_category_name)
+            coco.addCategory(
+                label.id,
+                label.name,
+                label.color,
+                None if label.super_category_id is None else self.label_id2name(label.super_category_id),
+            )
 
         # 2.2 add images
         split = [set(), set(), set()]

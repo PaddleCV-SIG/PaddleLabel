@@ -152,3 +152,8 @@ def expand_home(path):
     if path[0] == "~":
         path = osp.join(osp.expanduser("~"), path[2:])
     return path
+
+
+def get_fname(path: str):
+    """get file name from a windows or linux path"""
+    return path.split("\\")[-1].split("/")[-1]

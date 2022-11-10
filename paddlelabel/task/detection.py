@@ -403,6 +403,8 @@ class Detection(BaseTask):
                 r[2] + width / 2,
                 r[3] + height / 2,
             ]
+            bb[0], bb[2] = (bb[0], bb[2]) if bb[0] < bb[2] else (bb[2], bb[0])
+            bb[1], bb[3] = (bb[1], bb[3]) if bb[1] < bb[3] else (bb[3], bb[1])
             bb[2] -= bb[0]
             bb[3] -= bb[1]
             coco.addAnnotation(

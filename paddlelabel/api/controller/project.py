@@ -8,6 +8,7 @@ import base64
 from copy import deepcopy
 import traceback
 from pathlib import Path
+import logging
 
 import numpy as np
 import connexion

@@ -357,7 +357,7 @@ class Detection(BaseTask):
 
         db.session.commit()
 
-    def coco_exporter(self, export_dir):
+    def coco_exporter(self, export_dir, allow_empty=True):
         # 1. set params
         project = self.project
 
@@ -380,6 +380,9 @@ class Detection(BaseTask):
         create_dir(data_dir)
         for task in tasks:
             data = task.datas[0]
+            if not allow_empty and len(data.annotations) ==0:
+                continue
+            
             size = data.size.split(",")
             export_path = osp.join("image", osp.basename(data.path))
             coco.addImage(export_path, int(size[1]), int(size[2]), data.data_id)

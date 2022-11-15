@@ -13,6 +13,27 @@ conda activate paddlelabel
 pip install --upgrade paddlelabel
 ```
 
+## 下载最新开发版
+
+PaddleLabel 团队会不定期在项目更新后通过 Github Action 构建反映最新版代码的安装包。这一安装包未经过全面测试，可能包含一些问题，仅推荐为尝试最新版本使用。其中可能修复了一些 pypi 版本中存在的问题和进行了一些性能提升。
+
+下载方式为
+
+1. 访问 [Action 执行记录网页](https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/pypi.yml)
+2. 选择最上面（最新）的一次执行，点击进入
+
+![image](https://user-images.githubusercontent.com/29757093/201905567-fb8fab58-837e-41fa-a18b-b12a73d38969.png)
+
+3. 下载 PaddleLabel_built_package
+
+![1](https://user-images.githubusercontent.com/29757093/201905747-a2b0901c-9331-4a90-b4ae-44c855314810.jpg)
+
+4. 解压该压缩包，之后执行
+
+```shell
+pip install [解压出的.whl文件名，如 paddlelabel-0.2.0-py3-none-any.whl ]
+```
+
 ## 通过源码安装
 
 1. 首先需要将后端代码（本项目）克隆到本地

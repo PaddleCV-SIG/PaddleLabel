@@ -22,7 +22,7 @@ PaddleLabel 团队会不定期在项目更新后通过 Github Action 构建反�
 1. 访问 [Action 执行记录网页](https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/pypi.yml)
 2. 选择最上面（最新）的一次执行，点击进入
 
-![image](https://user-images.githubusercontent.com/29757093/201905567-fb8fab58-837e-41fa-a18b-b12a73d38969.png)
+![1](https://user-images.githubusercontent.com/29757093/201906327-18444fcb-57b7-4e5f-8e00-62bf1e3b49b7.png)
 
 3. 下载 PaddleLabel_built_package
 

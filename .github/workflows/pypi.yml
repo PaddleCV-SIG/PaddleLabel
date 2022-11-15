@@ -8,14 +8,14 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10"]
-        node-version: ["16.x"]
+        node-version: ["19.x"]
 
     steps:
       - name: Check out frontend project
         uses: actions/checkout@v3
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
-          ref: develop
+          ref: dep
 
       - name: ls
         run: |

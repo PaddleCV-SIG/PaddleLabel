@@ -287,11 +287,11 @@ paths:
               type: object
               properties:
                 train:
-                  type: number
+                  type: integer
                 val:
-                  type: number
+                  type: integer
                 test:
-                  type: number
+                  type: integer
         description: ''
   '/projects/{project_id}/export':
     parameters:

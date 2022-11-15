@@ -199,7 +199,7 @@ def pre_put(project, body, se):
     return project, body
 
 
-def split_dataset(project_id, epsilon=1e-3):
+def split_dataset(project_id):
     Project._exists(project_id)
     split = connexion.request.json
     if list(split.keys()) != ["train", "val", "test"]:
@@ -207,28 +207,29 @@ def split_dataset(project_id, epsilon=1e-3):
             f"Got {split}",
             500,
             "Request should provide train, validataion and test percentage",
-        )  # TODO: change response code
-    if abs(1 - sum(split.values())) > epsilon:
+        ) 
+    if sum(split.values()) != 100:
         abort(
-            f"The train({split['train']}), val({split['val']}), test({split['test']}) split don't sum to 1.",
+            f"The train({split['train']}), val({split['val']}), test({split['test']}) split don't sum to 100.",
             500,
-            "The three percentages don't sum to 1",
-        )  # TODO: change response code
-    split_num = [0] * 4
-    split_num[1] = split["train"]
-    split_num[2] = split["val"]
-    split_num[3] = split["test"]
+            "The three percentages don't sum to 100",
+        ) 
+    split_num = [0] * 3
+    split_num[1] = split["train"] / 100
+    split_num[2] = split["val"] / 100
     split = split_num
-    for idx in range(1, 4):
-        split[idx] += split[idx - 1]
+
+    for idx in range(1, 3):
+        split[idx] += split[idx - 1]    
 
     tasks = Task._get(project_id=project_id, many=True)
     split = [math.ceil(s * len(tasks)) for s in split]
-    # print("split numbers: ", len(tasks), split)
+    split.append(len(tasks))
+
     random.shuffle(tasks)
-    for set in range(3):
-        for idx in range(split[set], split[set + 1]):
-            tasks[idx].set = set
+    for set_idx in range(3):
+        for idx in range(split[set_idx], split[set_idx + 1]):
+            tasks[idx].set = set_idx
     db.session.commit()
     tasks = Task._get(project_id=project_id, many=True)
     return {

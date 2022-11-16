@@ -9,9 +9,15 @@ from copy import deepcopy
 import traceback
 from pathlib import Path
 import logging
+import base64
+import time
+import concurrent.futures
+from threading import Lock
+from queue import Queue
 
 import numpy as np
 import connexion
+from tqdm import tqdm
 
 from paddlelabel.config import db
 from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
@@ -207,20 +213,20 @@ def split_dataset(project_id):
             f"Got {split}",
             500,
             "Request should provide train, validataion and test percentage",
-        ) 
+        )
     if sum(split.values()) != 100:
         abort(
             f"The train({split['train']}), val({split['val']}), test({split['test']}) split don't sum to 100.",
             500,
             "The three percentages don't sum to 100",
-        ) 
+        )
     split_num = [0] * 3
     split_num[1] = split["train"] / 100
     split_num[2] = split["val"] / 100
     split = split_num
 
     for idx in range(1, 3):
-        split[idx] += split[idx - 1]    
+        split[idx] += split[idx - 1]
 
     tasks = Task._get(project_id=project_id, many=True)
     split = [math.ceil(s * len(tasks)) for s in split]
@@ -315,3 +321,94 @@ get_all, get, post, put, delete = crud(
     ProjectSchema,
     triggers=[pre_add, post_add, pre_put, post_delete],
 )
+
+
+def to_easydata(project_id):
+    _, project = Project._exists(project_id)
+    access_token = connexion.request.json["access_token"]
+    dataset_id = connexion.request.json["dataset_id"]
+    # print(project_id, dataset_id, access_token)
+    # print(type(dataset_id))
+
+    # host = f'https://aip.baidubce.com/rpc/2.0/easydl/dataset/list?access_token={access_token}'
+    # response = requests.post(host, json={"type": "OBJECT_DETECTION"})
+    # print(response)
+    # if response:
+    #     print(response.json())
+
+    host = f"https://aip.baidubce.com/rpc/2.0/easydl/dataset/addentity?access_token={access_token}"
+    base_body = {
+        "type": "OBJECT_DETECTION",
+        "dataset_id": dataset_id,
+        "appendLabel": False,
+    }
+
+    tasks = Queue()
+    for task in Task._get(project_id=project_id, many=True):
+        tasks.put(task)
+
+    def upload(task):
+        time.sleep(random.random() * 3)
+        tic = time.time()
+        body = base_body.copy()
+        data = task.datas[0]
+        body["entity_name"] = Path(data.path).name
+        img_path = Path(project.data_dir) / data.path
+        with open(Path(project.data_dir) / data.path, "rb") as f:
+            img = f.read()
+            body["entity_content"] = base64.b64encode(img).decode("utf-8")
+        labels = []
+        w, h = list(map(int, data.size.split(",")))[1:3]
+        h /= 2
+        w /= 2
+        for ann in task.annotations:
+            fi = lambda v: int(float(v))
+            bb = list(map(fi, ann.result.split(",")))
+            labels.append(
+                {
+                    "label_name": ann.label.name,
+                    "left": bb[0] + w,
+                    "top": bb[1] + h,
+                    "width": bb[2] - bb[0],
+                    "height": bb[3] - bb[1],
+                }
+            )
+        if len(labels) != 0:
+            body["labels"] = labels
+        res = requests.post(host, json=body)
+        res_json = res.json()
+        print(task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
+        return len(res_json.keys()) == 1 and res.status_code == 200, task
+
+    # for task in tasks[:10]:
+    #     upload(task)
+    # exit()
+
+    finished = 0
+    upload_trials = 0
+    success_lock = Lock()
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
+
+        def retry_failed(future):
+            nonlocal finished, tasks
+            success, task = future.result()
+            if success:
+                with success_lock:
+                    finished += 1
+            else:
+                # retry = executor.submit(upload, task)
+                # retry.add_done_callback(rerun_failed)
+                tasks.put(task)
+
+        while not tasks.empty():
+            upload_trials += 1
+            future = executor.submit(upload, tasks.get())
+            future.add_done_callback(retry_failed)
+            time.sleep(1)
+
+        while finished < 10:
+            print(finished)
+            time.sleep(1)
+
+        print(finished, upload_trials, upload_trials / finished)

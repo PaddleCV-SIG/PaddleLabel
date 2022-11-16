@@ -100,6 +100,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/export exportDataset": "paddlelabel.api.controller.project.export_dataset",
             "/projects/{project_id}/import importDataset": "paddlelabel.api.controller.project.import_dataset",
             "/projects/{project_id}/predict predict": "paddlelabel.api.controller.project.predict",
+            "/projects/{project_id}/toEasydata toEasydata": "paddlelabel.api.controller.project.to_easydata",
             "/tasks/{task_id}/tags getTags": "paddlelabel.api.controller.tag.get_by_task",
             "/tasks/{task_id}/tags addTag": "paddlelabel.api.controller.tag.add_to_task",
             "/datas/{data_id}/image getImage": "paddlelabel.api.controller.data.get_image",

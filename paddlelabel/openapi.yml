@@ -319,11 +319,7 @@ paths:
       description: ''
   '/projects/{project_id}/import':
     parameters:
-      - schema:
-          type: string
-        name: project_id
-        in: path
-        required: true
+      - $ref: "#/components/parameters/project_id"
     post:
       summary: ''
       operationId: importDataset
@@ -377,6 +373,27 @@ paths:
           description: success
       operationId: predict
       description: ''
+  '/projects/{project_id}/toEasydata':
+    parameters:
+      - $ref: '#/components/parameters/project_id'
+    post:
+      summary: ''
+      tags:
+        - Project
+      operationId: toEasydata
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                dataset_id:
+                  type: integer
   /labels:
     get:
       tags:
@@ -1548,14 +1565,14 @@ components:
       in: header
       required: false
       schema:
-        type: string
+        type: integer
         maxLength: 30
       description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
     project_id:
       name: project_id
       in: path
       schema:
-        type: string
+        type: integer
       description: Id of a project
       required: true
     label_id:
@@ -1563,42 +1580,42 @@ components:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of a label
     task_id:
       name: task_id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of a task
     data_id:
       name: data_id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of a data record
     annotation_id:
       name: annotation_id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of an annotation record
     frontend_id:
       name: frontend_id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of a frontend-annotation record
     tag_id:
       name: tag_id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id of a tag
     uuid:
       name: uuid

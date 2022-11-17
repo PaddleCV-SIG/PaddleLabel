@@ -4,6 +4,7 @@ import platform
 import logging
 import subprocess
 import sys
+import traceback
 
 import connexion
 
@@ -159,3 +160,11 @@ def version_check(name="paddlelabel", log=False):
         if log:
             logging.info(f"Currently running {name}=={current_version}, a newer version {latest_version} is avaliable on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}")
         return False
+
+def backend_error(error):
+    print(traceback.format_exc())
+    return {
+        "detail": "Backend error: " + str(error),
+        "status": 500,
+        "title": "Backend error: " + str(error),
+    }, 500

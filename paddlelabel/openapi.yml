@@ -319,7 +319,7 @@ paths:
       description: ''
   '/projects/{project_id}/import':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
       summary: ''
       operationId: importDataset
@@ -394,6 +394,9 @@ paths:
                   type: string
                 dataset_id:
                   type: integer
+              required:
+                - access_token
+                - dataset_id
   /labels:
     get:
       tags:

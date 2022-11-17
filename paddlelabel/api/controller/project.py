@@ -127,8 +127,6 @@ def export_dataset(project_id):
             "This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500
         )
 
-    # print(export_dir, export_format)
-
     # 4. export
     try:
         exporter(export_dir)
@@ -153,15 +151,14 @@ def import_dataset(project_id):
     req = connexion.request.json
     _, project = Project._exists(project_id)
 
-    # 2. get current project data names
+    # 2. get current project data file names
     tasks = Task._get(project_id=project.project_id, many=True)
     curr_data_names = set()
     for task in tasks:
         for data in task.datas:
-            curr_data_names.add(osp.basename(data.path))
+            curr_data_names.add(Path(data.path).name)
 
     # 3. move all new images and all other files to import temp
-
     import_temp = osp.join(osp.expanduser("~"), ".paddlelabel", "import_temp")
     remove_dir(import_temp)
     create_dir(import_temp)
@@ -196,7 +193,7 @@ def import_dataset(project_id):
     for p in new_data_paths:
         copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)
 
-    # remove_dir(import_temp)
+    remove_dir(import_temp)
 
 
 def pre_put(project, body, se):
@@ -245,6 +242,7 @@ def split_dataset(project_id):
     }, 200
 
 
+# TODO: move to label controller
 def create_label(project, label_name):
     color = rand_hex_color([l.color for l in project.labels])
     ids = [l.id for l in project.labels]
@@ -310,6 +308,13 @@ def predict(project_id):
     return "finished"
 
 
+def to_easydata(project_id):
+    _, project = Project._exists(project_id)
+    task_category = TaskCategory._get(task_category_id=project.task_category_id)
+    handler = eval(task_category.handler)(project)
+    handler.to_easydata(**{k: connexion.request.json[k] for k in ["access_token", "dataset_id"]})
+
+
 def post_delete(project, se):
     warning_path = osp.join(project.data_dir, "paddlelabel.warning")
     if osp.exists(warning_path):
@@ -321,94 +326,3 @@ get_all, get, post, put, delete = crud(
     ProjectSchema,
     triggers=[pre_add, post_add, pre_put, post_delete],
 )
-
-
-def to_easydata(project_id):
-    _, project = Project._exists(project_id)
-    access_token = connexion.request.json["access_token"]
-    dataset_id = connexion.request.json["dataset_id"]
-    # print(project_id, dataset_id, access_token)
-    # print(type(dataset_id))
-
-    # host = f'https://aip.baidubce.com/rpc/2.0/easydl/dataset/list?access_token={access_token}'
-    # response = requests.post(host, json={"type": "OBJECT_DETECTION"})
-    # print(response)
-    # if response:
-    #     print(response.json())
-
-    host = f"https://aip.baidubce.com/rpc/2.0/easydl/dataset/addentity?access_token={access_token}"
-    base_body = {
-        "type": "OBJECT_DETECTION",
-        "dataset_id": dataset_id,
-        "appendLabel": False,
-    }
-
-    tasks = Queue()
-    for task in Task._get(project_id=project_id, many=True):
-        tasks.put(task)
-
-    def upload(task):
-        time.sleep(random.random() * 3)
-        tic = time.time()
-        body = base_body.copy()
-        data = task.datas[0]
-        body["entity_name"] = Path(data.path).name
-        img_path = Path(project.data_dir) / data.path
-        with open(Path(project.data_dir) / data.path, "rb") as f:
-            img = f.read()
-            body["entity_content"] = base64.b64encode(img).decode("utf-8")
-        labels = []
-        w, h = list(map(int, data.size.split(",")))[1:3]
-        h /= 2
-        w /= 2
-        for ann in task.annotations:
-            fi = lambda v: int(float(v))
-            bb = list(map(fi, ann.result.split(",")))
-            labels.append(
-                {
-                    "label_name": ann.label.name,
-                    "left": bb[0] + w,
-                    "top": bb[1] + h,
-                    "width": bb[2] - bb[0],
-                    "height": bb[3] - bb[1],
-                }
-            )
-        if len(labels) != 0:
-            body["labels"] = labels
-        res = requests.post(host, json=body)
-        res_json = res.json()
-        print(task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
-        return len(res_json.keys()) == 1 and res.status_code == 200, task
-
-    # for task in tasks[:10]:
-    #     upload(task)
-    # exit()
-
-    finished = 0
-    upload_trials = 0
-    success_lock = Lock()
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
-
-        def retry_failed(future):
-            nonlocal finished, tasks
-            success, task = future.result()
-            if success:
-                with success_lock:
-                    finished += 1
-            else:
-                # retry = executor.submit(upload, task)
-                # retry.add_done_callback(rerun_failed)
-                tasks.put(task)
-
-        while not tasks.empty():
-            upload_trials += 1
-            future = executor.submit(upload, tasks.get())
-            future.add_done_callback(retry_failed)
-            time.sleep(1)
-
-        while finished < 10:
-            print(finished)
-            time.sleep(1)
-
-        print(finished, upload_trials, upload_trials / finished)

@@ -35,10 +35,6 @@ def parse_voc_label(label_path):
     # 1.1 file path
     folder = file.getElementsByTagName("folder")
     folder = "JPEGImages" if len(folder) == 0 else data(folder)
-    # if len(folder) == 0:
-    #     folder = "JPEGImages"
-    # else:
-    #     folder = data(folder)
     filename = file.getElementsByTagName("filename")
     if len(filename) == 0:
         abort(detail=f"Missing required field filename in annotation file {label_path}", status=500)
@@ -140,6 +136,89 @@ class Detection(BaseTask):
         self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter, "yolo": self.yolo_exporter}
         # self.default_importer = self.voc_importer
         self.default_exporter = self.voc_exporter  # default to voc
+
+    def to_easydata(self, access_token, dataset_id):
+        # print(project_id, dataset_id, access_token)
+        # print(type(dataset_id))
+        # TODO: option to create new dataset
+
+        # TODO: list datasets to ensure datasetid exists
+        # host = f'https://aip.baidubce.com/rpc/2.0/easydl/dataset/list?access_token={access_token}'
+        # response = requests.post(host, json={"type": "OBJECT_DETECTION"})
+        # print(response)
+        # if response:
+        #     print(response.json())
+
+        host = f"https://aip.baidubce.com/rpc/2.0/easydl/dataset/addentity?access_token={access_token}"
+        base_body = {
+            "type": "OBJECT_DETECTION",
+            "dataset_id": dataset_id,
+            "appendLabel": False,
+        }
+
+        tasks = Queue()
+        for task in Task._get(project_id=project_id, many=True):
+            tasks.put(task)
+
+        def upload(task):
+            time.sleep(random.random() * 3)
+            tic = time.time()
+            body = base_body.copy()
+            data = task.datas[0]
+            body["entity_name"] = Path(data.path).name
+            img_path = Path(project.data_dir) / data.path
+            with open(Path(project.data_dir) / data.path, "rb") as f:
+                img = f.read()
+                body["entity_content"] = base64.b64encode(img).decode("utf-8")
+            labels = []
+            w, h = list(map(int, data.size.split(",")))[1:3]
+            h /= 2
+            w /= 2
+            for ann in task.annotations:
+                fi = lambda v: int(float(v))
+                bb = list(map(fi, ann.result.split(",")))
+                labels.append(
+                    {
+                        "label_name": ann.label.name,
+                        "left": bb[0] + w,
+                        "top": bb[1] + h,
+                        "width": bb[2] - bb[0],
+                        "height": bb[3] - bb[1],
+                    }
+                )
+            if len(labels) != 0:
+                body["labels"] = labels
+            res = requests.post(host, json=body)
+            res_json = res.json()
+            print(task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
+            return len(res_json.keys()) == 1 and res.status_code == 200, task
+
+        finished = 0
+        upload_trials = 0
+        success_lock = Lock()
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
+
+            def retry_failed(future):
+                nonlocal finished, tasks
+                success, task = future.result()
+                if success:
+                    with success_lock:
+                        finished += 1
+                else:
+                    tasks.put(task)
+
+            while not tasks.empty():
+                upload_trials += 1
+                future = executor.submit(upload, tasks.get())
+                future.add_done_callback(retry_failed)
+                time.sleep(1)
+
+            while finished < 10:
+                print(finished)
+                time.sleep(1)
+
+            print(finished, upload_trials, upload_trials / finished)
 
     def yolo_importer(self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}):
 
@@ -443,9 +522,6 @@ class Detection(BaseTask):
     ):
         # 1. set params
         project = self.project
-        # base_dir = data_dir
-        # if base_dir is None:
-        #     base_dir = project.data_dir
         base_dir = project.data_dir if data_dir is None else data_dir
         allow_missing_image = data_dir is not None
 

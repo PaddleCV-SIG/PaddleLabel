@@ -7,7 +7,7 @@ from flask_cors import CORS  # TODO: custom middleware, dont use this package
 from alembic.config import Config
 import alembic
 
-from paddlelabel.util import Resolver
+from paddlelabel.util import Resolver, version_check
 from paddlelabel.config import db_url, db_path, connexion_app, db_head_version
 import paddlelabel.api
 import paddlelabel.task
@@ -16,6 +16,7 @@ from paddlelabel.api.model import AlembicVersion
 
 HERE = Path(__file__).parent.absolute()
 
+version_check(log=True)
 
 @connexion_app.app.route("/")
 def index():

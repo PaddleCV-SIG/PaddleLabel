@@ -152,12 +152,18 @@ def load_sample(sample_family="bear"):
     data_dir = osp.join(
         osp.expanduser("~"), ".paddlelabel", "sample", sample_family, *sample_folder[task_category.name]
     )
+    name = f"Sample Project - {task_category.name}"
+
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         return {"project_id": curr_project.project_id}, 200
 
+    curr_project = Project._get(name=name)
+    if curr_project is not None:
+        return {"project_id": curr_project.project_id}, 200
+
     project = {
-        "name": f"Sample Project - {task_category.name}",
+        "name": name,
         "description": f"A built in {task_category.name} sample project",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,

@@ -415,7 +415,7 @@ paths:
     post:
       tags:
         - Label
-      summary: Create a new label
+      summary: Create new labels
       requestBody:
         required: true
         content:
@@ -436,7 +436,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/request_id'
         - schema:
-            type: string
+            type: boolean
           in: header
           name: remove_duplicate_by_name
           description: 是否根据标签名去重，标签名如果存在不会创建

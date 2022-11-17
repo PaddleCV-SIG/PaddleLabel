@@ -16,7 +16,7 @@ class Project(BaseModel):
     task_category_id = db.Column(db.Integer(), db.ForeignKey("taskCategory.task_category_id"))
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
-    label_dir = db.Column(db.String(), unique=True)
+    label_dir = db.Column(db.String(), unique=True) # TODO: remove
     labels = db.relationship(
         "Label",
         lazy="selectin",

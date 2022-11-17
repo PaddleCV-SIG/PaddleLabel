@@ -50,8 +50,7 @@ connexion_app.add_api(
     strict_validation=True,
     pythonic_params=True,
 )
-
-
 connexion_app.add_error_handler(Exception, backend_error)
 
+# TODO: use middleware, instead of flask-cors
 CORS(connexion_app.app)

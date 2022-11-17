@@ -1338,6 +1338,7 @@ components:
         label_dir:
           type: string
           description: Absolute directory path where all the label files are stored
+          deprecated: true
         labels:
           type: array
           items:
@@ -1402,6 +1403,9 @@ components:
               type: string
             paramFilePath:
               type: string
+        upid:
+          type: string
+          description: A string that is unique to each project
     Task:
       title: Task
       type: object

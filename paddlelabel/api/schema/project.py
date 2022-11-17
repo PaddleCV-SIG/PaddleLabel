@@ -3,7 +3,8 @@ import json
 from marshmallow import pre_load, post_dump, fields
 
 from paddlelabel.api.model import Project
-from .base import BaseSchema
+from paddlelabel.api.schema.util import str2sault
+from paddlelabel.api.schema.base import BaseSchema
 
 
 class ProjectSchema(BaseSchema):
@@ -28,5 +29,5 @@ class ProjectSchema(BaseSchema):
     def pre_dump_action(self, project, **kwargs):
         if "other_settings" in project.keys() and project["other_settings"] is not None:
             project["other_settings"] = json.loads(project["other_settings"])
-        # print(project["other_settings"])
+        project["upid"] = str2sault(project["data_dir"] + project["created"])
         return project

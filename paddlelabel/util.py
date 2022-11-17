@@ -162,9 +162,17 @@ def version_check(name="paddlelabel", log=False):
         return False
 
 def backend_error(error):
+    """global error handling for backend
+
+    Args:
+        error (Exception): Any exception raised
+
+    Returns:
+        dict, int: response body, status code
+    """    
     print(traceback.format_exc())
     return {
+        "title": "Backend error: " + str(error),
         "detail": "Backend error: " + str(error),
         "status": 500,
-        "title": "Backend error: " + str(error),
     }, 500

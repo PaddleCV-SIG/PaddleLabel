@@ -15,9 +15,7 @@ from paddlelabel.api.controller.setting import init_site_settings
 from paddlelabel.api.model import AlembicVersion
 
 HERE = Path(__file__).parent.absolute()
-
 version_check(log=True)
-
 
 @connexion_app.app.route("/")
 def index():

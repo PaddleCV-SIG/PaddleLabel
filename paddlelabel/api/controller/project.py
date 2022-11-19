@@ -11,9 +11,6 @@ from pathlib import Path
 import logging
 import base64
 import time
-import concurrent.futures
-from threading import Lock
-from queue import Queue
 
 import numpy as np
 import connexion
@@ -312,7 +309,7 @@ def to_easydata(project_id):
     _, project = Project._exists(project_id)
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
     handler = eval(task_category.handler)(project)
-    handler.to_easydata(**{k: connexion.request.json[k] for k in ["access_token", "dataset_id"]})
+    handler.to_easydata(project_id=project_id, **{k: connexion.request.json[k] for k in ["access_token", "dataset_id"]})
 
 
 def post_delete(project, se):

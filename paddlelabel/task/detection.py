@@ -137,7 +137,16 @@ class Detection(BaseTask):
         # self.default_importer = self.voc_importer
         self.default_exporter = self.voc_exporter  # default to voc
 
-    def to_easydata(self, access_token, dataset_id):
+    def to_easydata(self, project_id, access_token, dataset_id):
+        import concurrent.futures
+        from threading import Lock
+        from queue import Queue
+        import time
+        from tqdm import tqdm
+        import random
+        import base64
+        import requests
+
         # print(project_id, dataset_id, access_token)
         # print(type(dataset_id))
         # TODO: option to create new dataset
@@ -149,6 +158,7 @@ class Detection(BaseTask):
         # if response:
         #     print(response.json())
 
+        project = self.project
         host = f"https://aip.baidubce.com/rpc/2.0/easydl/dataset/addentity?access_token={access_token}"
         base_body = {
             "type": "OBJECT_DETECTION",
@@ -161,7 +171,6 @@ class Detection(BaseTask):
             tasks.put(task)
 
         def upload(task):
-            time.sleep(random.random() * 3)
             tic = time.time()
             body = base_body.copy()
             data = task.datas[0]
@@ -170,29 +179,33 @@ class Detection(BaseTask):
             with open(Path(project.data_dir) / data.path, "rb") as f:
                 img = f.read()
                 body["entity_content"] = base64.b64encode(img).decode("utf-8")
-            labels = []
-            w, h = list(map(int, data.size.split(",")))[1:3]
-            h /= 2
-            w /= 2
-            for ann in task.annotations:
-                fi = lambda v: int(float(v))
-                bb = list(map(fi, ann.result.split(",")))
-                labels.append(
-                    {
-                        "label_name": ann.label.name,
-                        "left": bb[0] + w,
-                        "top": bb[1] + h,
-                        "width": bb[2] - bb[0],
-                        "height": bb[3] - bb[1],
-                    }
-                )
-            if len(labels) != 0:
+            if len(task.annotations) != 0:
+                labels = []
+                w, h = list(map(int, data.size.split(",")))[1:3]
+                h /= 2
+                w /= 2
+                for ann in task.annotations:
+                    fi = lambda v: int(float(v))
+                    bb = list(map(fi, ann.result.split(",")))
+                    labels.append(
+                        {
+                            "label_name": ann.label.name,
+                            "left": bb[0] + w,
+                            "top": bb[1] + h,
+                            "width": bb[2] - bb[0],
+                            "height": bb[3] - bb[1],
+                        }
+                    )
                 body["labels"] = labels
             res = requests.post(host, json=body)
             res_json = res.json()
-            print(task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
+            print("\t", task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
             return len(res_json.keys()) == 1 and res.status_code == 200, task
+        
+        # while not tasks.empty():
+        #     upload(tasks.get())
 
+        tot = tasks.qsize()
         finished = 0
         upload_trials = 0
         success_lock = Lock()
@@ -209,6 +222,7 @@ class Detection(BaseTask):
                     tasks.put(task)
 
             while not tasks.empty():
+                print(f"{finished} / {tot} , {(finished/tot)*100:.1f}%")
                 upload_trials += 1
                 future = executor.submit(upload, tasks.get())
                 future.add_done_callback(retry_failed)

@@ -1294,6 +1294,52 @@ paths:
         '200':
           description: OK
       operationId: printDebugId
+  /rpc/cache:
+    post:
+      summary: ''
+      tags:
+        - rpc
+      operationId: createCache
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cache_id:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+  '/rpc/cache/{cache_id}':
+    parameters:
+      - schema:
+          type: string
+        name: cache_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - rpc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+      operationId: getCache
 components:
   securitySchemes:
     jwt:

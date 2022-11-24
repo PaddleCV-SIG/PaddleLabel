@@ -117,6 +117,8 @@ class Resolver(connexion.resolver.RestyResolver):
             "/rpc/folders getFolders": "paddlelabel.api.rpc.file.get_folders",
             "/rpc/seg/polygon2points polygon2points": "paddlelabel.api.rpc.seg.polygon2points_str",
             "/rpc/seg/points2polygon points2polygon": "paddlelabel.api.rpc.seg.points2polygon_str",
+            "/rpc/cache createCache": "paddlelabel.api.rpc.cache.create_cache",
+            "/rpc/cache/{cache_id} getCache": "paddlelabel.api.rpc.cache.get_cache",
             "/debug/printid/{debug_id} printDebugId": "paddlelabel.api.rpc.debug.cmdOutputDebugId",
             "/version getVersion": "paddlelabel.api.rpc.monitor.get_version",
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",

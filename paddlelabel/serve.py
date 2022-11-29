@@ -17,6 +17,7 @@ from paddlelabel.api.model import AlembicVersion
 HERE = Path(__file__).parent.absolute()
 version_check(log=True)
 
+
 @connexion_app.app.route("/")
 def index():
     return "", 301, {"Location": "/static/index.html"}

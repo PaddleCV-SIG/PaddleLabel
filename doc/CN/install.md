@@ -42,7 +42,7 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.2.0-py3-none-any.whl 
 git clone https://github.com/PaddleCV-SIG/PaddleLabel
 ```
 
-2. 接下来需要克隆并构建前端，需要首先安装 [Node.js](https://nodejs.org/en/) 和 npm：
+2. 接下来需要克隆并构建前端，需要首先安装 [Node.js](https://nodejs.org/en/) 和 npm
 
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
@@ -52,7 +52,7 @@ yarn
 npm run build
 ```
 
-3. 将构建好的前端部分，`PaddleLabel-Frontend/dist/`目录下所有文件复制到`paddlelabel/static/`中：
+3. 将构建好的前端部分，`PaddleLabel-Frontend/dist/`目录下所有文件复制到`paddlelabel/static/`中
 
 ```shell
 cd ../PaddleLabel/

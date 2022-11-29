@@ -1,6 +1,6 @@
 # 实例分割标注
 
-![image](https://user-images.githubusercontent.com/29757093/182841736-6cd03a65-cb8e-40ed-895d-5aad1055a162.png)
+![image](https://user-images.githubusercontent.com/35907364/204429739-408e67c3-2748-434c-ba73-258d9602fe91.png)
 
 PaddleLabel支持多边形和掩膜两种实例分割标注任务。
 

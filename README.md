@@ -45,7 +45,7 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 - 欢迎大家扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/35907364/184839654-7434cf57-9446-40b0-954a-6087fb0cfca5.jpg"  width = "200" />
+<img src="https://user-images.githubusercontent.com/35907364/204429438-f2e3dde4-c7a8-4434-8a2a-4cbd23ba5fe0.png"  width = "200" />
 </div>
 
 ## 使用教程

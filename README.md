@@ -13,6 +13,12 @@
 </div>
 
 ## 最新动态
+- 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
+  - 【界面】全面升级分类、检测及分割的前端标注界面体验，提升标注过程的流畅性。
+  - 【分类】新增PPLCNet预训练模型，为分类功能提供预标注能力。
+  - 【检测】新增PIcoDet预训练模型，为检测功能提供预标注能力。
+  - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分每个实例; (2)新增根据类别及根据实例显示颜色模式;(3)修复交互式分割localStorage爆炸问题。
+
 
 - 【2022-08-18】 :fire: PaddleLabel 0.1 版本发布！
   - 【分类】支持单分类与多分类标注及标签的导入导出。简单灵活实现自定义数据集分类标注任务并导出供[PaddleClas](https://github.com/PaddlePaddle/PaddleClas)进行训练。
@@ -52,9 +58,12 @@ PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标
 **进行标注**
 
 - [图像分类](doc/CN/project/classification.md)
+- [图像分类自动标注](doc/CN/project/classification_auto_label.md)
 - [目标检测](doc/CN/project/detection.md)
+- [图像检测自动标注](doc/CN/project/detection_auto_label.md)
 - [语义分割](doc/CN/project/semantic_segmentation.md)
 - [实例分割](doc/CN/project/instance_segmentation.md)
+- [交互式分割标注](doc/CN/project/interactive_segmentation.md)
 
 **训练教程**
 

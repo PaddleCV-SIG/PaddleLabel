@@ -141,4 +141,4 @@ category{
 
 ## *交互式分割标注
 
-PaddleLabel带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注（目前仅支持图像分割），使用方法参考[交互式分割标注](interactive_segmentation.md)。
+PaddleLabel带有基于PaddlePaddle的机器学习标注功能，可以通过加载模型实现交互式数据标注，使用方法参考[交互式分割标注](interactive_segmentation.md)。

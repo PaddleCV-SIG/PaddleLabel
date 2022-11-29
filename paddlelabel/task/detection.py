@@ -201,7 +201,7 @@ class Detection(BaseTask):
             res_json = res.json()
             print("\t", task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
             return len(res_json.keys()) == 1 and res.status_code == 200, task
-        
+
         # while not tasks.empty():
         #     upload(tasks.get())
 

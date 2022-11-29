@@ -100,5 +100,6 @@ def run():
     print(f"PaddleLabel is running at http://localhost:{args.port}")
     connexion_app.run(host=host, port=args.port, debug=args.debug)
 
+
 if __name__ == "__main__":
     run()

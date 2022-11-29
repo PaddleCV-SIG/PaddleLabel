@@ -63,10 +63,10 @@ jobs:
       - name: Move built frontend
         run: |
           mv dist/ ..
-      
+
       - name: Write frontend commit hash to package
         run: |
-          echo frontend $(git rev-parse --short HEAD) >> ../git_versions
+          echo frontend $(git rev-parse --short HEAD) >> ../git_versions.html
 
       - uses: actions/checkout@v3
 
@@ -89,12 +89,12 @@ jobs:
 
       - name: Write backend commit hash to package
         run: |
-          echo backend $(git rev-parse --short HEAD) >> ../git_versions
+          echo backend $(git rev-parse --short HEAD) >> ../git_versions.html
 
       - name: Copy built frontend and commit hash
         run: |
           mv ../dist/ ./paddlelabel/static/
-          mv ../git_versions ./paddlelabel/static/
+          mv ../git_versions.html ./paddlelabel/static/
 
       - name: Build package
         run: |

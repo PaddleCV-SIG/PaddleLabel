@@ -65,4 +65,3 @@ def parse_order_by(modal, order_by):
     except:
         order = modal.created.asc()
     return order
-

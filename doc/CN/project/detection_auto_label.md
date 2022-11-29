@@ -5,7 +5,6 @@
 PaddleLabel 提供图像检测自动标注功能，用户只需要在`自动推理设置`中进行简单设置，即可启用自动标注的功能，从而更快的完成对应的图像检测标注任务。
 
 <div align="center">
-
 <p align="center">
   <img src="https://user-images.githubusercontent.com/35907364/204425293-91fbfa3f-9023-46b0-9fde-07653d7c7dba.gif" align="middle" alt="LOGO" width = "500" />
 </p>

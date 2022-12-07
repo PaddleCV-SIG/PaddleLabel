@@ -41,10 +41,11 @@ jobs:
 
       - name: Install yarn
         run: |
+          ls ./node_modules/
           npm i --global yarn
 
       - name: Install node_modules
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        if: ${{ steps.node-modules-cache.outputs.cache-hit != 'true' }}
         run: |
           yarn
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
@@ -120,7 +121,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
-          path: doc/_site/
+          path: ../paddlelabel/static/doc/
 
       - name: Build package
         run: |

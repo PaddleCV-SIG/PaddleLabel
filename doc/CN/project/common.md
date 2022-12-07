@@ -49,7 +49,7 @@ snake 12 255 0 0 // rgb color
 
 ### xx_list.txt
 
-所有不使用 COCO 格式保存标注的项目都支持`xx_list.txt`。`xx_list.txt `包括`train_list.txt`，` val_list.txt`和`test_list.txt`。这三个文件需要放在数据集文件夹的根目录中，与`labels.txt`相同。
+所有不使用 COCO 格式保存标注的项目都支持`xx_list.txt`。`xx_list.txt`包括`train_list.txt`，`val_list.txt`和`test_list.txt`。这三个文件需要放在数据集文件夹的根目录中，与`labels.txt`相同。
 
 这三个文件指定了数据集的划分以及标签或标注文件与图像文件间的匹配关系（比如 voc 格式下，每一行是图像文件的路径和标签文件的路径）。这三个文件的内容结构相同，每一行都以一条数据的路径开始，其路径为相对数据集根目录的相对路径，后面跟着表示类别的整数/字符串，或者标签文件的路径。例如：
 

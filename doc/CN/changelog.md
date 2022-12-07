@@ -1,8 +1,8 @@
-- [v0.1.1]
-    - 修复py39以下项目无法导入问题 [#71](https://github.com/PaddleCV-SIG/PaddleLabel/issues/71)
-    - 修复py39以下标注无法保存问题 [#72](https://github.com/PaddleCV-SIG/PaddleLabel/issues/72)
-- [v0.1.2]
-    - 运行程序自动打开浏览器
-    - cypress测试从3.6到3.10
-    - 新增yolo检测格式导入导出
-    - 导入项目数据格式移除必选
+- \[v0.1.1\]
+  - 修复py39以下项目无法导入问题 [#71](https://github.com/PaddleCV-SIG/PaddleLabel/issues/71)
+  - 修复py39以下标注无法保存问题 [#72](https://github.com/PaddleCV-SIG/PaddleLabel/issues/72)
+- \[v0.1.2\]
+  - 运行程序自动打开浏览器
+  - cypress测试从3.6到3.10
+  - 新增yolo检测格式导入导出
+  - 导入项目数据格式移除必选

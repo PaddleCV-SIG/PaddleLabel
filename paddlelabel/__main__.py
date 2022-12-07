@@ -9,7 +9,7 @@ from paddlelabel.util import pyVerGt, portInUse
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="PP Label")
+    parser = argparse.ArgumentParser(description="PaddleLabel")
     parser.add_argument(
         "--lan",
         "-l",

@@ -1,6 +1,7 @@
 # Web related
-connexion
+connexion[swagger-ui]
 marshmallow_sqlalchemy
+
 ## currently required, but will be removed in a future version
 flask_sqlalchemy
 flask_marshmallow

@@ -39,21 +39,24 @@ jobs:
           cache-name: cache-node_modules
         with:
           path: ./node_modules/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
             ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Install yarn
         run: |
           npm i --global yarn
+          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Install node_modules
         if: ${{ steps.node-modules-cache.outputs.cache-hit != 'true' }}
+        continue-on-error: true
         run: |
           yarn
-          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
           ls ./node_modules/
-
 
       - name: Build frontend
         run: |

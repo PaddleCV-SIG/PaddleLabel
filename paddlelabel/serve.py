@@ -23,6 +23,11 @@ def index():
     return "", 301, {"Location": "/static/index.html"}
 
 
+@connexion_app.app.route("/static/doc/")
+def index():
+    return "", 301, {"Location": "/static/doc/index.html"}
+
+
 db_exists = Path(db_path).exists()
 alembic_cfg = alembic.config.Config(HERE / "alembic.ini")
 alembic_cfg.set_main_option("script_location", str(HERE / "dbmigration"))

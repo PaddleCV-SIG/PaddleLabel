@@ -29,8 +29,8 @@ jobs:
           cache: "npm"
       
       - run: |
-        pwd
-        ls
+          pwd
+          ls
 
       - name: Cache node_modules
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)

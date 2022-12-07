@@ -33,33 +33,16 @@ jobs:
         shell: bash
         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
-      - run: |
-          pwd
-          ls
-          echo ${{ steps.npm-cache-dir.outputs.dir }}
-      
-      # - name: Cache node_modules
-      #   id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
-      #   uses: actions/cache@v3
-      #   env:
-      #     cache-name: cache-node_modules
-      #   with:
-      #     path: ${{ steps.npm-cache-dir.outputs.dir }}
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
-      
       - name: Cache node modules
         id: node-modules-cache 
         uses: actions/cache@v3
         env:
-          cache-name: test-cache
+          cache-name: cached-node-modules
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            ./node_modules/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -72,13 +55,12 @@ jobs:
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Install node_modules
-        if: ${{ steps.node-modules-cache.outputs.cache-hit != 'true' }}
-        continue-on-error: true
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: |
           yarn
-          ls ./node_modules/
-          echo "=============================="
-          ls ~/.npm
+          # ls ./node_modules/
+          # echo "=============================="
+          # ls ~/.npm
 
       - name: Build frontend
         run: |

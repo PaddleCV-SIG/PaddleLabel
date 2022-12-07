@@ -23,6 +23,7 @@ repos:
     rev: 0.7.16 # Use the ref you want to point at
     hooks:
       - id: mdformat
+        exclude: doc/CN/project/detection.md
   - repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:

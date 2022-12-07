@@ -93,10 +93,10 @@ paddlelabel  # 启动paddlelabel
 pdlabel # 缩写，和paddlelabel完全相同
 ```
 
-PaddleLabel 默认运行在[http://127.0.0.1:17995](http://127.0.0.1:17995)上，可以通过`--port`或`-p`参数指定端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。这样可以实现在电脑上运行 PaddleLabel，在平板上进行标注。在 docker 中运行 PaddleLabel 时也需要添加`--lan`参数。
+PaddleLabel 的默认网址为[http://localhost:17995](http://localhost:17995)。可以通过`--port`或`-p`参数指定端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。这样可以实现在电脑上运行 PaddleLabel，在平板上进行标注。在 docker 中运行 PaddleLabel 时也需要添加`--lan`参数。
 
 ```shell
 paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局域网
 ```
 
-启动后PaddleLabel会自动在浏览器种打开网页，推荐使用Chrome。
+启动后PaddleLabel会自动在浏览器中打开网页，推荐使用Chrome。

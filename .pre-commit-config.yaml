@@ -19,11 +19,11 @@ repos:
       - id: trailing-whitespace
       - id: pretty-format-json
         args: [--autofix, --indent=4, --no-ensure-ascii]
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.16 # Use the ref you want to point at
-    hooks:
-      - id: mdformat
-        exclude: doc/CN/project/detection.md # messes up image['file_name']
+  # - repo: https://github.com/executablebooks/mdformat
+  #   rev: 0.7.16 # Use the ref you want to point at
+  #   hooks:
+  #     - id: mdformat
+  #       exclude: doc/CN/project/detection.md # messes up image['file_name']
   - repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:

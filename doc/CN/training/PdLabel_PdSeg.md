@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## layout: default title: PaddleSeg 图像分割 parent: 进行训练 nav_order: 3
+---
+layout: default
+title: PaddleSeg 图像分割
+parent: 进行训练
+nav_order: 3
+---
 
 # 图像分割：从 PaddleLabel 到 PaddleSeg
 

@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## layout: default title: 交互式分割标注 parent: 进行标注 nav_order: 7
+---
+layout: default
+title: 交互式分割标注
+parent: 进行标注
+nav_order: 7
+---
 
 # 交互式分割标注
 

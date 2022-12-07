@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## layout: default title: 图像分类标注 parent: 进行标注 nav_order: 1
+---
+layout: default
+title: 图像分类标注
+parent: 进行标注
+nav_order: 1
+---
 
 # 图像分类标注
 
@@ -112,4 +115,4 @@ image/9928.jpg monkey
 
 ## \*分类预标注
 
-PaddleLabel带有基于PaddlePaddle的机器学习分类标注功能，可以通过加载模型实现分类预标注功能，使用方法参考[图像分类自动标注](classification_auto_label.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习分类标注功能，可以通过加载模型实现分类预标注功能，使用方法参考[图像分类自动标注](classification_auto_label.md)。

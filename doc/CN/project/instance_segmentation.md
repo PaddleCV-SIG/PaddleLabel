@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## layout: default title: 实例分割标注 parent: 进行标注 nav_order: 6
+---
+layout: default
+title: 实例分割标注
+parent: 进行标注
+nav_order: 6
+---
 
 # 实例分割标注
 

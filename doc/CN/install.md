@@ -1,6 +1,8 @@
-______________________________________________________________________
-
-## layout: default title: 安装 nav_order: 1
+---
+layout: default
+title: 安装
+nav_order: 1
+---
 
 # 安装说明
 

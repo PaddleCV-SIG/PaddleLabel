@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## title: 首页 layout: home nav_order: 0
+---
+layout: home
+title: 首页
+nav_order: 0
+permalink: /
+---
 
 中文 | [English](doc/EN/README.md)
 

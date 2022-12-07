@@ -1,6 +1,9 @@
-______________________________________________________________________
-
-## layout: default title: PaddleX 分类/检测/分割 parent: 进行训练 nav_order: 3
+---
+layout: default
+title: PaddleX 分类/检测/分割
+parent: 进行训练
+nav_order: 4
+---
 
 # 一、图像分类（快速在 PaddleLabel 标注的花朵分类数据集上展示如何应用 PaddleX 训练 MobileNetV3_ssld 网络）
 
@@ -133,7 +136,7 @@ print("Predict Result:", result)
 > Predict Result: \[{'category_id': 0, 'category': 'sunflower', 'score': 0.9999815}\]
 > 最终结论：预测正确 ✔
 
-______________________________________________________________________
+---
 
 # 二、目标检测（快速在 PaddleLabel 标注的道路标志检测数据集上展示如何应用 PaddleX 训练 YOLOv3 网络
 
@@ -266,7 +269,7 @@ pdx.det.visualize(image_path, result, threshold=0.5, save_dir='./output/yolov3_d
 
 > speedlimit 0.77 预测正确 ✔
 
-______________________________________________________________________
+---
 
 # 三、图像分割（快速在 PaddleLabel 标注的狗子分割数据集上展示如何应用 PaddleX 训练 DeepLabV3 网络）
 

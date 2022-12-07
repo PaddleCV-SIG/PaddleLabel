@@ -28,7 +28,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       
-      - run: pwd
+      - run: |
+        pwd
+        ls
 
       - name: Cache node_modules
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)

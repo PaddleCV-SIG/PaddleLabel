@@ -28,3 +28,7 @@ repos:
     rev: 22.10.0
     hooks:
       - id: black
+  - repo: https://github.com/sonatype-nexus-community/jake
+    rev: "v3.0.0"
+    hooks:
+      - id: scan

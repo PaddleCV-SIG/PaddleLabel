@@ -36,29 +36,29 @@ xml 文件格式如下：
 
 ```text
 <annotation>
-	<folder>JPEGImages</folder>
-	<filename></filename>
-	<source>
-		<database></database>
-	</source>
-	<size>
-		<width></width>
-		<height></height>
-		<depth></depth>
-	</size>
-	<segmented>0</segmented>
-	<object>
-		<name></name>
-		<pose></pose>
-		<truncated></truncated>
-		<difficult></difficult>
-		<bndbox>
-			<xmin></xmin>
-			<ymin></ymin>
-			<xmax></xmax>
-			<ymax></ymax>
-		</bndbox>
-	</object>
+ <folder>JPEGImages</folder>
+ <filename></filename>
+ <source>
+  <database></database>
+ </source>
+ <size>
+  <width></width>
+  <height></height>
+  <depth></depth>
+ </size>
+ <segmented>0</segmented>
+ <object>
+  <name></name>
+  <pose></pose>
+  <truncated></truncated>
+  <difficult></difficult>
+  <bndbox>
+   <xmin></xmin>
+   <ymin></ymin>
+   <xmax></xmax>
+   <ymax></ymax>
+  </bndbox>
+ </object>
 </annotation>
 ```
 
@@ -109,14 +109,14 @@ annotation{
 }
 
 category{
-	"id": int,
-	"name": str,
-	"supercategory": str,
-	"color": str // PaddleLabel加入功能，COCO官方定义中没有这一项。color会被导出，导入时如果存在PaddleLabel会给这一类别赋color指定的颜色
+ "id": int,
+ "name": str,
+ "supercategory": str,
+ "color": str // PaddleLabel加入功能，COCO官方定义中没有这一项。color会被导出，导入时如果存在PaddleLabel会给这一类别赋color指定的颜色
 }
 ```
 
-PaddleLabel将coco标注信息中的图片记录和盘上的图片对应起来的逻辑为：image['file_name']中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致coco标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的coco标注记录中，image['file_name']项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和'\'分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和'\'。
+PaddleLabel将coco标注信息中的图片记录和盘上的图片对应起来的逻辑为：image\['file_name'\]中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致coco标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的coco标注记录中，image\['file_name'\]项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和''分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和''。
 
 ### YOLO
 
@@ -174,9 +174,9 @@ YOLO 格式每张图像对应一个 txt 格式的标注信息文件，二者文�
 完成后进入标注界面，PaddleLabel 的界面分为五个区域，上方为可以切换的标签页，下方为标注进度展示，左侧包含图像显示区域与工具栏，右侧为标签列表，用于添加不同的标签和标注。在检测任务的标注中，可以按以下步骤进行使用：
 
 1. 点击右侧“添加标签”，填写信息并创建标签
-2. 选择一个标签，点击左侧工具栏的“矩形”，在图像界面上点击需要标注的物体的左上角和右下角，当出现矩形框时完成当前目标的标注。通过点击"编辑"，可修改矩形框的大小和位置。
-3. 点击左右按钮切换图像，重复上述操作，直到所有数据标注完毕
-4. 下方进度展示可以查看标注进度
+1. 选择一个标签，点击左侧工具栏的“矩形”，在图像界面上点击需要标注的物体的左上角和右下角，当出现矩形框时完成当前目标的标注。通过点击"编辑"，可修改矩形框的大小和位置。
+1. 点击左右按钮切换图像，重复上述操作，直到所有数据标注完毕
+1. 下方进度展示可以查看标注进度
 
 _注意：在 PaddleLabel 中，右侧标签栏有标签列表和标注列表两种。在目标检测中，标签列表对应的是类别，而标注列表对应的是该类别的一个实例。_
 
@@ -192,6 +192,6 @@ _注意：在 PaddleLabel 中，右侧标签栏有标签列表和标注列表两
 
 点击**导出数据集**，输入需要导出到的文件夹路径，点击确认，即可导出标注完成的数据到指定路径。
 
-## *检测预标注
+## \*检测预标注
 
 PaddleLabel带有基于PaddlePaddle的机器学习检测标注功能，可以通过加载模型实现检测预标注功能，使用方法参考[图像检测自动标注](detection_auto_label.md)。

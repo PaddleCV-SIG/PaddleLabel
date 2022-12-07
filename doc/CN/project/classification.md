@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: 图像分类标注 parent: 进行标注 nav_order: 1
+
 # 图像分类标注
 
 ![image](https://user-images.githubusercontent.com/29757093/182839949-e032d095-759f-40c5-9d38-c6c506e024c4.png)

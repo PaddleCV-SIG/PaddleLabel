@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: 交互式分割标注 parent: 进行标注 nav_order: 7
+
 # 交互式分割标注
 
 ![interactive_segmentation](https://user-images.githubusercontent.com/71769312/181561624-de3f74e4-ca86-4764-a7a5-9043b9a1c363.png)

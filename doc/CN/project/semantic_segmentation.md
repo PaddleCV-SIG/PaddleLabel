@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: 语义分割标注 parent: 进行标注 nav_order: 5
+
 # 语义分割标注
 
 ![image](https://user-images.githubusercontent.com/29757093/182841499-85b9df06-f793-4831-b3f5-54c013ce531c.png)

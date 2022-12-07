@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: PaddleSeg 图像分割 parent: 进行训练 nav_order: 3
+
 # 图像分割：从 PaddleLabel 到 PaddleSeg
 
 PaddleLabel 标注数据+PaddleSeg 训练预测=快速完成一次图像分割的任务

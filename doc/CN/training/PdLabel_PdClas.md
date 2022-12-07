@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: PaddleClas 花朵分类 parent: 进行训练 nav_order: 1
+
 # 花朵分类：从 PaddleLabel 到 PaddleClas
 
 PaddleLabel 标注数据+PaddleClas 训练预测=快速完成一次花朵分类的任务

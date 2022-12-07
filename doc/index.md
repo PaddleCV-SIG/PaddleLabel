@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## title: 首页 layout: home nav_order: 0
+
 中文 | [English](doc/EN/README.md)
 
 <div align="center">
@@ -6,10 +10,17 @@
   <img src="https://user-images.githubusercontent.com/35907364/182084617-ea94f744-3a34-4193-98fe-5d6869a118fc.png" align="middle" alt="LOGO" width = "500" />
 </p>
 
-**飞桨智能标注，让标注快人一步**
+<b> 飞桨智能标注，让标注快人一步 </b>
 
-[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-390/) ![PyPI](https://img.shields.io/pypi/v/paddlelabel?color=blue) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![Start](https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=orange)](<>) [![Fork](https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=orange)](<>) ![PyPI - Downloads](https://img.shields.io/pypi/dm/paddlelabel?color=orange) [![OS](https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-green.svg)](<>)
-
+<p>
+<img src="https://img.shields.io/badge/python-3.7+-blue.svg">
+<a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
+<a href="https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
+<a href="eye.zip"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
+<a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a>
+<a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
+<img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
+</p>
 </div>
 
 ## 最新动态
@@ -17,9 +28,9 @@
 - 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
 
   - 【界面】全面升级分类、检测及分割的前端标注界面体验，显著提升标注流畅度。
-  - 【分类】新增PPLCNet预训练模型，为分类功能提供预标注能力。
-  - 【检测】新增PicoDet预训练模型，为检测功能提供预标注能力。
-  - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分实例; (2)新增根据类别或根据实例选择颜色显示模式; (3)修复交互式分割localStorage超限问题。
+  - 【分类】新增 PPLCNet 预训练模型，为分类功能提供预标注能力。
+  - 【检测】新增 PicoDet 预训练模型，为检测功能提供预标注能力。
+  - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分实例; (2)新增根据类别或根据实例选择颜色显示模式; (3)修复交互式分割 localStorage 超限问题。
 
 - 【2022-08-18】 :fire: PaddleLabel 0.1 版本发布！
 
@@ -52,25 +63,25 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的�
 
 ## 使用教程
 
-- [安装指南](doc/CN/install.md)
-- [快速开始](doc/CN/quick_start.md)
+- [安装指南](CN/install.md)
+- [快速开始](CN/quick_start.md)
 
 ### 进行标注
 
-- [图像分类](doc/CN/project/classification.md)
-- [图像分类自动标注](doc/CN/project/classification_auto_label.md)
-- [目标检测](doc/CN/project/detection.md)
-- [目标检测自动标注](doc/CN/project/detection_auto_label.md)
-- [语义分割](doc/CN/project/semantic_segmentation.md)
-- [实例分割](doc/CN/project/instance_segmentation.md)
-- [交互式分割标注](doc/CN/project/interactive_segmentation.md)
+- [图像分类](CN/project/classification.md)
+- [图像分类自动标注](CN/project/classification_auto_label.md)
+- [目标检测](CN/project/detection.md)
+- [目标检测自动标注](CN/project/detection_auto_label.md)
+- [语义分割](CN/project/semantic_segmentation.md)
+- [实例分割](CN/project/instance_segmentation.md)
+- [交互式分割标注](CN/project/interactive_segmentation.md)
 
 ### 训练教程
 
-- [如何用 PaddleClas 进行训练](doc/CN/training/PdLabel_PdClas.md)
-- [如何用 PaddleDet 进行训练](doc/CN/training/PdLabel_PdDet.md)
-- [如何使用 PaddleSeg 进行训练](doc/CN/training/PdLabel_PdSeg.md)
-- [如何使用 PaddleX 进行训练](doc/CN/training/PdLabel_PdX.md)
+- [如何用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
+- [如何用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
+- [如何使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
+- [如何使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
 
 ### AI Studio 项目
 
@@ -87,7 +98,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的�
 
 ### 参与开发
 
-如果您愿意参与项目开发，请通过微信交流群联系开发团队，我们十分愿意接纳新的开发者到项目的开发和维护中。有关后端实现的详细信息，请参阅[开发者指南](doc/CN/developers_guide.md)。
+如果您愿意参与项目开发，请通过微信交流群联系开发团队，我们十分愿意接纳新的开发者到项目的开发和维护中。有关后端实现的详细信息，请参阅[开发者指南](CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

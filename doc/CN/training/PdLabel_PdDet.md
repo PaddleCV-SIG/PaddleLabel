@@ -1,3 +1,7 @@
+______________________________________________________________________
+
+## layout: default title: PaddleDetection 道路标志检测 parent: 进行训练 nav_order: 2
+
 # 道路标志检测：从 PaddleLabel 到 PaddleDetection
 
 PaddleLabel 标注数据+PaddleDetection 训练预测=快速完成一次目标检测的任务

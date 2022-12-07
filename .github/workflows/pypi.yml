@@ -17,11 +17,6 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: develop
 
-      - name: ls
-        run: |
-          ls .
-          pwd
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -68,7 +63,8 @@ jobs:
         run: |
           echo frontend $(git rev-parse --short HEAD) >> ../git_versions.html
 
-      - uses: actions/checkout@v3
+      - name: Checkout backend code
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -95,7 +91,31 @@ jobs:
         run: |
           mv ../dist/ ./paddlelabel/static/
           mv ../git_versions.html ./paddlelabel/static/
-
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0' # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          cache-version: 1 # Increment this number if you need to re-download cached gems
+          working-directory: doc/
+      
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v2
+      
+      - name: Jekyll build 
+        run: cd doc/; python prepare.py; bundle exec jekyll build # defaults output to '/_site'
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
+        with:
+          path: doc/_site/
+      
+      - name: Copy build doc to static
+        run: |
+          cp -r doc/_site ./paddlelabel/static/
+      
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
@@ -112,3 +132,14 @@ jobs:
       #   with:
       #     user: __token__
       #     password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy doc to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

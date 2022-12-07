@@ -1,5 +1,5 @@
 title: PaddleLabel
-description: YOUR DESCRIPTION
+description: An effective and flexible tool for data annotation
 theme: just-the-docs
 
 url: https://paddlecv-sig.github.io/
@@ -11,4 +11,4 @@ search_enabled: false
 heading_anchors: true
 
 aux_links: # remove if you don't want this link to appear on your pages
-  Template Repository: https://github.com/PaddleCV-SIG/PaddleLabel
+  项目 Github: https://github.com/PaddleCV-SIG/PaddleLabel

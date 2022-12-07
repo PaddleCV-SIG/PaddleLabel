@@ -12,3 +12,6 @@ heading_anchors: true
 
 aux_links: # remove if you don't want this link to appear on your pages
   项目 Github: https://github.com/PaddleCV-SIG/PaddleLabel
+
+plugins:
+  - jemoji

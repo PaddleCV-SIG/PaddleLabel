@@ -1,7 +1,3 @@
-______________________________________________________________________
-
-## title: Home layout: home
-
 中文 | [English](doc/EN/README.md)
 
 <div align="center">

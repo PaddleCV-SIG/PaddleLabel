@@ -27,18 +27,24 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
       - run: |
           pwd
           ls
-
+          echo ${{ steps.npm-cache-dir.outputs.dir }}
+      
       - name: Cache node_modules
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
         uses: actions/cache@v3
         env:
           cache-name: cache-node_modules
         with:
-          path: ./node_modules/
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}

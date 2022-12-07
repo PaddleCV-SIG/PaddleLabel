@@ -1,9 +1,4 @@
----
-layout: default
-title: 目标检测自动标注
-parent: 进行标注
-nav_order: 4
----
+
 
 # 目标检测自动标注
 

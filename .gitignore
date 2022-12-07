@@ -9,6 +9,7 @@ test.py
 *.test
 doc/_site
 doc/.jekyll-cache
+doc/Gemfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,10 +1,3 @@
----
-layout: home
-title: 首页
-nav_order: 0
-permalink: /
----
-
 中文 | [English](doc/EN/README.md)
 
 <div align="center">

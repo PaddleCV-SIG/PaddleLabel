@@ -24,6 +24,10 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,7 +41,7 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
-      - run: cd doc/; bundle exec jekyll build # defaults output to '/_site'
+      - run: cd doc/; python prepare.py; bundle exec jekyll build # defaults output to '/_site'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:

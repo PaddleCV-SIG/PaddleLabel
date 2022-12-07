@@ -1,9 +1,4 @@
----
-layout: default
-title: PaddleDetection 道路标志检测
-parent: 进行训练
-nav_order: 2
----
+
 
 # 道路标志检测：从 PaddleLabel 到 PaddleDetection
 

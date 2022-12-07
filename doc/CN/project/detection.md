@@ -1,9 +1,4 @@
----
-layout: default
-title: 目标检测标注
-parent: 进行标注
-nav_order: 3
----
+
 # 目标检测标注
 
 ![image](https://user-images.githubusercontent.com/29757093/182841361-eb53e726-fa98-4e02-88ba-30172efac8eb.png)

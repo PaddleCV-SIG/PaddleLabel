@@ -1,12 +1,6 @@
----
-layout: default
-title: 快速体验
-nav_order: 2
----
-
 # 快速体验
 
-为了帮助大家更快上手PaddleLabel，我们内置了一些示例项目用于快速体验PaddleLabel。当PaddleLabel网页打开后，点击首页左上角“项目样例”，即可进入样例选择界面。
+为了帮助大家更快上手 PaddleLabel，我们内置了一些示例项目用于快速体验 PaddleLabel。当 PaddleLabel 网页打开后，点击首页左上角“项目样例”，即可进入样例选择界面。
 
 ![WeChat Image_20221129064555](https://user-images.githubusercontent.com/29757093/204520880-10bb1f89-3d08-4b84-9a5d-31b9b4d923a1.png)
 

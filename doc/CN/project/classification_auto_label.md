@@ -1,9 +1,4 @@
----
-layout: default
-title: 图像分类自动标注
-parent: 进行标注
-nav_order: 2
----
+
 
 # 图像分类自动标注
 

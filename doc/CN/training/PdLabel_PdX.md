@@ -1,10 +1,3 @@
----
-layout: default
-title: PaddleX 分类/检测/分割
-parent: 进行训练
-nav_order: 4
----
-
 # 一、图像分类（快速在 PaddleLabel 标注的花朵分类数据集上展示如何应用 PaddleX 训练 MobileNetV3_ssld 网络）
 
 PaddleLabel 标注数据+PaddleX 训练预测=快速完成一次图像分类的任务

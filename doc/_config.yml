@@ -5,5 +5,10 @@ theme: just-the-docs
 url: https://paddlecv-sig.github.io/
 baseurl: "/PaddleLabel"
 
-# aux_links: # remove if you don't want this link to appear on your pages
-#   Template Repository: https://github.com/YOUR-USERNAME/YOUR-SITE-NAME
+permalink: pretty
+
+search_enabled: false
+heading_anchors: true
+
+aux_links: # remove if you don't want this link to appear on your pages
+  Template Repository: https://github.com/PaddleCV-SIG/PaddleLabel

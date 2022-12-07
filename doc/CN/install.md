@@ -1,9 +1,3 @@
----
-layout: default
-title: 安装
-nav_order: 1
----
-
 # 安装说明
 
 为避免环境问题，建议首先创建一个新的虚拟环境
@@ -13,7 +7,7 @@ conda create -n paddlelabel python=3.10
 conda activate paddlelabel
 ```
 
-您可以通过以下三种方式中**任意一种**安装PaddleLabel，其中通过 pip 安装最简单。
+您可以通过以下三种方式中**任意一种**安装 PaddleLabel，其中通过 pip 安装最简单。
 
 ## 通过 pip 安装
 
@@ -81,7 +75,7 @@ mkdir paddlelabel/static/
 cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
 ```
 
-4. 安装PaddleLabel
+4. 安装 PaddleLabel
 
 ```shell
 # 在PaddleLabel目录下
@@ -105,4 +99,4 @@ PaddleLabel 的默认网址为[http://localhost:17995](http://localhost:17995)�
 paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局域网
 ```
 
-启动后PaddleLabel会自动在浏览器中打开网页，推荐使用Chrome。
+启动后 PaddleLabel 会自动在浏览器中打开网页，推荐使用 Chrome。

@@ -1,9 +1,4 @@
----
-layout: default
-title: 图像分类标注
-parent: 进行标注
-nav_order: 1
----
+
 
 # 图像分类标注
 

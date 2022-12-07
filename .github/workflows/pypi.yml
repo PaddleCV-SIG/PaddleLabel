@@ -1,5 +1,10 @@
 name: Publish PaddleLabel to pypi
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 on: [workflow_dispatch]
 
 jobs:
@@ -27,7 +32,7 @@ jobs:
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
         uses: actions/cache@v3
         env:
-          cache-name: cache-node_modules2
+          cache-name: cache-node_modules
         with:
           path: ./node_modules/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
@@ -39,7 +44,7 @@ jobs:
           npm i --global yarn
 
       - name: Install node_modules
-        # if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: |
           yarn
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
@@ -91,31 +96,32 @@ jobs:
         run: |
           mv ../dist/ ./paddlelabel/static/
           mv ../git_versions.html ./paddlelabel/static/
-      
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0' # Not needed with a .ruby-version file
+          ruby-version: "3.0" # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 1 # Increment this number if you need to re-download cached gems
           working-directory: doc/
-      
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
-      
-      - name: Jekyll build 
-        run: cd doc/; python prepare.py; bundle exec jekyll build # defaults output to '/_site'
-      
+
+      - name: Jekyll build
+        run: |
+          cd doc/
+          python prepare.py # insert headers, change md relative link path to html ... 
+          bundle exec jekyll build \
+            --destination ../paddlelabel/static/doc/ \
+            --baseurl "/static/doc"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: doc/_site/
-      
-      - name: Copy build doc to static
-        run: |
-          cp -r doc/_site ./paddlelabel/static/
-      
+
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel

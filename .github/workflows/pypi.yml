@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      
+      - run: pwd
 
       - name: Cache node_modules
         id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
@@ -50,13 +52,6 @@ jobs:
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
           ls ./node_modules/
 
-
-      # - run: |
-      #     # ls -la
-      #     ls -la node_modules
-      #     echo "======"
-      #     ls -la node_modules/.bin
-      #     echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Build frontend
         run: |

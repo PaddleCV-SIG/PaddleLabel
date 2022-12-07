@@ -3,7 +3,7 @@ repos:
     rev: v4.3.0
     hooks:
       - id: no-commit-to-branch
-        args: [--branch, stable]
+        args: [--pattern, ^v]
       - id: check-added-large-files
         args: [--maxkb=16]
       - id: check-case-conflict
@@ -23,7 +23,7 @@ repos:
     rev: 0.7.16 # Use the ref you want to point at
     hooks:
       - id: mdformat
-        exclude: doc/CN/project/detection.md
+        exclude: doc/CN/project/detection.md # messes up image['file_name']
   - repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:

@@ -21,15 +21,13 @@ pip install --upgrade paddlelabel
 
 ## 下载最新开发版
 
-<details>
-<summary>详细步骤</summary>
-<br>
+<details> <summary markdown="span">详细步骤</summary>
 PaddleLabel 团队会不定期在项目更新后通过 Github Action 构建反映最新版代码的安装包。这一安装包未经过全面测试，可能包含一些问题，仅推荐为尝试最新版本使用。其中可能修复了一些 pypi 版本中存在的问题和进行了一些性能提升。
 
 下载方式为
 
 1. 访问 [Action 执行记录网页](https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/pypi.yml)
-1. 选择最上面（最新）的一次执行，点击进入
+2. 选择最上面（最新）的一次执行，点击进入
 
 ![1](https://user-images.githubusercontent.com/29757093/201906327-18444fcb-57b7-4e5f-8e00-62bf1e3b49b7.png)
 
@@ -47,10 +45,7 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.2.0-py3-none-any.whl 
 
 ## 通过源码安装
 
-<details>
-<summary>详细步骤</summary>
-<br>
-
+<details> <summary markdown='span'>详细步骤</summary>
 1. 首先需要将后端代码（本项目）克隆到本地
 
 ```shell

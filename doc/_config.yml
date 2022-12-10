@@ -15,3 +15,9 @@ aux_links: # remove if you don't want this link to appear on your pages
 
 plugins:
   - jemoji
+
+kramdown:
+  parse_block_html: true
+  # syntax_highlighter_opts:
+  #   block:
+  #     line_numbers: true

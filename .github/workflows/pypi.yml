@@ -34,7 +34,7 @@ jobs:
         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Cache node modules
-        id: node-modules-cache 
+        id: node-modules-cache
         uses: actions/cache@v3
         env:
           cache-name: cached-node-modules
@@ -48,7 +48,7 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-  
+
       - name: Install yarn
         run: |
           npm i --global yarn
@@ -118,7 +118,7 @@ jobs:
       - name: Jekyll build
         run: |
           cd doc/
-          python prepare.py # insert headers, change md relative link path to html ... 
+          python prepare.py # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
             --destination ../paddlelabel/static/doc/ \
             --baseurl "/static/doc"

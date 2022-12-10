@@ -6,6 +6,7 @@ import tifffile as tif
 import numpy as np
 import cv2
 from pycocotoolse.coco import COCO
+from pathlib import Path
 
 from paddlelabel.task.util import create_dir, listdir, image_extensions
 from paddlelabel.task.base import BaseTask
@@ -116,9 +117,8 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
     if image_path is not None:
         img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
         if img.shape[:3] != ann.shape[:3]:
-            abort(
+            raise RuntimeError(
                 f"Image {img.shape[:3]} and annotation {ann.shape[:3]} has different shape, please check image {image_path} and annotation {annotation_path}",
-                500,
             )
     frontend_id = 1
     anns = []
@@ -130,14 +130,11 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
             label_mask = np.all(ann == color, axis=2)
             ann_gray[label_mask == 1] = label.id
             ann[label_mask == 1] = 0
-
         if ann.sum() != 0:
             ann = ann.reshape((-1, ann.shape[-1]))
-            abort(
-                f"Mask {annotation_path} contains unspecified labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?",
-                404,
+            raise RuntimeError(
+                f"Pesudo color mask {annotation_path} contains color that's not spedified in labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?"
             )
-
         ann = ann_gray
 
     for label in labels:
@@ -222,6 +219,7 @@ class InstanceSegmentation(BaseTask):
         self.importers = {
             "mask": self.mask_importer,
             "polygon": self.coco_importer,
+            "eiseg": self.eiseg_importer,
         }
         self.exporters = {
             "mask": self.mask_exporter,
@@ -485,6 +483,59 @@ class InstanceSegmentation(BaseTask):
             with open(osp.join(export_dir, fname), "w") as outf:
                 print(json.dumps(outcoco.dataset), file=outf)
 
+    def eiseg_importer(
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    ):
+        project = self.project
+        if data_dir is None:
+            data_dir = project.data_dir
+        data_paths = [Path(p) for p in listdir(data_dir, filters=filters)]
+        json_paths = listdir(data_dir, filters={"exclude_prefix": ["."], "include_postfix": [".json"]})
+        json_paths = [Path(p) for p in json_paths]
+
+        def match_by_base_name(data_path, ann_paths, allow_empty=True, allow_multiple=False):
+            base_name = data_path.name.split(".")[0]
+            ann_path = filter(lambda p: p.name.split(".")[0] == base_name, ann_paths)
+            ann_path = list(ann_path)
+            if not allow_multiple and len(ann_path) > 1:
+                ann_path = [str(p) for p in ann_path]
+                raise RuntimeError(f"Multiple annotation files {','.join(ann_path)} matche image file {str(data_path)}")
+            if not allow_empty and len(ann_path) == 0:
+                raise RuntimeError(f"No annotation file matches image file {str(data_path)}")
+            return ann_path
+
+        for data_path in data_paths:
+            s = cv2.imread(str(data_dir / data_path)).shape[:2]
+            size = ",".join(str(t) for t in s)
+            json_path = match_by_base_name(data_path, json_paths)
+
+            if len(json_path) == 0:
+                self.add_task([{"path": data_path, "size": size}])
+            else:
+                height, width = s
+                json_path = json_path[0]
+                anns_d = json.loads((data_dir / json_path).read_text())
+                anns = []
+                for ann in anns_d:
+                    # ['name', 'labelIdx', 'color', 'points']
+                    res = [wh for p in ann["points"] for wh in p]
+                    for idx in range(0, len(res), 2):
+                        res[idx] -= width / 2
+                        res[idx + 1] -= height / 2
+                    anns.append(
+                        {
+                            "label_name": ann["name"],
+                            "result": ",".join(str(r) for r in res),
+                            "type": "polygon",
+                            "frontend_id": len(anns),
+                        }
+                    )
+                self.add_task([{"path": data_path, "size": size}], [anns])
+                json_paths.remove(json_path)
+        db.session.commit()
+
 
 class SemanticSegmentation(InstanceSegmentation):
     def __init__(self, project, data_dir=None, is_export=False):
@@ -492,6 +543,7 @@ class SemanticSegmentation(InstanceSegmentation):
         self.importers = {
             "mask": self.mask_importer,
             "polygon": self.coco_importer,
+            "eiseg": self.eiseg_importer,
         }
         self.exporters = {
             "mask": self.mask_exporter,
@@ -525,7 +577,7 @@ class SemanticSegmentation(InstanceSegmentation):
         # 2. import records
         data_paths = listdir(data_dir, filters)
         if len(data_paths) == 0:
-            abort("No image found. Did you forget to put images under JPEGImages folder?", 500)
+            abort("No image found. Did you put images under JPEGImages folder?", 500)
 
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]

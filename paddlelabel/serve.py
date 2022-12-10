@@ -24,7 +24,7 @@ def index():
 
 
 @connexion_app.app.route("/static/doc/")
-def index():
+def doc_index():
     return "", 301, {"Location": "/static/doc/index.html"}
 
 

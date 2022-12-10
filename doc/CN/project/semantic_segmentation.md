@@ -2,17 +2,20 @@
 
 ![image](https://user-images.githubusercontent.com/29757093/182841499-85b9df06-f793-4831-b3f5-54c013ce531c.png)
 
-PaddleLabel 支持多边形和掩膜两种语义分割标注任务。
+PaddleLabel 支持多边形和掩膜两种分语义割标注任务。
 
-## <div id="test3">数据结构</div>
+## 数据结构
 
 #### 掩膜格式
 
-**新建掩膜格式标注任务时，待标注的图片放于`JPEGImages`文件夹下，数据集路径填写`JPEGImages`上层目录`Dataset Path`即可。此处新建方式与其他任务有所区别，请按照要求进行创建。**
-标注完成后导出示例格式如下：
+因为掩膜格式数据集的待标注图片和掩膜一般都是图片格式，所以二者需要通过所在文件夹进行区分。**创建此类型标注项目时，请将待标注图片放在`JPEGImages`文件夹中，将已有标签放在`Annotations`文件夹中，数据集路径填写二者的上层目录（下方示例中的`数据集路径`）。**
+
+此类型项目可以导入EISeg保存的灰度和伪彩色掩膜。不过EISeg保存伪彩色掩膜时文件名格式为 `图片名_pseudo.png` ，导入前需要将伪彩色掩膜重命名为 `图片名.png`。
+
+示例格式如下：
 
 ```shell
-Dataset Path
+数据集路径
 ├── Annotations
 │   ├── A0001.png
 │   ├── B0001.png
@@ -36,6 +39,7 @@ optic_disk - 128 0 0 // for pesudo color mask, color for each label must be spec
 #### 多边形格式
 
 新建掩多边形式标注任务时，输入待标注图片所在文件目录即可。
+
 标注完成后，导出示例格式如下：
 
 ```shell

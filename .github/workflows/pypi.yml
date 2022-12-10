@@ -1,10 +1,5 @@
 name: Publish PaddleLabel to pypi
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 on: [workflow_dispatch]
 
 jobs:

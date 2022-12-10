@@ -63,6 +63,9 @@ jobs:
 
       - name: Build frontend
         run: |
+          pwd
+          ls
+          ls /home/runner/work/PaddleLabel/PaddleLabel/
           du -h ./node_modules/
           npm run build
 

@@ -218,12 +218,12 @@ class InstanceSegmentation(BaseTask):
         super().__init__(project, skip_label_import=True, data_dir=data_dir, is_export=is_export)
         self.importers = {
             "mask": self.mask_importer,
-            "polygon": self.coco_importer,
+            "coco": self.coco_importer,
             "eiseg": self.eiseg_importer,
         }
         self.exporters = {
             "mask": self.mask_exporter,
-            "polygon": self.coco_exporter,
+            "coco": self.coco_exporter,
         }
         # self.default_importer = self.coco_importer
         self.default_exporter = self.coco_exporter
@@ -542,12 +542,12 @@ class SemanticSegmentation(InstanceSegmentation):
         super().__init__(project, data_dir=data_dir, is_export=is_export)
         self.importers = {
             "mask": self.mask_importer,
-            "polygon": self.coco_importer,
+            "coco": self.coco_importer,
             "eiseg": self.eiseg_importer,
         }
         self.exporters = {
             "mask": self.mask_exporter,
-            "polygon": self.coco_exporter,
+            "coco": self.coco_exporter,
         }
         self.default_importer = self.mask_importer
         self.default_exporter = self.mask_exporter

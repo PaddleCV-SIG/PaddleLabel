@@ -53,7 +53,8 @@ jobs:
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: |
           yarn
-          # ls ./node_modules/
+          ls ./node_modules/
+          pwd
           # echo "=============================="
           # ls ~/.npm
 

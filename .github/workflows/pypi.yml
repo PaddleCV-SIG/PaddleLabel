@@ -63,6 +63,7 @@ jobs:
 
       - name: Build frontend
         run: |
+          du -h ./node_modules/
           npm run build
 
       - name: Move built frontend

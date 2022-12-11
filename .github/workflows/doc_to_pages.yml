@@ -77,6 +77,8 @@ jobs:
 
       - name: Jekyll build
         run: |
+          echo ${{ inputs.source }}
+          echo ${{ inputs.source }}prepare.py
           python ${{ inputs.source }}prepare.py # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
             --source ${{ inputs.source }}

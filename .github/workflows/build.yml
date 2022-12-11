@@ -17,8 +17,8 @@ jobs:
       - name: Checkout backend code
         uses: actions/checkout@v3
 
-      - name: Download artifact
-        id: download-artifact
+      - name: Download built frontend
+        id: download-built-frontend
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
@@ -43,25 +43,32 @@ jobs:
         run: |
           echo backend $(git rev-parse --short HEAD) >> ./paddlelabel/static/git_versions.html
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.0" # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 1 # Increment this number if you need to re-download cached gems
-          working-directory: doc/
+      # - uses: dorny/paths-filter@v2
+      #   id: changes
+      #   with:
+      #     filters: |
+      #       doc:
+      #         - 'doc/**'
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v2
+      # - name: Setup Ruby
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: "3.0" # Not needed with a .ruby-version file
+      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      #     cache-version: 1 # Increment this number if you need to re-download cached gems
+      #     working-directory: doc/
 
-      - name: Jekyll build
-        run: |
-          cd doc/
-          python prepare.py # insert headers, change md relative link path to html ...
-          bundle exec jekyll build \
-            --destination ../paddlelabel/static/doc/ \
-            --baseurl "/static/doc"
+      # - name: Setup Pages
+      #   id: pages
+      #   uses: actions/configure-pages@v2
+
+      # - name: Jekyll build
+      #   run: |
+      #     cd doc/
+      #     python prepare.py # insert headers, change md relative link path to html ...
+      #     bundle exec jekyll build \
+      #       --destination ../paddlelabel/static/doc/ \
+      #       --baseurl "/static/doc"
 
       - name: Build package
         run: |

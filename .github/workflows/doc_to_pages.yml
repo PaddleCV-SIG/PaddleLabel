@@ -1,7 +1,7 @@
-name: Doc to Pages
+name: Doc to Pages -
 
 on:
-  [workflow_dispatch, workflow_call]:
+  workflow_call:
     inputs:
       source: # id of input
         description: "Path to doc folder"
@@ -41,23 +41,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      doc_changed: ${{ steps.doc_changed.outputs.doc }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: doc_changed
+        with:
+          filters: |
+            doc:
+              - 'doc/**'
+
   # Build job
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.11"]
-
+    needs: check
+    if: needs.check.outputs.doc_changed == 'true'
     steps:
       - uses: actions/checkout@v3
-
-      # - uses: dorny/paths-filter@v2
-      #   id: changes
-      #   with:
-      #     filters: |
-      #       doc:
-      #         - 'doc/**'
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:

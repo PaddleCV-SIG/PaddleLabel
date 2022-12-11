@@ -7,13 +7,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  update_doc_build:
+    call-workflow-passing-data:
+      uses: PaddleCV-SIG/PaddleLabel/.github/workflows/workflow-B.yml@main
+      with:
+        baseurl: "/static/doc/"
+
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.10"]
-
+    needs: update_doc_build
     steps:
+
       - name: Checkout backend code
         uses: actions/checkout@v3
 

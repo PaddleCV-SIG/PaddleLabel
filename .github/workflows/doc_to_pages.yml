@@ -52,11 +52,13 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: doc_changed
         with:
+          list-files: shell
+          base: develop
           filters: |
             doc:
               - 'doc/**'
-          list-files: shell
-          base: "develop"
+      - name: doc changed result
+        run: echo ${{ steps.doc_changed.outputs.doc }}
 
   # Build job
   build:

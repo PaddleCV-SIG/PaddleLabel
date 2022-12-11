@@ -40,8 +40,9 @@ jobs:
           workflow_conclusion: success
           branch: develop
           name: github-pages
-          path: ./paddlelabel/static/doc/
           search_artifacts: true
+          path: ./paddlelabel/static/doc/
+          skip_unpack: false
 
         # uses: actions/download-artifact@v3
         # with:

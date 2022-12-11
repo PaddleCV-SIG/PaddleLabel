@@ -65,7 +65,7 @@ jobs:
       matrix:
         python-version: ["3.11"]
     needs: check
-    if: echo ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
+    if: ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
     steps:
       - run: echo ${{ needs.check.outputs.doc_changed == 'true' }}
       - run: echo ${{ inputs.force_regen }}

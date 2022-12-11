@@ -112,7 +112,7 @@ jobs:
   # Deployment job
   deploy:
     needs: build
-    if: inputs.deploy == 'true'
+    if: inputs.deploy
     environment:
       name: github-pages
       url: steps.deployment.outputs.page_url

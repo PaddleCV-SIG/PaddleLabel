@@ -54,6 +54,7 @@ jobs:
           filters: |
             doc:
               - 'doc/**'
+          list-files: shell
       - run: echo ${{ steps.doc_changed.outputs.doc }}
 
   # Build job

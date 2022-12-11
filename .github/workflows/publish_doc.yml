@@ -1,0 +1,15 @@
+name: Publish doc to pages
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  publish_doc:
+    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
+    with:
+      baseurl: "/PaddleLabel"
+      deploy: true
+      force_regen: true

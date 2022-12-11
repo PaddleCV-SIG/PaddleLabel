@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Build doc site
-        uses: ../actions/doc_build.yml
+        uses: ./.github/actions/doc_build.yml
         with:
           - upload: true
 

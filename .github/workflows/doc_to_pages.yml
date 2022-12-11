@@ -53,6 +53,7 @@ jobs:
           filters: |
             doc:
               - 'doc/**'
+      - run: echo ${{ steps.doc_changed.outputs.doc }}
 
   # Build job
   build:

@@ -35,10 +35,17 @@ jobs:
           path: ./paddlelabel/static/
 
       - name: Download built doc static site
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow_conclusion: success
+          branch: develop
           name: github-pages
           path: ./paddlelabel/static/doc/
+
+        # uses: actions/download-artifact@v3
+        # with:
+        #   name: github-pages
+        #   path: ./paddlelabel/static/doc/
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4

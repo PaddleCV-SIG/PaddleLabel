@@ -1,0 +1,68 @@
+name: "Build doc site"
+description: "Generate a static site from doc folder with Jekyll"
+inputs:
+  input: # id of input
+    description: "Path to doc folder"
+    required: false
+    default: "./doc/"
+  output:
+    description: "Path to output generated site"
+    required: false
+    default: "./_site"
+  baseurl:
+    description: "baseurl of generated site"
+    required: false
+    default: ""
+  upload:
+    description: "Whether to save generated site as artifact"
+    required: false
+    default: false
+
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    # - uses: dorny/paths-filter@v2
+    #   id: changes
+    #   with:
+    #     filters: |
+    #       doc:
+    #         - 'doc/**'
+    - id: pwd
+      run: echo "path=$(pwd)" >> ${GITHUB_OUTPUT}
+
+    - name: Checkout backend code
+      uses: actions/checkout@v3
+      repo: PaddleCV-SIG/PaddleLabel/
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "3.0" # Not needed with a .ruby-version file
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+        cache-version: 1 # Increment this number if you need to re-download cached gems
+        working-directory: doc/
+
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v2
+
+    - name: Jekyll build
+      run: |
+        pwd
+        cd ${{ inputs.input }}
+        python prepare.py # insert headers, change md relative link path to html ...
+        bundle exec jekyll build \
+          --destination ${{ inputs.output }} \
+          --baseurl ${{ inputs.baseurl }}
+        cd ${{ steps.pwd.outputs.path }}
+        pwd
+
+    - name: Upload artifact
+      if: ${{  }}
+      uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
+      with:
+        path: doc/_site/

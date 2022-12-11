@@ -25,34 +25,38 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
 
-      # - name: Get npm cache directory
-      #   id: npm-cache-dir
-      #   shell: bash
-      #   run: |
-      #     echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      #     echo "dir=$(npm config get cache)"
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: |
+          echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+          echo "dir=$(npm config get cache)"
 
-      # - name: Get yarn cache directory
-      #   id: yarn-cache-dir
-      #   run: |
-      #     echo "dir=$(yarn cache dir)" >> ${GITHUB_OUTPUT}
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: |
+          echo "dir=$(yarn cache dir)" >> ${GITHUB_OUTPUT}
 
-      # - name: Cache node modules
-      #   id: node-modules-cache
-      #   uses: actions/cache@v3
-      #   env:
-      #     cache-name: cached-node-modules
-      #   with:
-      #     # npm cache files are stored in `~/.npm` on Linux/macOS
-      #     path: |
-      #       ${{ steps.npm-cache-dir.outputs.dir }}
-      #       ${{ steps.yarn-cache-dir.outputs.dir }}
+      - name: Cache yarn npm cache
+        uses: actions/cache@v3
+        id: cache-yarn-npm-cache
+        with:
+        path: |
+          ${{ steps.yarn-cache-dir.outputs.dir }}
+          ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-yarn-npm-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-yarn-npm-
 
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-node_modules-
 
       - name: Install yarn
         run: |
@@ -60,16 +64,14 @@ jobs:
           echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Install node_modules
-        # if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        if: |
+          steps.cache-yarn-npm-cache.outputs.cache-hit != 'true' ||
+          steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           yarn --prefer-offline
 
       - name: Build frontend
         run: |
-          pwd
-          ls
-          ls /home/runner/work/PaddleLabel/PaddleLabel/
-          du -h ./node_modules/
           npm run build
 
       - name: Move built frontend

@@ -1,12 +1,34 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Doc to Pages
+name: Generate pages from doc
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-  push:
-    branches:
-      - develop
+  workflow_call:
+    inputs:
+      source: # id of input
+        description: "Path to doc folder"
+        required: false
+        default: "./doc/"
+        type: string
+      destination:
+        description: "Path to output generated site"
+        required: false
+        default: "./_site/"
+        type: string
+      baseurl:
+        description: "baseurl of generated site"
+        required: false
+        default: ""
+        type: string
+      deploy:
+        description: "Whether to save generated site as artifact"
+        required: false
+        default: true
+        type: boolean
+      force_regen:
+        description: "Force regenerate"
+        required: false
+        default: false
+        type: boolean
+
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -16,30 +38,76 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: ${{ inputs.baseurl }}
   cancel-in-progress: true
 
 jobs:
+  # only rebuild if files under doc/ folder changed
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      doc_changed: ${{ steps.doc_changed.outputs.doc }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: doc_changed
+        with:
+          filters: |
+            doc:
+              - 'doc/**'
+          list-files: shell
+          base: "develop"
+
   # Build job
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.11"]
-
+    needs: check
+    if: echo ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
     steps:
-      - name: Build doc site
-        uses: actions/doc_build
+      - run: echo ${{ needs.check.outputs.doc_changed == 'true' }}
+      - run: echo ${{ inputs.force_regen }}
+      - run: echo ${{ inputs.force_regen == 'true' }}
+      - run: echo ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
+      - uses: actions/checkout@v3
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          - upload: true
+          ruby-version: "3.0" # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          cache-version: 1 # Increment this number if you need to re-download cached gems
+          working-directory: ${{ inputs.source }}
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v2
+
+      - name: Jekyll build
+        run: |
+          dst=$(pwd)/${{ inputs.destination }}
+          cd ${{ inputs.source }}
+          python prepare.py # insert headers, change md relative link path to html ...
+          bundle exec jekyll build \
+            --destination $dst \
+            --baseurl ${{ inputs.baseurl }}
+          echo $dst
+          cd -
+      - name: Upload artifact
+        if: inputs.deploy == 'true'
+        uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
+        with:
+          path: ${{ inputs.destination }}
 
   # Deployment job
   deploy:
+    needs: build
+    if: ${{ inputs.deploy == 'true' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

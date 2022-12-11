@@ -44,7 +44,7 @@ jobs:
           path: ./paddlelabel/static/doc/
 
       - name: Untar doc site
-        run:
+        run: |
           ls ./paddlelabel/static/doc/
           cd ./paddlelabel/static/doc/
           tar -xvf artifact.tar

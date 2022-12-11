@@ -8,10 +8,9 @@ on:
 
 jobs:
   update_doc_build:
-    call-workflow-passing-data:
-      uses: PaddleCV-SIG/PaddleLabel/.github/workflows/workflow-B.yml@main
-      with:
-        baseurl: "/static/doc/"
+    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/workflow-B.yml@main
+    with:
+      baseurl: "/static/doc/"
 
   build:
     runs-on: ubuntu-latest

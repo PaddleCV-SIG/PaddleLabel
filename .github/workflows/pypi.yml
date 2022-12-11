@@ -45,8 +45,7 @@ jobs:
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
             ${{ steps.yarn-cache-dir.outputs.dir }}
-            # /home/runner/work/PaddleLabel/PaddleLabel/node_modules
-            # '**/node_modules'
+            **/node_modules
 
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |

@@ -2,10 +2,6 @@
 name: Deploy doc to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  # push:
-  #   branches: ["main"]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -31,6 +27,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -38,10 +35,17 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 1 # Increment this number if you need to re-download cached gems
           working-directory: doc/
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
-      - run: cd doc/; python prepare.py; bundle exec jekyll build # defaults output to '/_site'
+
+      - name: build
+        run: |
+          cd doc/
+          python prepare.py
+          bundle exec jekyll build # defaults output to '/_site'
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:

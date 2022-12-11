@@ -1,4 +1,4 @@
-name: Publishing step
+name: Publishing Latest built package to pypi
 
 on: [workflow_dispatch]
 
@@ -27,6 +27,5 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
-          # password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
-          password: "asdfasdf"
+          password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
           verbose: true

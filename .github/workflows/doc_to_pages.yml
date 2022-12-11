@@ -120,7 +120,7 @@ jobs:
           ruby-version: "3.0" # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 1 # Increment this number if you need to re-download cached gems
-          # working-directory: doc/
+          working-directory: doc/
 
       - name: Setup Pages
         id: pages
@@ -134,6 +134,7 @@ jobs:
           bundle exec jekyll build \
             --destination $dst \
             --baseurl ${{ inputs.baseurl }}
+          echo $dst
           cd -
       - name: Upload artifact
         if: ${{ inputs.upload == 'true' }}

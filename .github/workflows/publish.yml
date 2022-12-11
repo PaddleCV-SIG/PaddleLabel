@@ -1,4 +1,4 @@
-name: Publishing step
+name: Publishing Latest built package to pypi
 
 on: [workflow_dispatch]
 
@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: pypi.yml
+          workflow_conclusion: success
+          branch: develop
           name: PaddleLabel_built_package
           path: |
             dist
+
       - run: |
           pwd
           ls
@@ -21,6 +27,5 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
-          # password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
-          password: "asdfasdf"
+          password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
           verbose: true

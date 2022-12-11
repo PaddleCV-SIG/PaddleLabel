@@ -132,7 +132,7 @@ jobs:
           cd ${{ inputs.source }}
           python prepare.py # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
-            --destination ${{ dst }} \
+            --destination $dst \
             --baseurl ${{ inputs.baseurl }}
           cd -
       - name: Upload artifact

@@ -4,6 +4,33 @@ on:
   push:
     branches:
       - develop
+    inputs:
+      source: # id of input
+        description: "Path to doc folder"
+        required: false
+        default: "./doc/"
+        type: string
+      destination:
+        description: "Path to output generated site"
+        required: false
+        default: "./_site/"
+        type: string
+      baseurl:
+        description: "baseurl of generated site"
+        required: false
+        default: ""
+        type: string
+      upload:
+        description: "Whether to save generated site as artifact"
+        required: false
+        default: true
+        type: boolean
+      force_run:
+        description: "Force regenerate"
+        required: false
+        default: false
+        type: boolean
+  workflow_dispatch:
   workflow_call:
     inputs:
       source: # id of input

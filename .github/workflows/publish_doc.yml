@@ -12,3 +12,4 @@ jobs:
     with:
       baseurl: "/PaddleLabel"
       deploy: true
+      force: true

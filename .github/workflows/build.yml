@@ -1,4 +1,4 @@
-name: Publish PaddleLabel to pypi
+name: Build PaddleLabel package
 
 on: [workflow_dispatch]
 
@@ -17,24 +17,36 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: develop
 
-      - name: ls
-        run: |
-          ls .
-          pwd
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          # cache: "npm"
 
-      - name: Cache node_modules
-        id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: |
+          echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+          echo "dir=$(npm config get cache)"
+
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: |
+          echo "dir=$(yarn cache dir)" >> ${GITHUB_OUTPUT}
+
+      - name: Cache node modules
+        id: node-modules-cache
         uses: actions/cache@v3
         env:
-          cache-name: cache-node_modules2
+          cache-name: cached-node-modules
         with:
-          path: ./node_modules/
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            **/node_modules
+
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -42,22 +54,20 @@ jobs:
       - name: Install yarn
         run: |
           npm i --global yarn
+          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Install node_modules
         # if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: |
           yarn
-          echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
-      # - run: |
-      #     # ls -la
-      #     ls -la node_modules
-      #     echo "======"
-      #     ls -la node_modules/.bin
-      #     echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH- uses: actions/checkout@v3
 
       - name: Build frontend
         run: |
+          pwd
+          ls
+          ls /home/runner/work/PaddleLabel/PaddleLabel/
+          du -h ./node_modules/
           npm run build
 
       - name: Move built frontend
@@ -68,7 +78,8 @@ jobs:
         run: |
           echo frontend $(git rev-parse --short HEAD) >> ../git_versions.html
 
-      - uses: actions/checkout@v3
+      - name: Checkout backend code
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -96,6 +107,26 @@ jobs:
           mv ../dist/ ./paddlelabel/static/
           mv ../git_versions.html ./paddlelabel/static/
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0" # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          cache-version: 1 # Increment this number if you need to re-download cached gems
+          working-directory: doc/
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v2
+
+      - name: Jekyll build
+        run: |
+          cd doc/
+          python prepare.py # insert headers, change md relative link path to html ...
+          bundle exec jekyll build \
+            --destination ../paddlelabel/static/doc/ \
+            --baseurl "/static/doc"
+
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
@@ -106,9 +137,3 @@ jobs:
           name: PaddleLabel_built_package
           path: |
             dist
-
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}

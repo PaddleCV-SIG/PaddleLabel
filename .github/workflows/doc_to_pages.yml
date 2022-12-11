@@ -1,4 +1,4 @@
-name: Doc to Pages -
+name: Doc to Pages
 
 on:
   workflow_call:

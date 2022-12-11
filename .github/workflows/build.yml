@@ -41,7 +41,7 @@ jobs:
           branch: develop
           name: github-pages
           path: ./paddlelabel/static/doc/
-          check_artifacts: true
+          search_artifacts: true
 
         # uses: actions/download-artifact@v3
         # with:

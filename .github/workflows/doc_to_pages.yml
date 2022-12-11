@@ -65,7 +65,7 @@ jobs:
       matrix:
         python-version: ["3.11"]
     needs: check
-    if: ${{ needs.check.outputs.doc_changed }} == 'true'
+    if: needs.check.outputs.doc_changed == 'true'
     steps:
       - run: echo ${{ needs.check.outputs.doc_changed }}
       - uses: actions/checkout@v3

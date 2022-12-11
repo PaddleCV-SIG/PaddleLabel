@@ -20,7 +20,7 @@ PaddleLabel 提供图像检测自动标注功能，用户只需要在`自动推�
 
 ```shell
 # 创建虚拟环境
-conda create -n paddlelabel python=3.9
+conda create -n paddlelabel python=3.10
 conda activate paddlelabel
 ```
 

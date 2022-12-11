@@ -9,7 +9,7 @@ on:
       force_regen:
         description: "Force the jekyll generation step"
         required: false
-        default: false
+        default: true
         type: boolean
 
 

@@ -37,6 +37,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: github-pages
+          path: ./paddlelabel/static/doc/
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4

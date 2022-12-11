@@ -61,7 +61,7 @@ jobs:
       matrix:
         python-version: ["3.11"]
     needs: check
-    if: needs.check.outputs.doc_changed == 'true'
+    if: ${{ needs.check.outputs.doc_changed }} == 'true'
     steps:
       - uses: actions/checkout@v3
       - name: Setup Ruby

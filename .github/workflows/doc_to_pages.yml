@@ -56,7 +56,7 @@ jobs:
         id: doc_changed
         with:
           list-files: shell
-          base: HEAD
+          base: HEAD~1
           filters: |
             doc:
               - 'doc/**'

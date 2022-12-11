@@ -5,6 +5,13 @@ on:
     branches:
       - develop
   workflow_dispatch:
+    inputs:
+      force_regen:
+        description: "Force the jekyll generation step"
+        required: false
+        default: false
+        type: boolean
+
 
 jobs:
   publish_doc:
@@ -12,4 +19,4 @@ jobs:
     with:
       baseurl: "/PaddleLabel"
       deploy: true
-      force_regen: true
+      force_regen: inputs.force_regen

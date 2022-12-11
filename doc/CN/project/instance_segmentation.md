@@ -103,7 +103,7 @@ category{
 
 ### 数据导入
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](#test4)组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，实例分割的参考数据集位于`~/.paddlelabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考数据结构组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，实例分割的参考数据集位于`~/.paddlelabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 

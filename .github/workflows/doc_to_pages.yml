@@ -1,4 +1,4 @@
-name: Doc to Pages
+name: Generate pages from doc
 
 on:
   workflow_call:
@@ -23,7 +23,7 @@ on:
         required: false
         default: true
         type: boolean
-      force_run:
+      force_regen:
         description: "Force regenerate"
         required: false
         default: false
@@ -56,7 +56,6 @@ jobs:
               - 'doc/**'
           list-files: shell
           base: "develop"
-      - run: echo ${{ steps.doc_changed.outputs.doc }}
 
   # Build job
   build:
@@ -65,7 +64,7 @@ jobs:
       matrix:
         python-version: ["3.11"]
     needs: check
-    if: needs.check.outputs.doc_changed == 'true'
+    if: ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
     steps:
       - run: echo ${{ needs.check.outputs.doc_changed }}
       - uses: actions/checkout@v3
@@ -92,7 +91,7 @@ jobs:
           echo $dst
           cd -
       - name: Upload artifact
-        if: ${{ inputs.deploy == 'true' }}
+        if: inputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: ${{ inputs.destination }}
@@ -100,7 +99,7 @@ jobs:
   # Deployment job
   deploy:
     needs: build
-    if: ${{ inputs.deploy == 'true' }}
+    if: inputs.deploy == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update_doc_build:
+  publish_doc:
     uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
     with:
       baseurl: "/PaddleLabel"

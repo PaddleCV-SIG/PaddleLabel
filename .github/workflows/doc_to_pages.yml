@@ -128,8 +128,8 @@ jobs:
 
       - name: Jekyll build
         run: |
+          dst=$(pwd)/${{ inputs.destination }}
           cd ${{ inputs.source }}
-          dst=${{ pwd }}/${{ inputs.destination }}
           python prepare.py # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
             --destination ${{ dst }} \

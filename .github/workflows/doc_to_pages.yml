@@ -105,7 +105,6 @@ jobs:
           echo $dst
           cd -
       - name: Upload artifact
-        if: inputs.deploy
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: ${{ inputs.destination }}

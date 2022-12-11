@@ -104,7 +104,7 @@ jobs:
           echo $dst
           cd -
       - name: Upload artifact
-        if: ${{ inputs.deploy == 'true' }}
+        if: inputs.deploy
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: ${{ inputs.destination }}
@@ -112,10 +112,10 @@ jobs:
   # Deployment job
   deploy:
     needs: build
-    if: ${{ inputs.deploy == 'true' }}
+    if: inputs.deploy == 'true'
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: steps.deployment.outputs.page_url
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages

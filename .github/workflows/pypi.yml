@@ -26,11 +26,14 @@ jobs:
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+        run: |
+          echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+          echo "dir=$(npm config get cache)"
 
       - name: Get yarn cache directory
         id: yarn-cache-dir
-        run: echo "dir=$(yarn cache dir)" >> ${GITHUB_OUTPUT}
+        run: |
+          echo "dir=$(yarn cache dir)" >> ${GITHUB_OUTPUT}
 
       - name: Cache node modules
         id: node-modules-cache
@@ -41,8 +44,10 @@ jobs:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
-            # ${{ steps.yarn-cache-dir.outputs.dir }}
+            /home/runner/work/PaddleLabel/PaddleLabel/node_modules/
             '**/node_modules'
+            # ${{ steps.yarn-cache-dir.outputs.dir }}
+
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-

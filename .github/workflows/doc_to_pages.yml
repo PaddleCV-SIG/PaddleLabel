@@ -18,7 +18,7 @@ on:
         required: false
         default: ""
         type: string
-      upload:
+      deploy:
         description: "Whether to save generated site as artifact"
         required: false
         default: true
@@ -87,13 +87,14 @@ jobs:
           echo $dst
           cd -
       - name: Upload artifact
-        if: ${{ inputs.upload == 'true' }}
+        if: ${{ inputs.deploy == 'true' }}
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: ${{ inputs.destination }}
 
   # Deployment job
   deploy:
+    if: ${{ inputs.deploy == 'true' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

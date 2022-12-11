@@ -11,6 +11,7 @@ jobs:
     uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
     with:
       baseurl: "/static/doc/"
+      deploy: false
 
   build:
     runs-on: ubuntu-latest

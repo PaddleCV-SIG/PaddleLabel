@@ -34,7 +34,8 @@ jobs:
           name: PaddleLabel_built_frontend
           path: ./paddlelabel/static/
 
-      - uses: actions/download-artifact@v3
+      - name: Download built doc static site
+        uses: actions/download-artifact@v3
         with:
           name: github-pages
           path: ./paddlelabel/static/doc/
@@ -43,45 +44,18 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install twine wheel
-          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install --upgrade twine wheel
 
       - name: Write backend commit hash to package
         run: |
           echo backend $(git rev-parse --short HEAD) >> ./paddlelabel/static/git_versions.html
 
-      # - uses: dorny/paths-filter@v2
-      #   id: changes
-      #   with:
-      #     filters: |
-      #       doc:
-      #         - 'doc/**'
-
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: "3.0" # Not needed with a .ruby-version file
-      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      #     cache-version: 1 # Increment this number if you need to re-download cached gems
-      #     working-directory: doc/
-
-      # - name: Setup Pages
-      #   id: pages
-      #   uses: actions/configure-pages@v2
-
-      # - name: Jekyll build
-      #   run: |
-      #     cd doc/
-      #     python prepare.py # insert headers, change md relative link path to html ...
-      #     bundle exec jekyll build \
-      #       --destination ../paddlelabel/static/doc/ \
-      #       --baseurl "/static/doc"
-
-      - name: Build package
+      - name: Generate package
         run: |
           python setup.py sdist bdist_wheel
 

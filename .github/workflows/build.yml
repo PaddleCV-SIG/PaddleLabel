@@ -26,11 +26,7 @@ jobs:
           branch: develop
           repo: PaddleCV-SIG/PaddleLabel-Frontend
           name: PaddleLabel_built_frontend
-          path: |
-            built_frontend
-      - run: |
-          ls
-          ls built_frontend
+          path: ./paddlelabel/static/
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -43,20 +39,9 @@ jobs:
           pip install twine wheel
           # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # - name: Bump version
-      #   run: |
-      #     python tool/bumpversion.py
-      #     git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"
-      #     git add paddlelabel/version; git commit -m "bump version"; git push
-
       - name: Write backend commit hash to package
         run: |
-          echo backend $(git rev-parse --short HEAD) >> ../git_versions.html
-
-      - name: Copy built frontend and commit hash
-        run: |
-          mv ../dist/ ./paddlelabel/static/
-          mv ../git_versions.html ./paddlelabel/static/
+          echo backend $(git rev-parse --short HEAD) >> ./paddlelabel/static/git_versions.html
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1

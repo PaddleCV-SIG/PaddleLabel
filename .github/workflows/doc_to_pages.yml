@@ -57,7 +57,7 @@ jobs:
         with:
           list-files: shell
           base: develop
-          ref: HEAD
+          ref: develop
           filters: |
             doc:
               - 'doc/**'

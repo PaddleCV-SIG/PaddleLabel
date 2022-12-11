@@ -30,7 +30,7 @@ jobs:
       - name: Build doc site
         uses: ./.github/actions/doc_build.yml
         with:
-          - upload: true
+          upload: true
 
   # Deployment job
   deploy:

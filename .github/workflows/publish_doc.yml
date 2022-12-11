@@ -19,4 +19,4 @@ jobs:
     with:
       baseurl: "/PaddleLabel"
       deploy: true
-      force_regen: inputs.force_regen
+      force_regen: ${{ inputs.force_regen }}

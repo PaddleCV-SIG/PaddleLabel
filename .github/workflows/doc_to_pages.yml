@@ -47,7 +47,6 @@ jobs:
       doc_changed: ${{ steps.doc_changed.outputs.doc }}
     steps:
       - uses: actions/checkout@v3
-      - run: ls; ls doc
       - uses: dorny/paths-filter@v2
         id: doc_changed
         with:
@@ -55,6 +54,7 @@ jobs:
             doc:
               - 'doc/**'
           list-files: shell
+          base: "develop"
       - run: echo ${{ steps.doc_changed.outputs.doc }}
 
   # Build job

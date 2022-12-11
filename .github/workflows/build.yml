@@ -42,7 +42,11 @@ jobs:
           name: github-pages
           search_artifacts: true
           path: ./paddlelabel/static/doc/
-          skip_unpack: false
+          # skip_unpack: false
+
+      - name: Untar doc site
+        run:
+          ls ./paddlelabel/static/doc/
 
         # uses: actions/download-artifact@v3
         # with:

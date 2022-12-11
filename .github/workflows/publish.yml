@@ -1,0 +1,26 @@
+name: Publishing step
+
+on: [workflow_dispatch]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: PaddleLabel_built_package
+          path: |
+            dist
+      - run: |
+          pwd
+          ls
+          tree .
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          # password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
+          password: "asdfasdf"
+          verbose: true

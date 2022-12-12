@@ -5,7 +5,7 @@ from pathlib import Path
 
 import cv2
 
-from paddlelabel.task.util import create_dir, listdir, image_extensions
+from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.config import db
 from paddlelabel.task.util.color import hex_to_rgb
@@ -18,16 +18,93 @@ from paddlelabel.api.rpc.seg import polygon2points
 class OpticalCharacterRecognition(BaseTask):
     def __init__(self, project, data_dir=None, is_export=False):
         super().__init__(project, skip_label_import=True, data_dir=data_dir, is_export=is_export)
-        self.importers = {"polygon": self.polygon_importer}
-        self.exporters = {"polygon": self.polygon_exporter}
-        self.default_importer = self.polygon_importer
-        self.default_exporter = self.polygon_exporter
+        self.importers = {"json": self.json_importer, "txt": self.txt_importer}
+        self.exporters = {"json": self.json_exporter, "txt": self.txt_exporter}
+        self.default_importer = self.txt_importer
+        self.default_exporter = self.txt_exporter
+        self.dummy_label_name = "OCR Dummy Label"
 
-    def polygon_importer(
+    def cvt_ann(self, ann):
+        res = ""
+        for p in ann.get("points", []):
+            res += "|".join(map(str, p)) + "|"
+        if len(res) == 0:
+            res += "no points|"
+        res += "|"
+        res += ann.get("transcription", "") + "|"
+        res += str(int(ann.get("illegibility", False))) + "|"
+        res += ann.get("language", "")
+        return {
+            "label_name": self.dummy_label_name,
+            "result": res,
+            "type": "ocr_polygon",
+            "frontend_id": ann["frontend_id"],
+        }
+
+    def txt_importer(
         self,
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
+        project = self.project
+        if data_dir is None:
+            data_dir = project.data_dir
+        data_dir = Path(data_dir)
+        label_file_paths = {0: ["Label.txt", "train.txt"], 1: ["val.txt"], 2: ["test.txt"]}
+        label_file_paths = {k: [data_dir / f for f in v] for k, v in label_file_paths.items()}
+
+        self.create_warning(data_dir)
+        self.add_label(
+            self.dummy_label_name,
+            comment="Dummy label for ocr project, added for compatability, don't delete.",
+            commit=True,
+        )
+
+        data_paths = set(Path(p) for p in listdir(data_dir, filters=filters))
+
+        for set_idx in label_file_paths:
+            for label_file_path in label_file_paths[set_idx]:
+                if not label_file_path.exists():
+                    continue
+                labels = label_file_path.read_text().split("\n")
+                labels_d = {}
+                for label in labels:
+                    label = label.strip()
+                    if len(label) == 0:
+                        continue
+                    img_path, anns = label.split("\t")
+                    anns = json.loads(anns)
+                    for idx in range(len(anns)):
+                        anns[idx]["frontend_id"] = idx + 1
+                    anns = [self.cvt_ann(ann) for ann in anns]
+                    labels_d[img_path] = anns
+
+                label_fnames = set(labels_d.keys())
+                imported_data_path = set()
+                for data_path in data_paths:
+                    label_fname = match_by_base_name(data_path, label_fnames)
+                    if len(label_fname) == 0:
+                        continue
+                    label_fname = str(label_fname[0])
+                    size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
+                    size = ",".join(map(str, size))
+                    self.add_task([{"path": str(data_path), "size": size}], [labels_d[label_fname]], split=set_idx)
+                    imported_data_path.add(data_path)
+                    label_fnames.remove(label_fname)
+                data_paths -= imported_data_path
+
+        db.session.commit()
+
+    def txt_exporter(self):
+        pass
+
+    def json_importer(
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    ):
+        # ICDAR2019-LSVT-small
+
         # 1. set params
         project = self.project
         if data_dir is None:
@@ -37,9 +114,8 @@ class OpticalCharacterRecognition(BaseTask):
         label_file_paths = [data_dir / f for f in label_file_paths]
 
         self.create_warning(data_dir)
-        label_name = "OCR Dummy Label"
         self.add_label(
-            label_name,
+            self.dummy_label_name,
             comment="Dummy label for ocr project, added for compatability, don't delete.",
             commit=True,
         )
@@ -62,32 +138,18 @@ class OpticalCharacterRecognition(BaseTask):
                 size = ",".join(map(str, size))
 
                 """
+                p1.w|p1.h|....|pn.w|pn.h|(固定为空，表示点结束)|transcription|illegibility(0/1)|language
+                no points|(固定为空，表示点结束)|transcription|illegibility(0/1)|language
+
                 full: {'transcription': '###', 'points': [[205, 367], [266, 382], [266, 389], [201, 372]], 'illegibility': True} 205|367|266|382|266|389|201|372||###|1
                 no illegibility: {'transcription': '惠翎婚纱摄影', 'points': [[156, 331], [268, 365], [268, 382], [154, 360]]} 156|331|268|365|268|382|154|360||惠翎婚纱摄影|0
                 no points: {'transcription': '鹊桥婚介所', 'illegibility': False} no points||鹊桥婚介所|0
                 no transcription: {'points': [[103, 237], [583, 406], [583, 423], [108, 266]], 'illegibility': False} 103|237|583|406|583|423|108|266|||0
                 """
 
-                def cvt_ann(ann):
-                    res = ""
-                    for p in ann.get("points", []):
-                        res += "|".join(map(str, p)) + "|"
-                    if len(res) == 0:
-                        res += "no points|"
-                    res += "|"
-                    res += ann.get("transcription", "") + "|"
-                    res += str(int(ann.get("illegibility", False))) + "|"
-                    res += ann.get("language", "")
-                    return {
-                        "label_name": label_name,
-                        "result": res,
-                        "type": "ocr_polygon",
-                        "frontend_id": ann["frontend_id"],
-                    }
-
                 for idx, ann in enumerate(anns):
                     ann["frontend_id"] = idx + 1
-                anns = list(map(cvt_ann, anns))
+                anns = list(map(self.cvt_ann, anns))
 
                 self.add_task([{"path": full_path, "size": size}], [anns], split=set)
 
@@ -110,7 +172,7 @@ class OpticalCharacterRecognition(BaseTask):
 
         db.session.commit()
 
-    def polygon_exporter(self, export_dir):
+    def json_exporter(self, export_dir):
         # 1. set params
         project = self.project
         export_dir = Path(export_dir)

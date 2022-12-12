@@ -10,6 +10,7 @@ test.py
 doc/_site
 doc/.jekyll-cache
 doc/Gemfile.lock
+paddlelabel.warning
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

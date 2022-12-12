@@ -9,6 +9,20 @@ from pathlib import Path
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
 
+def match_by_base_name(data_path, ann_paths, allow_empty=True, allow_multiple=False):
+    data_path = Path(data_path)
+    ann_paths = [Path(p) for p in ann_paths]
+    base_name = data_path.name.split(".")[0]
+    ann_path = filter(lambda p: p.name.split(".")[0] == base_name, ann_paths)
+    ann_path = list(ann_path)
+    if not allow_multiple and len(ann_path) > 1:
+        ann_path = [str(p) for p in ann_path]
+        raise RuntimeError(f"Multiple annotation files {','.join(ann_path)} matche image file {str(data_path)}")
+    if not allow_empty and len(ann_path) == 0:
+        raise RuntimeError(f"No annotation file matches image file {str(data_path)}")
+    return ann_path
+
+
 def ensure_unique_base_name(paths):
     """Ensure all paths have unique base name, will change file name on disk
 

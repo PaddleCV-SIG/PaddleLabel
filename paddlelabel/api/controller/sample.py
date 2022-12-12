@@ -77,6 +77,13 @@ def prep_samples(sample_dst: str = None):
         "bear/semanticSegmentation/eiseg/2.jpeg",
         "bear/semanticSegmentation/eiseg/3.jpeg",
         "bear/semanticSegmentation/eiseg/4.jpeg",
+        "bear/opticalCharacterRecognition/txt/254.jpg",
+        "bear/opticalCharacterRecognition/txt/img_10.jpg",
+        "bear/opticalCharacterRecognition/txt/img_11.jpg",
+        "bear/opticalCharacterRecognition/txt/img_12.jpg",
+        "bear/opticalCharacterRecognition/txt/img_195.jpg",
+        "bear/opticalCharacterRecognition/txt/img623.jpg",
+        "bear/opticalCharacterRecognition/txt/model_prod_flow_en.png",
         "fruit/classification/multiClass/image/1.jpeg",
         "fruit/classification/multiClass/image/2.jpeg",
         "fruit/classification/multiClass/image/3.jpeg",
@@ -149,12 +156,14 @@ def load_sample(sample_family="bear"):
         "detection": ["detection", "voc"],
         "semantic_segmentation": ["semanticSegmentation", "mask"],
         "instance_segmentation": ["instanceSegmentation", "coco"],
+        "optical_character_recognition": ["opticalCharacterRecognition", "txt"],
     }
     label_formats = {
         "classification": "single_class",
         "detection": "voc",
         "semantic_segmentation": "mask",
         "instance_segmentation": "coco",
+        "optical_character_recognition": "txt",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
     data_dir = osp.join(
@@ -165,9 +174,10 @@ def load_sample(sample_family="bear"):
         "detection": "检测",
         "semantic_segmentation": "语义分割",
         "instance_segmentation": "实例分割",
+        "optical_character_recognition": "字符识别",
     }
     name = f"{trans[task_category.name]} 样例项目"
-
+    print(data_dir)
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         return {"project_id": curr_project.project_id}, 200

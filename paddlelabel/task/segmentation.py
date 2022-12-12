@@ -8,7 +8,7 @@ import cv2
 from pycocotoolse.coco import COCO
 from pathlib import Path
 
-from paddlelabel.task.util import create_dir, listdir, image_extensions
+from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.config import db
 from paddlelabel.task.util.color import hex_to_rgb
@@ -494,17 +494,6 @@ class InstanceSegmentation(BaseTask):
         data_paths = [Path(p) for p in listdir(data_dir, filters=filters)]
         json_paths = listdir(data_dir, filters={"exclude_prefix": ["."], "include_postfix": [".json"]})
         json_paths = [Path(p) for p in json_paths]
-
-        def match_by_base_name(data_path, ann_paths, allow_empty=True, allow_multiple=False):
-            base_name = data_path.name.split(".")[0]
-            ann_path = filter(lambda p: p.name.split(".")[0] == base_name, ann_paths)
-            ann_path = list(ann_path)
-            if not allow_multiple and len(ann_path) > 1:
-                ann_path = [str(p) for p in ann_path]
-                raise RuntimeError(f"Multiple annotation files {','.join(ann_path)} matche image file {str(data_path)}")
-            if not allow_empty and len(ann_path) == 0:
-                raise RuntimeError(f"No annotation file matches image file {str(data_path)}")
-            return ann_path
 
         for data_path in data_paths:
             s = cv2.imread(str(data_dir / data_path)).shape[:2]

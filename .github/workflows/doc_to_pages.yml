@@ -77,10 +77,14 @@ jobs:
     needs: check
     if: ${{ ( needs.check.outputs.doc_changed == 'true' ) || ( inputs.force_regen == 'true' ) }}
     steps:
-      - run: echo ${{ needs.check.outputs.doc_changed == 'true' }}
-      - run: echo ${{ inputs.force_regen }}
-      - run: echo ${{ inputs.force_regen == 'true' }}
-      - run: echo ${{ ( needs.check.outputs.doc_changed == 'true' ) || inputs.force_regen }}
+      - run: |
+          echo needs.check.outputs.doc_changed == 'true'
+          echo ${{ needs.check.outputs.doc_changed == 'true' }}
+          echo inputs.force_regen
+          echo ${{ inputs.force_regen }}
+          echo inputs.force_regen == 'true'
+          echo ${{ inputs.force_regen == 'true' }}
+
       - uses: actions/checkout@v3
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1

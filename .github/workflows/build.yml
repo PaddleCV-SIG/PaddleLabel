@@ -12,6 +12,7 @@ jobs:
     with:
       baseurl: "/static/doc/"
       deploy: false
+      # force_regen: true
 
   build:
     runs-on: ubuntu-latest
@@ -28,7 +29,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          workflow_conclusion: success
+          workflow_conclusion: ""
           branch: develop
           repo: PaddleCV-SIG/PaddleLabel-Frontend
           name: PaddleLabel_built_frontend

@@ -116,11 +116,13 @@ else:
 HERE = Path(__file__).parent.absolute()
 for name, header in headers.items():
     path = HERE / name
+    print("----")
     print(path)
     content = path.read_text()
     content = content.replace(".md", ".html")
     content = content.replace("/doc/", base_url)
     if path.name != "README.md":
         header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n---\n\n"
+    print(header)
     content = header + content
     path.write_text(content)

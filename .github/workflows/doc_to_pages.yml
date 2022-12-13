@@ -113,12 +113,12 @@ jobs:
             --config ./CN/_config.yml \
             --source ./CN/ \
             --destination $dst/CN/ \
-            --baseurl ${{ inputs.baseurl }}/CN/
+            --baseurl ${{ inputs.baseurl }}CN/
           bundle exec jekyll build \
             --config ./EN/_config.yml \
             --source ./EN/ \
             --destination $dst/EN/ \
-            --baseurl ${{ inputs.baseurl }}/EN/
+            --baseurl ${{ inputs.baseurl }}EN/
           cp -s $dst/CN/index.html $dst/
 
           tree $dst

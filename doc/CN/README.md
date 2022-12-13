@@ -55,7 +55,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的�
 - 欢迎大家扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。
 
 <div align="center">
-<img src="assets/group_qr.png"  width = "200" />
+<img src="/doc/CN/assets/group_qr.png"  width = "200" />
 </div>
 
 ## 使用教程

@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 headers = {
     "CN/README.md": """---
@@ -107,13 +108,18 @@ permalink: /
 """,
 }
 
+if len(sys.argv) == 1:
+    base_url = "/PaddleLabel/"
+else:
+    base_url = sys.arg[1]
+
 HERE = Path(__file__).parent.absolute()
 for name, header in headers.items():
     path = HERE / name
     print(path)
     content = path.read_text()
     content = content.replace(".md", ".html")
-    content = content.replace("/doc/", "/PaddleLabel/")
+    content = content.replace("/doc/", base_url)
     if path.name != "README.md":
         header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n---\n\n"
     content = header + content

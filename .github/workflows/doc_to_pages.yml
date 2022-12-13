@@ -61,9 +61,11 @@ jobs:
           filters: |
             doc:
               - 'doc/**'
-      - name: doc changed result
-        run: echo ${{ steps.doc_changed.outputs.doc }}
-      - name: force regen
+      - name: Doc changed result is ${{ steps.doc_changed.outputs.doc }}
+        run: |
+          echo ${{ steps.doc_changed.outputs.doc }}
+          echo ${{ steps.doc_changed.outputs.doc == 'true' }}
+      - name: Force regen is ${{ inputs.force_regen == 'true' }}
         run:
           echo ${{ inputs.force_regen }}
           echo ${{ inputs.force_regen == 'true' }}

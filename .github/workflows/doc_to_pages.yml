@@ -108,10 +108,12 @@ jobs:
           cd ${{ inputs.source }}
           python prepare.py ${{ inputs.baseurl }} # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
+            --config ${{ inputs.source }}/CN/_config.yml \
             --source ${{ inputs.source }}/CN/ \
             --destination $dst/CN/ \
             --baseurl ${{ inputs.baseurl }}/CN/
           bundle exec jekyll build \
+            --config ${{ inputs.source }}/EN/_config.yml \
             --source ${{ inputs.source }}/EN/ \
             --destination $dst/EN/ \
             --baseurl ${{ inputs.baseurl }}/EN/

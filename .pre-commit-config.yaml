@@ -4,8 +4,8 @@ repos:
     hooks:
       - id: no-commit-to-branch
         args: [--pattern, ^v]
-      - id: check-added-large-files
-        args: [--maxkb=16]
+      # - id: check-added-large-files
+      #   args: [--maxkb=16]
       - id: check-case-conflict
       - id: check-yaml
       - id: check-xml

@@ -61,6 +61,7 @@ jobs:
           filters: |
             doc:
               - 'doc/**'
+              - '.github/workflows/doc_to_pages.yml'
       - name: Doc changed result is ${{ steps.doc_changed.outputs.doc }}
         run: |
           echo ${{ steps.doc_changed.outputs.doc }}
@@ -117,9 +118,8 @@ jobs:
             --source ./EN/ \
             --destination $dst/EN/ \
             --baseurl ${{ inputs.baseurl }}/EN/
-          ln -s $dst/CN/index.html $dst/
-          echo $dst
-          ls $dst
+          cp -s $dst/CN/index.html $dst/
+
           tree $dst
           cd -
       - name: Upload artifact

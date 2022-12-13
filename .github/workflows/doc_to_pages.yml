@@ -62,6 +62,7 @@ jobs:
             doc:
               - 'doc/**'
               - '.github/workflows/doc_to_pages.yml'
+              - '.github/workflows/publish_doc.yml'
       - name: Doc changed result is ${{ steps.doc_changed.outputs.doc }}
         run: |
           echo ${{ steps.doc_changed.outputs.doc }}

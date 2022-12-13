@@ -17,6 +17,6 @@ jobs:
   publish_doc:
     uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
     with:
-      baseurl: "/PaddleLabel"
+      baseurl: "/PaddleLabel/"
       deploy: true
       force_regen: ${{ inputs.force_regen }}

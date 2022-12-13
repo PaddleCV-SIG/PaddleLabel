@@ -111,7 +111,7 @@ permalink: /
 if len(sys.argv) == 1:
     base_url = "/PaddleLabel/"
 else:
-    base_url = sys.arg[1]
+    base_url = sys.argv[1]
 
 HERE = Path(__file__).parent.absolute()
 for name, header in headers.items():

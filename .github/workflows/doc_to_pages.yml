@@ -117,6 +117,7 @@ jobs:
             --source ./EN/ \
             --destination $dst/EN/ \
             --baseurl ${{ inputs.baseurl }}/EN/
+          ln -s $dst/CN/index.html $dst/
           echo $dst
           ls $dst
           tree $dst

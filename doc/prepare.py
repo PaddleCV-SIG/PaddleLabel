@@ -1,22 +1,22 @@
 from pathlib import Path
 
 headers = {
-    "README.md": """---
+    "CN/README.md": """---
 layout: home
-title: 首页
+title: 项目简介
 nav_order: 0
 permalink: /
 ---
-""",
-    "CN/quick_start.md": """---
-layout: default
-title: 快速体验
-nav_order: 2
 """,
     "CN/install.md": """---
 layout: default
 title: 安装
 nav_order: 1
+""",
+    "CN/quick_start.md": """---
+layout: default
+title: 快速体验
+nav_order: 2
 """,
     "CN/project/project.md": """---
 layout: default
@@ -98,6 +98,13 @@ title: PaddleSeg 图像分割
 parent: 进行训练
 nav_order: 3
 """,
+    "EN/README.md": """---
+layout: home
+title: Introduction
+nav_order: 0
+permalink: /
+---
+""",
 }
 
 HERE = Path(__file__).parent.absolute()
@@ -106,7 +113,8 @@ for name, header in headers.items():
     print(path)
     content = path.read_text()
     content = content.replace(".md", ".html")
-    if path != HERE / "README.md":
+    content = content.replace("/doc/", "/PaddleLabel/")
+    if path.name != "README.md":
         header += f"permalink: {str(name).replace('.md', '.html')}\n---\n\n"
     content = header + content
     path.write_text(content)

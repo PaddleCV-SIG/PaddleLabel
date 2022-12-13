@@ -1,3 +1,10 @@
+---
+layout: home
+title: 首页
+nav_order: 0
+permalink: README.md
+---
+
 中文 | [English](doc/EN/README.md)
 
 <div align="center">
@@ -60,7 +67,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的�
 
 ## 使用教程
 
-- [安装指南](CN/install.md)
+- [安装指南](/doc/CN/install.md)
 - [快速开始](CN/quick_start.md)
 
 ### 进行标注

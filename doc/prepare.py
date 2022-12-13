@@ -115,6 +115,6 @@ for name, header in headers.items():
     content = content.replace(".md", ".html")
     content = content.replace("/doc/", "/PaddleLabel/")
     if path.name != "README.md":
-        header += f"permalink: {str(name).replace('.md', '.html')}\n---\n\n"
+        header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n---\n\n"
     content = header + content
     path.write_text(content)

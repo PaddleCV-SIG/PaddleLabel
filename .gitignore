@@ -7,11 +7,12 @@ temp
 test.py
 *.log
 *.test
-doc/CN/_site
-doc/_site
-doc/.jekyll-cache
-doc/Gemfile.lock
+
 paddlelabel.warning
+
+_site
+.jekyll-cache
+Gemfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

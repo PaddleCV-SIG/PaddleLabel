@@ -106,7 +106,7 @@ jobs:
         run: |
           dst=$(pwd)/${{ inputs.destination }}
           cd ${{ inputs.source }}
-          python prepare.py /PaddleLabel/ # insert headers, change md relative link path to html ...
+          python prepare.py ${{ inputs.baseurl }} # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
             --source ${{ inputs.source }}/CN/ \
             --destination $dst/CN/ \
@@ -116,6 +116,8 @@ jobs:
             --destination $dst/EN/ \
             --baseurl ${{ inputs.baseurl }}/EN/
           echo $dst
+          ls $dst
+          tree $dst
           cd -
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory

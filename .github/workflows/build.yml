@@ -46,10 +46,11 @@ jobs:
 
       - name: Untar doc site
         run: |
-          ls ./paddlelabel/static/doc/
           cd ./paddlelabel/static/doc/
+          ls
           tar -xvf artifact.tar
           rm artifact.tar
+          tree .
           cd -
 
       - name: Set up Python ${{ matrix.python-version }}

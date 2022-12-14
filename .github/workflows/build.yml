@@ -5,6 +5,12 @@ on:
     branches:
       - develop
   workflow_dispatch:
+    inputs:
+      force_regen_doc:
+        description: "Force regenerate doc site"
+        required: false
+        default: true
+        type: string
 
 jobs:
   update_doc_build:
@@ -12,7 +18,7 @@ jobs:
     with:
       baseurl: "/static/doc/"
       deploy: false
-      # force_regen: true
+      force_regen: ${{ inputs.force_regen_doc }}
 
   build:
     runs-on: ubuntu-latest

@@ -24,7 +24,7 @@ class OpticalCharacterRecognition(BaseTask):
         self.default_exporter = self.txt_exporter
         self.dummy_label_name = "OCR Dummy Label"
 
-    def cvt_ann(self, ann):
+    def encode_ann(self, ann):
         res = ""
         for p in ann.get("points", []):
             res += "|".join(map(str, p)) + "|"
@@ -76,7 +76,7 @@ class OpticalCharacterRecognition(BaseTask):
                     anns = json.loads(anns)
                     for idx in range(len(anns)):
                         anns[idx]["frontend_id"] = idx + 1
-                    anns = [self.cvt_ann(ann) for ann in anns]
+                    anns = [self.encode_ann(ann) for ann in anns]
                     labels_d[img_path] = anns
 
                 label_fnames = set(labels_d.keys())
@@ -149,7 +149,7 @@ class OpticalCharacterRecognition(BaseTask):
 
                 for idx, ann in enumerate(anns):
                     ann["frontend_id"] = idx + 1
-                anns = list(map(self.cvt_ann, anns))
+                anns = list(map(self.encode_ann, anns))
 
                 self.add_task([{"path": full_path, "size": size}], [anns], split=set)
 

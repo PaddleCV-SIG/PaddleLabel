@@ -88,8 +88,9 @@ class OpticalCharacterRecognition(BaseTask):
                     label_fname = str(label_fname[0])
                     size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
                     height, width = size
-                    # print(height, width)
                     size = ",".join(map(str, size))
+
+                    # FIXME: after frontend shift to upperleft origion, simply remove below part
                     labels_temp = labels_d[label_fname]
                     for idx, label in enumerate(labels_temp):
                         # print(label, type(label))
@@ -99,6 +100,7 @@ class OpticalCharacterRecognition(BaseTask):
                             temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height/2)):.1f}"
                             pidx += 1
                         labels_temp[idx]["result"] = "|".join(temp)
+
                     self.add_task([{"path": str(data_path), "size": size}], [labels_temp], split=set_idx)
                     imported_data_path.add(data_path)
                     label_fnames.remove(label_fname)

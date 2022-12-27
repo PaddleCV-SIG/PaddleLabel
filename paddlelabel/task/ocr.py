@@ -61,7 +61,7 @@ class OpticalCharacterRecognition(BaseTask):
         )
 
         data_paths = set(Path(p) for p in listdir(data_dir, filters=filters))
-
+        # print(data_paths)
         for set_idx in label_file_paths:
             for label_file_path in label_file_paths[set_idx]:
                 if not label_file_path.exists():
@@ -87,8 +87,19 @@ class OpticalCharacterRecognition(BaseTask):
                         continue
                     label_fname = str(label_fname[0])
                     size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
+                    height, width = size
+                    # print(height, width)
                     size = ",".join(map(str, size))
-                    self.add_task([{"path": str(data_path), "size": size}], [labels_d[label_fname]], split=set_idx)
+                    labels_temp = labels_d[label_fname]
+                    for idx, label in enumerate(labels_temp):
+                        # print(label, type(label))
+                        temp = label["result"].split("|")
+                        pidx = 0
+                        while temp[pidx] != "":
+                            temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height/2)):.1f}"
+                            pidx += 1
+                        labels_temp[idx]["result"] = "|".join(temp)
+                    self.add_task([{"path": str(data_path), "size": size}], [labels_temp], split=set_idx)
                     imported_data_path.add(data_path)
                     label_fnames.remove(label_fname)
                 data_paths -= imported_data_path

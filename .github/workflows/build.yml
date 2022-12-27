@@ -78,6 +78,12 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
 
+      - name: Bump version
+        run: |
+          python tool/bumpversion.py
+          git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"
+          git add paddlelabel_ml/version; git commit -m "bump version"; git push
+
       - name: Save built package
         uses: actions/upload-artifact@v3
         with:

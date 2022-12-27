@@ -1,11 +1,13 @@
-import os
 import argparse
 import logging
 import webbrowser
+from pathlib import Path
 
 from paddlelabel.serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
 from paddlelabel.util import pyVerGt, portInUse
+
+HERE = Path(__file__).parent.absolute()
 
 
 def parse_args():
@@ -90,6 +92,7 @@ def run():
     if args.debug:
         logging.getLogger("werkzeug").setLevel(logging.ERROR)
         logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
+        print("Version:", (HERE / "version").read_text().strip())
 
     logger.info("App starting")
 

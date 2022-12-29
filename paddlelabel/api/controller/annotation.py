@@ -27,14 +27,26 @@ def pre_add_batch(annotations, se):
             return []
         data_id = annotations[0].data_id
         curr_annotations = Annotation._get(data_id=data_id, many=True)
+        fi = lambda v: int(float(v))
         for cann in curr_annotations:
             for nann in annotations:
                 if cann.type == "rectangle" and nann.type == "rectangle":
                     if cann.predicted_by is None:
                         continue
-                    fi = lambda v: int(float(v))
+
                     cresult = list(map(fi, cann.result.split(",")))
                     nresult = list(map(fi, nann.result.split(",")))
+                    if cresult == nresult and cann.predicted_by == nann.predicted_by:
+                        se.delete(cann)
+
+                if cann.type == "ocr_polygon" and nann.type == "ocr_polygon":
+                    if cann.predicted_by is None:
+                        continue
+                    cresult = cann.result.split("|")
+                    nresult = nann.result.split("|")
+
+                    cresult = list(map(fi, cresult[: cresult.index("")]))
+                    nresult = list(map(fi, nresult[: nresult.index("")]))
                     if cresult == nresult and cann.predicted_by == nann.predicted_by:
                         se.delete(cann)
         se.commit()

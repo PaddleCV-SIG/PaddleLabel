@@ -42,12 +42,13 @@ jobs:
           path: ./paddlelabel/static/
 
       - name: Download built doc static site
-        uses: actions/download-artifact@v3
+        # uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
-          # workflow_conclusion: ""
-          # branch: develop
+          workflow_conclusion: ""
+          branch: develop
           name: github-pages
-          # search_artifacts: true
+          search_artifacts: true
           path: ./paddlelabel/static/doc/
 
       - name: Untar doc site

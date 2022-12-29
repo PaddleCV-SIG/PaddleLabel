@@ -36,7 +36,7 @@ jobs:
         with:
           workflow: build.yml
           workflow_conclusion: ""
-          branch: develop
+          # branch: develop
           repo: PaddleCV-SIG/PaddleLabel-Frontend
           name: PaddleLabel_built_frontend
           path: ./paddlelabel/static/

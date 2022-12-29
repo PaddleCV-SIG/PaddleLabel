@@ -35,11 +35,11 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          workflow_conclusion: ""
-          # branch: develop
+          workflow_conclusion: success
           repo: PaddleCV-SIG/PaddleLabel-Frontend
           name: PaddleLabel_built_frontend
           path: ./paddlelabel/static/
+          search_artifacts: true
 
       - name: Download built doc static site
         # uses: actions/download-artifact@v3

@@ -29,7 +29,6 @@ on:
         default: false
         type: string
 
-
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -103,11 +102,12 @@ jobs:
           cache-version: 1 # Increment this number if you need to re-download cached gems
           working-directory: ${{ inputs.source }}
 
-
       - name: Jekyll build
         run: |
           dst=$(pwd)/${{ inputs.destination }}
+          tree .
           cd ${{ inputs.source }}
+          pwd
           python prepare.py ${{ inputs.baseurl }} # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
             --config ./CN/_config.yml \
@@ -123,6 +123,7 @@ jobs:
 
           tree $dst
           cd -
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:

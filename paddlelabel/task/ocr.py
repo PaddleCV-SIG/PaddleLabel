@@ -39,6 +39,7 @@ class OpticalCharacterRecognition(BaseTask):
             "result": res,
             "type": "ocr_polygon",
             "frontend_id": ann["frontend_id"],
+            "predicted_by": "PaddleOCR",
         }
 
     def txt_importer(
@@ -76,6 +77,7 @@ class OpticalCharacterRecognition(BaseTask):
                     anns = json.loads(anns)
                     for idx in range(len(anns)):
                         anns[idx]["frontend_id"] = idx + 1
+
                     anns = [self.encode_ann(ann) for ann in anns]
                     labels_d[img_path] = anns
 
@@ -106,10 +108,91 @@ class OpticalCharacterRecognition(BaseTask):
                     label_fnames.remove(label_fname)
                 data_paths -= imported_data_path
 
+        for data_path in data_paths:
+            size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
+            height, width = size
+            size = ",".join(map(str, size))
+            self.add_task([{"path": str(data_path), "size": size}], split=0)
+
         db.session.commit()
 
-    def txt_exporter(self):
-        pass
+    def txt_exporter(self, export_dir):
+        # 254.jpg	[{"transcription": "PHOCAPITAL", "points": [[67, 51], [327, 46], [327, 74], [68, 80]], "difficult": false}, {"transcription": "107 State Street", "points": [[72, 92], [453, 84], [454, 114], [73, 122]], "difficult": false}, {"transcription": "Montpelier Vermont", "points": [[69, 135], [501, 125], [501, 156], [70, 165]], "difficult": false}, {"transcription": "802 225 6183", "points": [[71, 176], [364, 171], [364, 201], [72, 206]], "difficult": false}, {"transcription": "REG", "points": [[74, 302], [150, 299], [151, 333], [75, 336]], "difficult": false}, {"transcription": "07-24-2017 06:59 PM", "points": [[198, 300], [651, 285], [652, 315], [199, 330]], "difficult": false}, {"transcription": "045555", "points": [[510, 331], [651, 325], [653, 357], [511, 362]], "difficult": false}, {"transcription": "CT", "points": [[537, 370], [588, 370], [588, 402], [537, 402]], "difficult": false}, {"transcription": "T1", "points": [[397, 457], [442, 457], [442, 491], [397, 491]], "difficult": false}, {"transcription": "$7.95", "points": [[539, 452], [655, 447], [657, 480], [540, 485]], "difficult": false}, {"transcription": "1 F00D", "points": [[111, 470], [252, 464], [253, 496], [112, 502]], "difficult": false}, {"transcription": "T1", "points": [[399, 498], [443, 498], [443, 532], [399, 532]], "difficult": false}, {"transcription": "$3.95", "points": [[541, 494], [656, 489], [658, 521], [542, 526]], "difficult": false}, {"transcription": "1F00D", "points": [[111, 511], [254, 505], [255, 536], [112, 542]], "difficult": false}, {"transcription": "T1", "points": [[399, 539], [445, 539], [445, 572], [399, 572]], "difficult": false}, {"transcription": "$9.50", "points": [[541, 534], [658, 529], [660, 562], [542, 566]], "difficult": false}, {"transcription": "1F00D", "points": [[115, 551], [255, 546], [256, 578], [116, 583]], "difficult": false}, {"transcription": "3 No", "points": [[396, 577], [495, 575], [496, 614], [397, 617]], "difficult": false}, {"transcription": "$21.40", "points": [[521, 616], [662, 609], [664, 644], [522, 651]], "difficult": false}, {"transcription": "TA1", "points": [[165, 629], [235, 629], [235, 664], [165, 664]], "difficult": false}, {"transcription": "$1.92", "points": [[545, 657], [664, 653], [666, 688], [546, 692]], "difficult": false}, {"transcription": "TX1", "points": [[165, 672], [234, 669], [235, 704], [166, 707]], "difficult": false}, {"transcription": "TL", "points": [[167, 714], [216, 714], [216, 751], [167, 751]], "difficult": false}, {"transcription": "$23.32", "points": [[383, 706], [660, 695], [662, 730], [385, 740]], "difficult": false}, {"transcription": "$23.32", "points": [[527, 742], [667, 737], [669, 771], [528, 777]], "difficult": false}, {"transcription": "CASH", "points": [[165, 757], [265, 755], [266, 790], [166, 793]], "difficult": false}, {"transcription": "THANK YOU", "points": [[99, 848], [313, 837], [315, 868], [101, 879]], "difficult": false}, {"transcription": "FOR YOUR BUSINESS", "points": [[98, 889], [504, 867], [506, 897], [100, 919]], "difficult": false}]
+        project = self.project
+        export_dir = Path(export_dir)
+
+        # 2 export images
+        tasks = Task._get(project_id=project.project_id, many=True)
+        data_dir = export_dir / "image"
+        create_dir(data_dir)
+        data_info = {}
+        sizes = {}
+        for task in tasks:
+            data = task.datas[0]
+            sizes[data.data_id] = list(map(int, data.size.split(",")))
+            copy(Path(project.data_dir) / data.path, data_dir)
+            data_info[data.data_id] = [task.set, Path(data.path).name.split(".")[0]]
+
+        # 3. export annotations
+        annotations = Annotation._get(project_id=project.project_id, many=True)
+        ann_dicts = [defaultdict(lambda: []), defaultdict(lambda: []), defaultdict(lambda: [])]
+        for ann in annotations:
+            r = ann.result.split("|")
+            if r[0] == "no points":
+                points = []
+                r = r[2:]
+            else:
+                for idx in range(len(r)):
+                    if r[idx] == "":
+                        break
+                ti = lambda v: int(float(v))
+                points = [list(map(ti, vs)) for vs in zip(r[:idx:2], r[1:idx:2])]
+                height, width = sizes[ann.data_id]
+                for idx in range(len(points)):
+                    points[idx][0] = int(points[idx][0] + width / 2)
+                    points[idx][1] = int(points[idx][1] + height / 2)
+
+                r = r[idx + 1 :]
+            split, name = data_info[ann.data_id]
+            ann_dicts[split][name].append(
+                {
+                    "points": points,
+                    "transcription": r[0],
+                    "illegibility": bool(r[1]),
+                    "language": r[2],
+                }
+            )
+        names = ["train.txt", "val.txt", "test.txt"]
+        for d, name in zip(ann_dicts, names):
+            f = open(export_dir / name, "w")
+            for k, v in d.items():
+                print(f"{k}\t{json.dumps(v)}", file=f)
+            f.close()
+        """
+        [
+    {
+        "transcription": "PHOCAPITAL",
+        "points": [
+            [
+                67,
+                51
+            ],
+            [
+                327,
+                46
+            ],
+            [
+                327,
+                74
+            ],
+            [
+                68,
+                80
+            ]
+        ],
+        "difficult": false
+    },
+        """
 
     def json_importer(
         self,

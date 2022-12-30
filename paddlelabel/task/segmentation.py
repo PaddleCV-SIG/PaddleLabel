@@ -583,17 +583,18 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         db.session.commit()
 
-    def mask_exporter(self, export_dir: str):
+    def mask_exporter(self, export_dir: str, seg_mask_type: str):
         """Export semantic segmentation dataset in mask format
 
         Args:
             export_dir (str): The folder to export to.
+            seg_mask_type (str): gray|pesudo
         """
 
         # 1. set params
         project = self.project
         other_settings = project._get_other_settings()
-        mask_type = other_settings.get("segMaskType", "grayscale")
+        # mask_type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")
         export_label_dir = osp.join(export_dir, "Annotations")
@@ -615,7 +616,7 @@ class SemanticSegmentation(InstanceSegmentation):
 
             copy(data_path, export_data_dir)
 
-            mask = draw_mask(data, mask_type=mask_type)
+            mask = draw_mask(data, mask_type=seg_mask_type)
             cv2.imwrite(export_label_path, mask)
 
             export_data_paths.append([export_data_path])

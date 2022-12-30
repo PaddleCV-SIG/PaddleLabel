@@ -112,6 +112,7 @@ def export_dataset(project_id):
     if export_format is None or len(export_format) == 0:
         exporter = handler.default_exporter
     else:
+        print(handler.exporters)
         exporter = handler.exporters[export_format]
 
     # 3. get export path
@@ -126,7 +127,9 @@ def export_dataset(project_id):
 
     # 4. export
     try:
-        exporter(export_dir)
+        params = connexion.request.json
+        del params["export_format"]
+        exporter(**params)
 
     except Exception as e:
         logging.error("Export dataset failed")

@@ -16,7 +16,8 @@ jobs:
     with:
       baseurl: "/static/doc/"
       deploy: false
-      force_regen: ${{ inputs.force_regen_doc }}
+      # force_regen: ${{ inputs.force_regen_doc }}
+      force_regen: true
 
   build:
     runs-on: ubuntu-latest
@@ -45,8 +46,8 @@ jobs:
           workflow_conclusion: ""
           branch: develop
           name: github-pages
-          # search_artifacts: true
-          check_artifacts: true
+          search_artifacts: true
+          # check_artifacts: true
           path: ./paddlelabel/static/doc/
 
       - name: Untar doc site

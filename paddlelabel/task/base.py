@@ -26,6 +26,8 @@ class BaseTask:
             project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
         """
 
+        self.task_cache = []
+
         # 1. set project
         if isinstance(project, int):
             curr_project = Project._get(project_id=project)
@@ -160,7 +162,15 @@ class BaseTask:
                 total_anns += 1
             log.info(f"= {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} =")
 
-        db.session.add(task)
+        # db.session.add(task)
+        self.task_cache.append(task)
+
+    def commit(self):
+        self.task_cache.sort(key=lambda k: k.datas[0].path)
+        for task in self.task_cache:
+            db.session.add(task)
+        self.task_cache = []
+        db.session.commit()
 
     def label_id2name(self, label_id):
         """Get label name by label.id
@@ -413,7 +423,8 @@ class BaseTask:
                 self.add_task([{"path": data_path, "size": size}])
             else:
                 self.add_task([{"path": data_path}])
-        db.session.commit()
+        # db.session.commit()
+        self.commit()
 
     """ warning file """
 

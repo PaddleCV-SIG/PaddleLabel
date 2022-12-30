@@ -288,7 +288,7 @@ class Detection(BaseTask):
                     )
 
             self.add_task([{"path": str(data_path), "size": size}], [ann_list])
-        db.session.commit()
+        self.commit()
 
     def yolo_exporter(self, export_dir):
         # 1. set params
@@ -448,7 +448,7 @@ class Detection(BaseTask):
             size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
-        db.session.commit()
+        self.commit()
 
     def coco_exporter(self, export_dir, allow_empty=True):
         # 1. set params
@@ -585,7 +585,7 @@ class Detection(BaseTask):
             size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
-        db.session.commit()
+        self.commit()
 
     def voc_exporter(self, export_dir):
         # 1. set params

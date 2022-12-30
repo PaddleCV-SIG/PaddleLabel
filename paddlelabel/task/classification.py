@@ -44,7 +44,7 @@ class Classification(BaseTask):
             label = [{"label_name": label_name}] if len(label_name) != 0 else []
             self.add_task([{"path": data_path}], [label])
 
-        db.session.commit()
+        self.commit()
 
     def multi_class_importer(
         self,
@@ -90,7 +90,7 @@ class Classification(BaseTask):
             labels = labels_dict.get(osp.normpath(data_path), [])
             self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
 
-        db.session.commit()
+        self.commit()
 
     def single_class_exporter(self, export_dir):
         project = self.project

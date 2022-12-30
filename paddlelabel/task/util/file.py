@@ -120,7 +120,7 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
         return True
 
     files = list(filter(exclude, files))
-    files.sort(key=osp.basename)
+    # files.sort(key=osp.basename)
     # files = [osp.normpath(p) for p in files]
     return files
 

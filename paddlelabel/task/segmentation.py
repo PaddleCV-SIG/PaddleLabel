@@ -226,7 +226,7 @@ class InstanceSegmentation(BaseTask):
             "coco": self.coco_exporter,
         }
         # self.default_importer = self.coco_importer
-        self.default_exporter = self.coco_exporter
+        self.default_exporter = self.coco_exporter  # TODO: remove, user must choose
 
     def mask_importer(
         self,
@@ -262,7 +262,7 @@ class InstanceSegmentation(BaseTask):
                 size = ",".join([str(s) for s in s])
 
             self.add_task([{"path": data_path, "size": size}], [anns])
-        db.session.commit()
+        self.commit()
 
     def mask_exporter(self, export_dir):
         # 1. set params
@@ -410,7 +410,8 @@ class InstanceSegmentation(BaseTask):
             size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
-        db.session.commit()
+        # db.session.commit()
+        self.commit()
 
     def coco_exporter(self, export_dir):
         # 1. set params
@@ -523,7 +524,7 @@ class InstanceSegmentation(BaseTask):
                     )
                 self.add_task([{"path": data_path, "size": size}], [anns])
                 json_paths.remove(json_path)
-        db.session.commit()
+        self.commit()
 
 
 class SemanticSegmentation(InstanceSegmentation):
@@ -581,7 +582,7 @@ class SemanticSegmentation(InstanceSegmentation):
                 size = ",".join([str(s) for s in s])
 
             self.add_task([{"path": data_path, "size": size}], [anns])
-        db.session.commit()
+        self.commit()
 
     def mask_exporter(self, export_dir: str, seg_mask_type: str):
         """Export semantic segmentation dataset in mask format

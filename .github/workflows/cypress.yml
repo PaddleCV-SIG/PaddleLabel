@@ -60,4 +60,5 @@ jobs:
       - name: Run test
         run: |
           cd cypress
+          yarn
           npx cypress run

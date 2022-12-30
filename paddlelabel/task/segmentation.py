@@ -461,7 +461,7 @@ class InstanceSegmentation(BaseTask):
             coco.addAnnotation(
                 ann.data_id,
                 ann.label.id,
-                segmentation=r,
+                segmentation=[r],
                 id=ann.annotation_id,
             )
 
@@ -497,7 +497,7 @@ class InstanceSegmentation(BaseTask):
 
         for data_path in data_paths:
             s = cv2.imread(str(data_dir / data_path)).shape[:2]
-            size = ",".join(str(t) for t in s)
+            size = ",".join(["1"] + [str(t) for t in s])
             json_path = match_by_base_name(data_path, json_paths)
 
             if len(json_path) == 0:

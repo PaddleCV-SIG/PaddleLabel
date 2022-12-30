@@ -31,70 +31,6 @@
             "segmentation": [
                 []
             ]
-        },
-        {
-            "area": 46592.0,
-            "bbox": [
-                384.0,
-                88.0,
-                182.0,
-                256.0
-            ],
-            "category_id": 1,
-            "id": 7,
-            "image_id": 4,
-            "iscrowd": 0,
-            "segmentation": [
-                []
-            ]
-        },
-        {
-            "area": 43956.0,
-            "bbox": [
-                147.0,
-                271.0,
-                222.0,
-                198.0
-            ],
-            "category_id": 1,
-            "id": 8,
-            "image_id": 4,
-            "iscrowd": 0,
-            "segmentation": [
-                []
-            ]
-        },
-        {
-            "area": 39579.0,
-            "bbox": [
-                114.0,
-                603.0,
-                237.0,
-                167.0
-            ],
-            "category_id": 1,
-            "id": 9,
-            "image_id": 4,
-            "iscrowd": 0,
-            "segmentation": [
-                []
-            ]
-        },
-        {
-            "area": 36024.0,
-            "bbox": [
-                408.0,
-                445.0,
-                228.0,
-                158.0
-            ],
-            "category_id": 1,
-            "id": 10,
-            "image_id": 4,
-            "iscrowd": 0,
-            "segmentation": [
-                []
-            ]
         }
     ],
     "categories": [
@@ -119,16 +55,6 @@
             "flickr_url": "",
             "height": 1008,
             "id": 2,
-            "license": "",
-            "width": 756
-        },
-        {
-            "coco_url": "",
-            "date_captured": "",
-            "file_name": "JPEGImages/4.jpeg",
-            "flickr_url": "",
-            "height": 1008,
-            "id": 4,
             "license": "",
             "width": 756
         }

@@ -34,6 +34,7 @@ class Classification(BaseTask):
             data_dir = project.data_dir
 
         self.create_warning(data_dir)
+
         # 2. import all datas
         data_paths = listdir(data_dir, filters)
         for data_path in data_paths:

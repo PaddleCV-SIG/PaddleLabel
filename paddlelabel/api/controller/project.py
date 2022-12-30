@@ -112,22 +112,19 @@ def export_dataset(project_id):
     if export_format is None or len(export_format) == 0:
         exporter = handler.default_exporter
     else:
-        print(handler.exporters)
         exporter = handler.exporters[export_format]
 
     # 3. get export path
-    export_dir = connexion.request.json["export_dir"]
-    export_dir = expand_home(export_dir)
-    if not Path(export_dir).is_absolute():
-        abort(f"Only support absolute paths, got '{export_dir}'", 500)
-    if osp.exists(osp.join(export_dir, "paddlelabel.warning")):
+    params = connexion.request.json
+    params["export_dir"] = expand_home(params["export_dir"])
+    if not Path(params["export_dir"]).is_absolute():
+        abort(f"Only support absolute paths, got {params['export_dir']}", 500)
+    if osp.exists(osp.join(params["export_dir"], "paddlelabel.warning")):
         abort(
             "This folder is actively used as file store for PaddleLabel. Please specify another folder for export", 500
         )
-
     # 4. export
     try:
-        params = connexion.request.json
         del params["export_format"]
         exporter(**params)
 

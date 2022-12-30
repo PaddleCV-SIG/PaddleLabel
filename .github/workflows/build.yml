@@ -2,9 +2,13 @@ name: Build PaddleLabel package
 
 on:
   push:
-    branches:
-      - develop
   workflow_dispatch:
+    inputs:
+      force_regen_doc:
+        description: "Force regenerate doc site"
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   update_doc_build:
@@ -12,73 +16,74 @@ jobs:
     with:
       baseurl: "/static/doc/"
       deploy: false
+      # force_regen: ${{ inputs.force_regen_doc }}
+      force_regen: true
 
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
+
     needs: update_doc_build
     steps:
       - name: Checkout backend code
         uses: actions/checkout@v3
 
       - name: Download built frontend
-        id: download-built-frontend
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           workflow_conclusion: success
-          branch: develop
           repo: PaddleCV-SIG/PaddleLabel-Frontend
           name: PaddleLabel_built_frontend
           path: ./paddlelabel/static/
+          search_artifacts: true
+
+      - name: Download built doc static site
+        uses: actions/download-artifact@v3
+        # uses: dawidd6/action-download-artifact@v2
+        with:
+          # workflow_conclusion: ""
+          branch: develop
+          name: github-pages
+          # search_artifacts: true
+          # check_artifacts: true
+          path: ./paddlelabel/static/doc/
+
+      - name: Untar doc site
+        run: |
+          cd ./paddlelabel/static/doc/
+          ls
+          tar -xvf artifact.tar
+          rm artifact.tar
+          tree .
+          cd -
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install twine wheel
-          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install --upgrade twine wheel
 
       - name: Write backend commit hash to package
         run: |
           echo backend $(git rev-parse --short HEAD) >> ./paddlelabel/static/git_versions.html
 
-      # - uses: dorny/paths-filter@v2
-      #   id: changes
-      #   with:
-      #     filters: |
-      #       doc:
-      #         - 'doc/**'
-
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: "3.0" # Not needed with a .ruby-version file
-      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      #     cache-version: 1 # Increment this number if you need to re-download cached gems
-      #     working-directory: doc/
-
-      # - name: Setup Pages
-      #   id: pages
-      #   uses: actions/configure-pages@v2
-
-      # - name: Jekyll build
-      #   run: |
-      #     cd doc/
-      #     python prepare.py # insert headers, change md relative link path to html ...
-      #     bundle exec jekyll build \
-      #       --destination ../paddlelabel/static/doc/ \
-      #       --baseurl "/static/doc"
-
-      - name: Build package
+      - name: Generate package
         run: |
           python setup.py sdist bdist_wheel
+
+      - name: Bump version
+        run: |
+          python tool/bumpversion.py
+          git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"
+          git add paddlelabel/version; git commit -m "bump version"; git push
 
       - name: Save built package
         uses: actions/upload-artifact@v3

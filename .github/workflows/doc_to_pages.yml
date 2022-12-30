@@ -27,8 +27,7 @@ on:
         description: "Force regenerate"
         required: false
         default: false
-        type: boolean
-
+        type: string
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -49,14 +48,28 @@ jobs:
       doc_changed: ${{ steps.doc_changed.outputs.doc }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: develop
+      - run: git branch
       - uses: dorny/paths-filter@v2
         id: doc_changed
         with:
+          list-files: shell
+          base: develop
+          ref: develop
           filters: |
             doc:
               - 'doc/**'
-          list-files: shell
-          base: "develop"
+              - '.github/workflows/doc_to_pages.yml'
+              - '.github/workflows/publish_doc.yml'
+      - name: Doc changed result is ${{ steps.doc_changed.outputs.doc }}
+        run: |
+          echo ${{ steps.doc_changed.outputs.doc }}
+          echo ${{ steps.doc_changed.outputs.doc == 'true' }}
+      - name: Force regen is ${{ inputs.force_regen == 'true' }}
+        run: |
+          echo ${{ inputs.force_regen }}
+          echo ${{ inputs.force_regen == 'true' }}
 
   # Build job
   build:
@@ -65,13 +78,22 @@ jobs:
       matrix:
         python-version: ["3.11"]
     needs: check
-    if: echo ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
+    if: ${{ ( needs.check.outputs.doc_changed == 'true' ) || ( inputs.force_regen == 'true' ) }}
     steps:
-      - run: echo ${{ needs.check.outputs.doc_changed == 'true' }}
-      - run: echo ${{ inputs.force_regen }}
-      - run: echo ${{ inputs.force_regen == 'true' }}
-      - run: echo ${{ (needs.check.outputs.doc_changed == 'true') || (inputs.force_regen == 'true') }}
+      - run: |
+          echo needs.check.outputs.doc_changed == 'true'
+          echo ${{ needs.check.outputs.doc_changed == 'true' }}
+          echo inputs.force_regen
+          echo ${{ inputs.force_regen }}
+          echo inputs.force_regen == 'true'
+          echo ${{ inputs.force_regen == 'true' }}
+
       - uses: actions/checkout@v3
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v2
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -80,22 +102,29 @@ jobs:
           cache-version: 1 # Increment this number if you need to re-download cached gems
           working-directory: ${{ inputs.source }}
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v2
-
       - name: Jekyll build
         run: |
           dst=$(pwd)/${{ inputs.destination }}
+          tree .
           cd ${{ inputs.source }}
-          python prepare.py # insert headers, change md relative link path to html ...
+          pwd
+          python prepare.py ${{ inputs.baseurl }} # insert headers, change md relative link path to html ...
           bundle exec jekyll build \
-            --destination $dst \
-            --baseurl ${{ inputs.baseurl }}
-          echo $dst
+            --config ./CN/_config.yml \
+            --source ./CN/ \
+            --destination $dst/CN/ \
+            --baseurl ${{ inputs.baseurl }}CN/
+          bundle exec jekyll build \
+            --config ./EN/_config.yml \
+            --source ./EN/ \
+            --destination $dst/EN/ \
+            --baseurl ${{ inputs.baseurl }}EN/
+          cp -s $dst/CN/index.html $dst/
+
+          tree $dst
           cd -
+
       - name: Upload artifact
-        if: inputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v1 # This will automatically upload an artifact from the '/_site' directory
         with:
           path: ${{ inputs.destination }}
@@ -103,10 +132,10 @@ jobs:
   # Deployment job
   deploy:
     needs: build
-    if: ${{ inputs.deploy == 'true' }}
+    if: inputs.deploy
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: steps.deployment.outputs.page_url
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages

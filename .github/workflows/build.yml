@@ -1,7 +1,7 @@
 name: Build PaddleLabel package
 
 on:
-  # push:
+  push:
   workflow_dispatch:
     inputs:
       force_regen_doc:
@@ -91,3 +91,6 @@ jobs:
           name: PaddleLabel_built_package
           path: |
             dist
+
+  cypress_e2e_test:
+    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop

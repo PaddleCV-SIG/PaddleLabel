@@ -45,7 +45,8 @@ jobs:
           workflow_conclusion: ""
           branch: develop
           name: github-pages
-          search_artifacts: true
+          # search_artifacts: true
+          check_artifacts: true
           path: ./paddlelabel/static/doc/
 
       - name: Untar doc site

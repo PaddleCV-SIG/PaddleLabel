@@ -400,7 +400,7 @@ class BaseTask:
         self,
         data_dir=None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-        with_size=False,
+        with_size=True,
     ):
         if data_dir is None:
             data_dir = self.project.data_dir

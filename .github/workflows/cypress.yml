@@ -25,11 +25,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
+      # - name: Download PaddleLabel whl package
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     branch: develop
+      #     name: PaddleLabel_built_package
+
       - name: Download PaddleLabel whl package
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
-          branch: develop
+          workflow: build.yml
+          workflow_conclusion: success
           name: PaddleLabel_built_package
+          search_artifacts: true
+
 
       - name: Install and start PaddleLabel
         run: |

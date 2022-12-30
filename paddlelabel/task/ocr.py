@@ -127,32 +127,42 @@ class OpticalCharacterRecognition(BaseTask):
         create_dir(data_dir)
         data_info = {}
         sizes = {}
+
         for task in tasks:
             data = task.datas[0]
             sizes[data.data_id] = list(map(int, data.size.split(",")))
             copy(Path(project.data_dir) / data.path, data_dir)
-            data_info[data.data_id] = [task.set, Path(data.path).name.split(".")[0]]
+            # data_info[data.data_id] = [task.set, Path(data.path).name.split(".")[0]]
+            data_info[data.data_id] = [task.set, Path(data.path).name]
 
         # 3. export annotations
         annotations = Annotation._get(project_id=project.project_id, many=True)
         ann_dicts = [defaultdict(lambda: []), defaultdict(lambda: []), defaultdict(lambda: [])]
         for ann in annotations:
+            print("======")
             r = ann.result.split("|")
+
+            print(r)
+
             if r[0] == "no points":
                 points = []
                 r = r[2:]
             else:
-                for idx in range(len(r)):
-                    if r[idx] == "":
+                for ridx in range(len(r)):
+                    if r[ridx] == "":
                         break
                 ti = lambda v: int(float(v))
-                points = [list(map(ti, vs)) for vs in zip(r[:idx:2], r[1:idx:2])]
-                height, width = sizes[ann.data_id]
-                for idx in range(len(points)):
-                    points[idx][0] = int(points[idx][0] + width / 2)
-                    points[idx][1] = int(points[idx][1] + height / 2)
+                points = [list(map(ti, vs)) for vs in zip(r[:ridx:2], r[1:ridx:2])]
+                r = r[ridx + 1 :]
 
-                r = r[idx + 1 :]
+                height, width = sizes[ann.data_id]
+                for pidx in range(len(points)):
+                    points[pidx][0] = int(points[pidx][0] + width / 2)
+                    points[pidx][1] = int(points[pidx][1] + height / 2)
+
+            print(points)
+            print(r)
+
             split, name = data_info[ann.data_id]
             ann_dicts[split][name].append(
                 {

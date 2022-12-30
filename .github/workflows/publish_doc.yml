@@ -5,11 +5,18 @@ on:
     branches:
       - develop
   workflow_dispatch:
+    inputs:
+      force_regen:
+        description: "Force the jekyll generation step"
+        required: false
+        default: true
+        type: boolean
+
 
 jobs:
   publish_doc:
     uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
     with:
-      baseurl: "/PaddleLabel"
+      baseurl: "/PaddleLabel/"
       deploy: true
-      force_regen: true
+      force_regen: ${{ inputs.force_regen }}

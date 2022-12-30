@@ -25,12 +25,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      # - name: Download PaddleLabel whl package
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     branch: develop
-      #     name: PaddleLabel_built_package
-
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -38,21 +32,29 @@ jobs:
           workflow_conclusion: success
           name: PaddleLabel_built_package
           search_artifacts: true
-
+          path: ../
 
       - name: Install and start PaddleLabel
         run: |
+          cd ..
           pwd
-          tree .
           ls
           python --version
-
+          pip uninstall paddlelabel
+          pip uninstall paddlelabel
+          pip install paddlelabel-*-py3-none-any.whl
+          paddlelabel --debug &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
+
+      - name: Remove package.json
+        run: |
+          rm package.json
+          rm yarn.lock
 
       - name: Setup node env
         uses: actions/setup-node@v3

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.10"]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         node-version: ['19.x']
 
     # outputs:
@@ -62,3 +62,10 @@ jobs:
           cd cypress
           yarn
           npx cypress run
+
+      - name: Upload screenshots and videos
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress_test_recs
+          path: |
+            ./cypress

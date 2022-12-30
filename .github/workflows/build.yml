@@ -45,7 +45,7 @@ jobs:
         # uses: dawidd6/action-download-artifact@v2
         with:
           # workflow_conclusion: ""
-          branch: develop
+          # branch: develop
           name: github-pages
           # search_artifacts: true
           # check_artifacts: true
@@ -93,4 +93,5 @@ jobs:
             dist
 
   cypress_e2e_test:
+    needs: build
     uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop

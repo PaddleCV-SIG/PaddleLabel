@@ -51,10 +51,11 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
 
-      - name: Remove package.json
+      - name: Move to test
         run: |
-          rm package.json
-          rm yarn.lock
+          cd cypress
+          pwd
+          ls
 
       - name: Setup node env
         uses: actions/setup-node@v3

@@ -40,13 +40,13 @@ jobs:
           search_artifacts: true
 
       - name: Download built doc static site
-        # uses: actions/download-artifact@v3
-        uses: dawidd6/action-download-artifact@v2
+        uses: actions/download-artifact@v3
+        # uses: dawidd6/action-download-artifact@v2
         with:
-          workflow_conclusion: ""
+          # workflow_conclusion: ""
           branch: develop
           name: github-pages
-          search_artifacts: true
+          # search_artifacts: true
           # check_artifacts: true
           path: ./paddlelabel/static/doc/
 

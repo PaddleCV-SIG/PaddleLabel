@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.11", "3.10"]
         node-version: ['19.x']
 
     # outputs:
@@ -63,5 +63,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
 
-      - name: Install cypress
-        run: yarn add cypress
+      - name: Run test
+        run: |
+          cd ..
+          npx cypress run

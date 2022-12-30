@@ -51,12 +51,6 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
 
-      - name: Move to test
-        run: |
-          cd cypress
-          pwd
-          ls
-
       - name: Setup node env
         uses: actions/setup-node@v3
         with:
@@ -65,6 +59,6 @@ jobs:
 
       - name: Run test
         run: |
-          pwd
-          ls
+          cd cypress
+          yarn
           npx cypress run

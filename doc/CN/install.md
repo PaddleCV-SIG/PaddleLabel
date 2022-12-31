@@ -41,14 +41,13 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.5.0-py3-none-any.whl 
 ## 通过源码安装
 
 <details> <summary markdown='span'>详细步骤</summary>
-1. 首先需要将后端代码（本项目）克隆到本地
+以下命令行命令（主要是cp，mv）针对Linux。每步的作用都有说明，在其他操作系统上可以文件管理器进行操作。
 
+1. 首先需要将后端代码克隆到本地
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel
 ```
-
 2. 接下来需要克隆并构建前端，需要首先安装 [Node.js](https://nodejs.org/en/) 和 npm
-
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PaddleLabel-Frontend
@@ -56,20 +55,19 @@ npm install --location=global yarn
 yarn
 npm run build
 ```
-
 3. 将构建好的前端部分，`PaddleLabel-Frontend/dist/`目录下所有文件复制到`paddlelabel/static/`中
-
 ```shell
 cd ../PaddleLabel/
 mkdir paddlelabel/static/
 cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
 ```
-
-4. 安装 PaddleLabel
+4. 安装 PaddleLabel 或不安装直接启动
 
 ```shell
 # 在PaddleLabel目录下
-python setup.py install
+python setup.py install # 安装PaddleLabel
+
+python -m paddlelabel # 不安装直接启动
 ```
 
 </details>

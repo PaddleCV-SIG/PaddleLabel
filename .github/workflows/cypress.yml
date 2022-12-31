@@ -3,6 +3,11 @@ name: Run cypress e2e test
 on:
   workflow_call:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Build PaddleLabel package"]
+    branches: [develop]
+    types:
+      - completed
 
 jobs:
   # only rebuild if files under doc/ folder changed
@@ -10,12 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         node-version: ['19.x']
 
     # outputs:
     #   doc_changed: ${{ steps.doc_changed.outputs.doc }}
     steps:
+      - name: Checkout backend
+        uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -23,20 +31,26 @@ jobs:
           cache: "pip"
 
       - name: Download PaddleLabel whl package
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
-          branch: develop
+          workflow: build.yml
+          workflow_conclusion: success
           name: PaddleLabel_built_package
+          search_artifacts: true
+          path: ../
 
       - name: Install and start PaddleLabel
         run: |
+          cd ..
           pwd
-          tree .
           ls
           python --version
+          pip uninstall paddlelabel
+          pip uninstall paddlelabel
+          pip install paddlelabel-*-py3-none-any.whl
+          paddlelabel --debug &
 
-
-      - name: checkout frontend project
+      - name: Checkout frontend project
         uses: actions/checkout@v3
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
@@ -48,5 +62,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
 
-      - name: Install cypress
-        run: yarn add cypress
+      - name: Run test
+        run: |
+          cd cypress
+          yarn
+          npx cypress run
+
+      - name: Upload screenshots and videos
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress_test_recs_${{ matrix.python-version }}
+          path: |
+            ./cypress

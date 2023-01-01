@@ -51,7 +51,7 @@ jobs:
           # check_artifacts: true
           path: ./paddlelabel/static/doc/
 
-      - name: Untar doc site
+      - name: Unarchive doc site
         run: |
           cd ./paddlelabel/static/doc/
           ls

@@ -1,16 +1,10 @@
 import os
 import os.path as osp
-import requests
-import tarfile
-import zipfile
-from pathlib import Path
 
-from tqdm import tqdm
 import connexion
 import flask
 
 import paddlelabel
-from paddlelabel.config import data_base_dir
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
 from paddlelabel.api.util import abort
@@ -18,9 +12,7 @@ from paddlelabel.config import basedir
 from paddlelabel.task.util.file import copy, copycontent
 
 
-def prep_samples(sample_dst: str = None):
-    if sample_dst is None:
-        sample_dst = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
+def prep_samples(sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")):
     sample_source = osp.join(basedir, "sample")
     copycontent(sample_source, sample_dst)
 
@@ -33,10 +25,10 @@ def prep_samples(sample_dst: str = None):
         "bear/classification/multiClass/image/2.jpeg",
         "bear/classification/multiClass/image/3.jpeg",
         "bear/classification/multiClass/image/4.jpeg",
-        "bear/classification/singleClass/1/1.jpeg",
-        "bear/classification/singleClass/2/2.jpeg",
-        "bear/classification/singleClass/3/3.jpeg",
-        "bear/classification/singleClass/4.jpeg",
+        "bear/classification/singleClass/1只熊/1.jpeg",
+        "bear/classification/singleClass/2只熊/2.jpeg",
+        "bear/classification/singleClass/3只熊/3.jpeg",
+        "bear/classification/singleClass/4只熊/4.jpeg",
         "bear/detection/coco/JPEGImages/1.jpeg",
         "bear/detection/coco/JPEGImages/2.jpeg",
         "bear/detection/coco/JPEGImages/3.jpeg",
@@ -165,18 +157,19 @@ def load_sample(sample_family="bear"):
         "instance_segmentation": "coco",
         "optical_character_recognition": "txt",
     }
-    task_category = TaskCategory._get(task_category_id=task_category_id)
-    data_dir = osp.join(
-        osp.expanduser("~"), ".paddlelabel", "sample", sample_family, *sample_folder[task_category.name]
-    )
-    trans = {
+    sample_names = {
         "classification": "分类",
         "detection": "检测",
         "semantic_segmentation": "语义分割",
         "instance_segmentation": "实例分割",
         "optical_character_recognition": "字符识别",
     }
-    name = f"{trans[task_category.name]} 样例项目"
+    task_category = TaskCategory._get(task_category_id=task_category_id)
+    data_dir = osp.join(
+        osp.expanduser("~"), ".paddlelabel", "sample", sample_family, *sample_folder[task_category.name]
+    )
+
+    name = f"{sample_names[task_category.name]} 样例项目"
     # print(data_dir)
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
@@ -188,7 +181,7 @@ def load_sample(sample_family="bear"):
 
     project = {
         "name": name,
-        "description": f"PaddleLabel内置 {trans[task_category.name]} 样例项目",
+        "description": f"PaddleLabel内置 {sample_names[task_category.name]} 样例项目",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,
         "label_format": label_formats[task_category.name],

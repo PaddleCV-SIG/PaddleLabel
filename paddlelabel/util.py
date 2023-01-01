@@ -102,7 +102,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/projects/{project_id}/progress getProgress": "paddlelabel.api.controller.task.get_stat_by_project",
             "/projects/{project_id}/split splitDataset": "paddlelabel.api.controller.project.split_dataset",
             "/projects/{project_id}/export exportDataset": "paddlelabel.api.controller.project.export_dataset",
-            "/projects/{project_id}/import importDataset": "paddlelabel.api.controller.project.import_dataset",
+            "/projects/{project_id}/import importDataset": "paddlelabel.api.controller.project.import_additional_data",
             "/projects/{project_id}/predict predict": "paddlelabel.api.controller.project.predict",
             "/projects/{project_id}/toEasydata toEasydata": "paddlelabel.api.controller.project.to_easydata",
             "/tasks/{task_id}/tags getTags": "paddlelabel.api.controller.tag.get_by_task",

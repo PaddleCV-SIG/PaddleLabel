@@ -8,6 +8,9 @@ on:
     branches: [develop]
     types:
       - completed
+  schedule:
+    - cron:  "0 12 * * *"
+
 
 jobs:
   # only rebuild if files under doc/ folder changed

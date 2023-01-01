@@ -5,16 +5,13 @@ import requests
 import os
 import os.path as osp
 import base64
-from copy import deepcopy
 import traceback
 from pathlib import Path
 import logging
 import base64
-import time
 
 import numpy as np
 import connexion
-from tqdm import tqdm
 
 from paddlelabel.config import db
 from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
@@ -35,22 +32,7 @@ from paddlelabel.task.util.file import (
 import paddlelabel
 
 
-def pre_add(new_project, se):
-    new_project.data_dir = expand_home(new_project.data_dir)
-
-    if not osp.isabs(new_project.data_dir):
-        abort("Dataset Path is not absolute path", 409)
-
-    new_project.label_format = camel2snake(new_project.label_format)
-    new_labels = new_project.labels
-    rets, unique = label.unique_within_project(new_project.project_id, new_labels)
-    if not np.all(unique):
-        # TODO: return the not unique field
-        abort("Project labels are not unique", 409)
-    return new_project
-
-
-def _import_dataset(project, data_dir=None, label_format=None):
+def import_dataset(project, data_dir=None, label_format=None):
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
     # 1. create handler
@@ -78,11 +60,81 @@ def _import_dataset(project, data_dir=None, label_format=None):
     importer(data_dir)
 
 
+def import_additional_data(project_id):
+    """import additional data
+
+    Args:
+        project_id (int): the project to import to
+    """
+    # 1. get project
+    req = connexion.request.json
+    _, project = Project._exists(project_id)
+
+    # 2. get current project data file names
+    tasks = Task._get(project_id=project.project_id, many=True)
+    curr_data_names = set()
+    for task in tasks:
+        for data in task.datas:
+            curr_data_names.add(Path(data.path).name)
+
+    # 3. move all new images and all other files to import temp
+    import_temp = osp.join(osp.expanduser("~"), ".paddlelabel", "import_temp")
+    remove_dir(import_temp)
+    create_dir(import_temp)
+
+    import_dir = req["import_dir"]
+    import_dir = expand_home(import_dir)
+    import_format = req.get("import_format", None)
+
+    if not Path(import_dir).is_absolute():
+        abort(f"Only supports absolute import dir", 500)
+
+    if not Path(import_dir).exists():
+        abort(f"Import directory '{import_dir}' doesn't exist", 404)
+
+    new_data_paths = listdir(
+        import_dir,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    )
+    all_paths = listdir(
+        import_dir,
+        filters={"exclude_prefix": ["."]},
+    )
+    all_copy_paths = [p for p in all_paths if p not in new_data_paths]
+    new_data_paths = [p for p in new_data_paths if osp.basename(p) not in curr_data_names]
+    all_copy_paths += new_data_paths
+    for p in all_copy_paths:
+        copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
+
+    # TODO: may have annotation for
+    import_dataset(project, import_temp, "default" if import_format is None else import_format)
+
+    for p in new_data_paths:
+        copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)
+
+    remove_dir(import_temp)
+
+
+def pre_add(new_project, se):
+    new_project.data_dir = expand_home(new_project.data_dir)
+
+    if not osp.isabs(new_project.data_dir):
+        abort("Dataset Path is not absolute path", 409)
+
+    new_project.label_format = camel2snake(new_project.label_format)
+    new_labels = new_project.labels
+    rets, unique = label.unique_within_project(new_project.project_id, new_labels)
+    if not np.all(unique):
+        # TODO: return the not unique field
+        abort("Project labels are not unique", 409)
+    return new_project
+
+
 def post_add(new_project, se):
     """run task import after project creation"""
 
     try:
-        _import_dataset(new_project)
+        import_dataset(new_project)
     except Exception as e:
         project = Project.query.filter(Project.project_id == new_project.project_id).one()
         db.session.delete(project)
@@ -136,61 +188,6 @@ def export_dataset(project_id):
             abort(e.detail, 500, e.title)
         else:
             abort(str(e), 500, str(e))
-
-
-def import_dataset(project_id):
-    """import additional data
-
-    Args:
-        project_id (int): the project to import to
-    """
-    # 1. get project
-    req = connexion.request.json
-    _, project = Project._exists(project_id)
-
-    # 2. get current project data file names
-    tasks = Task._get(project_id=project.project_id, many=True)
-    curr_data_names = set()
-    for task in tasks:
-        for data in task.datas:
-            curr_data_names.add(Path(data.path).name)
-
-    # 3. move all new images and all other files to import temp
-    import_temp = osp.join(osp.expanduser("~"), ".paddlelabel", "import_temp")
-    remove_dir(import_temp)
-    create_dir(import_temp)
-
-    import_dir = req["import_dir"]
-    import_dir = expand_home(import_dir)
-    import_format = req.get("import_format", None)
-
-    if not Path(import_dir).is_absolute():
-        abort(f"Only supports absolute import dir", 500)
-
-    if not Path(import_dir).exists():
-        abort(f"Import directory '{import_dir}' doesn't exist", 404)
-
-    new_data_paths = listdir(
-        import_dir,
-        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-    )
-    all_paths = listdir(
-        import_dir,
-        filters={"exclude_prefix": ["."]},
-    )
-    all_copy_paths = [p for p in all_paths if p not in new_data_paths]
-    new_data_paths = [p for p in new_data_paths if osp.basename(p) not in curr_data_names]
-    all_copy_paths += new_data_paths
-    for p in all_copy_paths:
-        copy(osp.join(import_dir, p), osp.join(import_temp, p), make_dir=True)
-
-    # TODO: may have annotation for
-    _import_dataset(project, import_temp, "default" if import_format is None else import_format)
-
-    for p in new_data_paths:
-        copy(osp.join(import_temp, p), osp.join(project.data_dir, p), make_dir=True)
-
-    remove_dir(import_temp)
 
 
 def pre_put(project, body, se):

@@ -72,6 +72,7 @@ jobs:
           npx cypress run
 
       - name: Upload screenshots and videos
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: Cypress_test_recs_${{ matrix.python-version }}

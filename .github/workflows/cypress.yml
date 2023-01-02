@@ -51,7 +51,6 @@ jobs:
           ls -lah
           echo $USER
           sudo mkdir 测试路径
-          sudo chown -R $USER:$USER 测试路径
           cd 测试路径
           pwd
 

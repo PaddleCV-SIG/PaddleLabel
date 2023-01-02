@@ -1,5 +1,6 @@
 import os.path as osp
 import shutil
+from pathlib import Path
 
 from paddlelabel.api import Task
 from .util import create_dir, listdir, copy, image_extensions
@@ -33,6 +34,8 @@ class Classification(BaseTask):
 
         self.create_warning(data_dir)
 
+        print(self.read_split(data_dir))
+
         # 2. import all datas
         data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
@@ -40,7 +43,7 @@ class Classification(BaseTask):
             # if label_name == "no_annotation":
             #     label_name = ""
             label = [{"label_name": label_name}] if len(label_name) != 0 else []
-            self.add_task([{"path": data_path}], [label])
+            self.add_task([{"path": data_path}], [label], 0 / 1 / 2)
 
         self.commit()
 

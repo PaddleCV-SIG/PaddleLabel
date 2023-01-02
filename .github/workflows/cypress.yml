@@ -57,7 +57,7 @@ jobs:
 
       - name: Install PaddleLabel
         run: |
-          pwd
+          export HOME=/home/runner/测试路径/
           cd ..
           pwd
           ls
@@ -67,7 +67,9 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
 
       - name: Start PaddleLabel
-        run: paddlelabel --debug &
+        run: |
+          export HOME=/home/runner/测试路径/
+          paddlelabel --debug &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -84,7 +86,7 @@ jobs:
       - name: Run test
         id: test
         run: |
-          export HOME=/home/测试路径/
+          export HOME=/home/runner/测试路径/
           cd cypress
           yarn
           npx cypress run

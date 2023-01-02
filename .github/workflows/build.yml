@@ -1,7 +1,7 @@
 name: Build PaddleLabel package
 
 on:
-  # push:
+  push:
   workflow_dispatch:
     inputs:
       force_regen_doc:

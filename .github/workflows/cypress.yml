@@ -56,7 +56,7 @@ jobs:
 
       - name: Install PaddleLabel
         run: |
-          export HOME=/home/runner/测试路径/
+          export HOME=~/测试路径/
           cd ..
           pwd
           ls
@@ -67,7 +67,7 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          export HOME=/home/runner/测试路径/
+          export HOME=~/测试路径/
           paddlelabel --debug &
 
       - name: Checkout frontend project
@@ -85,7 +85,7 @@ jobs:
       - name: Run test
         id: test
         run: |
-          export HOME=/home/runner/测试路径/
+          export HOME=~/测试路径/
           cd cypress
           yarn
           npx cypress run

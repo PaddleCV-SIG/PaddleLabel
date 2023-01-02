@@ -24,6 +24,7 @@ jobs:
         python-version: ["3.11", "3.10"]
         node-version: ["19.x"]
         os: [ubuntu-latest, windows-latest, macos-12]
+      fail-fast: false
 
     steps:
       - name: Checkout backend
@@ -86,6 +87,7 @@ jobs:
         id: test
         run: |
           export HOME=~/测试路径/
+          echo $HOME
           cd cypress
           yarn
           npx cypress run

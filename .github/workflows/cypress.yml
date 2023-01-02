@@ -48,10 +48,9 @@ jobs:
         run: |
           cd
           pwd
-          ls -lah
           echo $USER
           mkdir 测试路径
-          ls -lah 测试路径
+          ls -lah
           cd 测试路径
           pwd
 

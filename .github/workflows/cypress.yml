@@ -51,6 +51,7 @@ jobs:
           ls -lah
           echo $USER
           mkdir 测试路径
+          ls -lah 测试路径
           cd 测试路径
           pwd
 
@@ -90,10 +91,12 @@ jobs:
           yarn
           npx cypress run
 
-      - name: Upload screenshots and videos
-        if: always() && steps.test.outcome == 'failure'
-        uses: actions/upload-artifact@v3
-        with:
-          name: Cypress_test_recs_${{ matrix.python-version }}
-          path: |
-            ./cypress
+      - run: tree ./cypress/cypress/
+
+      # - name: Upload screenshots and videos
+      #   if: always() && steps.test.outcome == 'failure'
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Cypress_test_recs_${{ matrix.python-version }}
+      #     path: |
+      #       ./cypress/cypress/

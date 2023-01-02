@@ -44,8 +44,20 @@ jobs:
           search_artifacts: true
           path: ../
 
+      - name: Add cn path
+        run: |
+          cd
+          pwd
+          ls -lah
+          echo $USER
+          sudo mkdir 测试路径
+          sudo chown -R $USER:$USER 测试路径
+          cd 测试路径
+          pwd
+
       - name: Install PaddleLabel
         run: |
+          pwd
           cd ..
           pwd
           ls
@@ -53,14 +65,6 @@ jobs:
           pip uninstall paddlelabel
           pip uninstall paddlelabel
           pip install paddlelabel-*-py3-none-any.whl
-
-      - name: Add cn path
-        run: |
-          sudo mkdir /home/测试路径
-          sudo chown -R $USER:$USER /home/测试路径
-          mv ~/* /home/测试路径
-          mv ~/.* /home/测试路径
-          ls -lah /home/测试路径
 
       - name: Start PaddleLabel
         run: paddlelabel --debug &

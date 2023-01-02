@@ -44,7 +44,7 @@ jobs:
           search_artifacts: true
           path: ../
 
-      - name: Install and start PaddleLabel
+      - name: Install PaddleLabel
         run: |
           cd ..
           pwd
@@ -53,14 +53,17 @@ jobs:
           pip uninstall paddlelabel
           pip uninstall paddlelabel
           pip install paddlelabel-*-py3-none-any.whl
-          paddlelabel --debug &
 
       - name: Add cn path
         run: |
           sudo mkdir /home/测试路径
+          sudo chown -R $USER:$USER /home/测试路径
           mv ~/* /home/测试路径
           mv ~/.* /home/测试路径
           ls -lah /home/测试路径
+
+      - name: Start PaddleLabel
+        run: paddlelabel --debug &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3

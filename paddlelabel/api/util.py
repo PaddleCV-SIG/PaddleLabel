@@ -17,7 +17,7 @@ def abort(detail: str, status: int, title: str = ""):
         detail=detail,
         title=title if len(title) != 0 else detail,
         status=status,
-        headers={"detail": detail},
+        headers={"charset": "utf-8"},
     )
 
 

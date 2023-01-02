@@ -178,6 +178,5 @@ def backend_error(error):
     print(traceback.format_exc())
     return {
         "title": "Backend error: " + str(error),
-        "detail": "Backend error: " + str(error),
         "status": 500,
     }, 500

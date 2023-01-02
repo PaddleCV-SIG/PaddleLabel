@@ -9,20 +9,22 @@ on:
     types:
       - completed
   schedule:
-    - cron:  "0 12 * * *"
-
+    - cron: "0 12 * * *"
 
 jobs:
   # only rebuild if files under doc/ folder changed
   e2e_test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       matrix:
-        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
-        node-version: ['19.x']
+        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10"]
+        node-version: ["19.x"]
+        os: [ubuntu-latest, windows-latest, macos-12]
 
-    # outputs:
-    #   doc_changed: ${{ steps.doc_changed.outputs.doc }}
     steps:
       - name: Checkout backend
         uses: actions/checkout@v3
@@ -53,6 +55,13 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
           paddlelabel --debug &
 
+      - name: Add cn path
+        run: |
+          sudo mkdir /home/测试路径
+          mv ~/* /home/测试路径
+          mv ~/.* /home/测试路径
+          ls -lah /home/测试路径
+
       - name: Checkout frontend project
         uses: actions/checkout@v3
         with:
@@ -63,16 +72,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Run test
+        id: test
         run: |
+          export HOME=/home/测试路径/
           cd cypress
           yarn
           npx cypress run
 
       - name: Upload screenshots and videos
-        if: always()
+        if: always() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: Cypress_test_recs_${{ matrix.python-version }}

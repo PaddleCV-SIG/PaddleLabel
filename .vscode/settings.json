@@ -1,6 +1,10 @@
 {
     "cSpell.words": [
+        "datas",
+        "dtype",
         "eiseg",
+        "imread",
+        "paddlelabel",
         "yolo"
     ],
     "python.formatting.provider": "black"

@@ -1,10 +1,7 @@
 import os.path as osp
 import shutil
-import logging
 
-from paddlelabel.config import db
 from paddlelabel.api import Task
-from paddlelabel.task.util.file import copycontent
 from .util import create_dir, listdir, copy, image_extensions
 from .base import BaseTask
 
@@ -20,7 +17,8 @@ class Classification(BaseTask):
             "single_class": self.single_class_exporter,
             "multi_class": self.multi_class_exporter,
         }
-        # self.default_importer = self.single_class_importer
+        # TODO: remove these
+        self.default_importer = self.single_class_importer
         self.default_exporter = self.single_class_exporter
 
     def single_class_importer(
@@ -39,12 +37,45 @@ class Classification(BaseTask):
         data_paths = listdir(data_dir, filters)
         for data_path in data_paths:
             label_name = osp.basename(osp.dirname(data_path))
-            if label_name == "no_annotation":
-                label_name = ""
+            # if label_name == "no_annotation":
+            #     label_name = ""
             label = [{"label_name": label_name}] if len(label_name) != 0 else []
             self.add_task([{"path": data_path}], [label])
 
         self.commit()
+
+    def single_class_exporter(self, export_dir):
+        project = self.project
+        create_dir(export_dir)
+        create_dir(osp.join(export_dir, "no_annotation"))
+        have_no_annotation = False
+
+        # 1. write labels.txt
+        labels = self.export_labels(osp.join(export_dir, "labels.txt"))
+
+        # 2. create label dirs
+        for label in labels:
+            create_dir(osp.join(export_dir, label.name))
+
+        # 3. move files to output dir
+        tasks = Task._get(project_id=project.project_id, many=True)
+        new_paths = []
+        for task in tasks:
+            for data in task.datas:
+                label_name = ""
+                if len(data.annotations) == 0:
+                    label_name = "no_annotation"
+                    have_no_annotation = True
+                else:
+                    label_name = data.annotations[0].label.name
+                copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
+                new_paths.append([osp.join(label_name, osp.basename(data.path))])
+
+        if not have_no_annotation:
+            shutil.rmtree(osp.join(export_dir, "no_annotation"))
+
+        # 4. write split files
+        self.export_split(export_dir, tasks, new_paths)
 
     def multi_class_importer(
         self,
@@ -91,39 +122,6 @@ class Classification(BaseTask):
             self.add_task([{"path": data_path}], [[{"label_name": name} for name in labels]])
 
         self.commit()
-
-    def single_class_exporter(self, export_dir):
-        project = self.project
-        create_dir(export_dir)
-        create_dir(osp.join(export_dir, "no_annotation"))
-        have_no_annotation = False
-
-        # 1. write labels.txt
-        labels = self.export_labels(osp.join(export_dir, "labels.txt"))
-
-        # 2. create label dirs
-        for label in labels:
-            create_dir(osp.join(export_dir, label.name))
-
-        # 3. move files to output dir
-        tasks = Task._get(project_id=project.project_id, many=True)
-        new_paths = []
-        for task in tasks:
-            for data in task.datas:
-                label_name = ""
-                if len(data.annotations) == 0:
-                    label_name = "no_annotation"
-                    have_no_annotation = True
-                else:
-                    label_name = data.annotations[0].label.name
-                copy(osp.join(project.data_dir, data.path), osp.join(export_dir, label_name))
-                new_paths.append([osp.join(label_name, osp.basename(data.path))])
-
-        if not have_no_annotation:
-            shutil.rmtree(osp.join(export_dir, "no_annotation"))
-
-        # 4. write split files
-        self.export_split(export_dir, tasks, new_paths)
 
     def multi_class_exporter(self, export_dir):
         project = self.project

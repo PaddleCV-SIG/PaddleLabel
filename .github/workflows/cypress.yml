@@ -50,7 +50,7 @@ jobs:
           pwd
           ls -lah
           echo $USER
-          sudo mkdir 测试路径
+          mkdir 测试路径
           cd 测试路径
           pwd
 

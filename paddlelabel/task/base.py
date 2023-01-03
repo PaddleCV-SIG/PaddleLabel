@@ -65,6 +65,7 @@ class BaseTask:
 
         if data_dir is None:
             data_dir = self.project.data_dir
+        assert data_dir is not None and Path().exists()
 
         # 2. set current label max id
         # next added label will have id label_max_id+1, so label.id starts from 1
@@ -74,7 +75,7 @@ class BaseTask:
 
         # 3. read dataset split
         if not is_export:
-            self.split = self.read_split(data_dir)
+            self.split = self.read_split()
 
         # 4. create labels specified in labels.txt
         if not skip_label_import and not is_export:
@@ -154,10 +155,11 @@ class BaseTask:
             datas[idx]["path"] = str(datas[idx]["path"])
 
         # 1. find task split
+        print(datas[0]["path"], self.split)
         if split is None:
             split_idx = 0
-            for idx, split in enumerate(self.split):
-                if datas[0]["path"] in split:
+            for idx, split_paths in enumerate(self.split):
+                if datas[0]["path"] in split_paths:
                     split_idx = idx
                     break
         else:
@@ -238,7 +240,7 @@ class BaseTask:
                 return label.label_id
         return None
 
-    def read_split(self, delimiter: str = " "):
+    def read_split(self, separator: str = " "):
         """
         Read the dataset split information from project.data_dir/xx_list.txt files.
 
@@ -254,6 +256,7 @@ class BaseTask:
         """
         data_dir = Path(self.project.data_dir)
 
+        # separator = " "
         sets: List[Set[str]] = []
         split_names = ["train_list.txt", "val_list.txt", "test_list.txt"]
         for split_name in split_names:
@@ -261,8 +264,12 @@ class BaseTask:
             paths = []
             if split_path.exists():
                 paths = split_path.read_text().split("\n")
-                paths = [p.strip() for p in paths]
-                paths = [p.split(delimiter)[0] for p in paths if len(p) != 0]
+
+                print("+", paths)
+                print(type(paths[0]))
+                print(paths[0].split(separator))
+                paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
+                print(paths)
             sets.append(set(paths))
         return sets
 

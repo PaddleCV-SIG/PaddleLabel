@@ -34,20 +34,11 @@ class Classification(BaseTask):
 
         self.create_warning(data_dir)
 
-        data_split = self.read_split(data_dir)
-
         # 2. import all datas
-        tmp_data_paths = listdir(data_dir, filters)
-        data_paths = [Path(p) for p in tmp_data_paths]
+        data_paths = [Path(p) for p in listdir(data_dir, filters)]
         for data_path in data_paths:
             label_name = data_path.parent.name
-            # if label_name == "no_annotation":
-            #     label_name = ""
-            label = [{"label_name": label_name}] if len(label_name) != 0 else []
-            for i in range(len(data_split)):
-                if str(data_path) in data_split[i]:
-                    self.add_task([{"path": data_path}], [label], i)
-                    break
+            self.add_task([{"path": str(data_path)}], [[{"label_name": label_name}]])
 
         self.commit()
 

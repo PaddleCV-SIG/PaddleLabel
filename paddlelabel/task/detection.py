@@ -4,6 +4,7 @@ import json
 from copy import deepcopy
 from pathlib import Path
 import logging
+from typing import List
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -66,7 +67,7 @@ def parse_voc_label(label_path):
         # ann["result"] = json.dumps(ann["result"])
         names = ["xmin", "ymin", "xmax", "ymax"]
         r = [data(bndbox.getElementsByTagName(n)) for n in names]
-        r = [int(float(t)) for t in r]
+        r = [float(t) for t in r]
         r[0] -= width / 2
         r[1] -= height / 2
         r[2] -= width / 2
@@ -142,8 +143,6 @@ class Detection(BaseTask):
         from threading import Lock
         from queue import Queue
         import time
-        from tqdm import tqdm
-        import random
         import base64
         import requests
 
@@ -314,8 +313,8 @@ class Detection(BaseTask):
             # print(width, height)
             yolo_res = ""
             for ann in task.annotations:
-                r = [float(t) for t in ann.result.split(",")]
-                res = [0 for _ in range(4)]
+                r: List[float] = [float(t) for t in ann.result.split(",")]
+                res = [0.0 for _ in range(4)]
                 res[0] = r[0] / width + 0.5
                 res[1] = r[1] / height + 0.5
                 res[2] = (r[2] - r[0]) / width

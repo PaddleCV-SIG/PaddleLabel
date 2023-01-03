@@ -18,8 +18,7 @@ class Classification(BaseTask):
             "single_class": self.single_class_exporter,
             "multi_class": self.multi_class_exporter,
         }
-        # TODO: remove these
-        self.default_importer = self.single_class_importer
+        # TODO: remove this
         self.default_exporter = self.single_class_exporter
 
     def single_class_importer(

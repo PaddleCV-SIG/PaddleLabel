@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 import os.path as osp
@@ -18,14 +20,15 @@ Base for import/export and other task specific operations.
 
 log = logging.getLogger("PaddleLabel")
 
+
 # TODO: change data_dir to pathlib.path
 class BaseTask:
     def __init__(
-        self,
-        project: int | Project,
-        data_dir: None | str = None,
-        skip_label_import: bool = False,
-        is_export: bool = False,
+            self,
+            project: int | Project,
+            data_dir: None | str = None,
+            skip_label_import: bool = False,
+            is_export: bool = False,
     ):
         """Basic import/export related operations
 
@@ -98,10 +101,10 @@ class BaseTask:
         # assert isinstance(self.project, Project)
 
     def add_task(
-        self,
-        datas: List[dict],
-        annotations: List[List[dict]] | None = None,
-        split: int | None = None,
+            self,
+            datas: List[dict],
+            annotations: List[List[dict]] | None = None,
+            split: int | None = None,
     ):
         """
         Cache one task to be written to db later.
@@ -263,19 +266,19 @@ class BaseTask:
             split_path = data_dir / split_name
             paths = []
             if split_path.exists():
-                paths = split_path.read_text().split("\n")
+                paths = split_path.read_text(encoding='utf-8').split("\n")
                 paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
             sets.append(set(paths))
         return sets
 
     def export_split(
-        self,
-        export_dir,
-        tasks,
-        new_paths,
-        delimiter=" ",
-        with_labels=True,
-        annotation_ext=None,
+            self,
+            export_dir,
+            tasks,
+            new_paths,
+            delimiter=" ",
+            with_labels=True,
+            annotation_ext=None,
     ):
         # only used in file-file split, not in file-class split
         if annotation_ext is not None and annotation_ext[0] == ".":
@@ -308,13 +311,13 @@ class BaseTask:
     """ label related """
 
     def add_label(
-        self,
-        name: str,
-        id: int | None = None,
-        color: str | None = None,
-        super_category_id: int | None = None,
-        comment: str | None = None,
-        commit=False,
+            self,
+            name: str,
+            id: int | None = None,
+            color: str | None = None,
+            super_category_id: int | None = None,
+            comment: str | None = None,
+            commit=False,
     ):
         """
         Add one label to current project
@@ -395,7 +398,7 @@ class BaseTask:
             return
 
         # 2. import labels
-        labels = open(label_names_path, "r").readlines()
+        labels = open(label_names_path, "r", encoding='utf-8').readlines()
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
         if ignore_first:
             background_line = labels[0]
@@ -460,10 +463,10 @@ class BaseTask:
 
     # TODO: add total imported count
     def default_importer(
-        self,
-        data_dir=None,
-        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-        with_size=True,
+            self,
+            data_dir=None,
+            filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+            with_size=True,
     ):
         if data_dir is None:
             data_dir = self.project.data_dir
@@ -515,10 +518,10 @@ class BaseTask:
             if color is not None:
                 color = name_to_hex(color)
             if (
-                "supercategory" not in catg.keys()
-                or catg["supercategory"] == "none"
-                or catg["supercategory"] is None
-                or len(catg["supercategory"]) == 0
+                    "supercategory" not in catg.keys()
+                    or catg["supercategory"] == "none"
+                    or catg["supercategory"] is None
+                    or len(catg["supercategory"]) == 0
             ):
                 self.add_label(
                     name=catg["name"],

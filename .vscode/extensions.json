@@ -2,10 +2,13 @@
     "recommendations": [
         "dotjoshjohnson.xml",
         "njpwerner.autodocstring",
-        "eamodio.gitlens",
         "pejmannikram.vscode-auto-scroll",
         "streetsidesoftware.code-spell-checker",
         "fabiospampinato.vscode-highlight",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "ms-python.isort",
+        "yzhang.markdown-all-in-one",
+        "ms-python.vscode-pylance",
+        "ms-python.python"
     ]
 }

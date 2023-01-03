@@ -5,6 +5,7 @@
         "eamodio.gitlens",
         "pejmannikram.vscode-auto-scroll",
         "streetsidesoftware.code-spell-checker",
-        "fabiospampinato.vscode-highlight"
+        "fabiospampinato.vscode-highlight",
+        "redhat.vscode-yaml"
     ]
 }

@@ -4,8 +4,8 @@ repos:
     hooks:
       - id: no-commit-to-branch
         args: [--pattern, ^v]
-      # - id: check-added-large-files
-      #   args: [--maxkb=16]
+      - id: check-added-large-files
+        args: [--maxkb=16]
       - id: check-case-conflict
       - id: check-yaml
       - id: check-xml
@@ -19,16 +19,21 @@ repos:
       - id: trailing-whitespace
       - id: pretty-format-json
         args: [--autofix, --indent=4, --no-ensure-ascii]
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v0.991
+  #   hooks:
+  #     - id: mypy
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+
+  # - repo: https://github.com/sonatype-nexus-community/jake
+  #   rev: "v3.0.0"
+  #   hooks:
+  #     - id: scan
   # - repo: https://github.com/executablebooks/mdformat
   #   rev: 0.7.16 # Use the ref you want to point at
   #   hooks:
   #     - id: mdformat
   #       exclude: doc/CN/project/detection.md # messes up image['file_name']
-  - repo: https://github.com/psf/black
-    rev: 22.10.0
-    hooks:
-      - id: black
-  # - repo: https://github.com/sonatype-nexus-community/jake
-  #   rev: "v3.0.0"
-  #   hooks:
-  #     - id: scan

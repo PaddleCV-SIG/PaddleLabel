@@ -32,7 +32,7 @@ class BaseTask:
         Parameters
         ----------
         project : int | Project
-            If the project exists in db, self.project will be queried from db with parameter project(int) as project_id or with project.project_id. Else the project will be created. # TODO: can we change this to only accept projectid
+            If the project exists in db, self.project will be queried from db with parameter project(int) as project_id or with project.project_id. Else the project will be created. # TODO: can we change this to only accept project_id
         data_dir : None | str, optional
             Base path to dataset. If it's None, will use project.data_dir. Defaults to False.
         skip_label_import : bool, optional

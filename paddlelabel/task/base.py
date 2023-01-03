@@ -1,16 +1,16 @@
+import logging
 import os
 import os.path as osp
-import json
 from collections import deque
-import logging
-
+from typing import List, Set
+from pathlib import Path
 import cv2
 
 from paddlelabel.api import Annotation, Data, Label, Project, Task
 from paddlelabel.api.util import abort
 from paddlelabel.config import db
-from paddlelabel.task.util import image_extensions, listdir, create_dir
-from paddlelabel.task.util.color import rgb_to_hex, rand_hex_color, name_to_hex
+from paddlelabel.task.util import create_dir, image_extensions, listdir
+from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
 
 """
 Base for import/export and other task specific operations.
@@ -18,40 +18,58 @@ Base for import/export and other task specific operations.
 
 log = logging.getLogger("PaddleLabel")
 
-
+# TODO: change data_dir to pathlib.path
 class BaseTask:
-    def __init__(self, project, data_dir=None, skip_label_import=False, is_export=False):
-        """
-        Args:
-            project (int|dict): If the project exists, self.project will be queried from db with parameter project as project_id or with project.project_id. Else the project will be created.
+    def __init__(
+        self,
+        project: int | Project,
+        data_dir: None | str = None,
+        skip_label_import: bool = False,
+        is_export: bool = False,
+    ):
+        """Basic import/export related operations
+
+        Parameters
+        ----------
+        project : int | Project
+            If the project exists in db, self.project will be queried from db with parameter project(int) as project_id or with project.project_id. Else the project will be created. # TODO: can we change this to only accept projectid
+        data_dir : None | str, optional
+            Base path to dataset. If it's None, will use project.data_dir. Defaults to False.
+        skip_label_import : bool, optional
+            If false, will attempt to import labels from data_dir/labels.txt. Defaults to False.
+        is_export : bool, optional
+            If this class instance will be used for export. If True, some default import functions won't run. Defaults to False
+
+        Raises
+        ------
+        RuntimeError
+            Project with given project_id not found.
         """
 
-        self.task_cache = []
+        self.task_cache: List[Task] = []
 
         # 1. set project
         if isinstance(project, int):
-            curr_project = Project._get(project_id=project)
-            if curr_project is None:
+            project = Project._get(project_id=project)
+            if project is None:
                 raise RuntimeError(f"No project with project_id {project}")
         else:
-            curr_project = Project._get(project_id=project.project_id)
-            if curr_project is None:
+            res = Project._get(project_id=project.project_id)
+            if res is None:
                 db.session.add(project)
                 db.session.commit()
-                curr_project = project
-        self.project = curr_project
+
+        self.project = project
         self.project.data_dir = self.project.data_dir.strip()
         db.session.commit()
 
         if data_dir is None:
             data_dir = self.project.data_dir
 
-        # os.makedirs(data_dir, exist_ok=True)
-
         # 2. set current label max id
         # next added label will have id label_max_id+1, so label.id starts from 1
         self.label_max_id = 0
-        for label in project.labels:
+        for label in self.project.labels:
             self.label_max_id = max(self.label_max_id, label.id)
 
         # 3. read dataset split
@@ -62,9 +80,10 @@ class BaseTask:
         if not skip_label_import and not is_export:
             self.import_labels()
 
-        # 5. polupate label colors
+        # 5. populate label colors
         self.populate_label_colors()
 
+        # TODO: remove after v1.0
         # 6. get curr datapaths
         # tasks = Task._get(project_id=project.project_id, many=True)
         # self.curr_data_paths = []
@@ -73,47 +92,63 @@ class BaseTask:
         #         self.curr_data_paths.append(data.path)
         # print("Current data paths", self.curr_data_paths)
 
-        self.project = Project._get(project_id=project.project_id)
+        # TODO: is this query really needed?
+        # self.project = Project._get(project_id=project.project_id)
+        # assert isinstance(self.project, Project)
 
-    def add_task(self, datas: list, annotations: list = None, split: int = None):
-        """Add one task to project.
-        ATTENTION: to be more efficient, this method WONT connmit! make sure you invoke db.session.commit() after adding all tasks
+    def add_task(
+        self,
+        datas: List[dict],
+        annotations: List[List[dict]] | None = None,
+        split: int | None = None,
+    ):
+        """
+        Cache one task to be written to db later.
+        ATTENTION: This method NEVER writes to db! Call commit() to write results to db
 
         Parameters
         ----------
-        datas : list. each item is a dict, path is required, specifying full or relative path to project.data_dir. Others are optional
-            [{"path": 'path1'}, {"path" : 'path2', "size": [1, 1024, 768, 3]}, ...]
-            size is in format [slice count (1 for images), width, height, channel]
-        annotations : list
-            [
-                [ // labels for path1
-                    {
-                        "label_name": "",
-                        "result": "", // optional, default to ""
-                    },
-                    {
-                        "label_name": "",
-                        "result": "",
-                    }
-                ],
-                [ // labels for path2
-                    {
-                        "label_name": "",
-                        "result": "", // optional, default to ""
-                    },
-                    {
-                        "label_name": "",
-                        "result": "", // optional, default to ""
-                    }
-                ],
-                ...
-            ]
-        split: int. the split set this task is in. If not passed will attempt to find in the three list files. If not found default to 0 (training set). 0, 1, 2-> train, val, test
+        datas : List[dict]
+            A list of dict, each dict representing a task. In the dict, path is required, specifying full path or relative path to project.data_dir. All other entries are optional.
+            Example: [{"path": 'path1'}, {"path" : 'path2', "size": "1,1024,768"}, ...]
+            size is in format "slice count (1 for 2d images),width,height"
+        annotations : List[List[dict]] | None, optional
+            Annotations corresponding to each data record. Defaults to None
+            Example:
+                [
+                    [ // annotations for path1
+                        {
+                            "label_name": "",
+                            "result": "", // optional, default to ""
+                        },
+                        {
+                            "label_name": "",
+                        }
+                    ],
+                    [ // annotations for path2
+                        {
+                            "label_name": "",
+                            "result": "", // optional, default to ""
+                        },
+                        {
+                            "label_name": "",
+                            "result": "", // optional, default to ""
+                        }
+                    ],
+                    ...
+                ]
+        split : int | None, optional
+            The subset these data records belong to.
+            0, 1, 2 -> train, validation, test.
+            If not passed, will try to determine from xx_list.txt files.
+            If not found, defaults to training subset.
+            Defaults to None
         """
-        project = self.project
-        assert len(datas) != 0, "can't add task without data"
 
-        for idx in range(len(datas)):
+        project = self.project
+        assert len(datas) != 0, "Can't add task without data"
+
+        for idx, data in enumerate(datas):
             if osp.isabs(datas[idx]["path"]):
                 datas[idx]["path"] = osp.relpath(datas[idx]["path"], project.data_dir)
             datas[idx]["path"] = str(datas[idx]["path"])
@@ -141,9 +176,9 @@ class BaseTask:
         while len(annotations) < len(datas):
             annotations.append([])
 
-        for anns, data_record in zip(annotations, datas):
+        for anns, data in zip(annotations, datas):
             # 2. add data record
-            data = Data(**data_record)
+            data = Data(**data)
             task.datas.append(data)
             total_anns = 0
 
@@ -151,29 +186,33 @@ class BaseTask:
             for ann in anns:
                 if len(ann.get("label_name", "")) == 0:
                     continue
-                # BUG: multiple labels under same label_name can exist
                 label = get_label(ann["label_name"])
                 if label is None:
                     label = self.add_label(ann["label_name"], ann.get("color"), commit=True)
                 del ann["label_name"]
                 ann = Annotation(label_id=label.label_id, project_id=project.project_id, **ann)
-                task.annotations.append(ann)  # TODO: remove
+                task.annotations.append(ann)  # TODO: remove this, annotation should only be under data
                 data.annotations.append(ann)
                 total_anns += 1
-            log.info(f"= {data_record['path']} with {total_anns} annotation(s) imported to set {split_idx} =")
+            log.info(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
 
-        # db.session.add(task)
         self.task_cache.append(task)
 
     def commit(self):
+        """Write added tasks to database, ordered by filename."""
         self.task_cache.sort(key=lambda k: k.datas[0].path)
         for task in self.task_cache:
             db.session.add(task)
+        log.info(
+            f"{len(self.task_cache)} tasks and {sum(len(t.annotations) for t in self.task_cache)} annotations imported"
+        )
         self.task_cache = []
         db.session.commit()
 
-    def label_id2name(self, label_id):
-        """Get label name by label.id
+    # TODO: change following three to get_label_by_xx
+    def label_id2name(self, label_id: int):
+        """
+        Get label name by label.id
         ATTENTION: label.id, not label.label_id
 
         Args:
@@ -187,31 +226,43 @@ class BaseTask:
                 return label.name
         return None
 
-    def label_name2id(self, label_name):
+    def label_name2id(self, label_name: str):
         for label in self.project.labels:
             if label.name == label_name:
                 return label.id
         return None
 
-    def label_name2label_id(self, label_name):
+    def label_name2label_id(self, label_name: str):
         for label in self.project.labels:
             if label.name == label_name:
                 return label.label_id
         return None
 
-    def read_split(self, data_dir=None, delimiter=" "):
-        if data_dir is None:
-            data_dir = self.project.data_dir
+    def read_split(self, delimiter: str = " "):
+        """
+        Read the dataset split information from project.data_dir/xx_list.txt files.
 
-        sets = []
+        Parameters
+        ----------
+        delimiter : str, optional
+            The delimiter used in xx_list.txt files. Defaults to " "
+
+        Returns
+        -------
+        List[Set[str]]
+            A list of three sets, each set containing all the paths of data in this set.
+        """
+        data_dir = Path(self.project.data_dir)
+
+        sets: List[Set[str]] = []
         split_names = ["train_list.txt", "val_list.txt", "test_list.txt"]
         for split_name in split_names:
-            split_path = osp.join(data_dir, split_name)
+            split_path = data_dir / split_name
             paths = []
-            if osp.exists(split_path):
-                paths = open(split_path, "r").readlines()
-                paths = [p.strip() for p in paths if len(p.strip()) != 0]
-                paths = [p.split(delimiter)[0] for p in paths]
+            if split_path.exists():
+                paths = split_path.read_text().split("\n")
+                paths = [p.strip() for p in paths]
+                paths = [p.split(delimiter)[0] for p in paths if len(p) != 0]
             sets.append(set(paths))
         return sets
 
@@ -257,10 +308,10 @@ class BaseTask:
     def add_label(
         self,
         name: str,
-        id: int = None,
-        color: str = None,
-        super_category_id: int = None,
-        comment: str = None,
+        id: int | None = None,
+        color: str | None = None,
+        super_category_id: int | None = None,
+        comment: str | None = None,
         commit=False,
     ):
         """

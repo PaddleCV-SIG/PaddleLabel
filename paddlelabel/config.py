@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy  # TODO: remove
 from flask_marshmallow import Marshmallow  # TODO: remove
 from flask_cors import CORS
 
-from .util import rand_string
+from paddlelabel.util import rand_string
 
 log = logging.getLogger("PaddleLabel")
 

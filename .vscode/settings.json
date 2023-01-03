@@ -1,10 +1,16 @@
 {
+    "autoDocstring.customTemplatePath": "docstring_format.mustache",
     "cSpell.words": [
+        "anns",
+        "connexion",
         "datas",
         "dtype",
         "eiseg",
         "imread",
+        "nncol",
+        "onupdate",
         "paddlelabel",
+        "SQLALCHEMY",
         "yolo"
     ],
     "python.formatting.provider": "black"

@@ -1,10 +1,11 @@
 from datetime import datetime
-import platform
+from typing import List, TypeVar, Type, Tuple, overload
 
 from paddlelabel.config import db
 from paddlelabel.api.util import nncol, abort
 from paddlelabel.util import pyVerGt
 
+T = TypeVar("T")
 # TODO: nn string col cant be ""
 class BaseModel(db.Model):
     __abstract__ = True
@@ -35,7 +36,7 @@ class BaseModel(db.Model):
         return s
 
     @classmethod
-    def _exists(cls, item_id, throw=True):
+    def _exists(cls: Type[T], item_id, throw=True) -> Tuple[bool, None | T]:
         item = cls.query.filter(getattr(cls, cls.__tablename__ + "_id") == item_id).one_or_none()
         if item is None:
             if throw:
@@ -44,18 +45,23 @@ class BaseModel(db.Model):
                 return False, None
         return True, item
 
+    @overload
     @classmethod
-    def _get(cls, **kwargs):
-        many = kwargs.get("many", False)
-        if "many" in kwargs.keys():
-            del kwargs["many"]
+    def _get(cls: Type[T], many: bool, **kwargs) -> List[T]:
+        ...
+
+    @overload
+    @classmethod
+    def _get(cls: Type[T], **kwargs) -> T | None:
+        ...
+
+    @classmethod
+    def _get(cls, many=False, **kwargs):
 
         if pyVerGt():  # skip check for py < 3.9
             for key in kwargs.keys():
                 if key not in cls._cols:
                     raise AttributeError(f"Model {cls.__tablename__} don't have attribute {key}")
-
-        # TODO: none value
 
         conditions = {}
         for k, v in list(kwargs.items()):

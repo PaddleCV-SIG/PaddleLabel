@@ -3,6 +3,8 @@
         "dotjoshjohnson.xml",
         "njpwerner.autodocstring",
         "eamodio.gitlens",
-        "pejmannikram.vscode-auto-scroll"
+        "pejmannikram.vscode-auto-scroll",
+        "streetsidesoftware.code-spell-checker",
+        "fabiospampinato.vscode-highlight"
     ]
 }

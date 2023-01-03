@@ -11,7 +11,11 @@
         "onupdate",
         "paddlelabel",
         "SQLALCHEMY",
+        "supercategory",
         "yolo"
     ],
-    "python.formatting.provider": "black"
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.formatting.provider": "black",
+    "python.languageServer": "Pylance"
 }

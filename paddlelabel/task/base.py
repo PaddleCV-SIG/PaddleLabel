@@ -264,12 +264,7 @@ class BaseTask:
             paths = []
             if split_path.exists():
                 paths = split_path.read_text().split("\n")
-
-                print("+", paths)
-                print(type(paths[0]))
-                print(paths[0].split(separator))
                 paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
-                print(paths)
             sets.append(set(paths))
         return sets
 
@@ -391,7 +386,7 @@ class BaseTask:
         # 1.2 if not, try: project.data_dir / labels.txt
         if label_names_path is None:
             label_names_path = osp.join(project.data_dir, "labels.txt")
-        # 1.2 if labels.txt doesnt exist, try: project.data_dir / classes.names. this is intended for yolo format
+        # 1.2 if labels.txt doesn't exist, try: project.data_dir / classes.names. this is intended for yolo format
         if not osp.exists(label_names_path):
             if osp.exists(osp.join(project.data_dir, "classes.names")):
                 label_names_path = osp.join(project.data_dir, "classes.names")

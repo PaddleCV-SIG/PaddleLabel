@@ -265,8 +265,8 @@ class BaseTask:
             split_path = data_dir / split_name
             paths = []
             if split_path.exists():
-                # paths = split_path.read_text(encoding="utf-8").split("\n")
-                paths = open(split_path, "r").readline()
+                paths = split_path.read_text(encoding="utf-8").split("\n")
+                # paths = open(split_path, "r").readline()
                 paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
             sets.append(set(paths))
         return sets
@@ -286,7 +286,7 @@ class BaseTask:
 
         set_names = ["train_list", "val_list", "test_list"]
         create_dir(export_dir)
-        set_files = [open(osp.join(export_dir, f"{n}.txt"), "w") for n in set_names]
+        set_files = [open(osp.join(export_dir, f"{n}.txt"), "w" ,encoding="utf-8") for n in set_names]
         for task, task_new_paths in zip(tasks, new_paths):
             for data, new_path in zip(task.datas, task_new_paths):
                 if with_labels:
@@ -398,7 +398,8 @@ class BaseTask:
             return
 
         # 2. import labels
-        labels = open(label_names_path, "r").readlines()
+        # labels = open(label_names_path, "r").readlines()
+        labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 
         background_line = labels[0]
@@ -453,7 +454,7 @@ class BaseTask:
     def export_labels(self, label_names_path: str, background_line: str | None = None, with_id: bool = False):
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)
-        with open(label_names_path, "w") as f:
+        with open(label_names_path, "w", encoding="utf-8") as f:
             if background_line is not None:
                 print(background_line.strip(), file=f)
             for lab in labels:
@@ -493,7 +494,7 @@ class BaseTask:
         if not osp.exists(warning_path):
             print(
                 "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues.",
-                file=open(warning_path, "w"),
+                file=open(warning_path, "w", encoding="utf-8"),
             )
 
     def remove_warning(self, dir):

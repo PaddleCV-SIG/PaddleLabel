@@ -265,7 +265,8 @@ class BaseTask:
             split_path = data_dir / split_name
             paths = []
             if split_path.exists():
-                paths = split_path.read_text(encoding="utf-8").split("\n")
+                # paths = split_path.read_text(encoding="utf-8").split("\n")
+                paths = open(split_path, "r").readline()
                 paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
             sets.append(set(paths))
         return sets
@@ -397,7 +398,7 @@ class BaseTask:
             return
 
         # 2. import labels
-        labels = open(label_names_path, "r", encoding="gbk").readlines()
+        labels = open(label_names_path, "r").readlines()
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 
         background_line = labels[0]

@@ -397,7 +397,7 @@ class BaseTask:
             return
 
         # 2. import labels
-        labels = open(label_names_path, "r", encoding="utf-8").readlines()
+        labels = open(label_names_path, "r", encoding="gbk").readlines()
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 
         background_line = labels[0]

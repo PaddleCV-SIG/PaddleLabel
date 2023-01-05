@@ -102,8 +102,8 @@ class BaseTask:
 
     def add_task(
         self,
-        datas: list[dict],
-        annotations: list[list[dict]] | None = None,
+        datas: list[dict[str, str]],
+        annotations: list[list[dict[str, str]]] | None = None,
         split: int | None = None,
     ):
         """
@@ -272,7 +272,7 @@ class BaseTask:
 
     def export_split(
         self,
-        export_dir,
+        export_dir: Path,
         tasks,
         new_paths,
         delimiter=" ",
@@ -392,8 +392,8 @@ class BaseTask:
             return
 
         # 2. import labels
-        # labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
-        labels = Path(label_names_path).read_text().split("\n")
+        labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
+        # labels = Path(label_names_path).read_text().split("\n")
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 
         # 2.1 ignore first background label
@@ -458,12 +458,11 @@ class BaseTask:
                     print(lab.id, file=f)
         return labels
 
-    # TODO: add total imported count
     def default_importer(
         self,
-        data_dir=None,
+        data_dir: Path | None = None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-        with_size=True,
+        with_size: bool = True,  # TODO: after result format is changed, default to false
     ):
         if data_dir is None:
             data_dir = self.project.data_dir
@@ -471,31 +470,61 @@ class BaseTask:
         for data_path in listdir(data_dir, filters):
             if with_size:
                 img = cv2.imread(osp.join(data_dir, data_path))
-                size = [1] + list(img.shape)
+                size = [1] + list(img.shape[:2])
                 size = ",".join([str(s) for s in size])
-                self.add_task([{"path": data_path, "size": size}])
             else:
-                self.add_task([{"path": data_path}])
-        # db.session.commit()
+                size = None
+            self.add_task([{"path": data_path, "size": size}])
+
         self.commit()
 
     """ warning file """
 
-    def create_warning(self, dir):
-        if not osp.exists(dir):
-            abort(detail=f"Dataset Path specified {dir} doesn't exist.", status=404)
+    def create_warning(self, data_dir: Path) -> None:
+        """
+        Create paddlelabel.warning file in data_dir
 
-        warning_path = osp.join(dir, "paddlelabel.warning")
-        if not osp.exists(warning_path):
-            print(
-                "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues.",
-                file=open(warning_path, "w", encoding="utf-8"),
+        Parameters
+        ----------
+        data_dir : Path
+            dataset dir
+
+        Raises
+        ------
+        FileNotFoundError
+            specified data_dir not found
+
+        """
+        data_dir = Path(data_dir)
+        if not data_dir.exists():
+            raise FileNotFoundError(f"Dataset Path specified {data_dir} doesn't exist.")
+
+        warning_path = data_dir / "paddlelabel.warning"
+        if not warning_path.exists():
+            warning_path.write_text(
+                "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues."
             )
+            # print(
+            #     "PP Label is using files stored under this folder!\nChanging file in this folder may cause issues.",
+            #     file=open(warning_path, "w", encoding="utf-8"),
+            # )
 
-    def remove_warning(self, dir):
-        warning_path = osp.join(dir, "paddlelabel.warning")
-        if osp.exists(warning_path):
-            os.remove(warning_path)
+    def remove_warning(self, data_dir: Path) -> None:
+        """
+        Remove paddlelabel.warning
+
+        Parameters
+        ----------
+        data_dir : Path
+            Dataset folder path
+
+        Raises
+        ------
+        FileNotFoundError
+            data_dir / "paddlelabel.warning" doesn't exist
+        """
+        data_dir = Path(data_dir)  # TODO: remove
+        (data_dir / "paddlelabel.warning").unlink()
 
     """ coco utils """
 

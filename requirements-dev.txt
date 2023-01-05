@@ -1,3 +1,6 @@
 black
 pre-commit
 jake
+
+types-Pillow
+types-Flask-Cors

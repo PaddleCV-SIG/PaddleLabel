@@ -4,7 +4,7 @@ import logging
 import os
 import os.path as osp
 from collections import deque
-from typing import List, Set
+from typing import Set
 from pathlib import Path
 import cv2
 
@@ -24,11 +24,11 @@ log = logging.getLogger("PaddleLabel")
 # TODO: change data_dir to pathlib.path
 class BaseTask:
     def __init__(
-            self,
-            project: int | Project,
-            data_dir: None | str = None,
-            skip_label_import: bool = False,
-            is_export: bool = False,
+        self,
+        project: int | Project,
+        data_dir: None | str = None,
+        skip_label_import: bool = False,
+        is_export: bool = False,
     ):
         """Basic import/export related operations
 
@@ -49,7 +49,7 @@ class BaseTask:
             Project with given project_id not found.
         """
 
-        self.task_cache: List[Task] = []
+        self.task_cache: list[Task] = []
 
         # 1. set project
         if isinstance(project, int):
@@ -101,10 +101,10 @@ class BaseTask:
         # assert isinstance(self.project, Project)
 
     def add_task(
-            self,
-            datas: List[dict],
-            annotations: List[List[dict]] | None = None,
-            split: int | None = None,
+        self,
+        datas: list[dict],
+        annotations: list[list[dict]] | None = None,
+        split: int | None = None,
     ):
         """
         Cache one task to be written to db later.
@@ -112,11 +112,11 @@ class BaseTask:
 
         Parameters
         ----------
-        datas : List[dict]
+        datas : list[dict]
             A list of dict, each dict representing a task. In the dict, path is required, specifying full path or relative path to project.data_dir. All other entries are optional.
             Example: [{"path": 'path1'}, {"path" : 'path2', "size": "1,1024,768"}, ...]
             size is in format "slice count (1 for 2d images),width,height"
-        annotations : List[List[dict]] | None, optional
+        annotations : list[list[dict]] | None, optional
             Annotations corresponding to each data record. Defaults to None
             Example:
                 [
@@ -203,7 +203,7 @@ class BaseTask:
         self.task_cache.append(task)
 
     def commit(self):
-        """Write added tasks to database, ordered by filename."""
+        """Write cached tasks to database, ordered by filename."""
         self.task_cache.sort(key=lambda k: k.datas[0].path)
         for task in self.task_cache:
             db.session.add(task)
@@ -242,7 +242,7 @@ class BaseTask:
                 return label.label_id
         return None
 
-    def read_split(self, separator: str = " "):
+    def read_split(self, separator: str = " ") -> list[set[str]]:
         """
         Read the dataset split information from project.data_dir/xx_list.txt files.
 
@@ -253,32 +253,31 @@ class BaseTask:
 
         Returns
         -------
-        List[Set[str]]
+        list[set[str]]
             A list of three sets, each set containing all the paths of data in this set.
         """
         data_dir = Path(self.project.data_dir)
 
-        # separator = " "
-        sets: List[Set[str]] = []
+        sets: list[set[str]] = []
         split_names = ["train_list.txt", "val_list.txt", "test_list.txt"]
         for split_name in split_names:
             split_path = data_dir / split_name
-            paths = []
             if split_path.exists():
                 paths = split_path.read_text(encoding="utf-8").split("\n")
-                # paths = open(split_path, "r").readline()
                 paths = [p.strip().split(separator)[0] for p in paths if len(p.strip()) != 0]
+            else:
+                paths = []
             sets.append(set(paths))
         return sets
 
     def export_split(
-            self,
-            export_dir,
-            tasks,
-            new_paths,
-            delimiter=" ",
-            with_labels=True,
-            annotation_ext=None,
+        self,
+        export_dir,
+        tasks,
+        new_paths,
+        delimiter=" ",
+        with_labels=True,
+        annotation_ext=None,
     ):
         # only used in file-file split, not in file-class split
         if annotation_ext is not None and annotation_ext[0] == ".":
@@ -311,13 +310,13 @@ class BaseTask:
     """ label related """
 
     def add_label(
-            self,
-            name: str,
-            id: int | None = None,
-            color: str | None = None,
-            super_category_id: int | None = None,
-            comment: str | None = None,
-            commit=False,
+        self,
+        name: str,
+        id: int | None = None,
+        color: str | None = None,
+        super_category_id: int | None = None,
+        comment: str | None = None,
+        commit=False,
     ):
         """
         Add one label to current project
@@ -380,38 +379,34 @@ class BaseTask:
         return label
 
     def import_labels(self, delimiter=" ", ignore_first=False):
-
         # 1. set params
         label_names_path = None
         project = self.project
-        # 1.1 if label_names_path exist in project.other_settings, use that
-        label_names_path = project._get_other_settings().get("label_names_path", None)
-        # 1.2 if not, try: project.data_dir / labels.txt
-        if label_names_path is None:
-            label_names_path = osp.join(project.data_dir, "labels.txt")
+        # 1.1 try project.data_dir / "labels.txt"
+        label_names_path = Path(project.data_dir) / "labels.txt"
         # 1.2 if labels.txt doesn't exist, try: project.data_dir / classes.names. this is intended for yolo format
-        if not osp.exists(label_names_path):
-            if osp.exists(osp.join(project.data_dir, "classes.names")):
-                label_names_path = osp.join(project.data_dir, "classes.names")
+        if not label_names_path.exists():
+            label_names_path = Path(project.data_dir) / "classes.names"
         # 1.3 if label file doesn't exist, there's nothing to import
-        if not osp.exists(label_names_path):
+        if not label_names_path.exists():
             return
 
         # 2. import labels
-        # labels = open(label_names_path, "r").readlines()
-        labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
+        # labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
+        labels = Path(label_names_path).read_text().split("\n")
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 
+        # 2.1 ignore first background label
         background_line = labels[0]
         if ignore_first:
             labels = labels[1:]
 
+        # 2.2 parse labels
         labels = [l.split("//") for l in labels]
         comments = [None if len(l) == 1 else l[1].strip() for l in labels]
-        labels = [l[0].strip() for l in labels]
-        labels = [l.split(delimiter) for l in labels]
+        labels = [l[0].strip().split(delimiter) for l in labels]
 
-        current_labels = Label._get(project_id=self.project.project_id, many=True)
+        current_labels = Label._get(project_id=project.project_id, many=True)
         current_labels = [l.name for l in current_labels]
         for label, comment in zip(labels, comments):
             """
@@ -465,10 +460,10 @@ class BaseTask:
 
     # TODO: add total imported count
     def default_importer(
-            self,
-            data_dir=None,
-            filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-            with_size=True,
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+        with_size=True,
     ):
         if data_dir is None:
             data_dir = self.project.data_dir
@@ -522,10 +517,10 @@ class BaseTask:
             if color is not None:
                 color = name_to_hex(color)
             if (
-                    "supercategory" not in catg.keys()
-                    or catg["supercategory"] == "none"
-                    or catg["supercategory"] is None
-                    or len(catg["supercategory"]) == 0
+                "supercategory" not in catg.keys()
+                or catg["supercategory"] == "none"
+                or catg["supercategory"] is None
+                or len(catg["supercategory"]) == 0
             ):
                 self.add_label(
                     name=catg["name"],

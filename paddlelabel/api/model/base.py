@@ -58,8 +58,7 @@ class BaseModel(db.Model):
         ...
 
     @classmethod
-    def _get(cls, many=False, **kwargs):
-
+    def _get(cls, many: bool = False, **kwargs):
         if pyVerGt():  # skip check for py < 3.9
             for key in kwargs.keys():
                 if key not in cls._cols:

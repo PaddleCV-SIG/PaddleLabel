@@ -60,19 +60,19 @@ xml 文件格式如下：
 </annotation>
 ```
 
-新建标注项目时，填写的`数据集路径`下所有图片都将被导入，xml 标签和图像默认对应规则如下。
+新建 VOC 格式检测项目时，填写的`数据集路径`下所有的图片都将被导入，xml 标签和图像的对应规则如下。
 
-`数据集路径`下所有以 .xml 结尾的文件都将被作为标签导入，标签与位于`/数据集路径/folder/filename`的图像文件匹配。对应图像路径中的`folder`和`filename`将从该 xml 文件中解析。
+首先`数据集路径`下所有以 .xml 结尾的文件（不考虑大小写）都将被作为标签导入。
 
-`folder`
-- 如果 xml 中没有`folder`节点，将使用默认值 JPEGImages
-- 如果`folder`节点存在，但内容为空，将认为图像文件直接位于`/数据集路径/filename`。
-`filename`
-xml 中 `filename` 节点必须存在，否则将导入失败。
+1. 如果`数据集路径`下存在 train_list.txt， val_list.txt，test_list.txt 列表文件，将按照列表文件内容确定对应关系
+2. 无法通过列表文件内容确定的 .xml 文件，将对应到`数据集路径`下文件名相同的图片
+3. 依然无法确定对应关系的 .xml 文件将与位于`/数据集路径/folder/filename`的图片对应。上述路径中的`folder`和`filename`从该 xml 文件中解析。
+   - `folder`：
+     - 如果 xml 中没有`folder`节点，将使用默认值 JPEGImages
+     - 如果`folder`节点存在，但内容为空，将认为图像文件直接位于`/数据集路径/filename`。
+   - `filename`：xml 中 `filename` 节点的内容，如 xml 中不存在`filename`节点将使用默认值空字符串
 
-一些xml标注中可能包含错误的`folder`值，
-
-如果导入图像后发现有 xml 标注信息的图像中没有标注，可以查看 PaddleLabel 运行的命令行看看有没有报错。
+如果导入图像后发现有 xml 标注信息的图像中没有标注，可以切换到 PaddleLabel 运行的命令行查看有没有报错。
 
 ### COCO
 

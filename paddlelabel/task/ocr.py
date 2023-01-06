@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os.path as osp
 import json
 from collections import defaultdict

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os.path as osp
 from pathlib import Path
 import json
@@ -41,9 +42,9 @@ def parse_voc_label(label_path):
     folder = file.getElementsByTagName("folder")
     folder = "JPEGImages" if len(folder) == 0 else data(folder)
     filename = file.getElementsByTagName("filename")
-    if len(filename) == 0:
-        raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
-    filename = data(filename)
+    filename = "" if len(filename) == 0 else data(filename)
+    # if len(filename) == 0:
+    #     raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
     path = osp.join(folder, filename)
 
     # 1.2 size

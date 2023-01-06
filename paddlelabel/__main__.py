@@ -47,7 +47,7 @@ def parse_args():
 pyVerWarning = """
 It's recommended to run PaddleLabel with Python>=3.9.0. Please consider creating a new virtual enviroment and run PaddleLabel with:
 
-conda create -y -n paddlelabel python=3.9
+conda create -y -n paddlelabel python=3.11
 conda activate paddlelabel
 pip install --upgrade paddlelabel
 paddlelabel

@@ -76,7 +76,7 @@ def remove_dir(path):
     shutil.rmtree(path)
 
 
-def listdir(folder, filters={"exclude_prefix": ["."]}):
+def listdir(folder, filters={"exclude_prefix": ["."]}, exact_match_one_of: str | None = None):
     """
     return relative path of all files satisfying filters under the folder and its subfolders
 
@@ -85,7 +85,7 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
         filters (dict, optional): Four lists, include/exclude_prefix/postfix. Include first, satisfying either include, then exclude fail either one gets excluded.
 
     Returns:
-        list: File paths relative to folder, sorted
+        list: File paths relative to folder
     """
 
     files = []
@@ -96,6 +96,9 @@ def listdir(folder, filters={"exclude_prefix": ["."]}):
             # files.append(osp.normpath(osp.join(root, f)))
             files.append(osp.join(root, f))
     files = [osp.relpath(f, folder) for f in files]
+    if exact_match_one_of is not None:
+        return list(filter(lambda p: osp.basename(p) in exact_match_one_of, files))
+
     # TODO: support regx
     include_prefix = filters.get("include_prefix", [])
     include_postfix = filters.get("include_postfix", [])

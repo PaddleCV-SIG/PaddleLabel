@@ -2,6 +2,7 @@ from __future__ import annotations
 import os.path as osp
 import json
 from copy import deepcopy
+import logging
 
 import tifffile as tif
 import numpy as np
@@ -16,6 +17,8 @@ from paddlelabel.task.util import copy
 from paddlelabel.api.model import Task, Label, Annotation
 from paddlelabel.api.util import abort
 from paddlelabel.api.rpc.seg import polygon2points
+
+log = logging.getLogger("PaddleLabel")
 
 
 def draw_mask(data, mask_type="pesudo"):
@@ -327,6 +330,7 @@ class InstanceSegmentation(BaseTask):
             (["val.json"], 1),
             (["test.json"], 2),
             (["Annotations", "coco_info.json"], 0),  # EasyData format
+            (["annotations.json"], 0),  # LabelMe format
         ]
         label_file_paths = [(data_dir / Path(*p), split) for p, split in label_file_paths]
 

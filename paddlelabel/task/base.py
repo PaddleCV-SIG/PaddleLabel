@@ -214,17 +214,18 @@ class BaseTask:
         db.session.commit()
 
     # TODO: change following three to get_label_by_xx
-    def label_id2name(self, label_id: int):
+    def label_id2name(self, label_id: int | float):
         """
         Get label name by label.id
         ATTENTION: label.id, not label.label_id
 
         Args:
-            label_id (int): label.id
+            label_id (int | float): label.id
 
         Returns:
             str: label_name. None if not found
         """
+        label_id = int(label_id)
         for label in self.project.labels:
             if label.id == label_id:
                 return label.name
@@ -382,17 +383,25 @@ class BaseTask:
         # 1. set params
         label_names_path = None
         project = self.project
+        data_dir = Path(project.data_dir)
         # 1.1 try project.data_dir / "labels.txt"
-        label_names_path = Path(project.data_dir) / "labels.txt"
-        # 1.2 if labels.txt doesn't exist, try: project.data_dir / classes.names. this is intended for yolo format
+        label_names_path = data_dir / "labels.txt"
+        # 1.2 if labels.txt doesn't exist, try: searching for classes.names.
+        # NOTE: This is intended for yolo format
         if not label_names_path.exists():
-            label_names_path = Path(project.data_dir) / "classes.names"
+            classes_path = listdir(data_dir, exact_match_one_of=["classes.txt", "classes.names"])
+            if len(classes_path) == 0:
+                return
+            if len(classes_path) > 1:
+                log.error(f"Found {len(classes_path)} files at {','.join(classes_path)}")
+                return
+            label_names_path = data_dir / classes_path[0]
         # 1.3 if label file doesn't exist, there's nothing to import
         if not label_names_path.exists():
             return
 
         # 2. import labels
-        labels = Path(label_names_path).read_text(encoding="utf-8").split("\n")
+        labels = label_names_path.read_text(encoding="utf-8").split("\n")
         # labels = Path(label_names_path).read_text().split("\n")
         labels = [l.strip() for l in labels if len(l.strip()) != 0]
 

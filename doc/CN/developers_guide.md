@@ -199,14 +199,30 @@ heroku logs --tail
 
 2023.1.6
 
+- 元素测试
+  - [ ] labelme 格式，包含 labelme 支持的所有元素种类
 - 分类
   - [ ] labelme flags 分类
-- 实例分割
-  - [ ]
 - 检测
   - [ ] labelme 格式矩形
   - [x] voc 矩形：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
-- [ ]
+- 实例分割
+  - [ ] labelme 格式
+  - [ ] voc class+object 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+  - [x] coco 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2coco.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_coco --labels labels.txt --noviz`
+- 语义分割
+  - [ ] labelme 格式
+  - [ ] voc class 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/semantic_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+
+## LabelImg
+
+labelImg 使用 py38, pyqt5==5.12.3 环境运行
+
+2023.1.6
+
+- [x] voc
+- [ ] createml
+- [x] yolo
 
 ## 用户贡献
 
@@ -215,7 +231,7 @@ heroku logs --tail
   - [ ]
 
 eiseg
-labelMe
+
 labelImage
 labelbox
 label-studio
@@ -242,3 +258,6 @@ easydata/det/sample-obj-dct-annotated-coco/
 easydata/insseg/seg_coco_example/
 easydata/ocr/sample-img-paddle-ocr-txt-annotated/
 labelme/rectangle/data_dataset_voc/
+labelme/insseg/data_dataset_coco/
+labelImg/voc/
+labelImg/yolo/Annotations/

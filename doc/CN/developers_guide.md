@@ -160,40 +160,59 @@ heroku logs --tail
 
 # 互兼容测试
 
+- [ ] 代表数据集已经制作
+- [x] 代表已经通过初步测试
+
 ## EasyData
+
+样例数据集 2023.1.6
 
 - 分类
   - 单分类
-    - [ ] EasyData格式
+    - [ ] EasyData 格式
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹
   - 多分类
-    - [ ] EasyData格式
+    - [ ] EasyData 格式
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹：给的样例和单分类一样
 - 检测
-  - [ ] EasyData格式
+  - [ ] EasyData 格式
   - [x] COCO
   - [ ] VOC
 - 实例分割
-  - [ ] EasyData格式
+  - [ ] EasyData 格式
   - [x] COCO
 - 语义分割
-  - [ ] 带边缘的伪彩色，label格式也不一样，待研究
+  - [ ] 带边缘的伪彩色，label 格式也不一样，待研究
 - OCR
-  - [x] paddleocr txt：可能需要修改txt文件名为 Label.txt
+  - [x] paddleocr txt：可能需要修改 txt 文件名为 Label.txt
   - [ ] paddleocr coco
   - [ ] EasyData txt
   - [ ] EasyData coco
 
+导出结果
+
+## LabelMe
+
+2023.1.6
+
+- 分类
+  - [ ] labelme flags 分类
+- 实例分割
+  - [ ]
+- 检测
+  - [ ] labelme 格式矩形
+  - [x] voc 矩形：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+- [ ]
+
 ## 用户贡献
 
 - 语义分割
-  - [ ] 视盘，伪彩色mask，背景不是黑色
+  - [ ] 视盘，伪彩色 mask，背景不是黑色
   - [ ]
-
 
 eiseg
 labelMe
@@ -216,10 +235,10 @@ PaddleClas
 - https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
 
-
 easydata/clas/single/sample-img-single-cls-annotated-folder/
 easydata/clas/multi/sample-img-multi-cls-annotated-folder/
 easydata/det/sample-obj-dct-annotated-voc/
 easydata/det/sample-obj-dct-annotated-coco/
 easydata/insseg/seg_coco_example/
 easydata/ocr/sample-img-paddle-ocr-txt-annotated/
+labelme/rectangle/data_dataset_voc/

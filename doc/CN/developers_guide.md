@@ -157,3 +157,44 @@ heroku logs --tail
 - In front end, there are if clauses using if(something) to test if something exists. All indexes (xx.xx_id or xx.id) will start from 1.
 - Though internally label.id start from 1, but to be compatable with other tools, in labels.txt and xx_list.txt files, labels start from 0.
 - All primary keys are named xx_id in backend and xxId in frontend. For example the primary key for annotation table is annotation_id or annotationId. annotation.id is a value user specify mainly for import/export. This value may be changed by user and shouldn't be used as index.
+
+# 互兼容测试
+
+EasyData
+- 分类
+  - 单分类
+    - [ ] 自定义格式
+    - [ ] COCO
+    - [ ] VOC
+    - [x] 文件夹
+  - 多分类
+    - [ ] 自定义格式
+    - [ ] COCO
+    - [ ] VOC
+    - [x] 文件夹：给的样例和单分类一样
+  - 检测
+    - [x] COCO
+-
+eiseg
+labelMe
+labelImage
+labelbox
+label-studio
+
+PaddleClas
+
+- [ ] https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/pulc_demo_imgs.zip
+- https://paddleclas.bj.bcebos.com/data/PULC/text_image_orientation.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/language_classification.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/textline_orientation.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/traffic_sign.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/car_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
+
+
+easydata/clas/single/sample-img-single-cls-annotated-folder/
+easydata/clas/multi/sample-img-multi-cls-annotated-folder/

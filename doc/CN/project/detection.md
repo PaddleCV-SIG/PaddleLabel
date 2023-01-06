@@ -1,15 +1,14 @@
-
 # 目标检测标注
 
 ![image](https://user-images.githubusercontent.com/29757093/182841361-eb53e726-fa98-4e02-88ba-30172efac8eb.png)
 
-## <div id="dataset_structure">数据结构</div>
+## 数据结构
 
 PaddleLabel 目前支持 PASCAL VOC，COCO 和 YOLO 三种目标检测数据集格式。
 
 ### PASCAL VOC
 
-PASCAL VOC 格式将标注信息保存在 xml 文件中，每张图像对应一个 xml 文件。
+PASCAL VOC 格式的标注信息为 xml 格式文件，每张图像对应一个 xml 文件。
 
 示例文件排布如下：
 
@@ -61,9 +60,19 @@ xml 文件格式如下：
 </annotation>
 ```
 
-新建标注项目时，填写的`数据集路径`下所有图片都将被导入，xml 标签和图像对应规则如下。
+新建标注项目时，填写的`数据集路径`下所有图片都将被导入，xml 标签和图像默认对应规则如下。
 
-PaddleLabel 将把数据集路径下所有以 .xml 结尾的文件作为标签导入，并将该标签与位于`/数据集路径/folder/filename`的图像文件匹配。图像路径中的`folder`和`filename`将从该 xml 文件中解析。如果 xml 中没有`folder`节点，将使用默认值 JPEGImages。如果`folder`节点内容为空，将认为图像文件直接位于`/数据集路径/filename`。xml 中 `filename` 节点必须存在，否则将导入失败。如果导入图像后发现有 xml 标注信息的图像中没有标注，可以查看 PaddleLabel 运行的命令行看看有没有报错。
+`数据集路径`下所有以 .xml 结尾的文件都将被作为标签导入，标签与位于`/数据集路径/folder/filename`的图像文件匹配。对应图像路径中的`folder`和`filename`将从该 xml 文件中解析。
+
+`folder`
+- 如果 xml 中没有`folder`节点，将使用默认值 JPEGImages
+- 如果`folder`节点存在，但内容为空，将认为图像文件直接位于`/数据集路径/filename`。
+`filename`
+xml 中 `filename` 节点必须存在，否则将导入失败。
+
+一些xml标注中可能包含错误的`folder`值，
+
+如果导入图像后发现有 xml 标注信息的图像中没有标注，可以查看 PaddleLabel 运行的命令行看看有没有报错。
 
 ### COCO
 

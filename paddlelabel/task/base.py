@@ -26,7 +26,7 @@ class BaseTask:
     def __init__(
         self,
         project: int | Project,
-        data_dir: None | str = None,
+        data_dir: None | Path = None,
         skip_label_import: bool = False,
         is_export: bool = False,
     ):
@@ -378,7 +378,7 @@ class BaseTask:
         self.label_max_id = max(current_ids)
         return label
 
-    def import_labels(self, delimiter=" ", ignore_first=False):
+    def import_labels(self, delimiter: str = " ", ignore_first: bool = False):
         # 1. set params
         label_names_path = None
         project = self.project
@@ -440,6 +440,9 @@ class BaseTask:
             return background_line
 
     def populate_label_colors(self):
+        """
+        Assign a color for all labels that don't yet have one
+        """
         labels = Label._get(project_id=self.project.project_id, many=True)
         for lab in labels:
             if lab.color is None:

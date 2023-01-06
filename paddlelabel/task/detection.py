@@ -2,7 +2,6 @@ import os.path as osp
 from pathlib import Path
 import json
 from copy import deepcopy
-from pathlib import Path
 import logging
 from typing import List
 
@@ -10,11 +9,16 @@ from pycocotoolse.coco import COCO
 import cv2
 
 from paddlelabel.api import Task, Annotation, Label
-from paddlelabel.task.util import create_dir, listdir, copy, image_extensions, ensure_unique_base_name, get_fname
+from paddlelabel.task.util import (
+    create_dir,
+    listdir,
+    copy,
+    image_extensions,
+    ensure_unique_base_name,
+    get_fname,
+    break_path,
+)
 from paddlelabel.task.base import BaseTask
-from paddlelabel.config import db
-from paddlelabel.api.util import abort
-
 
 log = logging.getLogger("PaddleLabel")
 
@@ -38,7 +42,7 @@ def parse_voc_label(label_path):
     folder = "JPEGImages" if len(folder) == 0 else data(folder)
     filename = file.getElementsByTagName("filename")
     if len(filename) == 0:
-        abort(detail=f"Missing required field filename in annotation file {label_path}", status=500)
+        raise RuntimeError(f"Missing required field filename in annotation file {label_path}")
     filename = data(filename)
     path = osp.join(folder, filename)
 
@@ -131,12 +135,19 @@ def create_voc_label(filepath, width, height, annotations):
 
 
 class Detection(BaseTask):
-    def __init__(self, project, data_dir=None, is_export=False):
-        super(Detection, self).__init__(project, data_dir=data_dir, is_export=is_export)
-        self.importers = {"coco": self.coco_importer, "voc": self.voc_importer, "yolo": self.yolo_importer}
-        self.exporters = {"coco": self.coco_exporter, "voc": self.voc_exporter, "yolo": self.yolo_exporter}
-        # self.default_importer = self.voc_importer
-        self.default_exporter = self.voc_exporter  # default to voc
+    def __init__(self, *args, **kwargs):
+        super(Detection, self).__init__(*args, **kwargs)
+        self.importers = {
+            "coco": self.coco_importer,
+            "voc": self.voc_importer,
+            "yolo": self.yolo_importer,
+        }
+        self.exporters = {
+            "coco": self.coco_exporter,
+            "voc": self.voc_exporter,
+            "yolo": self.yolo_exporter,
+        }
+        self.default_exporter = self.voc_exporter
 
     def to_easydata(self, project_id, access_token, dataset_id):
         import concurrent.futures
@@ -334,7 +345,7 @@ class Detection(BaseTask):
 
     def coco_importer(
         self,
-        data_dir=None,
+        data_dir: Path | None = None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         """
@@ -343,13 +354,17 @@ class Detection(BaseTask):
 
         # 1. set params
         project = self.project
-        if data_dir is None:  # TODO: import info should be passed as params
-            data_dir = project.data_dir
-        data_dir = Path(data_dir)
+        data_dir = Path(project.data_dir if data_dir is None else data_dir)
+        self.split = [set()] * 3  # disable xx_list.txt support
         self.create_warning(data_dir)
 
-        label_file_paths = ["train.json", "val.json", "test.json"]
-        label_file_paths = [data_dir / f for f in label_file_paths]
+        label_file_paths = [
+            (["train.json"], 0),
+            (["val.json"], 1),
+            (["test.json"], 2),
+            (["Annotations", "coco_info.json"], 0),  # EasyData format
+        ]
+        label_file_paths = [(data_dir / Path(*p), split) for p, split in label_file_paths]
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
@@ -430,7 +445,7 @@ class Detection(BaseTask):
         # 2. find all images under data_dir
         data_paths = listdir(data_dir, filters=filters)
         coco_others = {}
-        for split_idx, label_file_path in enumerate(label_file_paths):
+        for label_file_path, split_idx in label_file_paths:
             if label_file_path.exists():
                 data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
                 coco_others[split_idx] = others
@@ -530,54 +545,99 @@ class Detection(BaseTask):
 
     def voc_importer(
         self,
-        data_dir=None,
+        data_dir: Path | None = None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
-    ):
+    ) -> None:
+        """
+        Import voc format detection dataset
+
+        Parameters
+        ----------
+        data_dir : Path | None, optional
+            Dataset folder path. Defaults to None
+        filters : dict, optional
+            Pattern used to search for images by file names. Defaults to {"exclude_prefix": ["."], "include_postfix": image_extensions}
+
+        Raises
+        ------
+        RuntimeError
+            Failed to match an annotation to an image.
+        """
         # 1. set params
         project = self.project
-        base_dir = project.data_dir if data_dir is None else data_dir
+        data_dir = Path(project.data_dir if data_dir is None else data_dir)
         allow_missing_image = data_dir is not None
-
-        self.create_warning(base_dir)
+        self.create_warning(data_dir)
 
         # 2. get all data and label
-        data_paths = set(p for p in listdir(base_dir, filters=filters))
-        label_paths = [p for p in listdir(base_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})]
+        data_paths = set(listdir(data_dir, filters=filters))
+        label_paths = listdir(data_dir, filters={"exclude_prefix": ["."], "include_postfix": [".xml"]})
+        label_paths = list(map(Path, label_paths))
+
+        # 2.1 get match from xx_list.txt
+        list_files = ["train_list.txt", "val_list.txt", "test_list.txt"]
+        list_mappings = {}
+        for list_file in list_files:
+            list_file_path = data_dir / list_file
+            if not list_file_path.exists():
+                continue
+            pairs = list_file_path.read_text(encoding="utf-8").split("\n")
+            pairs = [list(map(break_path, p.strip().split(" "))) for p in pairs if len(p.strip()) != 0]
+            list_mappings.update({Path(*p[1]): Path(*p[0]) for p in pairs})
+
+        print(list_mappings)
+
+        name_mappings = {}
+        data_paths_m = {Path(p).name.split(".")[0]: Path(p) for p in data_paths}
+        for label_path in label_paths:
+            base_name = label_path.name.split(".")[0]
+            name_mappings[label_path] = data_paths_m.get(base_name, None)
+
+        print(name_mappings)
 
         for label_path in label_paths:
-            data, labels = parse_voc_label(osp.join(base_dir, label_path))
-            if not osp.exists(osp.join(base_dir, data["path"])):
-                err_msg = f"Image specified in label xml file {label_path} not found at {data['path']}."
-                if allow_missing_image:
-                    log.error(err_msg)
-                else:
-                    raise RuntimeError(err_msg)
+            data, labels = parse_voc_label(osp.join(data_dir, label_path))
+            # print(data['path'])
+            data_path = list_mappings.get(label_path, None)
+            # print(data_path)
+            if data_path is None:
+                data_path = name_mappings.get(label_path, None)
+            # print(data_path)
+            if data_path is None:
+                data_path = Path(data["path"])
+            # print(data_path)
+            data["path"] = str(data_path)
+            data_path = data_dir / data_path
 
-            img = cv2.imread(osp.join(base_dir, data["path"]))
+            if not data_path.exists():
+                raise RuntimeError(
+                    f"Image specified in label xml file {str(label_path)} not found at {str(data_path)}."
+                )
+
+            img = cv2.imread(str(data_path))
             if img is not None:
                 s = img.shape
-                size = [1, s[1], s[0], s[2]]
-                size = [str(s) for s in size]
-                size = ",".join(size)
+                data["size"] = ",".join(map(str, [1] + list(s[:2])))
             else:
-                log.error(f"Load image {data['path']} failed")
-                size = "0,0,0"
+                raise RuntimeError(f"Load image {str(data_path)} failed.")
+                # log.error(f"Load image {data['path']} failed")
+                # size = "0,0,0"
 
-            def wxh(size):
-                return "x".join(size.split(",")[1:3])
+            # def wxh(size):
+            #     return "x".join(size.split(",")[1:3])
 
-            if wxh(size) != wxh(data["size"]):
-                log.error(
-                    f"Image size got by reading image: {wxh(size)} isn't the same as parsed from pascal xml({label_path}): {wxh(data['size'])}"
-                )
-                # log.error(f"{size} vs {data['size']}")
-                data["size"] = size
+            # if wxh(size) != wxh(data["size"]):
+            #     log.error(
+            #         f"Image size got by reading image: {wxh(size)} isn't the same as parsed from pascal xml({label_path}): {wxh(data['size'])}"
+            #     )
+            #     # log.error(f"{size} vs {data['size']}")
+            #     data["size"] = size
 
             self.add_task([data], [labels])
-            data_paths.remove(data["path"])
+            data_paths.remove(data["path"])  # TODO: change to Path
 
         for data_path in data_paths:
-            img = cv2.imread(osp.join(base_dir, data_path))
+            img = cv2.imread(osp.join(data_dir, data_path))
             s = img.shape
             size = [1, s[1], s[0], s[2]]
             size = [str(s) for s in size]

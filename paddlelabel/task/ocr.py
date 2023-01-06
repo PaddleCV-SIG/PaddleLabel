@@ -7,24 +7,26 @@ import cv2
 
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
-from paddlelabel.config import db
-from paddlelabel.task.util.color import hex_to_rgb
 from paddlelabel.task.util import copy
-from paddlelabel.api.model import Task, Label, Annotation
+from paddlelabel.api.model import Task, Annotation, Project
 from paddlelabel.api.util import abort
-from paddlelabel.api.rpc.seg import polygon2points
 
 
 class OpticalCharacterRecognition(BaseTask):
-    def __init__(self, project, data_dir=None, is_export=False):
+    def __init__(
+        self,
+        project: Project,
+        data_dir: Path | None = None,
+        is_export: bool = False,
+    ):
         super().__init__(project, skip_label_import=True, data_dir=data_dir, is_export=is_export)
         self.importers = {"json": self.json_importer, "txt": self.txt_importer}
         self.exporters = {"json": self.json_exporter, "txt": self.txt_exporter}
-        self.default_importer = self.txt_importer
         self.default_exporter = self.txt_exporter
+        # NOTE: ocr doesn't need a label but label is required field for annotation. thus use a dummy label
         self.dummy_label_name = "OCR Dummy Label"
 
-    def encode_ann(self, ann):
+    def encode_ann(self, ann: dict) -> dict[str, str]:
         res = ""
         for p in ann.get("points", []):
             res += "|".join(map(str, p)) + "|"
@@ -44,7 +46,7 @@ class OpticalCharacterRecognition(BaseTask):
 
     def txt_importer(
         self,
-        data_dir=None,
+        data_dir: Path | None = None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         project = self.project
@@ -57,7 +59,7 @@ class OpticalCharacterRecognition(BaseTask):
         self.create_warning(data_dir)
         self.add_label(
             self.dummy_label_name,
-            comment="Dummy label for ocr project, added for compatability, don't delete.",
+            comment="Dummy label for ocr project, added for compatibility, don't delete.",
             commit=True,
         )
 
@@ -116,8 +118,7 @@ class OpticalCharacterRecognition(BaseTask):
 
         self.commit()
 
-    def txt_exporter(self, export_dir):
-        # 254.jpg	[{"transcription": "PHOCAPITAL", "points": [[67, 51], [327, 46], [327, 74], [68, 80]], "difficult": false}, {"transcription": "107 State Street", "points": [[72, 92], [453, 84], [454, 114], [73, 122]], "difficult": false}, {"transcription": "Montpelier Vermont", "points": [[69, 135], [501, 125], [501, 156], [70, 165]], "difficult": false}, {"transcription": "802 225 6183", "points": [[71, 176], [364, 171], [364, 201], [72, 206]], "difficult": false}, {"transcription": "REG", "points": [[74, 302], [150, 299], [151, 333], [75, 336]], "difficult": false}, {"transcription": "07-24-2017 06:59 PM", "points": [[198, 300], [651, 285], [652, 315], [199, 330]], "difficult": false}, {"transcription": "045555", "points": [[510, 331], [651, 325], [653, 357], [511, 362]], "difficult": false}, {"transcription": "CT", "points": [[537, 370], [588, 370], [588, 402], [537, 402]], "difficult": false}, {"transcription": "T1", "points": [[397, 457], [442, 457], [442, 491], [397, 491]], "difficult": false}, {"transcription": "$7.95", "points": [[539, 452], [655, 447], [657, 480], [540, 485]], "difficult": false}, {"transcription": "1 F00D", "points": [[111, 470], [252, 464], [253, 496], [112, 502]], "difficult": false}, {"transcription": "T1", "points": [[399, 498], [443, 498], [443, 532], [399, 532]], "difficult": false}, {"transcription": "$3.95", "points": [[541, 494], [656, 489], [658, 521], [542, 526]], "difficult": false}, {"transcription": "1F00D", "points": [[111, 511], [254, 505], [255, 536], [112, 542]], "difficult": false}, {"transcription": "T1", "points": [[399, 539], [445, 539], [445, 572], [399, 572]], "difficult": false}, {"transcription": "$9.50", "points": [[541, 534], [658, 529], [660, 562], [542, 566]], "difficult": false}, {"transcription": "1F00D", "points": [[115, 551], [255, 546], [256, 578], [116, 583]], "difficult": false}, {"transcription": "3 No", "points": [[396, 577], [495, 575], [496, 614], [397, 617]], "difficult": false}, {"transcription": "$21.40", "points": [[521, 616], [662, 609], [664, 644], [522, 651]], "difficult": false}, {"transcription": "TA1", "points": [[165, 629], [235, 629], [235, 664], [165, 664]], "difficult": false}, {"transcription": "$1.92", "points": [[545, 657], [664, 653], [666, 688], [546, 692]], "difficult": false}, {"transcription": "TX1", "points": [[165, 672], [234, 669], [235, 704], [166, 707]], "difficult": false}, {"transcription": "TL", "points": [[167, 714], [216, 714], [216, 751], [167, 751]], "difficult": false}, {"transcription": "$23.32", "points": [[383, 706], [660, 695], [662, 730], [385, 740]], "difficult": false}, {"transcription": "$23.32", "points": [[527, 742], [667, 737], [669, 771], [528, 777]], "difficult": false}, {"transcription": "CASH", "points": [[165, 757], [265, 755], [266, 790], [166, 793]], "difficult": false}, {"transcription": "THANK YOU", "points": [[99, 848], [313, 837], [315, 868], [101, 879]], "difficult": false}, {"transcription": "FOR YOUR BUSINESS", "points": [[98, 889], [504, 867], [506, 897], [100, 919]], "difficult": false}]
+    def txt_exporter(self, export_dir: Path):
         project = self.project
         export_dir = Path(export_dir)
 
@@ -139,11 +140,7 @@ class OpticalCharacterRecognition(BaseTask):
         annotations = Annotation._get(project_id=project.project_id, many=True)
         ann_dicts = [defaultdict(lambda: []), defaultdict(lambda: []), defaultdict(lambda: [])]
         for ann in annotations:
-            print("======")
             r = ann.result.split("|")
-
-            print(r)
-
             if r[0] == "no points":
                 points = []
                 r = r[2:]

@@ -9,6 +9,12 @@ from pathlib import Path
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
 
+def break_path(path: str) -> list[str]:
+    path = path.replace("\\\\", "/")
+    path = path.replace("\\", "/")
+    return path.split("/")
+
+
 def match_by_base_name(data_path, ann_paths, allow_empty=True, allow_multiple=False):
     data_path = Path(data_path)
     ann_paths = [Path(p) for p in ann_paths]

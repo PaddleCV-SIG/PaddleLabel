@@ -1404,6 +1404,9 @@ components:
           format: timestamp
           nullable: true
           readOnly: true
+        upid:
+          type: string
+          description: A string that is unique to each project
         other_settings:
           type: object
           properties:
@@ -1449,9 +1452,9 @@ components:
               type: string
             paramFilePath:
               type: string
-        upid:
-          type: string
-          description: A string that is unique to each project
+            lang:
+              type: string
+
     Task:
       title: Task
       type: object

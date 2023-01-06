@@ -183,7 +183,16 @@ heroku logs --tail
 - 语义分割
   - [ ] 带边缘的伪彩色，label格式也不一样，待研究
 - OCR
-  - [ ] txt
+  - [x] paddleocr txt：可能需要修改txt文件名为 Label.txt
+  - [ ] paddleocr coco
+  - [ ] EasyData txt
+  - [ ] EasyData coco
+
+## 用户贡献
+
+- 语义分割
+  - [ ] 视盘，伪彩色mask，背景不是黑色
+  - [ ]
 
 
 eiseg
@@ -191,6 +200,7 @@ labelMe
 labelImage
 labelbox
 label-studio
+PPOcrLabel
 
 PaddleClas
 
@@ -206,8 +216,10 @@ PaddleClas
 - https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
 
+
 easydata/clas/single/sample-img-single-cls-annotated-folder/
 easydata/clas/multi/sample-img-multi-cls-annotated-folder/
 easydata/det/sample-obj-dct-annotated-voc/
 easydata/det/sample-obj-dct-annotated-coco/
 easydata/insseg/seg_coco_example/
+easydata/ocr/sample-img-paddle-ocr-txt-annotated/

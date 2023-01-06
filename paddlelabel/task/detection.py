@@ -586,7 +586,7 @@ class Detection(BaseTask):
             pairs = [list(map(break_path, p.strip().split(" "))) for p in pairs if len(p.strip()) != 0]
             list_mappings.update({Path(*p[1]): Path(*p[0]) for p in pairs})
 
-        print(list_mappings)
+        # print(list_mappings)
 
         name_mappings = {}
         data_paths_m = {Path(p).name.split(".")[0]: Path(p) for p in data_paths}
@@ -594,7 +594,7 @@ class Detection(BaseTask):
             base_name = label_path.name.split(".")[0]
             name_mappings[label_path] = data_paths_m.get(base_name, None)
 
-        print(name_mappings)
+        # print(name_mappings)
 
         for label_path in label_paths:
             data, labels = parse_voc_label(osp.join(data_dir, label_path))

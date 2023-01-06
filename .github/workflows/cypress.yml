@@ -69,7 +69,7 @@ jobs:
       - name: Start PaddleLabel
         run: |
           export HOME=~/测试路径/
-          paddlelabel --debug &
+          paddlelabel --debug --port 4321 --lan &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -90,7 +90,7 @@ jobs:
           echo $HOME
           cd cypress
           yarn
-          npx cypress run
+          npx cypress run --browser chrome
 
       # - run: tree ./cypress/cypress/
 

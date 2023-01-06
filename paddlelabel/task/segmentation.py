@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os.path as osp
 import json
 from copy import deepcopy
@@ -10,7 +11,6 @@ from pathlib import Path
 
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
-from paddlelabel.config import db
 from paddlelabel.task.util.color import hex_to_rgb
 from paddlelabel.task.util import copy
 from paddlelabel.api.model import Task, Label, Annotation
@@ -313,17 +313,22 @@ class InstanceSegmentation(BaseTask):
 
     def coco_importer(
         self,
-        data_dir=None,
-        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+        data_dir: Path | None = None,
+        filters: dict[str, list] = {"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
         project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
-        label_file_paths = ["train.json", "val.json", "test.json"]
-        label_file_paths = [osp.join(data_dir, f) for f in label_file_paths]
-
+        data_dir = Path(project.data_dir if data_dir is None else data_dir)
+        self.split = [set()] * 3  # disable xx_list.txt support
         self.create_warning(data_dir)
+
+        label_file_paths = [
+            (["train.json"], 0),
+            (["val.json"], 1),
+            (["test.json"], 2),
+            (["Annotations", "coco_info.json"], 0),  # EasyData format
+        ]
+        label_file_paths = [(data_dir / Path(*p), split) for p, split in label_file_paths]
 
         def _coco_importer(data_paths, label_file_path, set=0):
             coco = COCO(label_file_path)
@@ -393,24 +398,21 @@ class InstanceSegmentation(BaseTask):
         # 2. find all images under data_dir
         data_paths = listdir(data_dir, filters=filters)
         coco_others = {}
-        for split_idx, label_file_path in enumerate(label_file_paths):
-            if osp.exists(label_file_path):
+        for label_file_path, split_idx in label_file_paths:
+            if label_file_path.exists():
                 data_paths, others = _coco_importer(data_paths, label_file_path, split_idx)
                 coco_others[split_idx] = others
+
         other_settings = project._get_other_settings()
         other_settings["coco_others"] = coco_others
         project.other_settings = json.dumps(other_settings)
 
         # 3. add tasks without label
         for data_path in data_paths:
-            img = cv2.imread(osp.join(data_dir, data_path))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
+            img = cv2.imread(str(data_dir / data_path))
+            size = ",".join(map(str, [1] + list(img.shape[:2])))
             self.add_task([{"path": data_path, "size": size}])
 
-        # db.session.commit()
         self.commit()
 
     def coco_exporter(self, export_dir):

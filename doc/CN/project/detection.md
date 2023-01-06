@@ -34,22 +34,15 @@ xml 文件格式如下：
 
 ```text
 <annotation>
- <folder>JPEGImages</folder>
- <filename></filename>
- <source>
-  <database></database>
- </source>
- <size>
+ <folder>JPEGImages</folder> # 如果不存在folder节点，将使用默认值 JPEGImages
+ <filename></filename> # 如果不存在filename节点，将使用默认值空字符串 ""
+ <size> # 目前导入过程中会打开图像确认图像大小，以下三个值不会被考虑
   <width></width>
   <height></height>
   <depth></depth>
  </size>
- <segmented>0</segmented>
  <object>
   <name></name>
-  <pose></pose>
-  <truncated></truncated>
-  <difficult></difficult>
   <bndbox>
    <xmin></xmin>
    <ymin></ymin>
@@ -126,9 +119,7 @@ category{
 }
 ```
 
-新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则如下。
-
-PaddleLabel 将 coco 标注信息中的图片记录和盘上的图片对应起来的逻辑为：image['file_name']中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致 coco 标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的 coco 标注记录中，image['file_name']项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和'\\'分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和'\\'。
+新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则为：image['file_name']中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致 coco 标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的 coco 标注记录中，image['file_name']项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和'\\'分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和'\\'。
 
 ### YOLO
 

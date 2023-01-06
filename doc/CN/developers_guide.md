@@ -160,21 +160,32 @@ heroku logs --tail
 
 # 互兼容测试
 
-EasyData
+## EasyData
+
 - 分类
   - 单分类
-    - [ ] 自定义格式
+    - [ ] EasyData格式
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹
   - 多分类
-    - [ ] 自定义格式
+    - [ ] EasyData格式
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹：给的样例和单分类一样
-  - 检测
-    - [x] COCO
--
+- 检测
+  - [ ] EasyData格式
+  - [x] COCO
+  - [ ] VOC
+- 实例分割
+  - [ ] EasyData格式
+  - [x] COCO
+- 语义分割
+  - [ ] 带边缘的伪彩色，label格式也不一样，待研究
+- OCR
+  - [ ] txt
+
+
 eiseg
 labelMe
 labelImage
@@ -195,6 +206,8 @@ PaddleClas
 - https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
 
-
 easydata/clas/single/sample-img-single-cls-annotated-folder/
 easydata/clas/multi/sample-img-multi-cls-annotated-folder/
+easydata/det/sample-obj-dct-annotated-voc/
+easydata/det/sample-obj-dct-annotated-coco/
+easydata/insseg/seg_coco_example/

@@ -92,7 +92,7 @@ jobs:
           yarn
           npx cypress run
 
-      - run: tree ./cypress/cypress/
+      # - run: tree ./cypress/cypress/
 
       # - name: Upload screenshots and videos
       #   if: always() && steps.test.outcome == 'failure'

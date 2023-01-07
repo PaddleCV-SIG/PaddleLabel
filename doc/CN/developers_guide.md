@@ -160,8 +160,10 @@ heroku logs --tail
 
 # 互兼容测试
 
+- 待制作数据集
 - [ ] 代表数据集已经制作
 - [x] 代表已经通过初步测试
+- [ ] ~~代表近期不计划支持该格式~~
 
 ## EasyData
 
@@ -169,26 +171,26 @@ heroku logs --tail
 
 - 分类
   - 单分类
-    - [ ] EasyData 格式
+    - [ ] ~~EasyData 格式~~
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹
   - 多分类
-    - [ ] EasyData 格式
+    - [ ] ~~EasyData 格式~~
     - [ ] COCO
     - [ ] VOC
     - [x] 文件夹：给的样例和单分类一样
 - 检测
-  - [ ] EasyData 格式
+  - [ ] ~~EasyData 格式~~
   - [x] COCO
-  - [ ] VOC
+  - [x] VOC
 - 实例分割
-  - [ ] EasyData 格式
+  - [ ] ~~EasyData 格式~~
   - [x] COCO
 - 语义分割
   - [ ] 带边缘的伪彩色，label 格式也不一样，待研究
 - OCR
-  - [x] paddleocr txt：可能需要修改 txt 文件名为 Label.txt
+  - [x] paddleocr txt
   - [ ] paddleocr coco
   - [ ] EasyData txt
   - [ ] EasyData coco
@@ -196,6 +198,9 @@ heroku logs --tail
 导出结果
 
 ## LabelMe
+
+{: .note-title }
+> PaddleLabel会将数据集路径下所有的图片作为任务导入，使用labelme提供的脚本进行数据集格式转换时请不要生成可视化图片，需要在官方给的命令基础上添加一个 --noviz 选项
 
 2023.1.6
 
@@ -205,7 +210,8 @@ heroku logs --tail
   - [ ] labelme flags 分类
 - 检测
   - [ ] labelme 格式矩形
-  - [x] voc 矩形：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+  - [x] voc 矩形
+      - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
 - 实例分割
   - [ ] labelme 格式
   - [ ] voc class+object 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
@@ -224,20 +230,22 @@ labelImg 使用 py38, pyqt5==5.12.3 环境运行
 - [ ] createml
 - [x] yolo
 
+## EISeg
+
+## LabelBox
+
+## PPOCRLabel
+
 ## 用户贡献
 
 - 语义分割
   - [ ] 视盘，伪彩色 mask，背景不是黑色
   - [ ]
 
-eiseg
 
-labelImage
-labelbox
-label-studio
-PPOcrLabel
 
-PaddleClas
+
+## PaddleClas
 
 - [ ] https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/pulc_demo_imgs.zip
@@ -250,6 +258,14 @@ PaddleClas
 - https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
 - https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
+
+## PaddleSeg
+
+## PaddleDet
+
+## PaddleOCR
+
+
 
 easydata/clas/single/sample-img-single-cls-annotated-folder/
 easydata/clas/multi/sample-img-multi-cls-annotated-folder/

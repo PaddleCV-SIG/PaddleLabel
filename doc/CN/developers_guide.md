@@ -214,15 +214,18 @@ heroku logs --tail
       - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
 - 实例分割
   - [ ] labelme 格式
-  - [ ] voc class+object 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
-  - [x] coco 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2coco.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_coco --labels labels.txt --noviz`
+  - [ ] voc class+object 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+  - [x] coco 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2coco.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_coco --labels labels.txt --noviz`
 - 语义分割
   - [ ] labelme 格式
-  - [ ] voc class 格式：使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/semantic_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+  - [ ] voc class 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/semantic_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
 
 ## LabelImg
 
-labelImg 使用 py38, pyqt5==5.12.3 环境运行
+LabelImg已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 
 2023.1.6
 
@@ -231,8 +234,17 @@ labelImg 使用 py38, pyqt5==5.12.3 环境运行
 - [x] yolo
 
 ## EISeg
+- 语义/实例分割
+  - [x] coco
+  - [x] eiseg json
+- 语义分割
+  - [ ] 灰度图
+    - 需要将所有待标注图片放到 `JPEGImages` 文件夹中
+    -
 
 ## LabelBox
+
+## LabelStudio
 
 ## PPOCRLabel
 
@@ -241,8 +253,6 @@ labelImg 使用 py38, pyqt5==5.12.3 环境运行
 - 语义分割
   - [ ] 视盘，伪彩色 mask，背景不是黑色
   - [ ]
-
-
 
 
 ## PaddleClas
@@ -276,4 +286,5 @@ easydata/ocr/sample-img-paddle-ocr-txt-annotated/
 labelme/rectangle/data_dataset_voc/
 labelme/insseg/data_dataset_coco/
 labelImg/voc/
-labelImg/yolo/Annotations/
+labelImg/yolo/
+eiseg/coco/

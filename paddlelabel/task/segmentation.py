@@ -238,8 +238,8 @@ class InstanceSegmentation(BaseTask):
     ):
         # 1. set params
         project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
+
+        data_dir = project.data_dir if data_dir is None else data_dir
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
@@ -331,6 +331,7 @@ class InstanceSegmentation(BaseTask):
             (["test.json"], 2),
             (["Annotations", "coco_info.json"], 0),  # EasyData format
             (["annotations.json"], 0),  # LabelMe format
+            (["label", "annotations.json"], 0),  # EISeg format
         ]
         label_file_paths = [(data_dir / Path(*p), split) for p, split in label_file_paths]
 
@@ -556,24 +557,30 @@ class SemanticSegmentation(InstanceSegmentation):
 
         # 1. set params
         project = self.project
-        if data_dir is None:
-            base_dir = project.data_dir
-        else:
-            base_dir = data_dir
+
+        base_dir = project.data_dir if data_dir is None else data_dir
+
         data_dir = osp.join(base_dir, "JPEGImages")
-        ann_dir = osp.join(base_dir, "Annotations")
+        ann_dirs = [
+            Path(base_dir) / "Annotations",
+            Path(base_dir) / "label",  # EISeg
+        ]
 
         background_line = self.import_labels(ignore_first=True)
         other_settings = project._get_other_settings()
         other_settings["background_line"] = background_line
         project.other_settings = json.dumps(other_settings)
 
-        ann_dict = {osp.basename(p).split(".")[0]: p for p in listdir(ann_dir, filters)}
+        ann_dict = {}
+        for ann_dir in ann_dirs:
+            ann_dict.update({osp.basename(p).split(".")[0]: ann_dir / p for p in listdir(ann_dir, filters)})
+
+        # print(ann_dict)
 
         # 2. import records
         data_paths = listdir(data_dir, filters)
         if len(data_paths) == 0:
-            abort("No image found. Did you put images under JPEGImages folder?", 500)
+            raise RuntimeError("No image found. Did you put images under JPEGImages folder?")
 
         for data_path in data_paths:
             id = osp.basename(data_path).split(".")[0]

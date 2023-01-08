@@ -31,6 +31,8 @@ setup(
         "console_scripts": [
             "paddlelabel=paddlelabel.__main__:run",
             "pdlabel=paddlelabel.__main__:run",
+            "pt=paddlelabel.tool.__main__:run",
+            "paddlelabel_tools=paddlelabel.tool.__main__:run",
         ]
     },
 )

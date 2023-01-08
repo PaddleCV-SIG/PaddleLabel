@@ -551,12 +551,14 @@ class BaseTask:
             if len(catgs) == 0:
                 break
             catg = catgs.popleft()
+            # print(catg, type(catg), dir(catg))
             if self.label_name2id(catg["name"]) is not None:
                 continue
 
             color = catg.get("color", None)
             if color is not None:
-                color = name_to_hex(color)
+                color = rgb_to_hex(color) if isinstance(color, list) else name_to_hex(color)
+
             if (
                 "supercategory" not in catg.keys()
                 or catg["supercategory"] == "none"

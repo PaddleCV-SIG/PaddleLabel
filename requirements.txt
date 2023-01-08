@@ -17,6 +17,9 @@ tifffile
 # db migration
 alembic
 
+# paddlelabel_tools
+prompt_toolkit
+
 # imagecodecs
 # uuid
 # jwt

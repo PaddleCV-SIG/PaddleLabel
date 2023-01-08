@@ -248,7 +248,7 @@ class Detection(BaseTask):
     def yolo_importer(self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}):
         # 1. set params
         project = self.project
-        data_dir = Path(project.data_dir) if data_dir is None else data_dir
+        data_dir = Path(project.data_dir if data_dir is None else data_dir)
 
         # 2. get all data and labels, ensure all data basename unique
         data_paths = listdir(data_dir, filters=filters)
@@ -263,7 +263,6 @@ class Detection(BaseTask):
         label_dict = {}
         for label_path in label_paths:
             label_dict[label_path.name.split(".")[0]] = label_path
-        # print(label_dict)
 
         for data_path in data_paths:
             basename = data_path.name.split(".")[0]
@@ -282,13 +281,18 @@ class Detection(BaseTask):
                 for fid, ann in enumerate(anns):
                     xmid, ymid, xlen, ylen = ann[1:]
                     res = [xmid - xlen / 2, ymid - ylen / 2, xmid + xlen / 2, ymid + ylen / 2]
+                    # if any(map(lambda v: v > 1.1, ann[1:])):  # whether normalized position
+                    #     res[0] -= width / 2
+                    #     res[1] -= height / 2
+                    #     res[2] -= width / 2
+                    #     res[3] -= height / 2
+                    # else:
                     res = [r - 0.5 for r in res]
                     res[0] *= width
                     res[1] *= height
                     res[2] *= width
                     res[3] *= height
                     res = ",".join(map(str, res))
-
                     ann_list.append(
                         {
                             "label_name": self.label_id2name(ann[0] + 1),
@@ -364,6 +368,7 @@ class Detection(BaseTask):
             (["val.json"], 1),
             (["test.json"], 2),
             (["Annotations", "coco_info.json"], 0),  # EasyData format
+            (["label", "COCO", "annotations.json"], 0),  # EISeg format
         ]
         label_file_paths = [(data_dir / Path(*p), split) for p, split in label_file_paths]
 

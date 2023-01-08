@@ -227,6 +227,7 @@ class BaseTask:
         """
         label_id = int(label_id)
         for label in self.project.labels:
+            print("++", label.id, label_id)
             if label.id == label_id:
                 return label.name
         return None

@@ -573,9 +573,18 @@ class SemanticSegmentation(InstanceSegmentation):
 
         ann_dict = {}
         for ann_dir in ann_dirs:
-            ann_dict.update({osp.basename(p).split(".")[0]: ann_dir / p for p in listdir(ann_dir, filters)})
+            paths = listdir(ann_dir, filters)
+            ann_dict.update({osp.basename(p).split(".")[0]: ann_dir / p for p in paths})
+            if ann_dir.name == "label":
+                ann_dict.update(
+                    {
+                        osp.basename(p).split(".")[0][: -len("_pseudo")]: ann_dir / p
+                        for p in paths
+                        if "_pseudo" in Path(p).name
+                    }
+                )  # NOTE: EISeg pesudo color label export
 
-        # print(ann_dict)
+        print(ann_dict)
 
         # 2. import records
         data_paths = listdir(data_dir, filters)

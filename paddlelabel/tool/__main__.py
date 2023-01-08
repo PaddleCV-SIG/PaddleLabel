@@ -30,21 +30,28 @@ def run():
         text="请选择需要使用的工具",
         values=[
             ("eiseg_label2paddlelabel", "转换EISeg标签列表到PaddleLabel格式"),
-            ("breakfast2", "French breakfast"),
-            ("breakfast3", "Equestrian breakfast"),
         ],
     ).run()
 
     # 2.1 eiseg 格式标签列表转 PaddleLabel格式
     if result == "eiseg_label2paddlelabel":
+        pj_category = radiolist_dialog(
+            title="EISeg标签列表转PaddleLabel格式",
+            text="请选择标签列表所属项目类型",
+            values=[
+                ("detection", "目标检测"),
+                ("semantic_segmentation", "语义分割"),
+            ],
+        ).run()
+
         eiseg_label_path = None
         while eiseg_label_path is None:
             eiseg_label_path = input_dialog(
                 title="EISeg标签列表转PaddleLabel格式",
                 text=f"""
-    请输入EISeg标签列表文件文件路径
-    - 可以为绝对路径
-    - 可以为相对 {str(HERE)} 的相对路径
+请输入EISeg标签列表文件文件路径
+- 可以为绝对路径
+- 可以为相对 {str(HERE)} 的相对路径
                 """,
             ).run()
             eiseg_label_path = Path(eiseg_label_path).absolute()
@@ -55,8 +62,12 @@ def run():
                     ok_text="重新输入",
                 ).run()
                 eiseg_label_path = None
-            # assert eiseg_label_path is not None
-            eiseg_label2_paddlelabel(eiseg_label_path)
+            assert eiseg_label_path is not None
+            eiseg_label2_paddlelabel(
+                eiseg_label_path,
+                add_background=pj_category == "semantic_segmentation",
+                label_id_delta=1,
+            )
 
 
 if __name__ == "__main__":

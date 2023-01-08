@@ -200,7 +200,8 @@ heroku logs --tail
 ## LabelMe
 
 {: .note-title }
-> PaddleLabel会将数据集路径下所有的图片作为任务导入，使用labelme提供的脚本进行数据集格式转换时请不要生成可视化图片，需要在官方给的命令基础上添加一个 --noviz 选项
+
+> PaddleLabel 会将数据集路径下所有的图片作为任务导入，使用 labelme 提供的脚本进行数据集格式转换时请不要生成可视化图片，需要在官方给的命令基础上添加一个 --noviz 选项
 
 2023.1.6
 
@@ -211,7 +212,7 @@ heroku logs --tail
 - 检测
   - [ ] labelme 格式矩形
   - [x] voc 矩形
-      - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
 - 实例分割
   - [ ] labelme 格式
   - [ ] voc class+object 格式
@@ -225,7 +226,7 @@ heroku logs --tail
 
 ## LabelImg
 
-LabelImg已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
+LabelImg 已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 
 2023.1.6
 
@@ -234,13 +235,25 @@ LabelImg已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 - [x] yolo
 
 ## EISeg
+
+2023.1.8
+
 - 语义/实例分割
   - [x] coco
   - [x] eiseg json
 - 语义分割
-  - [ ] 灰度图
+  - [x] 灰度 mask
     - 需要将所有待标注图片放到 `JPEGImages` 文件夹中
-    -
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
+  - [x] 伪彩色 mask
+    - 需要将所有待标注图片放到 `JPEGImages` 文件夹中
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
+  - [ ] labelme
+- 检测
+  - [x] coco
+  - [x] voc
+  - [ ] ~~yolo~~：EISeg 目前导出的 yolo 应该不是常用格式，没法兼容
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
 
 ## LabelBox
 
@@ -253,7 +266,6 @@ LabelImg已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 - 语义分割
   - [ ] 视盘，伪彩色 mask，背景不是黑色
   - [ ]
-
 
 ## PaddleClas
 
@@ -275,8 +287,6 @@ LabelImg已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 
 ## PaddleOCR
 
-
-
 easydata/clas/single/sample-img-single-cls-annotated-folder/
 easydata/clas/multi/sample-img-multi-cls-annotated-folder/
 easydata/det/sample-obj-dct-annotated-voc/
@@ -287,4 +297,9 @@ labelme/rectangle/data_dataset_voc/
 labelme/insseg/data_dataset_coco/
 labelImg/voc/
 labelImg/yolo/
-eiseg/coco/
+eiseg/seg/coco/
+eiseg/seg/gray/
+eiseg/seg/eiseg_json/
+eiseg/seg/pesudo/
+eiseg/det/coco/
+eiseg/det/voc/

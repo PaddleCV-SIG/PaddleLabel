@@ -120,6 +120,8 @@ def pre_add(new_project, se):
 
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
+    if not Path(new_project.data_dir).exists():
+        abort(f"Dataset Path {new_project.data_dir} doesn't exist", 404)
 
     new_project.label_format = camel2snake(new_project.label_format)
     new_labels = new_project.labels

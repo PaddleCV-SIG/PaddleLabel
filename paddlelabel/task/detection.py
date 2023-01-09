@@ -49,9 +49,9 @@ def parse_voc_label(label_path):
 
     # 1.2 size
     size = file.getElementsByTagName("size")[0]
-    size = [data(size.getElementsByTagName(n)) for n in ["width", "height"]]
-    width, height = [int(t) for t in size]
-    size = [str(t) for t in [1, width, height]]
+    size = [data(size.getElementsByTagName(n)) for n in ["height", "width"]]
+    height, width = [int(t) for t in size]
+    size = [str(t) for t in [1, height, width]]
 
     img["size"] = ",".join(size)
     img["path"] = path
@@ -210,7 +210,7 @@ class Detection(BaseTask):
                 body["labels"] = labels
             res = requests.post(host, json=body)
             res_json = res.json()
-            print("\t", task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
+            # print("\t", task.task_id, res_json, len(res_json.keys()) == 1, time.time() - tic)
             return len(res_json.keys()) == 1 and res.status_code == 200, task
 
         # while not tasks.empty():
@@ -401,10 +401,10 @@ class Detection(BaseTask):
                 full_path = full_path[0]
                 data_paths.remove(full_path)
                 coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("width", None), img.get("height", None)]
+                s = [img.get("height", None), img.get("width", None)]
                 if s == [None, None]:
-                    s = cv2.imread(full_path).shape[:2][::-1]  # w, h
-                    coco.imgs[idx]["width"], coco.imgs[idx]["height"] = s
+                    s = cv2.imread(full_path).shape[:2]  # h, w
+                    coco.imgs[idx]["height"], coco.imgs[idx]["width"] = s
                 s = [str(t) for t in s]
                 coco.imgs[idx]["size"] = ",".join(s)
                 ann_by_task[img["id"]] = []
@@ -424,7 +424,7 @@ class Detection(BaseTask):
 
                 # image center as origin, right x down y
                 res = ann["bbox"]
-                width, height = (coco.imgs[ann["image_id"]]["width"], coco.imgs[ann["image_id"]]["height"])
+                height, width = (coco.imgs[ann["image_id"]]["height"], coco.imgs[ann["image_id"]]["width"])
                 res[2] += res[0]
                 res[3] += res[1]
                 res[0] -= width / 2
@@ -624,8 +624,7 @@ class Detection(BaseTask):
 
             img = cv2.imread(str(data_path))
             if img is not None:
-                s = img.shape
-                data["size"] = ",".join(map(str, [1] + list(s[:2])))
+                data["size"] = ",".join(map(str, [1] + list(img.shape[:2])))
             else:
                 raise RuntimeError(f"Load image {str(data_path)} failed.")
                 # log.error(f"Load image {data['path']} failed")
@@ -675,7 +674,7 @@ class Detection(BaseTask):
 
             copy(data_path, export_data_dir)
             id = osp.basename(data_path).split(".")[0]
-            width, height = data.size.split(",")[1:3]
+            height, width = data.size.split(",")[1:3]
             with open(osp.join(export_label_dir, f"{id}.xml"), "w") as f:
                 print(
                     create_voc_label(export_path, width, height, data.annotations),

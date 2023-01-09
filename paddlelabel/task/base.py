@@ -115,7 +115,7 @@ class BaseTask:
         datas : list[dict]
             A list of dict, each dict representing a task. In the dict, path is required, specifying full path or relative path to project.data_dir. All other entries are optional.
             Example: [{"path": 'path1'}, {"path" : 'path2', "size": "1,1024,768"}, ...]
-            size is in format "slice count (1 for 2d images),width,height"
+            size is in format "slice count (1 for 2d images),height,width"
         annotations : list[list[dict]] | None, optional
             Annotations corresponding to each data record. Defaults to None
             Example:

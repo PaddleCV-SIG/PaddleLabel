@@ -51,9 +51,17 @@ jobs:
           pwd
           echo $USER
           mkdir 测试路径
+          mkdir 测试路径/3rd_party
           ls -lah
           cd 测试路径
           pwd
+      - name: Download 3rd party tests
+        run: |
+          cd ~/测试路径/3rd_party/
+          wget https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
+          unzip paddlelabel_3rd_party_tests.zip
+          pwd
+          ls
 
       - name: Install PaddleLabel
         run: |

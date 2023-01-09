@@ -57,17 +57,12 @@ jobs:
           pwd
 
       - name: Download 3rd party tests
-        uses: robinraju/release-downloader@v1.7
-        with:
-          repository: "linhandev/static"
-          tag: "PaddleLabel相关"
-          fileName: "paddlelabel_3rd_party_tests.zip"
-
-      - name: Unzip 3rd party tests
         run: |
-          unzip paddlelabel_3rd_party_tests.zip -d ~/测试路径/3rd_party/
+          curl https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip -O ~/测试路径/3rd_party/paddlelabel_3rd_party_tests.zip
+          cd ~/测试路径/3rd_party/
+          unzip paddlelabel_3rd_party_tests.zip
           pwd
-          ls ~/测试路径/3rd_party/
+          ls
 
       - name: Install PaddleLabel
         run: |

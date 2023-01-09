@@ -309,7 +309,7 @@ class InstanceSegmentation(BaseTask):
             annotation_ext=".tiff",
         )
         background_line = project._get_other_settings().get("background_line")
-        if background_line is None or len(background_line) == 0:
+        if not 0 in [l.id for l in project.labels] and (background_line is None or len(background_line) == 0):
             background_line = "background"
 
         self.export_labels(osp.join(export_dir, "labels.txt"), background_line, with_id=True)

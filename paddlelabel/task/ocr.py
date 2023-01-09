@@ -158,8 +158,8 @@ class OpticalCharacterRecognition(BaseTask):
                     points[pidx][0] = int(points[pidx][0] + width / 2)
                     points[pidx][1] = int(points[pidx][1] + height / 2)
 
-            print(points)
-            print(r)
+            # print(points)
+            # print(r)
 
             split, name = data_info[ann.data_id]
             ann_dicts[split][name].append(

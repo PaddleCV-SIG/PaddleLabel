@@ -48,10 +48,10 @@ class Classification(BaseTask):
         have_no_annotation = False
 
         # 1. write labels.txt
-        labels = self.export_labels(osp.join(export_dir, "labels.txt"))
+        self.export_labels(osp.join(export_dir, "labels.txt"))
 
         # 2. create label dirs
-        for label in labels:
+        for label in project.labels:
             create_dir(osp.join(export_dir, label.name))
 
         # 3. move files to output dir

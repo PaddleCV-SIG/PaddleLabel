@@ -227,7 +227,7 @@ class BaseTask:
         """
         label_id = int(label_id)
         for label in self.project.labels:
-            print("++", label.id, label_id)
+            # print("++", label.id, label_id)
             if label.id == label_id:
                 return label.name
         return None
@@ -337,11 +337,11 @@ class BaseTask:
         # 1. check params
         if name is None or len(name) == 0:
             raise RuntimeError(f"Label name is required, got {name}")
+        name = name.strip()
         current_names = set(l.name for l in self.project.labels)
         if name in current_names:
             # raise RuntimeError(f"Label name {name} is not unique")
-            log.warning(f"Label {name} already exist, skipping.")
-            return
+            raise RuntimeError(f"Trying to add label {name} which already exists.")
 
         # 2. check or assign color
         current_colors = set(l.color for l in self.project.labels)
@@ -363,11 +363,10 @@ class BaseTask:
                 raise RuntimeError(f"Label id {id} is not unique")
 
         # 4. assign super category id
-
         label = Label(
             project_id=self.project.project_id,
             id=id,
-            name=name,
+            name=name.replace(" ", "_"),
             color=color,
             comment=comment,
             super_category_id=super_category_id,
@@ -459,17 +458,30 @@ class BaseTask:
                 lab.color = rand_hex_color([l.color for l in labels])
         db.session.commit()
 
-    def export_labels(self, label_names_path: str, background_line: str | None = None, with_id: bool = False):
+    def export_labels(
+        self,
+        label_names_path: str,
+        background_line: str | None = None,
+        with_id: bool = False,
+    ) -> dict[int, int]:
         labels = self.project.labels
         labels.sort(key=lambda l: l.id)
+        id_mapping = {}
+        curr_id = 0
         with open(label_names_path, "w", encoding="utf-8") as f:
             if background_line is not None:
                 print(background_line.strip(), file=f)
+                curr_id += 1
             for lab in labels:
                 print(lab.name, end=" " if with_id else "\n", file=f)
                 if with_id:
                     print(lab.id, file=f)
-        return labels
+                    id_mapping[lab.id] = lab.id
+                else:
+                    id_mapping[lab.id] = curr_id
+                    curr_id += 1
+
+        return id_mapping
 
     def default_importer(
         self,

@@ -306,6 +306,7 @@ class Detection(BaseTask):
         self.commit()
 
     def yolo_exporter(self, export_dir):
+        # BUG: if the labels ids are not continuos
         # 1. set params
         project = self.project
 
@@ -314,7 +315,7 @@ class Detection(BaseTask):
         create_dir(export_data_dir)
         create_dir(export_label_dir)
 
-        self.export_labels(osp.join(export_dir, "classes.names"))
+        label_id_mapping = self.export_labels(osp.join(export_dir, "classes.names"))
 
         tasks = Task._get(project_id=project.project_id, many=True)
         export_paths = []
@@ -325,7 +326,7 @@ class Detection(BaseTask):
             export_path = osp.join("JPEGImages", osp.basename(data.path))
             copy(data_path, export_data_dir)
 
-            width, height = map(int, data.size.split(",")[1:3])
+            height, width = map(int, data.size.split(",")[1:3])
             # print(width, height)
             yolo_res = ""
             for ann in task.annotations:
@@ -337,7 +338,8 @@ class Detection(BaseTask):
                 res[3] = (r[3] - r[1]) / height
                 res[0] += res[2] / 2
                 res[1] += res[3] / 2
-                yolo_res += f"{ann.label.id - 1} {' '.join(map(str, res))}\n"
+                # print(ann.label.id)
+                yolo_res += f"{label_id_mapping[ann.label.id]} {' '.join(map(str, res))}\n"
             if yolo_res != "":
                 with open(
                     osp.join(export_dir, "Annotations", osp.basename(data.path).split(".")[0] + ".txt"), "w"

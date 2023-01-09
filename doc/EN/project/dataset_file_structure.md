@@ -280,7 +280,7 @@ Instance segmentation takes this one step further. We not only try to decide eac
 
 ### Semantic Segmentation
 
-Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) (Note PPLabel cannot directly import this dataset. Masks in this dataset is in pesudo color. You have to modify the labels.txt file to specify the color for the optic disk class.)
+Example dataset: [optic disk segmentation](https://bj.bcebos.com/paddlex/datasets/optic_disc_seg.tar.gz) (Note PPLabel cannot directly import this dataset. Masks in this dataset is in pseudo color. You have to modify the labels.txt file to specify the color for the optic disk class.)
 
 Images and annotations are both image files in this format, so we placed more restrictions on the folder structure to tell them apart. We expect all images to be placed under `/Dataset Path/JPEGImages/` folder. All images under this folder will be imported, with or without annotation. Annotations should be placed in `/Dataset Path/Annotations`. Sample Layout:
 
@@ -303,10 +303,10 @@ Dataset Path
 
 # labels.txt
 background -
-optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
+optic_disk - 128 0 0 // for pseudo color mask, color for each label must be specified
 ```
 
-During import, **in labels.txt, the first label will be treated as background and given label id 0**. For grayscale labels, we match the grayscale pixel value in masks with label id. For pesudo color labels, we match the color for each pixel with color specified in labels.txt. Import will fail if annotation doesn't have a matching label.
+During import, **in labels.txt, the first label will be treated as background and given label id 0**. For grayscale labels, we match the grayscale pixel value in masks with label id. For pseudo color labels, we match the color for each pixel with color specified in labels.txt. Import will fail if annotation doesn't have a matching label.
 
 PNG is usually used for mask labels. We strip the file name extension from images and labels and match image to label with the same base file name. If multiple images with the same base file name plus different extension, like image.png and image.webp are found during import, import will fail.
 

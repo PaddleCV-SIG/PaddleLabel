@@ -288,7 +288,6 @@ LabelImg 已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 ## PaddleOCR
 
 easydata/clas/single/sample-img-single-cls-annotated-folder/
-easydata/clas/multi/sample-img-multi-cls-annotated-folder/
 easydata/det/sample-obj-dct-annotated-voc/
 easydata/det/sample-obj-dct-annotated-coco/
 easydata/insseg/seg_coco_example/

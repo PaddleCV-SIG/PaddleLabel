@@ -33,7 +33,7 @@ PaddleLabel 支持多边形和掩膜两种分语义割标注任务。
 
 # labels.txt
 background -
-optic_disk - 128 0 0 // for pesudo color mask, color for each label must be specified
+optic_disk - 128 0 0 // for pseudo color mask, color for each label must be specified
 ```
 
 #### 多边形格式

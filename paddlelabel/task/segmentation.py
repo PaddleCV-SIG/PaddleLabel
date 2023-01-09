@@ -21,22 +21,22 @@ from paddlelabel.api.rpc.seg import polygon2points
 log = logging.getLogger("PaddleLabel")
 
 
-def draw_mask(data, mask_type="pesudo"):
+def draw_mask(data, mask_type="grayscale"):
     """Draw a segmentation mask
 
     Args:
         data (data record): include data info, annotataion info and label info
-        mask_type (str, optional): mask type, pesudo, grayscale or instance. Defaults to "pesudo".
+        mask_type (str, optional): mask type, pseudo, grayscale or instance. Defaults to "grayscale".
 
     Returns:
         mask:
             - grayscale: [h, w, 1]
-            - pesudo: [h, w, 3] rbg
+            - pseudo: [h, w, 3] rbg
             - instance: [h, w, 2] 0: instance, 1: category
     """
     height, width = map(int, data.size.split(",")[1:3])
     instance_id = 0
-    if mask_type == "pesudo":
+    if mask_type == "pseudo":
         catg_mask = np.zeros((height, width, 3))
     elif mask_type == "grayscale":
         catg_mask = np.zeros((height, width))
@@ -74,7 +74,7 @@ def draw_mask(data, mask_type="pesudo"):
         if result[0] != 0 and result[1] == 0:
             ann.type = "rubber"
 
-        if mask_type == "pesudo":
+        if mask_type == "pseudo":
             color = [0, 0, 0] if ann.type == "rubber" else hex_to_rgb(ann.label.color)[::-1]
         else:
             color = 0 if ann.type == "rubber" else int(label_id)
@@ -582,7 +582,7 @@ class SemanticSegmentation(InstanceSegmentation):
                         for p in paths
                         if "_pseudo" in Path(p).name
                     }
-                )  # NOTE: EISeg pesudo color label export
+                )  # NOTE: EISeg pseudo color label export
 
         print(ann_dict)
 
@@ -606,12 +606,12 @@ class SemanticSegmentation(InstanceSegmentation):
             self.add_task([{"path": data_path, "size": size}], [anns])
         self.commit()
 
-    def mask_exporter(self, export_dir: str, seg_mask_type: str):
+    def mask_exporter(self, export_dir: str, seg_mask_type: str = "grayscale"):
         """Export semantic segmentation dataset in mask format
 
         Args:
             export_dir (str): The folder to export to.
-            seg_mask_type (str): gray|pesudo
+            seg_mask_type (str): grayscale|pseudo
         """
 
         # 1. set params

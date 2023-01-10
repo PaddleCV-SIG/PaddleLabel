@@ -48,15 +48,13 @@ jobs:
       doc_changed: ${{ steps.doc_changed.outputs.doc }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: develop
       - run: git branch
       - uses: dorny/paths-filter@v2
         id: doc_changed
         with:
           list-files: shell
-          base: develop
-          ref: develop
+          # base: develop
+          # ref: develop
           filters: |
             doc:
               - 'doc/**'

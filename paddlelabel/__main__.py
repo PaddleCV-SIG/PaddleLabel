@@ -18,28 +18,28 @@ def parse_args():
         "-l",
         default=False,
         action="store_true",
-        help="Whether to expose PaddleLabel to lan",
+        help="Expose PaddleLabel service to lan",
     )
     parser.add_argument(
         "--port",
         "-p",
         default=17995,
         type=int,
-        help="The port to use",
+        help="The port PaddleLabel will run on",
     )
     parser.add_argument(
         "--verbose",
         "-v",
         default=False,
         action="store_true",
-        help="Output more log in command line, if not set, cmd will only output error",
+        help="Output more log in command line. If not set, defaults to output only warning and error logs",
     )
     parser.add_argument(
         "--debug",
         "-d",
         default=False,
         action="store_true",
-        help="Run in debug mode",
+        help="Run in debug mode, will restart PaddleLabel on code save",
     )
 
     return parser.parse_args()

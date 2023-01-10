@@ -1,5 +1,5 @@
 title: PaddleLabel
-description: An effective and flexible tool for data annotation
+description: 高效灵活的数据标注工具
 theme: just-the-docs
 
 url: https://paddlecv-sig.github.io/
@@ -10,12 +10,24 @@ permalink: pretty
 search_enabled: false
 heading_anchors: true
 enable_copy_code_button: true
+last_edit_timestamp: true
+gh_edit_link: true
+gh_edit_link_text: "在 Github 上编辑此页面"
+gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
+gh_edit_branch: "develop"
+gh_edit_view_mode: "edit"
+
+callouts:
+  note:
+    title: 注意
+    color: green
 
 aux_links: # remove if you don't want this link to appear on your pages
   项目 Github: https://github.com/PaddleCV-SIG/PaddleLabel
 
 plugins:
   - jemoji
+  - jekyll-last-modified-at
 
 kramdown:
   parse_block_html: true

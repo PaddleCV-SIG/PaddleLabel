@@ -287,18 +287,5 @@ LabelImg 已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
 
 ## PaddleOCR
 
-easydata/clas/single/sample-img-single-cls-annotated-folder/
-easydata/det/sample-obj-dct-annotated-voc/
-easydata/det/sample-obj-dct-annotated-coco/
-easydata/insseg/seg_coco_example/
-easydata/ocr/sample-img-paddle-ocr-txt-annotated/
-labelme/rectangle/data_dataset_voc/
-labelme/insseg/data_dataset_coco/
-labelImg/voc/
-labelImg/yolo/
-eiseg/seg/coco/
-eiseg/seg/gray/
-eiseg/seg/eiseg_json/
-eiseg/seg/pesudo/
-eiseg/det/coco/
-eiseg/det/voc/
+
+http://host.robots.ox.ac.uk/pascal/VOC/voc2008/htmldoc/voc.html#SECTION00031000000000000000

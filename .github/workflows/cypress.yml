@@ -1,4 +1,4 @@
-name: Run cypress e2e test
+name: E2E Tests
 
 on:
   workflow_call:

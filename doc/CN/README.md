@@ -10,13 +10,12 @@
 
 <p>
 <img src="https://img.shields.io/badge/python-3.7+-blue.svg">
-<a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
-<a href="https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
-<a href="https://paddlecv-sig.github.io/PaddleLabel/"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
-<a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a>
-<a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
-<a href="https://pepy.tech/project/paddlelabel"><img src="https://static.pepy.tech/personalized-badge/paddlelabel?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads"/></a>
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
+<a href="https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
+<a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
+<a href="https://paddlecv-sig.github.io/PaddleLabel/"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
+<!-- <a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a> -->
+<a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
 <a href="https://pepy.tech/project/paddlelabel"><img src="https://static.pepy.tech/personalized-badge/paddlelabel?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads"/></a>
 <a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml/badge.svg"></a>
 </p>
@@ -40,7 +39,7 @@
 
 ## 简介
 
-PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见计算机视觉任务的数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，极大的提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
+PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见计算机视觉任务的数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
 
 PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于 飞桨实现的自动和交互式深度学习辅助标注后端。
 
@@ -55,8 +54,8 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ## 技术交流
 
-- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流。
-- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果二维码过期可以添加开发者微信：linhandev。
+- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流
+- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发者微信：linhandev
 
 <div align="center">
 <img src="/doc/CN/assets/group_qr.png"  width = "200" />
@@ -69,10 +68,8 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 进行标注
 
-- [图像分类](CN/project/classification.md)
-- [图像分类自动标注](CN/project/classification_auto_label.md)
+- [图像分类](/doc/CN/project/classification.md)
 - [目标检测](CN/project/detection.md)
-- [目标检测自动标注](CN/project/detection_auto_label.md)
 - [语义分割](CN/project/semantic_segmentation.md)
 - [实例分割](CN/project/instance_segmentation.md)
 - [交互式分割标注](CN/project/interactive_segmentation.md)

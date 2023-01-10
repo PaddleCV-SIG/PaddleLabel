@@ -17,6 +17,7 @@ pip install --upgrade paddlelabel
 
 看到类似于 `Successfully installed paddlelabel-0.5.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
 
+{: .note }
 **以下两种安装方式主要针对二次开发场景**
 
 ## 下载最新开发版

@@ -157,3 +157,134 @@ heroku logs --tail
 - In front end, there are if clauses using if(something) to test if something exists. All indexes (xx.xx_id or xx.id) will start from 1.
 - Though internally label.id start from 1, but to be compatable with other tools, in labels.txt and xx_list.txt files, labels start from 0.
 - All primary keys are named xx_id in backend and xxId in frontend. For example the primary key for annotation table is annotation_id or annotationId. annotation.id is a value user specify mainly for import/export. This value may be changed by user and shouldn't be used as index.
+
+# 互兼容测试
+
+- 待制作数据集
+- \[ \] 代表数据集已经制作
+- \[x\] 代表已经通过初步测试
+- \[ \] ~~代表近期不计划支持该格式~~
+
+## EasyData
+
+样例数据集 2023.1.6
+
+- 分类
+  - 单分类
+    - \[ \] ~~EasyData 格式~~
+    - \[ \] COCO
+    - \[ \] VOC
+    - \[x\] 文件夹
+  - 多分类
+    - \[ \] ~~EasyData 格式~~
+    - \[ \] COCO
+    - \[ \] VOC
+    - \[ \] ~~文件夹：给的样例和单分类一样，多分类没法通过一个文件夹描述，感觉这个格式支持意义不大~~
+- 检测
+  - \[ \] ~~EasyData 格式~~
+  - \[x\] COCO
+  - \[x\] VOC
+- 实例分割
+  - \[ \] ~~EasyData 格式~~
+  - \[x\] COCO
+- 语义分割
+  - \[ \] 带边缘的伪彩色，label 格式也不一样，待研究
+- OCR
+  - \[x\] paddleocr txt
+  - \[ \] paddleocr coco
+  - \[ \] EasyData txt
+  - \[ \] EasyData coco
+
+导出结果
+
+## LabelMe
+
+{: .note-title }
+
+> PaddleLabel 会将数据集路径下所有的图片作为任务导入，使用 labelme 提供的脚本进行数据集格式转换时请不要生成可视化图片，需要在官方给的命令基础上添加一个 --noviz 选项
+
+2023.1.6
+
+- 元素测试
+  - \[ \] labelme 格式，包含 labelme 支持的所有元素种类
+- 分类
+  - \[ \] labelme flags 分类
+- 检测
+  - \[ \] labelme 格式矩形
+  - \[x\] voc 矩形
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/bbox_detection/labelme2voc.py)从 labelme 格式转换，转换命令为 `python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+- 实例分割
+  - \[ \] labelme 格式
+  - \[ \] voc class+object 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+  - \[x\] coco 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/instance_segmentation/labelme2coco.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_coco --labels labels.txt --noviz`
+- 语义分割
+  - \[ \] labelme 格式
+  - \[ \] voc class 格式
+    - 使用 labelme 提供的[脚本](https://github.com/wkentaro/labelme/blob/main/examples/semantic_segmentation/labelme2voc.py)从 labelme 格式转换，转换命令为`python labelme2voc.py data_annotated data_dataset_voc --labels labels.txt --noviz`
+
+## LabelImg
+
+LabelImg 已经终止开发，使用 py38, pyqt5==5.12.3 环境运行
+
+2023.1.6
+
+- \[x\] voc
+- \[ \] createml
+- \[x\] yolo
+
+## EISeg
+
+2023.1.8
+
+- 语义/实例分割
+  - \[x\] coco
+  - \[x\] eiseg json
+- 语义分割
+  - \[x\] 灰度 mask
+    - 需要将所有待标注图片放到 `JPEGImages` 文件夹中
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
+  - \[x\] 伪彩色 mask
+    - 需要将所有待标注图片放到 `JPEGImages` 文件夹中
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
+  - \[ \] labelme
+- 检测
+  - \[x\] coco
+  - \[x\] voc
+  - \[ \] ~~yolo~~：EISeg 目前导出的 yolo 应该不是常用格式，没法兼容
+    - 需要在 EISeg 中保存 labels.txt，并使用 paddlelabel_tools 按照提示进行转换
+
+## LabelBox
+
+## LabelStudio
+
+## PPOCRLabel
+
+## 用户贡献
+
+- 语义分割
+  - \[ \] 视盘，伪彩色 mask，背景不是黑色
+  - \[ \]
+
+## PaddleClas
+
+- \[ \] https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/pulc_demo_imgs.zip
+- https://paddleclas.bj.bcebos.com/data/PULC/text_image_orientation.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/language_classification.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/textline_orientation.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/traffic_sign.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/car_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/person_exists.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/pa100k.tar
+- https://paddleclas.bj.bcebos.com/data/PULC/safety_helmet.tar
+
+## PaddleSeg
+
+## PaddleDet
+
+## PaddleOCR
+
+http://host.robots.ox.ac.uk/pascal/VOC/voc2008/htmldoc/voc.html#SECTION00031000000000000000

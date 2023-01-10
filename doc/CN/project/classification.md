@@ -4,7 +4,7 @@
 
 PaddleLabel 支持**单分类**和**多分类**两种图像分类标注。
 
-## <div id="test1">数据结构</div>
+## 数据结构
 
 ### 单分类
 
@@ -108,4 +108,4 @@ image/9928.jpg monkey
 
 ## \*分类预标注
 
-PaddleLabel带有基于PaddlePaddle的机器学习分类标注功能，可以通过加载模型实现分类预标注功能，使用方法参考[图像分类自动标注](classification_auto_label.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习分类标注功能，可以通过加载模型实现分类预标注功能，使用方法参考[图像分类自动标注](classification_auto_label.md)。

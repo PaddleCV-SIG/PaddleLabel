@@ -2,17 +2,15 @@
 
 ![image](https://user-images.githubusercontent.com/29757093/182841361-eb53e726-fa98-4e02-88ba-30172efac8eb.png)
 
-PaddleLabel 支持图像目标检测标注任务。
-
-## <div id="dataset_structure">数据结构</div>
+## 数据结构
 
 PaddleLabel 目前支持 PASCAL VOC，COCO 和 YOLO 三种目标检测数据集格式。
 
 ### PASCAL VOC
 
-PASCAL VOC 格式将标注信息保存在 xml 文件中，每张图像对应一个 xml 文件。新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则在下一段详述。
+PASCAL VOC 格式的标注信息为 xml 格式文件，每张图像对应一个 xml 文件。
 
-示例格式如下：
+示例文件排布如下：
 
 ```shell
 数据集路径
@@ -36,22 +34,15 @@ xml 文件格式如下：
 
 ```text
 <annotation>
- <folder>JPEGImages</folder>
- <filename></filename>
- <source>
-  <database></database>
- </source>
- <size>
+ <folder>JPEGImages</folder> # 如果不存在folder节点，将使用默认值 JPEGImages
+ <filename></filename> # 如果不存在filename节点，将使用默认值空字符串 ""
+ <size> # 目前导入过程中会打开图像确认图像大小，以下三个值不会被考虑
   <width></width>
   <height></height>
   <depth></depth>
  </size>
- <segmented>0</segmented>
  <object>
   <name></name>
-  <pose></pose>
-  <truncated></truncated>
-  <difficult></difficult>
   <bndbox>
    <xmin></xmin>
    <ymin></ymin>
@@ -62,13 +53,25 @@ xml 文件格式如下：
 </annotation>
 ```
 
-导入 VOC 格式数据集时，PaddleLabel 将把数据集路径下所有 .xml 结尾文件作为标签导入，并将该标签与位于`/数据集路径/folder/filename`的图像文件匹配。图像路径中的`folder`和`filename`将从该 xml 文件中解析。如果 xml 中没有`folder`节点，将使用默认值 JPEGImages。如果`folder`节点内容为空，将认为图像文件位于`/数据集路径/filename`。xml 中 filename 节点必须存在，否则导入会失败。如果导入图像后发现有 xml 标注信息的图像中没有标注，可以查看 PaddleLabel 运行的命令行
+新建 VOC 格式检测项目时，填写的`数据集路径`下所有的图片都将被导入，xml 标签和图像的对应规则如下。
+
+首先`数据集路径`下所有以 .xml 结尾的文件（不考虑大小写）都将被作为标签导入。
+
+1. 如果`数据集路径`下存在 train_list.txt， val_list.txt，test_list.txt 列表文件，将按照列表文件内容确定对应关系
+1. 无法通过列表文件内容确定的 .xml 文件，将对应到`数据集路径`下文件名相同的图片
+1. 依然无法确定对应关系的 .xml 文件将与位于`/数据集路径/folder/filename`的图片对应。上述路径中的`folder`和`filename`从该 xml 文件中解析。
+   - `folder`：
+     - 如果 xml 中没有`folder`节点，将使用默认值 JPEGImages
+     - 如果`folder`节点存在，但内容为空，将认为图像文件直接位于`/数据集路径/filename`。
+   - `filename`：xml 中 `filename` 节点的内容，如 xml 中不存在`filename`节点将使用默认值空字符串
+
+如果导入图像后发现有 xml 标注信息的图像中没有标注，可以切换到 PaddleLabel 运行的命令行查看有没有报错。
 
 ### COCO
 
-COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性。 `注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.md#xxlisttxt)和[labels.txt](./common.md#labelstxt)。`新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则在下一段详述。
+COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性。 **注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.md#xxlisttxt)和[labels.txt](./common.md#labelstxt)** 。
 
-示例格式如下：
+示例文件排布如下：
 
 ```shell
 数据集路径
@@ -116,13 +119,13 @@ category{
 }
 ```
 
-PaddleLabel将coco标注信息中的图片记录和盘上的图片对应起来的逻辑为：image\['file_name'\]中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致coco标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的coco标注记录中，image\['file_name'\]项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和''分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和''。
+新建标注项目时，填写的`数据集路径`下所有图片都将被导入，标签和图像对应规则为：image\['file_name'\]中最后的文件名和盘上图片的文件名相同（大小写敏感）。这个设计是为了让对应逻辑尽可能简单并保持一定的跨平台兼容性。推荐将所有图片放在同一个文件夹下以避免图片重名导致 coco 标注信息中的一个图片记录对应到盘上的多张图片。一些标注工具导出的 coco 标注记录中，image\['file_name'\]项可能是完整的文件路径或相对数据集根目录的路径，这种情况下我们用'/'和'\\'分割这个路径，得到其中的文件名。因此请避免在文件名中使用'/'和'\\'。
 
 ### YOLO
 
 YOLO 格式每张图像对应一个 txt 格式的标注信息文件，二者文件名除拓展名部分相同。
 
-示例格式如下：
+示例文件排布如下：
 
 ```shell
 数据集路径
@@ -194,4 +197,4 @@ _注意：在 PaddleLabel 中，右侧标签栏有标签列表和标注列表两
 
 ## \*检测预标注
 
-PaddleLabel带有基于PaddlePaddle的机器学习检测标注功能，可以通过加载模型实现检测预标注功能，使用方法参考[图像检测自动标注](detection_auto_label.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习检测标注功能，可以通过加载模型实现检测预标注功能，使用方法参考[图像检测自动标注](detection_auto_label.md)。

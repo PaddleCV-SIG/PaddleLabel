@@ -1,3 +1,5 @@
+- \[v0.5.1\]
+  - 完善文档，文档转pages，包在pypi中发行
 - \[v0.1.1\]
   - 修复py39以下项目无法导入问题 [#71](https://github.com/PaddleCV-SIG/PaddleLabel/issues/71)
   - 修复py39以下标注无法保存问题 [#72](https://github.com/PaddleCV-SIG/PaddleLabel/issues/72)

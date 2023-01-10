@@ -15,6 +15,7 @@ gh_edit_link: true
 gh_edit_link_text: "在 Github 上编辑此页面"
 gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
 gh_edit_branch: "develop"
+gh_edit_source: "doc/CN"
 gh_edit_view_mode: "edit"
 
 callouts:

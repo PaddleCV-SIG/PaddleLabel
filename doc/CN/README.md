@@ -55,7 +55,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 ## 技术交流
 
 - 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流
-- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发者微信：linhandev
+- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信进群：linhandev
 
 <div align="center">
 <img src="/doc/CN/assets/group_qr.png"  width = "200" />

@@ -3,6 +3,7 @@
     "cSpell.words": [
         "anns",
         "bndbox",
+        "callouts",
         "catg",
         "catgs",
         "connexion",
@@ -11,6 +12,7 @@
         "easydata",
         "eiseg",
         "imread",
+        "jemoji",
         "labelme",
         "linhandev",
         "nncol",

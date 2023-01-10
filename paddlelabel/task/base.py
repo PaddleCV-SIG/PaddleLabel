@@ -9,7 +9,6 @@ from pathlib import Path
 import cv2
 
 from paddlelabel.api import Annotation, Data, Label, Project, Task
-from paddlelabel.api.util import abort
 from paddlelabel.config import db
 from paddlelabel.task.util import create_dir, image_extensions, listdir
 from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
@@ -18,7 +17,7 @@ from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
 Base for import/export and other task specific operations.
 """
 
-log = logging.getLogger("PaddleLabel")
+log = logging.getLogger(__name__)
 
 
 # TODO: change data_dir to pathlib.path

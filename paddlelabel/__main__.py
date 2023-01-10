@@ -3,6 +3,7 @@ import logging
 import webbrowser
 from pathlib import Path
 
+import paddlelabel
 from paddlelabel.serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
 from paddlelabel.util import pyVerGt, portInUse
@@ -45,7 +46,7 @@ def parse_args():
 
 
 pyVerWarning = """
-It's recommended to run PaddleLabel with Python>=3.9.0. Please consider creating a new virtual enviroment and run PaddleLabel with:
+It's recommended to run PaddleLabel with Python>=3.9.0. Please consider running PaddleLabel in a new virtual environment with:
 
 conda create -y -n paddlelabel python=3.11
 conda activate paddlelabel
@@ -58,7 +59,7 @@ paddlelabel
 def run():
     args = parse_args()
 
-    # 1. ensuer port not in use
+    # 1. ensure port not in use
     if not args.debug and not args.verbose and portInUse(args.port):
         print(
             f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
@@ -69,36 +70,35 @@ def run():
     if not pyVerGt():
         print(pyVerWarning)
 
-    # 3. create sample datasets
-    prep_samples()
-
     host = "0.0.0.0" if args.lan else "127.0.0.1"
 
-    # 4. configure logger and logging levels
-    logger = logging.getLogger("PaddleLabel")
-    logger.setLevel(logging.INFO)
+    # 3. configure logger and logging levels
+    logger = logging.getLogger(__name__)
+    logger.propagate = False
     ch = logging.StreamHandler()
-    formatter = logging.Formatter("[%(levelname)s]%(module)s.%(lineno)d: %(message)s")
+    ch.setLevel(logging.NOTSET)
+    formatter = logging.Formatter("%(levelname)s [paddlelabel.%(module)s.%(lineno)d]: %(message)s")
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
-    logging.getLogger("werkzeug").setLevel(logging.ERROR)
-    logging.getLogger("PaddleLabel").setLevel(logging.ERROR)
-
-    if args.verbose:
-        logging.getLogger("werkzeug").setLevel(logging.INFO)
-        logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
-
     if args.debug:
-        logging.getLogger("werkzeug").setLevel(logging.ERROR)
-        logging.getLogger("PaddleLabel").setLevel(logging.DEBUG)
-        print("Version:", (HERE / "version").read_text().strip())
+        logging.getLogger("werkzeug").setLevel(logging.INFO)
+        logger.setLevel(logging.DEBUG)
+    elif args.verbose:
+        logging.getLogger("werkzeug").setLevel(logging.INFO)
+        logger.setLevel(logging.DEBUG)
+    else:
+        logging.getLogger("werkzeug").setLevel(logging.WARNING)
+        logger.setLevel(logging.INFO)
 
-    logger.info("App starting")
+    logger.info(f"Version: {paddlelabel.version}")
 
-    # 5. run
+    # 4. run
     if not args.debug:
         webbrowser.open(f"http://localhost:{args.port}")
+
+    # 5. create sample datasets
+    prep_samples()
 
     print(f"PaddleLabel is running at http://localhost:{args.port}")
     connexion_app.run(host=host, port=args.port, debug=args.debug)

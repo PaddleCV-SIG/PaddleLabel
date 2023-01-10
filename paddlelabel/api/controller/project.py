@@ -14,7 +14,7 @@ import numpy as np
 import connexion
 
 from paddlelabel.config import db
-from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, project
+from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.controller.base import crud
 from paddlelabel.api.controller import label
@@ -30,6 +30,8 @@ from paddlelabel.task.util.file import (
     expand_home,
 )
 import paddlelabel
+
+log = logging.getLogger(__name__)
 
 
 def import_dataset(project, data_dir=None, label_format=None):
@@ -124,11 +126,12 @@ def pre_add(new_project, se):
         abort(f"Dataset Path {new_project.data_dir} doesn't exist", 404)
 
     new_project.label_format = camel2snake(new_project.label_format)
-    new_labels = new_project.labels
-    rets, unique = label.unique_within_project(new_project.project_id, new_labels)
-    if not np.all(unique):
-        # TODO: return the not unique field
-        abort("Project labels are not unique", 409)
+    # new_labels = new_project.labels
+    # rets, unique = label.unique_within_project(new_project.project_id, new_labels)
+    # print(unique)
+    # if not np.all(unique):
+    #     # TODO: return the not unique field
+    #     abort("Project labels are not unique", 409)
     return new_project
 
 
@@ -142,8 +145,7 @@ def post_add(new_project, se):
         db.session.delete(project)
         db.session.commit()
 
-        print("Create project failed")
-        print(traceback.format_exc())
+        log.exception("Create project failed", exc_info=True)
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)

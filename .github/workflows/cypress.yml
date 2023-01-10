@@ -3,11 +3,11 @@ name: E2E Tests
 on:
   workflow_call:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Build PaddleLabel package"]
-    branches: [develop]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Build PaddleLabel package"]
+  #   branches: [develop]
+  #   types:
+  #     - completed
   schedule:
     - cron: "0 12 * * *"
 
@@ -100,7 +100,7 @@ jobs:
           echo $HOME
           cd cypress
           yarn
-          npx cypress run --browser chrome
+          npx cypress run --browser chrome --env os=${{ matrix.os }}
 
       # - run: tree ./cypress/cypress/
 

@@ -125,10 +125,8 @@ for name, header in headers.items():
     lines = [l for l in lines if not l.endswith(".mp4")]
     content = "\n".join(lines)
     if path.name != "README.md":
-        header += (
-            f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n"
-            + "last_modified_date:{% last_modified_at %}\n---\n\n"
-        )
+        header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n---\n\n"
+
     print(header)
     content = header + content
     path.write_text(content)

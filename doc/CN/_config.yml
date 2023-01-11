@@ -13,6 +13,7 @@ enable_copy_code_button: true
 
 # footer
 last_edit_timestamp: true
+last_edit_time_format: "%b %e %Y at %I:%M %p"
 gh_edit_link: true
 gh_edit_link_text: "在 Github 上编辑此页面"
 gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
@@ -31,7 +32,7 @@ aux_links: # remove if you don't want this link to appear on your pages
 
 plugins:
   - jemoji
-  - jekyll-last-modified-at
+  - jekyll-last-modified-date
 
 kramdown:
   parse_block_html: true

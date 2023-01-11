@@ -130,11 +130,10 @@ image/9928.jpg monkey
 
 <!-- https://just-the-docs.github.io/just-the-docs/docs/utilities/layout/#display -->
 
-https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4
+https://user-images.githubusercontent.com/29757093/211701850-5ba4e377-9afe-4fbb-8aee-379c2439cdc3.mp4
 
-<video width="sm" controls>
-  <source src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" type="video/mp4">
-</video>
+{: .d-block}
+<video controls src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" />
 
 ## 深度学习预标注
 

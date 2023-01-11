@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - doc
   workflow_dispatch:
     inputs:
       force_regen:

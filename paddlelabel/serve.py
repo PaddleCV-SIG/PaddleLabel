@@ -47,7 +47,11 @@ with connexion_app.app.app_context():
     res = AlembicVersion.query.all()
     curr_db_v = None if len(res) == 0 else res[0].version_num
     if curr_db_v != db_head_version and db_exists:
-        shutil.copy(Path(db_path), Path(db_path).parent / f"{str(datetime.now()).replace(' ', '_')}-paddlelabel.db.bk")
+        shutil.copy(
+            Path(db_path),
+            Path(db_path).parent
+            / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-paddlelabel.db.bk",
+        )
 
     if curr_db_v is None and db_exists:
         alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")

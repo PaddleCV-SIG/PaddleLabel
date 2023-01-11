@@ -127,7 +127,7 @@ for name, header in headers.items():
     if path.name != "README.md":
         header += (
             f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n"
-            + "last_modified_date:{% last_modified_at %}---\n\n"
+            + "last_modified_date:{% last_modified_at %}\n---\n\n"
         )
     print(header)
     content = header + content

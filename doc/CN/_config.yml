@@ -12,8 +12,12 @@ heading_anchors: true
 enable_copy_code_button: true
 
 # footer
-last_edit_timestamp: true
-last_edit_time_format: "%b %e %Y at %I:%M %p"
+last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
+last_edit_time_format: "%F %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
+
+# "%b %e %Y at %I:%M %p" Jan 1 2020 at 12:00 AM
+# "%Y-%m-%e %I:%M %p"
+
 gh_edit_link: true
 gh_edit_link_text: "在 Github 上编辑此页面"
 gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
@@ -24,7 +28,7 @@ footer_content: "本网站未引入任何访问统计"
 
 callouts:
   note:
-    title: ''
+    title: ""
     color: yellow
 
 aux_links: # remove if you don't want this link to appear on your pages
@@ -32,10 +36,11 @@ aux_links: # remove if you don't want this link to appear on your pages
 
 plugins:
   - jemoji
-  - jekyll-last-modified-date
 
 kramdown:
   parse_block_html: true
   # syntax_highlighter_opts:
   #   block:
   #     line_numbers: true
+
+safe: false

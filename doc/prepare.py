@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+import subprocess
 
 headers = {
     "CN/README.md": """---
@@ -7,7 +8,6 @@ layout: home
 title: 项目简介
 nav_order: 0
 permalink: /
----
 """,
     "CN/install.md": """---
 layout: default
@@ -104,7 +104,6 @@ layout: home
 title: Introduction
 nav_order: 0
 permalink: /
----
 """,
 }
 
@@ -115,6 +114,8 @@ else:
 
 HERE = Path(__file__).parent.absolute()
 for name, header in headers.items():
+    # if name != "CN/install.md":
+    #     continue
     path = HERE / name
     print("----")
     print(path)
@@ -124,9 +125,13 @@ for name, header in headers.items():
     lines = content.split("\n")
     lines = [l for l in lines if not l.endswith(".mp4")]
     content = "\n".join(lines)
+    # cmd = f"git rev-list --count HEAD {name}"
+    cmd = f"git --no-pager log -1 --pretty='%ad' --date=iso {name}"
+    # print(cmd)
+    last_mod = subprocess.run(cmd.split(" "), capture_output=True, encoding="utf8").stdout.strip()
     if path.name != "README.md":
-        header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n---\n\n"
+        header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n"
+    header += f"last_modified_date: {last_mod}\n---\n\n"
 
-    print(header)
     content = header + content
     path.write_text(content)

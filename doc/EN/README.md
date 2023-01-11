@@ -1,8 +1,5 @@
 [中文](/doc/CN/) | English
 
-# PaddleLabel
-
-
 <div align="center">
 
 <p align="center">
@@ -23,7 +20,6 @@
 <a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml/badge.svg"></a>
 </p>
 </div>
-
 
 <!-- <a href=""><img src="https://img.shields.io/badge/QQ_Group-1234567-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20"></a> -->
 

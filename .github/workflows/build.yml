@@ -94,6 +94,6 @@ jobs:
           path: |
             dist
 
-  cypress_e2e_test:
-    needs: build
-    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop
+  # cypress_e2e_test:
+  #   needs: build
+  #   uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop

@@ -1,4 +1,4 @@
-name: Run cypress e2e test
+name: E2E Tests
 
 on:
   workflow_call:
@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          # cache: "pip"
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
@@ -51,9 +51,19 @@ jobs:
           pwd
           echo $USER
           mkdir 测试路径
+          mkdir 测试路径/3rd_party
           ls -lah
           cd 测试路径
           pwd
+
+      - name: Download 3rd party tests
+        run: |
+          cd ~/测试路径/3rd_party/
+          pip install requests
+          python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+          unzip paddlelabel_3rd_party_tests.zip
+          pwd
+          ls
 
       - name: Install PaddleLabel
         run: |
@@ -90,7 +100,7 @@ jobs:
           echo $HOME
           cd cypress
           yarn
-          npx cypress run --browser chrome
+          npx cypress run --browser chrome --env os=${{ matrix.os }}
 
       # - run: tree ./cypress/cypress/
 

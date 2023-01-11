@@ -132,8 +132,7 @@ image/9928.jpg monkey
 
 https://user-images.githubusercontent.com/29757093/211701850-5ba4e377-9afe-4fbb-8aee-379c2439cdc3.mp4
 
-{: .d-block}
-<video controls src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" />
+<video controls src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" width="100%"></video>
 
 ## 深度学习预标注
 

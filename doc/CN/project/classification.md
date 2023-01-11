@@ -7,10 +7,7 @@
     - [多分类](#%E5%A4%9A%E5%88%86%E7%B1%BB)
         - [ImageNet-txt 格式](#imagenet-txt-%E6%A0%BC%E5%BC%8F)
 - [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
-- [完成标注](#%E5%AE%8C%E6%88%90%E6%A0%87%E6%B3%A8)
-    - [数据划分](#%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86)
-    - [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA)
-- [\*分类预标注](#%5C%E5%88%86%E7%B1%BB%E9%A2%84%E6%A0%87%E6%B3%A8)
+- [深度学习预标注](#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%A2%84%E6%A0%87%E6%B3%A8)
 
 <!-- /TOC -->
 
@@ -122,31 +119,22 @@ image/9928.jpg monkey
 
 ## 数据标注
 
-创建项目后会自动跳转到标注页面。
+创建项目后会自动跳转到标注页面
 
 1. 您可以点击右侧标签列表下方“添加标签”按钮创建一个新类别
    ![](/doc/CN/assets/add_label.png)
    ![](/doc/CN/assets/test_label.png)
 2. 您可以点击一个类别右侧的 x 删除该类别。注意：如果有图片属于该类别，该类别不能被删除
-3. 点击类别进行标注，标注结果将自动保存
+3. 点击类别进行标注，单分类项目仅允许选中一个类别，多分类项目可以同时选中多个类别。标注结果将自动保存
 4. 完成一张图片标注后点击画布左右 < > 按钮切换图片
 
-<video controls>
+<!-- https://just-the-docs.github.io/just-the-docs/docs/utilities/layout/#display -->
+
+<video width="sm" controls>
   <source src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" type="video/mp4">
 </video>
 
-## 完成标注
+## 深度学习预标注
 
-完成数据标注后，PaddleLabel 提供了方便的数据划分功能，以便与 Paddle 其他工具套件（如 PaddleClas）进行快速衔接。点击右侧工具栏的**项目总览**按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。
-
-### 数据划分
-
-点击**划分数据集**按钮弹出划分比例的设置，分别填入对应训练集、验证集和测试集的占比，点击确定即可完成数据集的划分。
-
-### 数据导出
-
-点击**导出数据集**，输入需要导出到的文件夹路径，点击确认，即可导出标注完成的数据到指定路径。
-
-## \*分类预标注
-
-PaddleLabel 带有基于 PaddlePaddle 的机器学习分类标注功能，可以通过加载模型实现分类预标注功能，使用方法参考[图像分类自动标注](classification_auto_label.md)。
+{: note}
+在使用深度学习相关功能前请先按照说明[安装并启动](/doc/CN/install_ml.md) PaddleLabel-ML 后端

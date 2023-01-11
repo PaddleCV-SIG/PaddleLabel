@@ -7,6 +7,7 @@
     - [多分类](#%E5%A4%9A%E5%88%86%E7%B1%BB)
         - [ImageNet-txt 格式](#imagenet-txt-%E6%A0%BC%E5%BC%8F)
 - [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
+- [完成标注](#%E5%AE%8C%E6%88%90%E6%A0%87%E6%B3%A8)
     - [数据划分](#%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86)
     - [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA)
 - [\*分类预标注](#%5C%E5%88%86%E7%B1%BB%E9%A2%84%E6%A0%87%E6%B3%A8)
@@ -133,6 +134,7 @@ image/9928.jpg monkey
 <video controls>
   <source src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" type="video/mp4">
 </video>
+
 ## 完成标注
 
 完成数据标注后，PaddleLabel 提供了方便的数据划分功能，以便与 Paddle 其他工具套件（如 PaddleClas）进行快速衔接。点击右侧工具栏的**项目总览**按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。

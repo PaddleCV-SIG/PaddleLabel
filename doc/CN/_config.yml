@@ -34,8 +34,7 @@ callouts:
 aux_links: # remove if you don't want this link to appear on your pages
   项目 Github: https://github.com/PaddleCV-SIG/PaddleLabel
 
-plugins:
-  - jemoji
+
 
 kramdown:
   parse_block_html: true
@@ -43,4 +42,8 @@ kramdown:
   #   block:
   #     line_numbers: true
 
-safe: false
+# safe: false
+
+plugins:
+  - jemoji
+  - jekyll-assets

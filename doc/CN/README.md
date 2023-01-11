@@ -48,21 +48,21 @@
 
 PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见计算机视觉任务的数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
 
-PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于 飞桨实现的自动和交互式深度学习辅助标注后端。
+PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于飞桨实现的自动和交互式深度学习辅助标注后端。
 
 ![demo720](https://user-images.githubusercontent.com/71769312/185099439-3230cf80-798d-4a81-bcae-b88bcb714daa.gif)
 
 ## 特性
 
-- **简单** 一行命令安装，手动标注直观易操作，上手成本极低。
-- **高效** 支持交互式分割和多种预标注，显著提升标注精度及效率。
-- **灵活** 分类支持单分类和多分类标注，分割支持多边形、笔刷及交互式分割等多种功能，方便您根据场景选取最合适的标注方式。
-- **全流程** 与其他飞桨套件密切配合，方便您完成数据标注、模型训练、模型导出等全流程操作。
+- **简单** 一行`pip install`安装，手动标注直观易操作，机器学习后端安装即用无需复杂配置，上手成本极低
+- **高效** 支持交互式分割和多种预标注，显著提升标注精度及效率
+- **灵活** 分类支持单分类和多分类标注，分割支持多边形、笔刷及交互式分割等多种功能，方便您根据场景选取最合适的标注方式
+- **全流程** 与其他飞桨套件密切配合，帮助您高效完成数据标注、模型训练、模型导出等全流程操作
 
 ## 技术交流
 
 - 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流
-- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信进群：linhandev
+- 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信 linhandev 进群
 
 <div align="center">
 <img src="/doc/CN/assets/group_qr.png"  width = "200" />
@@ -76,17 +76,17 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 ### 进行标注
 
 - [图像分类](/doc/CN/project/classification.md)
-- [目标检测](CN/project/detection.md)
-- [语义分割](CN/project/semantic_segmentation.md)
-- [实例分割](CN/project/instance_segmentation.md)
-- [交互式分割标注](CN/project/interactive_segmentation.md)
+- [目标检测](/doc/CN/project/detection.md)
+- [语义分割](/doc/CN/project/semantic_segmentation.md)
+- [实例分割](/doc/CN/project/instance_segmentation.md)
+- [交互式分割标注](/doc/CN/project/interactive_segmentation.md)
 
 ### 训练教程
 
-- [如何用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
-- [如何用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
-- [如何使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
-- [如何使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
+- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
+- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
+- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
+- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
 
 ### AI Studio 项目
 
@@ -103,7 +103,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 参与开发
 
-我们十分欢迎开发者加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
+我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

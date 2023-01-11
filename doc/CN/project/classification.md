@@ -1,21 +1,40 @@
+<!-- TOC -->
 
+- [数据集格式](#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F)
+    - [单分类](#%E5%8D%95%E5%88%86%E7%B1%BB)
+        - [ImageNet 格式](#imagenet-%E6%A0%BC%E5%BC%8F)
+        - [ImageNet-txt 格式](#imagenet-txt-%E6%A0%BC%E5%BC%8F)
+    - [多分类](#%E5%A4%9A%E5%88%86%E7%B1%BB)
+        - [ImageNet-txt 格式](#imagenet-txt-%E6%A0%BC%E5%BC%8F)
+- [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
+- [完成标注](#%E5%AE%8C%E6%88%90%E6%A0%87%E6%B3%A8)
+    - [数据划分](#%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86)
+    - [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA)
+- [\*分类预标注](#%5C%E5%88%86%E7%B1%BB%E9%A2%84%E6%A0%87%E6%B3%A8)
 
-# 图像分类标注
+<!-- /TOC -->
 
-![image](https://user-images.githubusercontent.com/29757093/182839949-e032d095-759f-40c5-9d38-c6c506e024c4.png)
+{: .note }
+有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)流程请参考快速开始文档
 
-PaddleLabel 支持**单分类**和**多分类**两种图像分类标注。
+# 图像分类项目
 
-## 数据结构
+![image](/doc/CN/assets/classification.png)
+
+PaddleLabel 支持**单分类**和**多分类**两种图像分类项目。其中单分类项目每张图片只能对应一个类别，多分类项目一张图片可以对应多个类别。
+
+## 数据集格式
 
 ### 单分类
 
-每条数据只有一个类别，也称为 ImageNet 格式。新建单分类标注任务时，数据集路径填写待标注图片所在文件夹绝对路径。
+#### ImageNet 格式
 
-标注后导出格式示例如下：
+ImageNet 格式数据集中，图像所在文件夹名称即为图像类别。标注 # 可选 的文件导入时可以不提供。
+
+样例格式如下：
 
 ```shell
-Dataset Path
+数据集路径
 ├── Cat
 │   ├── cat-1.jpg
 │   ├── cat-2.png
@@ -27,25 +46,58 @@ Dataset Path
 │   ├── dog-3.jpg
 │   └── ...
 ├── monkey.jpg
-├── train_list.txt
-├── val_list.txt
-├── test_list.txt
-└── label.txt
+├── train_list.txt # 可选
+├── val_list.txt # 可选
+├── test_list.txt # 可选
+└── labels.txt # 可选
 
 # labels.txt
 Monkey
 Mouse
+Cat
 ```
 
-单分类中图像所在的文件夹名称将被视为它的类别。所以如上数据集导入后，三张猫和三张狗的图片会有分类，monkey.jpg 没有分类。如果与文件夹名同名的标签不存在，导入过程中会自动创建。
+根据文件夹名表示类别的规则，上述数据集导入后，三张猫和三张狗的图片会有分类，monkey.jpg 没有分类。如果提供了 labels.txt 文件，该文件中的类别会在开始导入图像前按顺序创建。此后如果文件夹名表示的类别不存在会自动创建，因此 labels.txt 不需要包含所有文件夹名。
 
-为了避免冲突，单分类项目只导入`xx_list.txt`中的数据集划分信息，**这三个文件中的类别信息不会被导入**。您可以使用[此脚本](../tool/clas/mv_image_acc_split.py)在导入数据之前根据三个`xx_list.txt`文件更改数据的位置。
+{: note}
+ImageNet 格式仅以图像所在文件夹判断图像分类，train/val/test_list.txt 文件中的数据集**划分信息会被导入**，但是其中的**类别信息不会被导入**。如果您数据集的类别信息保存在三个列表文件中，请选择 ImageNet-txt 格式
+
+#### ImageNet-txt 格式
+
+ImageNet-txt 格式数据集中，图像的类别在 train/val/test_list.txt 文件中声明。
+
+样例格式如下：
+
+<!-- TODO: -->
+
+```shell
+数据集路径
+├── image
+│   ├── cat-1.jpg
+│   ├── cat-2.png
+│   ├── cat-3.webp
+│   ├── dog-1.jpg
+│   ├── dog-2.jpg
+│   ├── dog-3.jpg
+│   ├── monkey.jpg
+│   └── ...
+├── train_list.txt # 可选
+├── val_list.txt # 可选
+├── test_list.txt # 可选
+└── labels.txt # 可选
+
+# labels.txt
+Cat
+
+```
 
 ### 多分类
 
-在多分类项目中，一条数据可以有多个类别。新建多分类标注任务时，数据集路径填写待标注图片所在文件夹绝对路径。
+#### ImageNet-txt 格式
 
-标注后导出示例格式如下：
+多分类的这一个格式和单分类的 ImageNet-txt 格式基本相同，唯一的区别是多分类的 train/val/test_list.txt 文件中，每行文件名后面可以跟多个表示类别的数字或字符串。
+
+样例格式如下：
 
 ```shell
 Dataset Path
@@ -68,33 +120,20 @@ image/9932.jpg 2 0
 image/9928.jpg monkey
 ```
 
-在多分类项目中，数据的类别仅由`xx_list.txt`决定，不会考虑文件夹名称。
-
-### 新项目创建
-
-浏览器打开 PaddleLabel 后，可以通过创建项目下的“图像分类”卡片创建一个新的图像分类标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
-
-![image](https://user-images.githubusercontent.com/29757093/204522870-cf0f730c-4cbf-4065-8455-fd65cf68c7d6.png)
-
-项目创建选项卡有如下选项需要填写：
-
-- 项目名称（必填）：填写该分类标注项目的项目名
-- 数据集路径（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到。
-- 数据集描述（选填）：填写该分类标注项目的使用的数据集的描述文字
-- 分类项目类型（必选）：选择该任务为单分类还是多分类任务
-
-### 数据导入
-
-在创建项目时需要填写数据集路径，这个路径应该指向一个包含数据集的文件夹。为了确保 PaddleLabel 可以正确识别数据集中的标签，请参考创建页面右侧数据集文件结构示例组织文件夹下的文件。
-
 ## 数据标注
 
-完成后进入标注界面，PaddleLabel 的界面分为五个区域，上方为可以切换的标签页，下方为标注进度展示，左侧包含图像显示区域与工具栏，右侧为标签列表，用于添加不同的标签和标注。在分类任务的标注中，可以按以下步骤进行使用：
+创建项目后会自动跳转到标注页面。
 
-1. 点击右侧“添加标签”，填写信息并创建标签
-1. 选择当前图像对应的标签（多分类任务可以选择多个标签），点击后自动保存
-1. 点击左右按钮切换图像，重复上述操作，直到所有数据标注完毕
-1. 下方进度展示可以查看标注进度
+1. 您可以点击右侧标签列表下方“添加标签”按钮创建一个新类别
+   ![](/doc/CN/assets/add_label.png)
+   ![](/doc/CN/assets/test_label.png)
+2. 您可以点击一个类别右侧的 x 删除该类别。注意：如果有图片属于该类别，该类别不能被删除
+3. 点击类别进行标注，标注结果将自动保存
+4. 完成一张图片标注后点击画布左右 < > 按钮切换图片
+
+<video controls>
+  <source src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" type="video/mp4">
+</video>
 
 ## 完成标注
 

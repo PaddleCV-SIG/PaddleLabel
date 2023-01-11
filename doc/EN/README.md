@@ -1,17 +1,29 @@
+[中文](/doc/CN/) | English
+
 # PaddleLabel
 
 
+<div align="center">
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/35907364/182084617-ea94f744-3a34-4193-98fe-5d6869a118fc.png" align="middle" alt="LOGO" width = "500" />
+</p>
+
+<b> An efficient and flexible data annotation tool </b>
+
 <p>
 <img src="https://img.shields.io/badge/python-3.7+-blue.svg">
-<a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
+<img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
 <a href="https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
+<a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
 <a href="https://paddlecv-sig.github.io/PaddleLabel/"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
-<a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a>
+<!-- <a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a> -->
 <a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
 <a href="https://pepy.tech/project/paddlelabel"><img src="https://static.pepy.tech/personalized-badge/paddlelabel?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads"/></a>
-<img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
+<a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml/badge.svg"></a>
 </p>
 </div>
+
 
 <!-- <a href=""><img src="https://img.shields.io/badge/QQ_Group-1234567-52B6EF?style=social&logo=tencent-qq&logoColor=000&logoWidth=20"></a> -->
 

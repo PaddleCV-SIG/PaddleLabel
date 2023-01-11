@@ -130,6 +130,8 @@ image/9928.jpg monkey
 
 <!-- https://just-the-docs.github.io/just-the-docs/docs/utilities/layout/#display -->
 
+https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4
+
 <video width="sm" controls>
   <source src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" type="video/mp4">
 </video>

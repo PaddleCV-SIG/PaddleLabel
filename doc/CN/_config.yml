@@ -24,7 +24,7 @@ gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
 gh_edit_branch: "develop"
 gh_edit_source: "doc/CN"
 gh_edit_view_mode: "edit"
-footer_content: "本网站未引入任何访问统计"
+footer_content: "PaddleLabel 以 [Apache 2.0 协议](https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE)发行。本网站未引入任何访问统计"
 
 callouts:
   note:
@@ -33,8 +33,6 @@ callouts:
 
 aux_links: # remove if you don't want this link to appear on your pages
   项目 Github: https://github.com/PaddleCV-SIG/PaddleLabel
-
-
 
 kramdown:
   parse_block_html: true

@@ -2,10 +2,13 @@
 
 <!-- TOC -->
 
-- [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-- [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-- [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
-- [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+- [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
+    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+- [启动](#%E5%90%AF%E5%8A%A8)
+    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+- [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 
 <!-- /TOC -->
 
@@ -16,9 +19,11 @@ conda create -n paddlelabel python=3.11
 conda activate paddlelabel
 ```
 
+## 安装方式
+
 您可以通过以下三种方式中的**任意一种**安装 PaddleLabel，其中通过 pip 安装最简单。
 
-## 通过 pip 安装
+### 通过 pip 安装
 
 ```shell
 pip install --upgrade paddlelabel
@@ -29,7 +34,7 @@ pip install --upgrade paddlelabel
 {: .note }
 **以下两种安装方式主要针对二次开发场景**
 
-## 下载最新开发版
+### 下载最新开发版
 
 <details> <summary markdown="span">详细步骤</summary>
 每当 PaddleLabel 的代码有更新，项目的 Github Action 脚本都会构建一个反映最新版代码的安装包。这一安装包未经过全面测试，因此很可能存在一些问题，仅推荐为尝试最新版本使用。其中可能修复了一些 pypi 版本中存在的问题，添加了一些新功能或进行了一些性能提升。
@@ -49,7 +54,7 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.5.0-py3-none-any.whl 
 
 </details>
 
-## 通过源码安装
+### 通过源码安装
 
 <details> <summary markdown='span'>详细步骤</summary>
 以下命令行命令（主要是cp，mv）针对bash命令行。每步的作用都有说明，在其他操作系统上可以文件管理器替代移动文件命令。
@@ -89,7 +94,7 @@ python -m paddlelabel # 不安装直接启动
 
 </details>
 
-# 启动
+## 启动
 
 完成上述的安装操作后，可以直接在终端使用如下指令启动 PaddleLabel
 
@@ -100,7 +105,7 @@ pdlabel # 缩写，和paddlelabel完全相同
 
 启动后 PaddleLabel 会自动在浏览器中打开网页，推荐使用 Chrome。
 
-## 更多启动选项
+### 更多启动选项
 
 PaddleLabel 的默认运行网址为[http://localhost:17995](http://localhost:17995)。如果该端口已被占用，可以通过`--port`或`-p`参数指定其他端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。这样可以实现在电脑上运行 PaddleLabel，使用平板进行标注。在 docker 中运行 PaddleLabel 时也需要添加`--lan`参数。
 
@@ -110,6 +115,6 @@ paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局�
 
 更多启动参数可以使用 `paddlelabel -h` 查看。
 
-# 下一步
+## 下一步
 
 恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.md)页面了解 PaddleLabel 的主要功能和使用流程。

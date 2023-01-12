@@ -106,6 +106,7 @@ jobs:
 
       - name: Jekyll build
         run: |
+          git branch
           dst=$(pwd)/${{ inputs.destination }}
           # tree .
           cd ${{ inputs.source }}
@@ -123,7 +124,7 @@ jobs:
             --baseurl ${{ inputs.baseurl }}EN/
           cp -s $dst/CN/index.html $dst/
 
-          tree $dst
+          # tree $dst
           cd -
 
       - name: Upload artifact

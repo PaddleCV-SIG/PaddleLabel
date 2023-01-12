@@ -1,4 +1,4 @@
-[中文](/doc/CN/) | English
+[中文](/PaddleLabel/CN/) | English
 
 <div align="center">
 
@@ -91,7 +91,7 @@ paddlelabel --lan
 
 ## Dataset Import/Export
 
-PaddleLabel currently support image classification, object detection and image segmentation projects. Please refer to the [Dataset File Structure Documentation](project/dataset_file_structure.md) for more details.
+PaddleLabel currently support image classification, object detection and image segmentation projects. Please refer to the [Dataset File Structure Documentation](project/dataset_file_structure.html) for more details.
 
 ## Release Notes
 
@@ -99,4 +99,4 @@ PaddleLabel currently support image classification, object detection and image s
 
 ## Contribute
 
-Please refer to the [Developers Guide](developers_guide.md) for details on backend implementation.
+Please refer to the [Developers Guide](developers_guide.html) for details on backend implementation.

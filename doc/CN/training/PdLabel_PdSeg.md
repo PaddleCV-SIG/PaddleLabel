@@ -2,7 +2,7 @@
 
 PaddleLabel 标注数据+PaddleSeg 训练预测=快速完成一次图像分割的任务
 
-______________________________________________________________________
+---
 
 ## 1. 数据准备
 
@@ -52,7 +52,7 @@ cp -r ./dog_seg_dataset/* ./PaddleSeg/data/dog_seg_dataset
 
 ### 2.3 修改配置文件
 
-这里改了`FCN`模型的配置文件，改完后拷贝了一份放置到了`configs`目录下并重命名为`mynet.yml`，关于自定义数据集的配置可以参考`PaddleSeg`在`GitHub`上的说明[配置文件说明](https://gitee.com/paddlepaddle/PaddleSeg/blob/release/2.4/docs/design/use/use_cn.md)
+这里改了`FCN`模型的配置文件，改完后拷贝了一份放置到了`configs`目录下并重命名为`mynet.yml`，关于自定义数据集的配置可以参考`PaddleSeg`在`GitHub`上的说明[配置文件说明](https://gitee.com/paddlepaddle/PaddleSeg/blob/release/2.4/docs/design/use/use_cn.html)
 
 > PaddleSeg/configs/mynet.yml
 

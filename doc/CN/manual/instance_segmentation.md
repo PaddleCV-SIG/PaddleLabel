@@ -1,6 +1,26 @@
-# 实例分割标注
+# 实例分割手动标注
+
+<!-- TOC -->
+
+- [数据结构](#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)
+        - [掩膜格式](#%E6%8E%A9%E8%86%9C%E6%A0%BC%E5%BC%8F)
+        - [多边形格式](#%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%A0%BC%E5%BC%8F)
+    - [新项目创建](#%E6%96%B0%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA)
+    - [数据导入](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5)
+- [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
+    - [多边形标注](#%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%A0%87%E6%B3%A8)
+    - [掩膜标注](#%E6%8E%A9%E8%86%9C%E6%A0%87%E6%B3%A8)
+- [完成标注](#%E5%AE%8C%E6%88%90%E6%A0%87%E6%B3%A8)
+    - [数据划分](#%E6%95%B0%E6%8D%AE%E5%88%92%E5%88%86)
+    - [数据导出](#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA)
+- [\*交互式分割标注](#%5C%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%88%86%E5%89%B2%E6%A0%87%E6%B3%A8)
+
+<!-- /TOC -->
 
 ![image](https://user-images.githubusercontent.com/35907364/204429739-408e67c3-2748-434c-ba73-258d9602fe91.png)
+
+{: .note }
+有关数据集[导入](../quick_start.html#导入数据集)，[导出](../quick_start.html#导出数据集)，[训练/验证/测试集划分](../quick_start.html#数据集划分)步骤请参快速开始文档
 
 PaddleLabel 支持多边形和掩膜两种实例分割标注任务。
 
@@ -103,7 +123,7 @@ category{
 
 ### 数据导入
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考数据结构组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，实例分割的参考数据集位于`~/.paddlelabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考数据结构组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.html)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，实例分割的参考数据集位于`~/.paddlelabel/sample/instance_seg`路径下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 
@@ -141,4 +161,4 @@ _注意：① 在 PaddleLabel 中，右侧标签栏有标签和标注两种。�
 
 ## \*交互式分割标注
 
-PaddleLabel 带有基于 PaddlePaddle 的机器学习标注功能，可以通过加载模型实现交互式数据标注，使用方法参考[交互式分割标注](interactive_segmentation.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习标注功能，可以通过加载模型实现交互式数据标注，使用方法参考[交互式分割标注](interactive_segmentation.html)。

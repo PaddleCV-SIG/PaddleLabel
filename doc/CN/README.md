@@ -1,4 +1,4 @@
-中文 | [English](/PaddleLabel/EN/)
+中文 | [English](/doc/EN/)
 
 <div align="center">
 
@@ -11,10 +11,10 @@
 <p>
 <img src="https://img.shields.io/badge/python-3.7+-blue.svg">
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
-<a href="https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
+<a href="https://github.com/PaddleCV-SIG/doc/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
 <a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
-<a href="https://paddlecv-sig.github.io/PaddleLabel/"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
-<!-- <a href="https://github.com/PaddleCV-SIG/PaddleLabel/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a> -->
+<a href="https://paddlecv-sig.github.io/doc/"><img src="https://img.shields.io/github/stars/PaddleCV-SIG/PaddleLabel?color=blue" /> </a>
+<!-- <a href="https://github.com/PaddleCV-SIG/doc/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a> -->
 <a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
 <a href="https://pepy.tech/project/paddlelabel"><img src="https://static.pepy.tech/personalized-badge/paddlelabel?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads"/></a>
 <a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml/badge.svg"></a>
@@ -26,9 +26,9 @@
 - 【2023-01-17】 :fire: PaddleLabel 1.0 版本发布！
 
   - 【OCR】
-  - 【分类】新增 PPLCNet 预训练模型，为分类功能提供预标注能力。
-  - 【检测】新增 PicoDet 预训练模型，为检测功能提供预标注能力。
-  - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分实例; (2)新增根据类别或根据实例选择颜色显示模式; (3)修复交互式分割 localStorage 超限问题。
+  - 【数据集格式】
+  - 【导入/导出】
+  - 【文档】
 
 - 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
 
@@ -61,32 +61,32 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ## 技术交流
 
-- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流
+- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/doc/issues/new)与开发团队交流
 - 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信 linhandev 进群
 
 <div align="center">
-<img src="/PaddleLabel/CN/assets/group_qr.png"  width = "200" />
+<img src="/doc/CN/assets/group_qr.png"  width = "200" />
 </div>
 
 ## 使用教程
 
-- [安装指南](/PaddleLabel/CN/install.html)
-- [快速开始](/PaddleLabel/CN/quick_start.html)
+- [安装指南](/doc/CN/install.md)
+- [快速开始](/doc/CN/quick_start.md)
 
 ### 进行标注
 
-- [图像分类](/PaddleLabel/CN/project/classification.html)
-- [目标检测](/PaddleLabel/CN/project/detection.html)
-- [语义分割](/PaddleLabel/CN/project/semantic_segmentation.html)
-- [实例分割](/PaddleLabel/CN/project/instance_segmentation.html)
-- [交互式分割标注](/PaddleLabel/CN/project/interactive_segmentation.html)
+- [图像分类](/doc/CN/manual/classification.md)
+- [目标检测](/doc/CN/manual/detection.md)
+- [语义分割](/doc/CN/manual/semantic_segmentation.md)
+- [实例分割](/doc/CN/manual/instance_segmentation.md)
+- [OCR](/doc/CN/manual/ocr.md)
 
 ### 训练教程
 
-- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.html)
-- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.html)
-- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.html)
-- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.html)
+- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
+- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
+- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
+- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
 
 ### AI Studio 项目
 
@@ -103,7 +103,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 参与开发
 
-我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/PaddleLabel/CN/developers_guide.html)。
+我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

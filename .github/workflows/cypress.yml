@@ -35,6 +35,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           # cache: "pip"
+      - name: Random sleep up to 30 s
+        run: sleep $[$RANDOM % 30]
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2

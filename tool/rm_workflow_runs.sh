@@ -1,5 +1,6 @@
 export TARGET_USER=PaddleCV-SIG
-export TARGET_REPO=PaddleLabel
+# export TARGET_REPO=PaddleLabel
+export TARGET_REPO=PaddleLabel-ML
 export TARGET_WORKFLOW_ID="xx.yml"
 
 while :

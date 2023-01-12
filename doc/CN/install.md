@@ -62,38 +62,30 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.5.0-py3-none-any.whl 
 以下命令行命令（主要是cp，mv）针对bash命令行。每步的作用都有说明，在其他操作系统上可以文件管理器替代移动文件命令。
 
 1. 首先需要将后端代码克隆到本地
-
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel
 ```
-
 2. 接下来需要克隆并构建前端，构建前请确保安装了 [Node.js](https://nodejs.org/en/) 和 npm
-
 ```shell
 git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PaddleLabel-Frontend
 npm install --location=global yarn
 yarn
-npm run build
+yarn run build
 ```
-
 3. 将构建好的前端部分，`PaddleLabel-Frontend/dist/` 目录下所有文件复制到 `PaddleLabel/paddlelabel/static/` 目录中
-
 ```shell
 cd ../PaddleLabel/
 mkdir paddlelabel/static/
 cp -r ../PaddleLabel-Frontend/dist/* paddlelabel/static/
 ```
-
 4. 安装 PaddleLabel 或不安装直接启动
-
 ```shell
 # 在PaddleLabel目录下
 python setup.py install # 安装PaddleLabel
 
 python -m paddlelabel # 不安装直接启动
 ```
-
 </details>
 
 ## 启动
@@ -117,6 +109,7 @@ paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局�
 
 更多启动参数可以使用 `paddlelabel -h` 查看。
 
+<!-- todo: 升级-->
 ## 下一步
 
 恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.html)页面了解 PaddleLabel 的主要功能和使用流程。

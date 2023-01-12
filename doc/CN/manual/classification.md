@@ -13,7 +13,7 @@
 <!-- /TOC -->
 
 {: .note }
-有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训考练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
+有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
 
 ![image](/doc/CN/assets/classification.png)
 

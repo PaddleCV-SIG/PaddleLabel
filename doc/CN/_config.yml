@@ -3,7 +3,7 @@ description: 高效灵活的数据标注工具
 theme: just-the-docs
 
 url: https://paddlecv-sig.github.io/
-baseurl: "/PaddleLabel/CN/"
+baseurl: "/PaddleLabel/CN"
 
 permalink: pretty
 
@@ -24,7 +24,7 @@ gh_edit_repository: "https://github.com/PaddleCV-SIG/PaddleLabel"
 gh_edit_branch: "develop"
 gh_edit_source: "doc/CN"
 gh_edit_view_mode: "edit"
-footer_content: "PaddleLabel 以 [Apache 2.0 协议](https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE)发行。本网站未引入任何访问统计"
+footer_content: "PaddleLabel 以 <a href='https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/LICENSE'>Apache 2.0 协议</a>发行。本网站未引入任何访问统计"
 
 callouts:
   note:

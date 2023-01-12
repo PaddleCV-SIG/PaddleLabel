@@ -9,7 +9,7 @@
 <b> 飞桨智能标注，让标注快人一步 </b>
 
 <p>
-<img src="https://img.shields.io/badge/python-3.7+-blue.svg">
+<img src="https://img.shields.io/badge/python-3.8+-blue.svg">
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
 <a href="https://github.com/PaddleCV-SIG/doc/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
 <a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
@@ -61,7 +61,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ## 技术交流
 
-- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/doc/issues/new)与开发团队交流
+- 如果您有任何使用问题、产品建议、功能需求, 可以[提交 Issues](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)与开发团队交流
 - 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信 linhandev 进群
 
 <div align="center">
@@ -83,10 +83,10 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 训练教程
 
-- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
-- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
-- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
-- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
+- [使用 PaddleClas 进行训练](/doc/CN/training/PdLabel_PdClas.md)
+- [使用 PaddleDet 进行训练](/doc/CN/training/PdLabel_PdDet.md)
+- [使用 PaddleSeg 进行训练](/doc/CN/training/PdLabel_PdSeg.md)
+- [使用 PaddleX 进行训练](/doc/CN/training/PdLabel_PdX.md)
 
 ### AI Studio 项目
 

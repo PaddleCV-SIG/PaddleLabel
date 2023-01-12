@@ -64,7 +64,7 @@ title: 机器学习辅助标注
 nav_order: 4
 has_children: true
 """,
-    "CN/ML/install.md": """---
+    "CN/ML/install_ml.md": """---
 layout: default
 title: 机器学习后端安装
 parent: 机器学习辅助标注

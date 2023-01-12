@@ -70,29 +70,17 @@ title: 机器学习后端安装
 parent: 机器学习辅助标注
 nav_order: 1
 """,
-    "CN/ML/classification_ml.md": """---
+    "CN/ML/auto_inference.md": """---
 layout: default
-title: 图像分类
+title: 自动预标注使用方法
 parent: 机器学习辅助标注
 nav_order: 2
-""",
-    "CN/ML/detection_ml.md": """---
-layout: default
-title: 目标检测
-parent: 机器学习辅助标注
-nav_order: 3
 """,
     "CN/ML/interactive_segmentation.md": """---
 layout: default
 title: 交互式分割
 parent: 机器学习辅助标注
-nav_order: 4
-""",
-    "CN/ML/ocr_ml.md": """---
-layout: default
-title: OCR
-parent: 机器学习辅助标注
-nav_order: 5
+nav_order: 3
 """,
     "CN/training/training.md": """---
 layout: default
@@ -158,6 +146,7 @@ for name, header in headers.items():
     if path.name != "README.md":
         header += f"permalink: {str(name).replace('.md', '.html').replace('CN/','').replace('EN/','')}\n"
     header += f"last_modified_date: {last_mod}\n---\n\n"
+    print(header)
 
     content = header + content
     path.write_text(content)

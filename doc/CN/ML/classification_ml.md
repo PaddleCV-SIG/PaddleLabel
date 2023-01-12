@@ -2,102 +2,46 @@
 
 <!-- TOC -->
 
-- [简介](#%E7%AE%80%E4%BB%8B)
-- [使用教程](#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B)
-    - [安装](#%E5%AE%89%E8%A3%85)
-    - [使用](#%E4%BD%BF%E7%94%A8)
+- [自动预标注使用流程](#%E8%87%AA%E5%8A%A8%E9%A2%84%E6%A0%87%E6%B3%A8%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B)
 
 <!-- /TOC -->
 
 {: note}
-在使用辅助标注功能前请先按照[此文档](/doc/CN/ML/install_ml.md) 安装并启动PaddleLabel-ML 后端
+在使用辅助标注功能前请先按照 [机器学习后端安装](/doc/CN/ML/install_ml.md) 文档介绍步骤安装并启动 PaddleLabel-ML 后端
 
-## 简介
+PaddleLabel-ML 基于[PaddleClas 套件](https://github.com/PaddlePaddle/PaddleClas)中的预训练模型提供图像分类自动标注功能，您只需在“自动推理设置”中进行简单配置，即可启用自动预标注功能。
 
-PaddleLabel 提供图像分类自动标注功能，用户只需要在`自动推理设置`中进行简单设置，即可启用自动标注的功能，从而更快的完成对应的图像分类标注任务。
+![](https://user-images.githubusercontent.com/35907364/204250596-061d8193-b011-44b4-9b25-83efc77fef04.gif)
 
-<div align="center">
+<!-- <div align="center">
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/35907364/204250596-061d8193-b011-44b4-9b25-83efc77fef04.gif" align="middle" alt="LOGO" width = "500" />
 </p>
-</div>
+</div> -->
 
-## 使用教程
+## 自动预标注使用流程
 
-### 安装
+{: .label }
+v0.5.0+
 
-- 创建虚拟环境
+1. 启动
 
-```shell
-# 创建虚拟环境
-conda create -n paddlelabel python=3.9
-conda activate paddlelabel
-```
+   打开两个命令行终端，第一个输入 `paddlelabel` 并回车，第二个输入 `paddlelabel-ml` 并回车，分别启动项目 web 部分和辅助标注部分
+   ![](/doc/CN/assets/start_two.png)
 
-- 安装 PaddlePaddle
+2. 新建分类项目
 
-  版本要求: PaddlePaddle >= 2.2.0
+   可以参考快速体验文档[创建分类样例项目](/doc/CN/quick_start.md#创建样例项目)或[导入一个分类数据集](/doc/CN/quick_start.md#导入数据集)
 
-  PaddlePaddle 安装请参考[官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html)。
+3. 自动预标注设置
 
-- 安装前端和机器学习后端
-
-```shell
-pip install paddlelabel
-pip install paddlelabel_ml
-```
-
-### 使用
-
-0. **启动**
-
-   可以直接打开两个终端，分别使用如下指令启动 PaddleLabel 的前后端。
-
-   ```shell
-   paddlelabel  # 启动paddlelabel，前端
-   ```
-
-   ```shell
-   paddlelabel_ml  # 启动paddlelabel_ml，机器学习后端
-   ```
-
-1. **新项目创建**
-
-   浏览器打开 PaddleLabel 后，可以通过创建项目下的“图像分类”卡片创建一个新的图像分类标注项目（如果已经创建，可以通过下方“我的项目”找到对应名称的项目，点击“标注”继续标注）。
-
-   项目创建选项卡有如下选项需要填写：
-
-   - 项目名称（必填）：填写该分类标注项目的项目名
-   - 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到。
-   - 数据集描述（选填）：填写该分类标注项目的使用的数据集的描述文字
-   - 标签格式（必选）：选择该任务为单分类还是多分类任务
-
-   对于标签格式的详细说明，请参考[图像分类标注](classification.html)。
-
-1. **数据导入**
-
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](dataset_file_structure.html)组织数据集。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/clas`路径下，也可参考该数据集文件结构组织数据。
-
-3. **智能标注**
-
-   进入标注界面，在分类任务的标注中，除了手动标注外[(数据标注)](classification.html)，还可以按照如下步骤进行智能标注，即使用图像分类模型来自动标注。
-
-   1. 点击右侧“项目总览”，进入项目总览界面
-
-   <p align="center">
-   <img src="https://user-images.githubusercontent.com/48357642/203501250-e66426e0-eda4-4005-87f7-099dd2af2e56.jpg" width="80%" height="100%">
-   </p>
-
-   2. 点击“自动推理设置”，进入对应设置页面后，有如下选项需要填写：
-
-<p align="center">
- <img src="https://user-images.githubusercontent.com/48357642/203502193-a5b640ca-564f-4736-995d-d7b11b2de217.png" width="80%" height="100%">
- </p>
-
-- 机器学习后端网址（必填）：填写在终端中使用`paddlelabel_ml`命令启动后的机器学习后端网址，默认为`http://127.0.0.1:1234`。
-
-- 模型选择（必选）：选择 PaddleLabel 支持的图像分类模型，目前可选模型有 PPLCNetV2。
+   - 点击“项目总览”页面上方“自动推理设置”按钮进入设置页面
+     ![](/doc/CN/assets/to_auto_inference.png)
+   - 填写机器学习后端网址。默认为`http://127.0.0.1:1234`。这一网址可以通过观察 paddlelabel-ml 启动时命令行输出确定
+     ![](/doc/CN/assets/ml_backend_url.png)
+   - 点击模型选择下拉菜单选择一个模型。目前支持 [PPLCNetV2](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/models/ImageNet1k/PP-LCNetV2.md)
+   - 选择是否使用预标注标签。如果选择是，当推理过程中模型返回了一个项目中还不存在的类别时，会自动向项目中添加该类别标签。如果选择否，您需要提供标签对应关系，将模型返回的接受预标注模型标签后，当模型检测到新标签后，会自动在标签列表中增加该标签
 
 - 使用预标注模型标签（必选）：选择是否使用预标注模型便签，选择'是'则表示用户接受模型推理出的标签来作为图像分类的标注标签，接受预标注模型标签后，当模型检测到新标签后，会自动在标签列表中增加该标签；选择'否'，则用户需要自行建立标签对应关系。
 
@@ -105,17 +49,17 @@ pip install paddlelabel_ml
 
   最后选择`确定`按钮，即可完成"自动推理设置"
 
-  3. 点击"去标注"，进入标注界面
+  1. 点击"去标注"，进入标注界面
 
-  1. 点击"自动推理"，模型给出的预测结果即可显示到标签列表中，如果提示"自动推理未发现高置信度结果"，则可点击"推理阈值"，相应的调低推理阈值后再次点击"自动推理"，即可得到预测结果
+  2. 点击"自动推理"，模型给出的预测结果即可显示到标签列表中，如果提示"自动推理未发现高置信度结果"，则可点击"推理阈值"，相应的调低推理阈值后再次点击"自动推理"，即可得到预测结果
 
-  1. 如果对自动推理的结果不满意，用户可点击`清空标注`按钮以及`添加标签`按钮来为当前图像进行手动添加标签进行标注
+  3. 如果对自动推理的结果不满意，用户可点击`清空标注`按钮以及`添加标签`按钮来为当前图像进行手动添加标签进行标注
 
-  1. 点击左右按钮切换图像，重复上述步骤 4 和步骤 5 操作，直到所有数据标注完毕
+  4. 点击左右按钮切换图像，重复上述步骤 4 和步骤 5 操作，直到所有数据标注完毕
 
-  1. 下方进度展示可以查看标注进度
+  5. 下方进度展示可以查看标注进度
 
-  1. **完成标注**
+  6. **完成标注**
 
   - 完成数据标注后，PaddleLabel 提供了方便的数据划分功能，以便与 Paddle 其他工具套件（如 PaddleClas）进行快速衔接。点击右侧工具栏的**项目总览**按钮，来到该项目的总览界面，这里可以看到数据以及标注状态。
 

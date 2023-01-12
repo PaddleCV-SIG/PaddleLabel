@@ -1,4 +1,17 @@
 # 交互式分割标注
+<!-- TOC -->
+
+- [安装说明](#%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E)
+    - [通过 PIP 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+- [启动](#%E5%90%AF%E5%8A%A8)
+- [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
+    - [\*模型下载](#%5C%E6%A8%A1%E5%9E%8B%E4%B8%8B%E8%BD%BD)
+
+<!-- /TOC -->
+
+{: note}
+在使用辅助标注功能前请先按照 [此文档](/doc/CN/ML/install_ml.md) 介绍步骤安装并启动 PaddleLabel-ML 后端
 
 ![interactive_segmentation](https://user-images.githubusercontent.com/71769312/181561624-de3f74e4-ca86-4764-a7a5-9043b9a1c363.png)
 

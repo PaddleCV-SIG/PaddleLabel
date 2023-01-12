@@ -22,7 +22,7 @@ conda create -n paddlelabel-ml python=3.10
 conda activate paddlelabel-ml
 ```
 
-您可以选择安装 cpu 或 gpu 版本的 PaddlePaddle，cpu 版本安装简便，首次尝试推荐安装这一版本；gpu 版本推理速度更快，重度使用时体验更好
+您可以选择安装 cpu 或 gpu 版本的 PaddlePaddle，cpu 版本安装简便，首次尝试推荐安装这一版本；gpu 版本推理速度更快，重度使用时体验更好。推荐安装不低于 2.2.0 版本的 PaddlePaddle。
 
 cpu 版本
 

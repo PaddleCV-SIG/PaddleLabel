@@ -71,7 +71,7 @@ git clone https://github.com/PaddleCV-SIG/PaddleLabel-Frontend
 cd PaddleLabel-Frontend
 npm install --location=global yarn
 yarn
-npm run build
+yarn run build
 ```
 3. 将构建好的前端部分，`PaddleLabel-Frontend/dist/` 目录下所有文件复制到 `PaddleLabel/paddlelabel/static/` 目录中
 ```shell
@@ -109,6 +109,7 @@ paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局�
 
 更多启动参数可以使用 `paddlelabel -h` 查看。
 
+<!-- todo: 升级-->
 ## 下一步
 
 恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.html)页面了解 PaddleLabel 的主要功能和使用流程。

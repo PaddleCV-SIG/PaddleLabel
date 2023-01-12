@@ -1,4 +1,5 @@
-# 语义分割标注
+# 语义分割手动标注
+
 <!-- TOC -->
 
 - [数据结构](#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)
@@ -16,9 +17,8 @@
 
 <!-- /TOC -->
 
-
 {: .note }
-有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
+有关数据集[导入](../quick_start.html#导入数据集)，[导出](../quick_start.html#导出数据集)，[训练/验证/测试集划分](../quick_start.html#数据集划分)步骤请参快速开始文档
 
 ![image](https://user-images.githubusercontent.com/29757093/182841499-85b9df06-f793-4831-b3f5-54c013ce531c.png)
 
@@ -30,7 +30,7 @@ PaddleLabel 支持多边形和掩膜两种分语义割标注任务。
 
 因为掩膜格式数据集的待标注图片和掩膜一般都是图片格式，所以二者需要通过所在文件夹进行区分。**创建此类型标注项目时，请将待标注图片放在`JPEGImages`文件夹中，将已有标签放在`Annotations`文件夹中，数据集路径填写二者的上层目录（下方示例中的`数据集路径`）。**
 
-此类型项目可以导入EISeg保存的灰度和伪彩色掩膜。不过EISeg保存伪彩色掩膜时文件名格式为 `图片名_pseudo.png` ，导入前需要将伪彩色掩膜重命名为 `图片名.png`。
+此类型项目可以导入 EISeg 保存的灰度和伪彩色掩膜。不过 EISeg 保存伪彩色掩膜时文件名格式为 `图片名_pseudo.png` ，导入前需要将伪彩色掩膜重命名为 `图片名.png`。
 
 示例格式如下：
 
@@ -127,7 +127,7 @@ category{
 
 ### 数据导入
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](#test3)组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.md)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，语义分割的参考数据集位于`~/.paddlelabel/sample/semantic_seg`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](#test3)组织数据集，对于 txt 文件的详细组织方式，请参考[数据集文件结构说明](dataset_file_structure.html)整理待标注数据的文件结构。同时 PaddleLabel 提供了参考数据集，语义分割的参考数据集位于`~/.paddlelabel/sample/semantic_seg`路径下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 
@@ -163,4 +163,4 @@ _注意：① 在 PaddleLabel 中，右侧标签栏有标签和标注两种。�
 
 ## \*交互式分割标注
 
-PaddleLabel 带有基于 PaddlePaddle 的机器学习标注功能，可以通过加载模型实现交互式数据标注，使用方法参考[交互式分割标注](interactive_segmentation.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习标注功能，可以通过加载模型实现交互式数据标注，使用方法参考[交互式分割标注](interactive_segmentation.html)。

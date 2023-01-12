@@ -43,7 +43,7 @@ pip install --upgrade paddlelabel
 
 1. 访问 [Action 执行记录网页](https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/build.yml)
 2. 选择最上面（最新）的一条执行，点击进入
-   ![](/doc/CN/assets/action-1.png)
+   ![](/PaddleLabel/CN/assets/action-1.png)
 3. 滑到页面最下方，点击下载 PaddleLabel_built_package 压缩包
    ![1](https://user-images.githubusercontent.com/29757093/201905747-a2b0901c-9331-4a90-b4ae-44c855314810.jpg)
 4. 解压该压缩包，之后执行
@@ -117,4 +117,4 @@ paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局�
 
 ## 下一步
 
-恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.md)页面了解 PaddleLabel 的主要功能和使用流程。
+恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.html)页面了解 PaddleLabel 的主要功能和使用流程。

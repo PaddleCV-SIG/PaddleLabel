@@ -1,5 +1,3 @@
-
-
 # 目标检测自动标注
 
 ## 简介
@@ -24,11 +22,11 @@ conda create -n paddlelabel python=3.10
 conda activate paddlelabel
 ```
 
-- 安装PaddlePaddle
+- 安装 PaddlePaddle
 
   版本要求: PaddlePaddle >= 2.2.0
 
-  PaddlePaddle安装请参考[官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html)。
+  PaddlePaddle 安装请参考[官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html)。
 
 - 安装前端和机器学习后端
 
@@ -60,17 +58,17 @@ pip install paddlelabel_ml
    - 项目名称（必填）：填写该检测标注项目的项目名
    - 数据地址（必填）：填写本地数据集文件夹的路径，可以直接通过复制路径并粘贴得到。
    - 数据集描述（选填）：填写该检测标注项目的使用的数据集的描述文字
-   - 导入标注格式（必选）：选择该任务导入标签为COCO、VOC或YOLO格式
+   - 导入标注格式（必选）：选择该任务导入标签为 COCO、VOC 或 YOLO 格式
 
-   对于标签格式的详细说明，请参考[目标检测标注](detection.md)。
+   对于标签格式的详细说明，请参考[目标检测标注](detection.html)。
 
 1. **数据导入**
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](dataset_file_structure.md)组织数据集。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/det`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](dataset_file_structure.html)组织数据集。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/det`路径下，也可参考该数据集文件结构组织数据。
 
 3. **智能标注**
 
-   进入标注界面，在检测任务的标注中，除了手动标注外[(数据标注)](detection.md)，还可以按照如下步骤进行智能标注，即使用图像检测模型来自动标注。
+   进入标注界面，在检测任务的标注中，除了手动标注外[(数据标注)](detection.html)，还可以按照如下步骤进行智能标注，即使用图像检测模型来自动标注。
 
    1. 点击右侧“项目总览”，进入项目总览界面
 
@@ -100,7 +98,7 @@ pip install paddlelabel_ml
 
   1. 如果对自动推理的结果不满意，用户可点击`清空标注`按钮以及`添加标签`按钮来为当前图像进行手动添加标签进行标注
 
-  1. 点击左右按钮切换图像，重复上述步骤4和步骤5操作，直到所有数据标注完毕
+  1. 点击左右按钮切换图像，重复上述步骤 4 和步骤 5 操作，直到所有数据标注完毕
 
   1. 下方进度展示可以查看标注进度
 

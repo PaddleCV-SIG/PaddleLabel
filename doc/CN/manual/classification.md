@@ -1,4 +1,4 @@
-# 图像分类
+# 图像分类手动标注
 
 <!-- TOC -->
 
@@ -13,9 +13,9 @@
 <!-- /TOC -->
 
 {: .note }
-有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
+有关数据集[导入](../quick_start.html#导入数据集)，[导出](../quick_start.html#导出数据集)，[训练/验证/测试集划分](../quick_start.html#数据集划分)步骤请参快速开始文档
 
-![image](/doc/CN/assets/classification.png)
+![image](/PaddleLabel/CN/assets/classification.png)
 
 PaddleLabel 支持**单分类**和**多分类**两种图像分类项目。其中单分类项目一张图片只能对应一个类别，多分类项目一张图片可以对应多个类别。
 
@@ -128,19 +128,18 @@ train/val/test_list.txt 以空格作为分隔符，请不要在文件路径和�
 创建项目后会自动跳转到标注页面
 
 1. 您可以点击右侧标签列表下方“添加标签”按钮创建一个新类别
-   ![](/doc/CN/assets/add_label.png)
-   ![](/doc/CN/assets/test_label.png)
+   ![](/PaddleLabel/CN/assets/add_label.png)
+   ![](/PaddleLabel/CN/assets/test_label.png)
 2. 您可以点击一个类别右侧的 x 删除该类别。注意：如果有图片属于该类别，该类别不能被删除
 3. 点击类别进行标注，单分类项目仅允许选中一个类别，多分类项目可以同时选中多个类别。标注结果将自动保存
 4. 完成一张图片标注后点击画布左右 < > 按钮切换图片
 
 <!-- https://just-the-docs.github.io/just-the-docs/docs/utilities/layout/#display -->
 
-https://user-images.githubusercontent.com/29757093/211701850-5ba4e377-9afe-4fbb-8aee-379c2439cdc3.mp4
 
 <video controls src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" width="100%"></video>
 
 ## 深度学习预标注
 
 {: note}
-在使用深度学习相关功能前请先按照说明[安装并启动](/doc/CN/install_ml.md) PaddleLabel-ML 后端
+在使用深度学习相关功能前请先按照说明[安装并启动](/PaddleLabel/CN/install_ml.html) PaddleLabel-ML 后端

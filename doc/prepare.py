@@ -35,21 +35,27 @@ nav_order: 1
 """,
     "CN/manual/detection.md": """---
 layout: default
-title: 目标检测标注
+title: 目标检测
 parent: 手动标注
 nav_order: 2
 """,
     "CN/manual/semantic_segmentation.md": """---
 layout: default
-title: 语义分割标注
+title: 语义分割
 parent: 手动标注
 nav_order: 3
 """,
     "CN/manual/instance_segmentation.md": """---
 layout: default
-title: 实例分割标注
+title: 实例分割
 parent: 手动标注
 nav_order: 4
+""",
+    "CN/manual/ocr.md": """---
+layout: default
+title: OCR
+parent: 手动标注
+nav_order: 5
 """,
     # ML辅助
     "CN/ML/ml.md": """---
@@ -66,21 +72,27 @@ nav_order: 1
 """,
     "CN/ML/classification_ml.md": """---
 layout: default
-title: 图像分类辅助标注
+title: 图像分类
 parent: 机器学习辅助标注
 nav_order: 2
 """,
     "CN/ML/detection_ml.md": """---
 layout: default
-title: 目标检测辅助标注
+title: 目标检测
 parent: 机器学习辅助标注
 nav_order: 3
 """,
     "CN/ML/interactive_segmentation.md": """---
 layout: default
-title: 交互式分割标注
+title: 交互式分割
 parent: 机器学习辅助标注
 nav_order: 4
+""",
+    "CN/ML/ocr_ml.md": """---
+layout: default
+title: OCR
+parent: 机器学习辅助标注
+nav_order: 5
 """,
     "CN/training/training.md": """---
 layout: default

@@ -1,4 +1,4 @@
-中文 | [English](/doc/EN/)
+中文 | [English](/PaddleLabel/EN/)
 
 <div align="center">
 
@@ -65,28 +65,28 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 - 欢迎您扫码加入 PaddleLabel 微信群，和小伙伴们一起交流学习。如果遇到二维码过期可以添加开发同学微信 linhandev 进群
 
 <div align="center">
-<img src="/doc/CN/assets/group_qr.png"  width = "200" />
+<img src="/PaddleLabel/CN/assets/group_qr.png"  width = "200" />
 </div>
 
 ## 使用教程
 
-- [安装指南](/doc/CN/install.md)
-- [快速开始](/doc/CN/quick_start.md)
+- [安装指南](/PaddleLabel/CN/install.html)
+- [快速开始](/PaddleLabel/CN/quick_start.html)
 
 ### 进行标注
 
-- [图像分类](/doc/CN/project/classification.md)
-- [目标检测](/doc/CN/project/detection.md)
-- [语义分割](/doc/CN/project/semantic_segmentation.md)
-- [实例分割](/doc/CN/project/instance_segmentation.md)
-- [交互式分割标注](/doc/CN/project/interactive_segmentation.md)
+- [图像分类](/PaddleLabel/CN/project/classification.html)
+- [目标检测](/PaddleLabel/CN/project/detection.html)
+- [语义分割](/PaddleLabel/CN/project/semantic_segmentation.html)
+- [实例分割](/PaddleLabel/CN/project/instance_segmentation.html)
+- [交互式分割标注](/PaddleLabel/CN/project/interactive_segmentation.html)
 
 ### 训练教程
 
-- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.md)
-- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.md)
-- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.md)
-- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.md)
+- [使用 PaddleClas 进行训练](CN/training/PdLabel_PdClas.html)
+- [使用 PaddleDet 进行训练](CN/training/PdLabel_PdDet.html)
+- [使用 PaddleSeg 进行训练](CN/training/PdLabel_PdSeg.html)
+- [使用 PaddleX 进行训练](CN/training/PdLabel_PdX.html)
 
 ### AI Studio 项目
 
@@ -103,7 +103,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 参与开发
 
-我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
+我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/PaddleLabel/CN/developers_guide.html)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

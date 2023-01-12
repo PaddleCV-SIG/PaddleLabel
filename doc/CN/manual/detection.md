@@ -1,4 +1,4 @@
-# 目标检测标注
+# 目标检测手动标注
 <!-- TOC -->
 
 - [数据集格式](#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F)
@@ -18,7 +18,7 @@
 ![image](https://user-images.githubusercontent.com/29757093/182841361-eb53e726-fa98-4e02-88ba-30172efac8eb.png)
 
 {: .note }
-有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
+有关数据集[导入](../quick_start.html#导入数据集)，[导出](../quick_start.html#导出数据集)，[训练/验证/测试集划分](../quick_start.html#数据集划分)步骤请参快速开始文档
 ## 数据集格式
 
 PaddleLabel 目前支持 PASCAL VOC，COCO 和 YOLO 三种目标检测数据集格式。
@@ -86,7 +86,7 @@ xml 文件格式如下：
 
 ### COCO
 
-COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性。 **注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.md#xxlisttxt)和[labels.txt](./common.md#labelstxt)** 。
+COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式规范，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)。下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性。 **注意，所有使用 COCO 格式的项目都不支持[xx_list.txt](./common.html#xxlisttxt)和[labels.txt](./common.html#labelstxt)** 。
 
 示例文件排布如下：
 
@@ -187,7 +187,7 @@ YOLO 格式每张图像对应一个 txt 格式的标注信息文件，二者文�
 
 ### 数据导入
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](#dataset_structure)组织待标注文件结构，具体 txt 文件的说明可参考[数据集文件结构说明](dataset_file_structure.md)。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/detection` 文件夹下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](#dataset_structure)组织待标注文件结构，具体 txt 文件的说明可参考[数据集文件结构说明](dataset_file_structure.html)。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/detection` 文件夹下，也可参考该数据集文件结构组织数据。
 
 ## 数据标注
 
@@ -214,4 +214,4 @@ _注意：在 PaddleLabel 中，右侧标签栏有标签列表和标注列表两
 
 ## \*检测预标注
 
-PaddleLabel 带有基于 PaddlePaddle 的机器学习检测标注功能，可以通过加载模型实现检测预标注功能，使用方法参考[图像检测自动标注](detection_auto_label.md)。
+PaddleLabel 带有基于 PaddlePaddle 的机器学习检测标注功能，可以通过加载模型实现检测预标注功能，使用方法参考[图像检测自动标注](detection_auto_label.html)。

@@ -89,6 +89,8 @@ jobs:
           echo ${{ inputs.force_regen == 'true' }}
 
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Pages
         id: pages
@@ -104,8 +106,9 @@ jobs:
 
       - name: Jekyll build
         run: |
+          git branch
           dst=$(pwd)/${{ inputs.destination }}
-          tree .
+          # tree .
           cd ${{ inputs.source }}
           pwd
           python prepare.py ${{ inputs.baseurl }} # insert headers, change md relative link path to html ...
@@ -121,7 +124,7 @@ jobs:
             --baseurl ${{ inputs.baseurl }}EN/
           cp -s $dst/CN/index.html $dst/
 
-          tree $dst
+          # tree $dst
           cd -
 
       - name: Upload artifact

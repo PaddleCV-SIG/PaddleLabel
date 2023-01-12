@@ -1,20 +1,19 @@
-# 图像分类标注
+# 图像分类
 
 <!-- TOC -->
 
-- [图像分类标注](#图像分类标注)
-    - [单分类格式](#单分类格式)
-        - [ImageNet](#imagenet)
-        - [ImageNet-txt](#imagenet-txt)
-    - [多分类格式](#多分类格式)
-        - [ImageNet-txt](#imagenet-txt-1)
-    - [数据标注](#数据标注)
-    - [深度学习预标注](#深度学习预标注)
+- [单分类格式](#%E5%8D%95%E5%88%86%E7%B1%BB%E6%A0%BC%E5%BC%8F)
+    - [ImageNet](#imagenet)
+    - [ImageNet-txt](#imagenet-txt)
+- [多分类格式](#%E5%A4%9A%E5%88%86%E7%B1%BB%E6%A0%BC%E5%BC%8F)
+    - [ImageNet-txt](#imagenet-txt)
+- [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
+- [深度学习预标注](#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%A2%84%E6%A0%87%E6%B3%A8)
 
 <!-- /TOC -->
 
 {: .note }
-有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参考快速开始文档
+有关数据集[导入](../quick_start.md#导入数据集)，[导出](../quick_start.md#导出数据集)，[训考练/验证/测试集划分](../quick_start.md#数据集划分)步骤请参快速开始文档
 
 ![image](/doc/CN/assets/classification.png)
 

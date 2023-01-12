@@ -1,4 +1,4 @@
-# 快速开始
+# 快速体验
 
 <!-- TOC -->
 
@@ -18,17 +18,17 @@
 
 为了方便您快速体验 PaddleLabel 功能，我们内置了一些样例项目。当 PaddleLabel 网页打开后，点击首页左上角“样例项目”按钮，即可进入样例选择页面。
 
-![image](/doc/CN/assets/sample_button.png)
+![image](/PaddleLabel/CN/assets/sample_button.png)
 
 样例页面提供了分类、检测、实例分割、语义分割和 OCR 五种类型的样例项目，点击卡片即可进入相应样例项目的总览。
 
-![image](/doc/CN/assets/sample_page.png)
+![image](/PaddleLabel/CN/assets/sample_page.png)
 
 ## 项目总览
 
 项目总览页面如下
 
-![image](/doc/CN/assets/project_overview.png)
+![image](/PaddleLabel/CN/assets/project_overview.png)
 
 总览页面上方提供了一些项目管理功能
 
@@ -44,7 +44,7 @@
 - 导出数据集：将数据集中的图片和标注信息导出
   ![1](https://user-images.githubusercontent.com/29757093/206072833-18ebcfe7-e67f-4ff6-ae0a-91de56ba647a.png)
 - 自动推理设置：配置 PaddleLabel-ML 选项，使用自动推理模型在项目中进行预标注
-![image](/doc/CN/assets/auto_inference.png)
+![image](/PaddleLabel/CN/assets/auto_inference.png)
 </details>
 
 ## 标注页面
@@ -53,11 +53,11 @@
 
 在项目总览页面中，点击页面上方或任务右侧的去标注按钮可以跳转到标注页面。
 
-![image](/doc/CN/assets/project_overview_to_label.png)
+![image](/PaddleLabel/CN/assets/project_overview_to_label.png)
 
 标注页面的介绍以实例分割为例，页面和功能区如下
 
-![image](/doc/CN/assets/label_page.png)
+![image](/PaddleLabel/CN/assets/label_page.png)
 
 <details> <summary markdown="span">点此查看各功能区详细介绍</summary>
 
@@ -74,11 +74,11 @@
 在深度学习模型训练过程中，通常会将全部数据划分为训练/验证/测试三个子集。在训练过程中使用训练集数据进行模型训练，使用验证集数据观察模型泛化效果。最后在训练完成后，模型交付前，使用测试集汇报最终模型效果。您可以使用“项目总览”页面顶部“划分数据集”按钮随机划分三个子集，该划分会跟随图像和标注信息一并导出。步骤如下：
 
 1. 首先访问项目总览页面
-   ![](/doc/CN/assets/project_overview.png)
+   ![](/PaddleLabel/CN/assets/project_overview.png)
 2. 点击页面上方“划分数据集”按钮
-   ![](/doc/CN/assets/project_overview_to_split.png)
+   ![](/PaddleLabel/CN/assets/project_overview_to_split.png)
 3. 在弹出的窗口输入训练/验证/测试集比例（和需为 100）
-   ![](/doc/CN/assets/dataset_split.png)
+   ![](/PaddleLabel/CN/assets/dataset_split.png)
 4. 点击确定，任务列表中的子集列将发生变化，项目中的所有数据将被随机划分入三个子集
 
 ## 导出数据集
@@ -86,30 +86,30 @@
 完成标注后您可以将数据集导出用于模型训练。导出步骤如下：
 
 1. 首先访问项目总览页面
-   ![](/doc/CN/assets/project_overview.png)
+   ![](/PaddleLabel/CN/assets/project_overview.png)
 
 2. 点击总览页面顶部“导出数据集”按钮
-   ![](/doc/CN/assets/export.png)
+   ![](/PaddleLabel/CN/assets/export.png)
 
 3. 填写导出路径（需要是绝对路径），根据需要选择导出格式，点击导出
-   ![](/doc/CN/assets/export_detail.png)
+   ![](/PaddleLabel/CN/assets/export_detail.png)
 
 ## 导入数据集
 
 样例数据集主要是为了展示 PaddleLabel 功能，大多数情况下会导入自己的数据集进行标注和管理。导入的主要流程如下
 
 1. 访问项目首页，PaddleLabel 默认的首页地址是[http://localhost:17995](http://localhost:17995)。或者您可以在任意页面点击左上角点击飞桨 Logo 返回首页。
-   ![image](/doc/CN/assets/to_home.png)
+   ![image](/PaddleLabel/CN/assets/to_home.png)
 2. 点击创建项目区域的任一卡片，创建对应类型的项目。这里以分类项目为例，导入刚才导出的项目
-   ![image](/doc/CN/assets/create.png)
+   ![image](/PaddleLabel/CN/assets/create.png)
 3. 在创建项目页面填写项目名称，注意不要和已有项目重名
-   ![image](/doc/CN/assets/import_name.png)
+   ![image](/PaddleLabel/CN/assets/import_name.png)
 4. 选择一个跟待导入数据集最接近的项目类型/数据集格式。选择后右侧区域会显示样例数据集文件排布作为参考。如果待导入的数据集不包含标注信息，请选择“无标签”，这种情况下数据集路径下所有的图片文件都将被作为标注任务导入
-   ![image](/doc/CN/assets/sample_structure.png)
+   ![image](/PaddleLabel/CN/assets/sample_structure.png)
 5. 填写“数据集路径”，该路径是到一个文件夹的绝对路径，为了避免导入过程中遇到问题，请将文件夹中的文件尽可能按右侧示例进行排布。点击右侧示例中的文件可以查看文件内容格式
-   ![](/doc/CN/assets/dataset_path.png)
+   ![](/PaddleLabel/CN/assets/dataset_path.png)
 6. 点击创建，成功后会跳转到标注页面
 
 ## 下一步
 
-恭喜您完成快速开始章节！您已经掌握了 PaddleLabel 的基本使用方法，下一步您可以在[进行标注页面](./project/project.md)选择要标注的项目类型，详细了解该类型项目的数据集格式，标注方法和深度学习辅助标注配置方法。
+恭喜您完成快速开始章节！您已经掌握了 PaddleLabel 的基本使用方法，下一步您可以在[进行标注页面](./project/project.html)选择要标注的项目类型，详细了解该类型项目的数据集格式，标注方法和深度学习辅助标注配置方法。

@@ -19,53 +19,53 @@ layout: default
 title: 快速体验
 nav_order: 2
 """,
-    "CN/project/project.md": """---
+    "CN/manual/project.md": """---
 layout: default
-title: 进行标注
+title: 手动标注
 nav_order: 3
 has_children: true
 permalink: docs/labeling
 """,
-    "CN/project/semantic_segmentation.md": """---
+    "CN/manual/semantic_segmentation.md": """---
 layout: default
 title: 语义分割标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 5
 """,
-    "CN/project/interactive_segmentation.md": """---
+    "CN/manual/interactive_segmentation.md": """---
 layout: default
 title: 交互式分割标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 7
 """,
-    "CN/project/instance_segmentation.md": """---
+    "CN/manual/instance_segmentation.md": """---
 layout: default
 title: 实例分割标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 6
 """,
-    "CN/project/detection.md": """---
+    "CN/manual/detection.md": """---
 layout: default
 title: 目标检测标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 3
 """,
-    "CN/project/detection_auto_label.md": """---
+    "CN/manual/detection_auto_label.md": """---
 layout: default
 title: 目标检测自动标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 4
 """,
-    "CN/project/classification.md": """---
+    "CN/manual/classification.md": """---
 layout: default
 title: 图像分类标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 1
 """,
-    "CN/project/classification_auto_label.md": """---
+    "CN/manual/classification_auto_label.md": """---
 layout: default
 title: 图像分类自动标注
-parent: 进行标注
+parent: 手动标注
 nav_order: 2
 """,
     "CN/training/training.md": """---

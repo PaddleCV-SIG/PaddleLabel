@@ -1,6 +1,16 @@
-
-
 # 图像分类自动标注
+
+<!-- TOC -->
+
+- [简介](#%E7%AE%80%E4%BB%8B)
+- [使用教程](#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B)
+    - [安装](#%E5%AE%89%E8%A3%85)
+    - [使用](#%E4%BD%BF%E7%94%A8)
+
+<!-- /TOC -->
+
+{: note}
+在使用辅助标注功能前请先按照[此文档](/doc/CN/ML/install_ml.md) 安装并启动PaddleLabel-ML 后端
 
 ## 简介
 
@@ -25,11 +35,11 @@ conda create -n paddlelabel python=3.9
 conda activate paddlelabel
 ```
 
-- 安装PaddlePaddle
+- 安装 PaddlePaddle
 
   版本要求: PaddlePaddle >= 2.2.0
 
-  PaddlePaddle安装请参考[官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html)。
+  PaddlePaddle 安装请参考[官网](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/pip/windows-pip.html)。
 
 - 安装前端和机器学习后端
 
@@ -63,15 +73,15 @@ pip install paddlelabel_ml
    - 数据集描述（选填）：填写该分类标注项目的使用的数据集的描述文字
    - 标签格式（必选）：选择该任务为单分类还是多分类任务
 
-   对于标签格式的详细说明，请参考[图像分类标注](classification.md)。
+   对于标签格式的详细说明，请参考[图像分类标注](classification.html)。
 
 1. **数据导入**
 
-在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](dataset_file_structure.md)组织数据集。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/clas`路径下，也可参考该数据集文件结构组织数据。
+在创建项目时需要填写数据地址，该地址对应的是数据集的文件夹，为了使 PaddleLabel 能够正确的识别和处理数据集，请参考[数据结构](dataset_file_structure.html)组织数据集。同时 PaddleLabel 提供了参考数据集，位于`~/.paddlelabel/sample/clas`路径下，也可参考该数据集文件结构组织数据。
 
 3. **智能标注**
 
-   进入标注界面，在分类任务的标注中，除了手动标注外[(数据标注)](classification.md)，还可以按照如下步骤进行智能标注，即使用图像分类模型来自动标注。
+   进入标注界面，在分类任务的标注中，除了手动标注外[(数据标注)](classification.html)，还可以按照如下步骤进行智能标注，即使用图像分类模型来自动标注。
 
    1. 点击右侧“项目总览”，进入项目总览界面
 
@@ -101,7 +111,7 @@ pip install paddlelabel_ml
 
   1. 如果对自动推理的结果不满意，用户可点击`清空标注`按钮以及`添加标签`按钮来为当前图像进行手动添加标签进行标注
 
-  1. 点击左右按钮切换图像，重复上述步骤4和步骤5操作，直到所有数据标注完毕
+  1. 点击左右按钮切换图像，重复上述步骤 4 和步骤 5 操作，直到所有数据标注完毕
 
   1. 下方进度展示可以查看标注进度
 

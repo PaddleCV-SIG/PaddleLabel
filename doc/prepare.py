@@ -19,54 +19,80 @@ layout: default
 title: 快速体验
 nav_order: 2
 """,
-    "CN/project/project.md": """---
+    "CN/manual/manual.md": """---
 layout: default
-title: 进行标注
+title: 手动标注
 nav_order: 3
 has_children: true
-permalink: docs/labeling
 """,
-    "CN/project/semantic_segmentation.md": """---
+    # permalink: docs/labeling
+    # 手动标注
+    "CN/manual/classification.md": """---
 layout: default
-title: 语义分割标注
-parent: 进行标注
-nav_order: 5
-""",
-    "CN/project/interactive_segmentation.md": """---
-layout: default
-title: 交互式分割标注
-parent: 进行标注
-nav_order: 7
-""",
-    "CN/project/instance_segmentation.md": """---
-layout: default
-title: 实例分割标注
-parent: 进行标注
-nav_order: 6
-""",
-    "CN/project/detection.md": """---
-layout: default
-title: 目标检测标注
-parent: 进行标注
-nav_order: 3
-""",
-    "CN/project/detection_auto_label.md": """---
-layout: default
-title: 目标检测自动标注
-parent: 进行标注
-nav_order: 4
-""",
-    "CN/project/classification.md": """---
-layout: default
-title: 图像分类标注
-parent: 进行标注
+title: 图像分类
+parent: 手动标注
 nav_order: 1
 """,
-    "CN/project/classification_auto_label.md": """---
+    "CN/manual/detection.md": """---
 layout: default
-title: 图像分类自动标注
-parent: 进行标注
+title: 目标检测
+parent: 手动标注
 nav_order: 2
+""",
+    "CN/manual/semantic_segmentation.md": """---
+layout: default
+title: 语义分割
+parent: 手动标注
+nav_order: 3
+""",
+    "CN/manual/instance_segmentation.md": """---
+layout: default
+title: 实例分割
+parent: 手动标注
+nav_order: 4
+""",
+    "CN/manual/ocr.md": """---
+layout: default
+title: OCR
+parent: 手动标注
+nav_order: 5
+""",
+    # ML辅助
+    "CN/ML/ml.md": """---
+layout: default
+title: 机器学习辅助标注
+nav_order: 4
+has_children: true
+""",
+    "CN/ML/install_ml.md": """---
+layout: default
+title: 机器学习后端安装
+parent: 机器学习辅助标注
+nav_order: 1
+""",
+    "CN/ML/classification_ml.md": """---
+layout: default
+title: 图像分类
+parent: 机器学习辅助标注
+nav_order: 2
+""",
+    "CN/ML/detection_ml.md": """---
+layout: default
+title: 目标检测
+parent: 机器学习辅助标注
+nav_order: 3
+""",
+    "CN/ML/interactive_segmentation.md": """---
+layout: default
+title: 交互式分割
+parent: 机器学习辅助标注
+nav_order: 4
+""",
+    "CN/ML/ocr_ml.md": """---
+layout: default
+title: OCR
+parent: 机器学习辅助标注
+nav_order: 5
 """,
     "CN/training/training.md": """---
 layout: default

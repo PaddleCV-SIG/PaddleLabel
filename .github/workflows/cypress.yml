@@ -20,7 +20,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10", "3.9", "3.8"]
         # python-version: ["3.11", "3.10"]
         node-version: ["19.x"]
         os: [ubuntu-latest, windows-latest, macos-12]
@@ -106,10 +106,10 @@ jobs:
 
       # - run: tree ./cypress/cypress/
 
-      # - name: Upload screenshots and videos
-      #   if: always() && steps.test.outcome == 'failure'
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Cypress_test_recs_${{ matrix.python-version }}
-      #     path: |
-      #       ./cypress/cypress/
+      - name: Upload screenshots and videos
+        if: always() && steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress_test_recs_${{ matrix.python-version }}
+          path: |
+            ./cypress/cypress/

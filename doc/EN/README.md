@@ -1,4 +1,4 @@
-[中文](/PaddleLabel/CN/) | English
+[中文](/doc/CN/) | English
 
 <div align="center">
 

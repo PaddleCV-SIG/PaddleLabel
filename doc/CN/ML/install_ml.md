@@ -1,4 +1,3 @@
-
 # 机器学习后端安装
 
 <!-- TOC -->
@@ -23,15 +22,15 @@ conda create -n paddlelabel-ml python=3.10
 conda activate paddlelabel-ml
 ```
 
-您可以选择安装 cpu 或 gpu 版本的 PaddlePaddle，cpu 版本安装简便，gpu 版本推理速度更快
+您可以选择安装 cpu 或 gpu 版本的 PaddlePaddle，cpu 版本安装简便，首次尝试推荐安装这一版本；gpu 版本推理速度更快，重度使用时体验更好
 
-cpu 版本：
+cpu 版本
 
 ```shell
 pip install paddlepaddle
 ```
 
-gpu 版本：
+gpu 版本
 
 ```shell
 
@@ -60,6 +59,8 @@ pip install --upgrade paddlelabel-ml
 每当 PaddleLabel-ML 的代码有更新，项目的 Github Action 脚本都会构建一个反映最新版代码的安装包。这一安装包未经过全面测试，因此很可能存在一些问题，仅推荐为尝试最新版本使用。其中可能修复了一些 pypi 版本中存在的问题，添加了一些新功能或进行了一些性能提升。
 
 下载方式为
+
+<!-- TODO: 更新图片 -->
 
 1. 访问 [Action 执行记录网页](https://github.com/PaddleCV-SIG/PaddleLabel-ML/actions/workflows/build.yml)
 2. 选择最上面（最新）的一条执行记录，点击进入
@@ -91,18 +92,21 @@ pip install [解压出的.whl文件名，如 paddlelabel-ml-0.5.0-py3-none-any.w
 paddlelabel-ml  # 启动paddlelabel-ml
 ```
 
-启动后 PaddleLabel 会自动在浏览器中打开网页，推荐使用 Chrome。
+看到类似 `PaddleLabel-ML is running at http://localhost:1234` 的输出即为启动成功。您也可以访问[http://localhost:1234/running](http://localhost:1234/running)网页确定 ML 后端是否启动成功。
+
+{: .note}
+PaddleLabel-ML 没有独立的前端网页，您可以继续浏览[机器学习辅助标注](/doc/CN/ML/ml.md)章节了解如何在各个类型项目中配置和使用机器学习辅助标注功能。
 
 ### 更多启动选项
 
-PaddleLabel 的默认运行网址为[http://localhost:17995](http://localhost:17995)。如果该端口已被占用，可以通过`--port`或`-p`参数指定其他端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。这样可以实现在电脑上运行 PaddleLabel，使用平板进行标注。在 docker 中运行 PaddleLabel 时也需要添加`--lan`参数。
+PaddleLabel-ML 的默认运行网址为[http://localhost:1234](http://localhost:1234)。如果该端口已被占用，可以通过`--port`或`-p`参数指定其他端口。此外可以通过`--lan`或`-l`参数将服务暴露到局域网。在 docker 中运行 PaddleLabel 时也需要添加`--lan`参数。
 
 ```shell
-paddlelabel --port 8000 --lan  # 在8000端口上运行并将服务暴露到局域网
+paddlelabel --port 6000 --lan  # 在6000端口上运行并将服务暴露到局域网
 ```
 
-更多启动参数可以使用 `paddlelabel -h` 查看。
+更多启动参数可以使用 `paddlelabel-ml -h` 查看。
 
 ## 下一步
 
-恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.html)页面了解 PaddleLabel 的主要功能和使用流程。
+恭喜您成功运行 PaddleLabel 机器学习辅助标注后端！您可以继续浏览[机器学习辅助标注](/doc/CN/ML/ml.md)章节了解如何在各个类型项目中配置和使用辅助标注功能。

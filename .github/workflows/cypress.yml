@@ -20,10 +20,14 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
-        # python-version: ["3.11", "3.10"]
         node-version: ["19.x"]
+
+        python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-12]
+
+        # python-version: ["3.11"]
+        # os: [windows-latest]
+
       fail-fast: false
 
     steps:
@@ -104,8 +108,9 @@ jobs:
           yarn
           npx cypress run \
             --browser chrome \
-            --record --key ${{ secrets.CYPRESS }} \
-            --env os=${{ matrix.os }}
+            --env os=${{ matrix.os }} \
+            --config videoRecording=false
+            # --record --key ${{ secrets.CYPRESS }}
 
       # - run: tree ./cypress/cypress/
 

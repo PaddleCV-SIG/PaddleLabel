@@ -140,7 +140,6 @@ jobs:
           pkill Xvfb
           res1=$?
           echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          echo $res
           cat 7.log
 
           if [ $res1 -ne 0 ]

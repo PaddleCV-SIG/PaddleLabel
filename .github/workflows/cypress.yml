@@ -47,11 +47,13 @@ jobs:
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
         with:
+          github_token: ${{secrets.DOWNLOAD_TOKEN}}
           workflow: build.yml
           workflow_conclusion: success
           name: PaddleLabel_built_package
           search_artifacts: true
           path: ../
+
 
       - name: Add cn path
         run: |
@@ -123,7 +125,7 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec "e2e/6_Doc_Links.cy.ts" & # > 7.log 2>&1
+          --spec "e2e/6_Doc_Links.cy.ts" > 7.log 2>&1 & # > 7.log 2>&1
           bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
@@ -139,11 +141,12 @@ jobs:
 
           # --spec "e2e/1_Import_Samples.cy.ts,e2e/2_Import_All_Samples.cy.ts,e2e/3_ImExImport.cy.ts,e2e/6_Doc_Links.cy.ts"
 
+
+          echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           wait $bgpid
           res1=$?
           # pkill Xvfb
 
-          echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           # cat 7.log
 
           if [ $res1 -ne 0 ]

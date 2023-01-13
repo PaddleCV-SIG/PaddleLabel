@@ -84,8 +84,11 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          export HOME=~/测试路径/
-          paddlelabel --debug --port 4321 --lan &
+          export HOME=~/测试1/
+          paddlelabel --debug --port 1111 --lan &
+
+          export HOME=~/测试2/
+          paddlelabel --debug --port 2222 --lan &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -106,11 +109,32 @@ jobs:
           echo $HOME
           cd cypress
           yarn
+
           npx cypress run \
-            --browser chrome \
-            --env os=${{ matrix.os }} \
-            --config videoRecording=false
-            # --record --key ${{ secrets.CYPRESS }}
+          --browser chromium \
+          --config baseUrl=http://localhost:1111 \
+          --env os=${{ matrix.os }} \
+          --spec "e2e/6_Doc_Links.cy.ts" > 7.log &
+
+          npx cypress run \
+          --browser chromium \
+          --config baseUrl=http://localhost:2222 \
+          --env os=${{ matrix.os }} \
+          --spec "e2e/1_Import_Samples.cy.ts"
+
+          wait
+          res=$?
+          echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          echo $res
+          cat 7.log
+
+          if [ $res -ne 0 ]
+          then
+            exit $res
+          fi
+
+          # --config videoRecording=false
+          # --record --key ${{ secrets.CYPRESS }}
 
       # - run: tree ./cypress/cypress/
 

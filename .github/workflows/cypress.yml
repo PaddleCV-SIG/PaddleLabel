@@ -27,7 +27,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-12]
 
         # python-version: ["3.11"]
-        # os: [windows-latest]
+        # os: [ubuntu-latest]
 
       fail-fast: false
 
@@ -135,8 +135,9 @@ jobs:
           # --spec "e2e/1_Import_Samples.cy.ts,e2e/2_Import_All_Samples.cy.ts,e2e/3_ImExImport.cy.ts,e2e/6_Doc_Links.cy.ts"
 
           wait $bgpid
-          pkill Xvfb
           res1=$?
+          pkill Xvfb
+
           echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           cat 7.log
 

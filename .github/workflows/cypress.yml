@@ -116,13 +116,13 @@ jobs:
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
           # Xvfb -screen 0 1024x768x24 :99 &
 
-
           DISPLAY=:99 npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec "e2e/6_Doc_Links.cy.ts" &
+          --spec "e2e/6_Doc_Links.cy.ts" > 7.log &
           bgpid=$(jobs -l | grep cypress | awk '{print $2}')
+
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
           echo $bgpid
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
@@ -132,23 +132,26 @@ jobs:
           --config baseUrl=http://localhost:2222 \
           --env os=${{ matrix.os }} \
           --spec "e2e/1_Import_Samples.cy.ts"
+          res2=$?
 
           # --spec "e2e/1_Import_Samples.cy.ts,e2e/2_Import_All_Samples.cy.ts,e2e/3_ImExImport.cy.ts,e2e/6_Doc_Links.cy.ts"
 
           wait $bgpid
           pkill Xvfb
-          res=$?
+          res1=$?
           echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           echo $res
           cat 7.log
 
-          if [ $res -ne 0 ]
+          if [ $res1 -ne 0 ]
           then
-            exit $res
+            exit $res1
           fi
 
-          # --config videoRecording=false
-          # --record --key ${{ secrets.CYPRESS }}
+          if [ $res2 -ne 0 ]
+          then
+            exit $res2
+          fi
 
       # - run: tree ./cypress/cypress/
 

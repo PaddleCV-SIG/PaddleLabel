@@ -86,11 +86,9 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          export HOME=~/测试1/
-          paddlelabel --debug --port 1111 --lan &
+          HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
 
-          export HOME=~/测试2/
-          paddlelabel --debug --port 2222 --lan &
+          HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3

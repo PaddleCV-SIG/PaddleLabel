@@ -105,7 +105,7 @@ jobs:
           npx cypress run \
             --browser chrome \
             --record --key ${{ secrets.CYPRESS }} \
-            ---env os=${{ matrix.os }}
+            --env os=${{ matrix.os }}
 
       # - run: tree ./cypress/cypress/
 

@@ -122,7 +122,7 @@ jobs:
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
           --spec "e2e/6_Doc_Links.cy.ts" &
-          bgpid=$(jobs)
+          bgpid=$(jobs -l | grep cypress | awk '{print $2}')
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
           echo $bgpid
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"

@@ -160,4 +160,4 @@ image/monkey.jpg monkey yellow black
 
 ## 下一步
 
-您可以继续浏览[图像分类自动标注文档](/PaddleLabel/CN/ML/classification_ml.html)了解如何使用 PaddleLabel-ML 提高标注效率。
+您可以继续浏览[自动预标注使用方法](/PaddleLabel/CN/ML/auto_inference.md)了解如何使用 PaddleLabel-ML 提高标注效率。

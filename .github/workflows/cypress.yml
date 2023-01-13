@@ -116,12 +116,12 @@ jobs:
           # Xvfb -screen 0 1024x768x24 :99 &
 
 
-          DISPLAY=:99 npx cypress run \
+          bgpid=DISPLAY=:99 npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
           --spec "e2e/6_Doc_Links.cy.ts" > 7.log &
-          bgpid=$?
+          # bgpid=$?
           echo $bgpid
 
           npx cypress run \

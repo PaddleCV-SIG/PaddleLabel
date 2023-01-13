@@ -83,7 +83,7 @@ def draw_mask(data, mask_type="grayscale"):
             points = result[2:]
             line_width = result[0]
             if line_width == 0:
-                print(ann, "!!!!! point/rubber type but width 0, open an issue!")
+                # print(ann, "!!!!! point/rubber type but width 0, open an issue!")
                 line_width = 1
             prev_w, prev_h = points[0:2]
             try:
@@ -584,7 +584,7 @@ class SemanticSegmentation(InstanceSegmentation):
                     }
                 )  # NOTE: EISeg pseudo color label export
 
-        print(ann_dict)
+        # print(ann_dict)
 
         # 2. import records
         data_paths = listdir(data_dir, filters)

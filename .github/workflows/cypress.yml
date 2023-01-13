@@ -120,9 +120,10 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec "e2e/6_Doc_Links.cy.ts" > 7.log &
-          # bgpid=$?
+          --spec "e2e/6_Doc_Links.cy.ts" &
+          echo "=-=-=-=-=-=-=-=-=-=-=-==-"
           echo $bgpid
+          echo "=-=-=-=-=-=-=-=-=-=-=-==-"
 
           npx cypress run \
           --browser chrome \

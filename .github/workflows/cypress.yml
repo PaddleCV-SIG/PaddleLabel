@@ -102,7 +102,10 @@ jobs:
           echo $HOME
           cd cypress
           yarn
-          npx cypress run --browser chrome --env os=${{ matrix.os }}
+          npx cypress run \
+            --browser chrome \
+            --record --key ${{ secrets.CYPRESS }} \
+            ---env os=${{ matrix.os }}
 
       # - run: tree ./cypress/cypress/
 
@@ -110,6 +113,6 @@ jobs:
         if: always() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
-          name: Cypress_test_recs_${{ matrix.python-version }}
+          name: Cypress_test_recs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
             ./cypress/cypress/

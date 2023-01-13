@@ -86,9 +86,9 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
+          # HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
 
-          HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
+          # HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -105,6 +105,11 @@ jobs:
       - name: Run test
         id: test
         run: |
+
+          HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
+
+          HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
+
           export HOME=~/测试路径/
           echo $HOME
           cd cypress

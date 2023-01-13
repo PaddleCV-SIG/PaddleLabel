@@ -136,7 +136,7 @@ jobs:
 
           wait $bgpid
           res1=$?
-          pkill Xvfb
+          # pkill Xvfb
 
           echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           # cat 7.log

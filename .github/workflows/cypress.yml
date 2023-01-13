@@ -15,6 +15,7 @@ jobs:
   # only rebuild if files under doc/ folder changed
   e2e_test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
     defaults:
       run:
         shell: bash
@@ -110,7 +111,9 @@ jobs:
           cd cypress
           yarn
 
-          npx cypress run \
+          Xvfb :99 &
+
+          DISPLAY=:99 npx cypress run \
           --browser chromium \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \

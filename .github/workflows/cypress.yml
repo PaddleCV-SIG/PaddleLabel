@@ -112,18 +112,25 @@ jobs:
           yarn
 
           Xvfb :99 &
+          # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
+          # Xvfb -screen 0 1024x768x24 :99 &
 
+          {
           DISPLAY=:99 npx cypress run \
-          --browser chromium \
+          --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec "e2e/6_Doc_Links.cy.ts" > 7.log &
+          --spec "e2e/6_Doc_Links.cy.ts" > 7.log
+          pkill Xvfb
+          } &
 
           npx cypress run \
-          --browser chromium \
+          --browser chrome \
           --config baseUrl=http://localhost:2222 \
           --env os=${{ matrix.os }} \
           --spec "e2e/1_Import_Samples.cy.ts"
+
+          # --spec "e2e/1_Import_Samples.cy.ts,e2e/2_Import_All_Samples.cy.ts,e2e/3_ImExImport.cy.ts,e2e/6_Doc_Links.cy.ts"
 
           wait
           res=$?

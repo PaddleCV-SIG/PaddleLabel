@@ -40,8 +40,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           # cache: "pip"
-      - name: Random sleep up to 30 s
-        run: sleep $[$RANDOM % 30]
+
+      # - name: Random sleep up to 10 s
+      #   run: sleep $[$RANDOM % 10]
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
@@ -121,7 +122,7 @@ jobs:
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
           --spec "e2e/6_Doc_Links.cy.ts" &
-          bgpid=jobs
+          bgpid=$(jobs)
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
           echo $bgpid
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"

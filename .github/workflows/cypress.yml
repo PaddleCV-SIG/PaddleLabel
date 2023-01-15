@@ -150,7 +150,7 @@ jobs:
 
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
-          npx wait-port -t 10000 1111
+          cypress-yarn-cache-$ wait-port -t 10000 1111
 
           cd cypress
 
@@ -160,7 +160,7 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
-          npx cypress run \
+          yarn cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }}

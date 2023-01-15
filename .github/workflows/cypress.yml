@@ -148,7 +148,7 @@ jobs:
 
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
-          until ping -c1 localhost:1111 >/dev/null 2>&1; do :; done
+          yarn wait-port 1111
 
           cd cypress
 

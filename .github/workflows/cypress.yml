@@ -127,7 +127,12 @@ jobs:
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
         run: |
-          tree ./cypress/cypress/screenshots
+          if [ ${{ matrix.os }} == windows-latest ]
+          then
+            cmd //c tree
+          else
+            tree ./cypress/cypress/screenshots
+          fi
           cat ~/paddlelabel.log
 
       - name: Upload run logs

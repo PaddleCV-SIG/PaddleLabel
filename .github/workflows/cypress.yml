@@ -47,13 +47,12 @@ jobs:
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
         with:
-          github_token: ${{secrets.DOWNLOAD_TOKEN}}
+          github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build.yml
           workflow_conclusion: success
           name: PaddleLabel_built_package
           search_artifacts: true
           path: ../
-
 
       - name: Add cn path
         run: |
@@ -77,11 +76,6 @@ jobs:
 
       - name: Install PaddleLabel
         run: |
-          export HOME=~/测试路径/
-          cd ..
-          pwd
-          ls
-          python --version
           pip uninstall paddlelabel
           pip uninstall paddlelabel
           pip install paddlelabel-*-py3-none-any.whl
@@ -89,7 +83,6 @@ jobs:
       - name: Start PaddleLabel
         run: |
           # HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
-
           # HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
 
       - name: Checkout frontend project
@@ -104,6 +97,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
 
+      - name: Install js deps
+        run: |
+          cd cypress
+          yarn
+
       - name: Run test
         id: test
         run: |
@@ -112,10 +110,10 @@ jobs:
 
           HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
 
-          export HOME=~/测试路径/
-          echo $HOME
-          cd cypress
-          yarn
+          # export HOME=~/测试路径/
+          # echo $HOME
+          # cd cypress
+          # yarn
 
           Xvfb :99 &
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
@@ -140,7 +138,6 @@ jobs:
           res2=$?
 
           # --spec "e2e/1_Import_Samples.cy.ts,e2e/2_Import_All_Samples.cy.ts,e2e/3_ImExImport.cy.ts,e2e/6_Doc_Links.cy.ts"
-
 
           echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           wait $bgpid

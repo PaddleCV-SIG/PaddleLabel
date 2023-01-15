@@ -69,8 +69,8 @@ jobs:
           ls
           } &
           # pip uninstall paddlelabel -y
-          # pip uninstall paddlelabel -y
-          pip install --force-reinstall ../paddlelabel-*-py3-none-any.whl
+          pip uninstall paddlelabel -y
+          pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
           ls ~/测试路径/3rd_party/

@@ -130,11 +130,13 @@ jobs:
         run: |
           if [ ${{ matrix.os }} == windows-latest ]
           then
+            cd ./cypress/cypress/screenshots
             cmd //c tree
           else
             tree ./cypress/cypress/screenshots
           fi
-          cat ~/paddlelabel.log
+          cp ~/paddlelabel.log ./cypress/cypress/
+          cat ./cypress/cypress/paddlelabel.log
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'
@@ -143,4 +145,3 @@ jobs:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
             ./cypress/cypress/
-            ../paddlelabel.log

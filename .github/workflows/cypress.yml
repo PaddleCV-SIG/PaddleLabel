@@ -12,7 +12,6 @@ on:
     - cron: "0 12 * * *"
 
 jobs:
-  # only rebuild if files under doc/ folder changed
   e2e_test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
@@ -23,13 +22,13 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8"]
+        python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-12]
 
-        python-version: ["3.11"]
+        # python-version: ["3.11"]
         # os: [ubuntu-latest]
 
-      fail-fast: false
+      # fail-fast: false
 
     steps:
       - name: Checkout backend
@@ -39,7 +38,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-          # cache: "pip"
+          cache: "pip"
 
       # - name: Random sleep up to 10 s
       #   run: sleep $[$RANDOM % 10]
@@ -54,31 +53,10 @@ jobs:
           search_artifacts: true
           path: ../
 
-      - name: Add cn path
-        run: |
-          cd
-          pwd
-          echo $USER
-          mkdir 测试路径
-          mkdir 测试路径/3rd_party
-          cd 测试路径
-          pwd
-
-      # - name: Download 3rd party tests
-      #   run: |
-      #     cd ~/测试路径/3rd_party/
-      #     pip install requests
-      #     python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
-      #     unzip -q paddlelabel_3rd_party_tests.zip
-
-      # - name: Install PaddleLabel
-      #   run: |
-      #     pip uninstall paddlelabel
-      #     pip install ../paddlelabel-*-py3-none-any.whl
-
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
           {
+          mkdir -p 测试路径/3rd_party
           cd ~/测试路径/3rd_party/
           pip install requests
           python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
@@ -91,8 +69,7 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          pwd
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan > paddlelabel.log  2>&1 &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > paddlelabel.log  &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -128,10 +105,11 @@ jobs:
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
 
-      # - run: tree ./cypress/cypress/
-
-      - name: Backend logs
-        run: cat
+      - name: Backend logs, cypress screenshots
+        if: always() && steps.test.outcome == 'failure'
+        run: |
+          tree ./cypress/cypress/screenshots
+          cat paddlelabel.log
 
       - name: Upload screenshots and videos
         if: always() && steps.test.outcome == 'failure'

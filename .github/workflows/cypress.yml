@@ -50,7 +50,6 @@ jobs:
           cache-env: true
           channels: conda-forge
 
-
       # - name: Random sleep up to 10 s
       #   run: sleep $[$RANDOM % 10]
 
@@ -97,13 +96,32 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-          cache-dependency-path: "cypress/package.json"
+          # cache: "yarn"
+          # cache-dependency-path: "cypress/package.json"
 
-      - name: Install js deps
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **/node_modules
+          key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
+
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           cd cypress
-          yarn --prefer-offline
+          yarn
+
+      # - name: Install js deps
+      #   run: |
+      #     cd cypress
+      #     yarn --prefer-offline
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2

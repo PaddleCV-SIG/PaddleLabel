@@ -102,7 +102,6 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        # run: echo "::set-output name=dir::$(yarn cache dir)"
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn dependencies
@@ -120,6 +119,7 @@ jobs:
         run: |
           cd cypress
           pwd
+          cat package.json
           yarn
           yarn list
 

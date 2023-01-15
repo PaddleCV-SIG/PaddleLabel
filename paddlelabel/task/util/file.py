@@ -174,7 +174,11 @@ def copycontent(src, dst):
 
 def expand_home(path):
     if path[0] == "~":
-        path = osp.join(osp.expanduser("~"), path[2:])
+        # path = osp.join(osp.expanduser("~"), path[2:])
+        print("before", path)
+        path = str(Path(path).expanduser())
+        print("after", path)
+
     return path
 
 

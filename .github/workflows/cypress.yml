@@ -91,7 +91,8 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan &
+          pwd
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan > paddlelabel.log  2>&1 &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -128,6 +129,9 @@ jobs:
           --env os=${{ matrix.os }} \
 
       # - run: tree ./cypress/cypress/
+
+      - name: Backend logs
+        run: cat
 
       - name: Upload screenshots and videos
         if: always() && steps.test.outcome == 'failure'

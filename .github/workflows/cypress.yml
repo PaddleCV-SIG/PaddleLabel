@@ -28,7 +28,7 @@ jobs:
         # python-version: ["3.11"]
         # os: [ubuntu-latest]
 
-      # fail-fast: false
+      fail-fast: false
 
     steps:
       - name: Checkout backend
@@ -45,6 +45,7 @@ jobs:
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
+        id: download_whl
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: build.yml
@@ -55,6 +56,7 @@ jobs:
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
+          echo ${{ steps.download_whl.outputs }}
           {
           mkdir -p 测试路径/3rd_party
           cd ~/测试路径/3rd_party/

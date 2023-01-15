@@ -58,16 +58,19 @@ jobs:
         run: |
           echo ${{ steps.download_whl.outputs }}
           {
-          mkdir -p 测试路径/3rd_party
+          mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
           pip install requests
           python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
           unzip -q paddlelabel_3rd_party_tests.zip
+          pwd
+          ls
           } &
 
           pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
+          ls 测试路径/3rd_party/
 
       - name: Start PaddleLabel
         run: |
@@ -89,17 +92,21 @@ jobs:
       - name: Install js deps
         run: |
           cd cypress
-          yarn
+          yarn --prefer-offline
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
         with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow: build.yml
-          workflow_conclusion: success
-          name: PaddleLabel_built_package
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: cypress.yml
+          workflow_conclusion: failure
+          name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           search_artifacts: true
           path: ../
+
+      - name: Get failed tests, run them first later
+        run: |
+          ls ../
 
       - name: Run test
         id: test
@@ -127,7 +134,7 @@ jobs:
         if: always() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
-          name: Cypress_test_recs_${{ matrix.os }}_${{ matrix.python-version }}
+          name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
             ./cypress/cypress/
             ~/paddlelabel.log

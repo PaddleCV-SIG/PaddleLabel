@@ -128,7 +128,8 @@ jobs:
         id: test
         run: |
 
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
 
           npx wait-port -t 20000 1111
 
@@ -144,7 +145,6 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }}
-          # --specs "e2e/7_Import_3rd_Party.cy.ts"
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

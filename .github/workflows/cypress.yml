@@ -68,8 +68,9 @@ jobs:
           pwd
           ls
           } &
-          # pip uninstall paddlelabel -y
+          echo ========================================================
           pip uninstall paddlelabel -y
+          echo ========================================================
           pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
@@ -142,7 +143,7 @@ jobs:
 
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
-          cypress-yarn-cache-$ wait-port -t 20000 1111
+          yarn wait-port -t 20000 1111
 
           cd cypress
 

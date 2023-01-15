@@ -34,21 +34,13 @@ jobs:
       - name: Checkout backend
         uses: actions/checkout@v3
 
-      # - name: Set up Python ${{ matrix.python-version }}
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
-      #     cache: "pip"
-
       - name: Setup mamba env ${{ matrix.python-version }}
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: false
-          environment-name: PaddleLabel
+          environment-file: env.yml
           extra-specs: |
             python=${{ matrix.python-version }}
           cache-env: true
-          channels: conda-forge
 
       # - name: Random sleep up to 10 s
       #   run: sleep $[$RANDOM % 10]

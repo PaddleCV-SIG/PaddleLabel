@@ -109,8 +109,6 @@ jobs:
 
           # HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
 
-          HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
-
           if [ ${{ matrix.os }} -ne windows-latest]
           then
             Xvfb :99 &
@@ -134,6 +132,7 @@ jobs:
           echo $bgpid
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"
 
+          HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:2222 \

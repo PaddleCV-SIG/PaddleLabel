@@ -127,7 +127,6 @@ jobs:
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
-        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: cypress.yml
@@ -138,6 +137,7 @@ jobs:
           if_no_artifact_found: ignore
 
       - name: Get failed tests, run them first later
+        if: always()
         run: |
           ls ../
 

@@ -23,10 +23,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-12]
 
-        # python-version: ["3.11"]
+        python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -61,7 +61,6 @@ jobs:
           echo $USER
           mkdir 测试路径
           mkdir 测试路径/3rd_party
-          ls -lah
           cd 测试路径
           pwd
 
@@ -87,8 +86,14 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
 
+      - name: test
+        run: |
+          pwd
+          ls
+
       - name: Setup node env
         uses: actions/setup-node@v3
+        # working-directory:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
@@ -97,6 +102,7 @@ jobs:
       - name: Install js deps
         run: |
           cd cypress
+          yarn
           yarn
 
       - name: Run test

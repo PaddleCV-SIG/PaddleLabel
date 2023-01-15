@@ -153,14 +153,17 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
+          --specs "e2e/7_Import_3rd_Party.cy.ts"
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
         run: |
+          mkdir -p ./cypress/cypress/screenshots
           if [ ${{ matrix.os }} == windows-latest ]
           then
             cd ./cypress/cypress/screenshots
             cmd //c tree
+            cd -
           else
             tree ./cypress/cypress/screenshots
           fi

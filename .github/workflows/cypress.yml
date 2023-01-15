@@ -70,11 +70,11 @@ jobs:
           pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
-          ls 测试路径/3rd_party/
+          ls ~/测试路径/3rd_party/
 
       - name: Start PaddleLabel
         run: |
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ~/paddlelabel.log  &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -142,4 +142,4 @@ jobs:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
             ./cypress/cypress/
-            ~/paddlelabel.log
+            ../paddlelabel.log

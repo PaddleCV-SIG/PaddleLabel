@@ -102,14 +102,14 @@ jobs:
             ./cypress/.cache/Cypress
           key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
 
-      - name: Install packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          cd cypress
-          pwd
-          cat package.json
-          yarn
-          yarn list
+      # - name: Install packages
+      #   if: steps.yarn-cache.outputs.cache-hit != 'true'
+      #   run: |
+      #     cd cypress
+      #     pwd
+      #     cat package.json
+      #     yarn
+      #     yarn list
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2

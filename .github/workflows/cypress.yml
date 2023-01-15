@@ -145,7 +145,7 @@ jobs:
           else
             tree ./cypress/cypress/screenshots
           fi
-          cp ~/paddlelabel.log ./cypress/cypress/
+          cp ../paddlelabel.log ./cypress/cypress/
           cat ./cypress/cypress/paddlelabel.log
 
       - name: Upload logs to transfer.sh

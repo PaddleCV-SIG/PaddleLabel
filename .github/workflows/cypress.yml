@@ -101,7 +101,8 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        # run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn dependencies
         uses: actions/cache@v3
@@ -152,8 +153,8 @@ jobs:
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }} \
-          --specs "e2e/7_Import_3rd_Party.cy.ts"
+          --env os=${{ matrix.os }}
+          # --specs "e2e/7_Import_3rd_Party.cy.ts"
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

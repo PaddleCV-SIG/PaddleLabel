@@ -76,8 +76,9 @@ jobs:
           pwd
           ls
           } &
-
-          pip install ../paddlelabel-*-py3-none-any.whl
+          pip uninstall paddlelabel
+          pip uninstall paddlelabel
+          pip install --force-reinstall ../paddlelabel-*-py3-none-any.whl
 
           wait
           ls ~/测试路径/3rd_party/
@@ -126,6 +127,7 @@ jobs:
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
+        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: cypress.yml

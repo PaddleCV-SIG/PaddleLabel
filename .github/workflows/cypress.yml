@@ -76,8 +76,8 @@ jobs:
           pwd
           ls
           } &
-          pip uninstall paddlelabel
-          pip uninstall paddlelabel
+          pip uninstall paddlelabel -y
+          pip uninstall paddlelabel -y
           pip install --force-reinstall ../paddlelabel-*-py3-none-any.whl
 
           wait

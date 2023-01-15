@@ -7,9 +7,7 @@ from alembic.config import Config
 import alembic
 
 from paddlelabel.util import Resolver, version_check, backend_error
-from paddlelabel.config import db_url, db_path, connexion_app, db_head_version, db
-import paddlelabel.api
-import paddlelabel.task
+from paddlelabel.config import db_url, db_path, connexion_app, db_head_version
 from paddlelabel.api.controller.setting import init_site_settings
 from paddlelabel.api.model import AlembicVersion
 

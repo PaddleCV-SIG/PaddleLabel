@@ -171,7 +171,9 @@ jobs:
             tree ./cypress/cypress/screenshots
           fi
           cp ../paddlelabel.log ./cypress/cypress/
+          echo ============= paddlelabel.log ==============
           cat ./cypress/cypress/paddlelabel.log
+          echo ============= paddlelabel.log ==============
 
       - name: Upload logs to transfer.sh
         if: always() && steps.test.outcome == 'failure'

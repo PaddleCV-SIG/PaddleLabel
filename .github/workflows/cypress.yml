@@ -48,6 +48,7 @@ jobs:
           extra-specs: |
             python=${{ matrix.python-version }}
           cache-env: true
+          channels: conda-forge
 
 
       # - name: Random sleep up to 10 s

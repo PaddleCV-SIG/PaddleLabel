@@ -112,6 +112,7 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             **/node_modules
+            ./cypress/.cache/Cypress
           key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
 
       - name: Install packages

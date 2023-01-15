@@ -172,14 +172,11 @@ def copycontent(src, dst):
             copy(fsrc, fdst)
 
 
-def expand_home(path):
-    if path[0] == "~":
-        # path = osp.join(osp.expanduser("~"), path[2:])
-        print("before", path)
-        path = str(Path(path).expanduser())
-        print("after", path)
-
-    return path
+def expand_home(path: Path | str) -> Path:
+    print("before", path)
+    path = str(Path(path).expanduser())
+    print("after", path)
+    return str(path)
 
 
 def get_fname(path: str):

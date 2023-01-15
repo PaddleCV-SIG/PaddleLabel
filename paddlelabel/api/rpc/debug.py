@@ -1,8 +1,8 @@
 import logging
 
-log = logging.getLogger("PaddleLabel")
+logger = logging.getLogger("paddlelabel")
 
 
 def cmdOutputDebugId(debug_id):
-    log.debug(f"Debug ID: {debug_id}")
+    logger.debug(f"Debug ID: {debug_id}")
     return "OK", 200

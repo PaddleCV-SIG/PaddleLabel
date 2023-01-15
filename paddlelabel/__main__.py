@@ -73,10 +73,10 @@ def run():
     host = "0.0.0.0" if args.lan else "127.0.0.1"
 
     # 3. configure logger and logging levels
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("paddlelabel")
     logger.propagate = False
     ch = logging.StreamHandler()
-    ch.setLevel(logging.NOTSET)
+    ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(levelname)s [paddlelabel.%(module)s.%(lineno)d]: %(message)s")
     ch.setFormatter(formatter)
     logger.addHandler(ch)
@@ -92,6 +92,8 @@ def run():
         logger.setLevel(logging.INFO)
 
     logger.info(f"Version: {paddlelabel.version}")
+    # logger.debug("debug")
+    # logger.critical("ceritical")
 
     # 4. run
     if not args.debug:

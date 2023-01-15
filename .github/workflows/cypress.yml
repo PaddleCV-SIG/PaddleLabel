@@ -69,7 +69,7 @@ jobs:
 
       - name: Start PaddleLabel
         run: |
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > paddlelabel.log  &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ~/paddlelabel.log  &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -88,6 +88,16 @@ jobs:
         run: |
           cd cypress
           yarn
+
+      - name: Download last run screenshots
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: build.yml
+          workflow_conclusion: success
+          name: PaddleLabel_built_package
+          search_artifacts: true
+          path: ../
 
       - name: Run test
         id: test
@@ -109,12 +119,13 @@ jobs:
         if: always() && steps.test.outcome == 'failure'
         run: |
           tree ./cypress/cypress/screenshots
-          cat paddlelabel.log
+          cat ~/paddlelabel.log
 
-      - name: Upload screenshots and videos
+      - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: Cypress_test_recs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
             ./cypress/cypress/
+            ~/paddlelabel.log

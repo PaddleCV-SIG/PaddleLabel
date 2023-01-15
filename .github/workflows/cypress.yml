@@ -148,6 +148,8 @@ jobs:
 
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
+          until ping -c1 localhost:1111 >/dev/null 2>&1; do :; done
+
           cd cypress
 
           # Xvfb :99 &
@@ -172,6 +174,7 @@ jobs:
           echo ============= paddlelabel.log ==============
 
       - uses: montudor/action-zip@v1
+        if: always() && steps.test.outcome == 'failure'
         with:
           working-directory: ./cypress/cypress/
           args: zip -qq -r Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip *

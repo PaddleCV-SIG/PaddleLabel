@@ -82,7 +82,7 @@ def run():
     logger.addHandler(ch)
 
     if args.debug:
-        logging.getLogger("werkzeug").setLevel(logging.INFO)
+        logging.getLogger("werkzeug").setLevel(logging.WARNING)
         logger.setLevel(logging.DEBUG)
     elif args.verbose:
         logging.getLogger("werkzeug").setLevel(logging.INFO)

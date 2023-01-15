@@ -64,7 +64,7 @@ jobs:
           cd 测试路径
           pwd
       - name: Parallel - install paddlelabel, download 3rd party test
-        uses: sambacha/parallelish@v1
+        uses: sambacha/parallelish@v1.0.0
         with:
           cmd1: |
             cd ~/测试路径/3rd_party/

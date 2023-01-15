@@ -138,6 +138,14 @@ jobs:
           cp ~/paddlelabel.log ./cypress/cypress/
           cat ./cypress/cypress/paddlelabel.log
 
+      - name: Upload logs to transfer.sh
+        if: always() && steps.test.outcome == 'failure'
+        run: |
+          cd ./cypress/cypress/
+          zip_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip
+          zip -r $zip_name *
+          curl --upload-file $zip_name https://transfer.sh/$zip_name
+
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v3

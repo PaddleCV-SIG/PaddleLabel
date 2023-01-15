@@ -78,7 +78,7 @@ jobs:
         run: |
           pip uninstall paddlelabel
           pip uninstall paddlelabel
-          pip install paddlelabel-*-py3-none-any.whl
+          pip install ../paddlelabel-*-py3-none-any.whl
 
       - name: Start PaddleLabel
         run: |

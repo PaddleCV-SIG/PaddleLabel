@@ -162,28 +162,23 @@ jobs:
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
         run: |
-          mkdir -p ./cypress/cypress/screenshots
-          if [ ${{ matrix.os }} == windows-latest ]
-          then
-            # cd ./cypress/cypress/screenshots
-            # cmd //c tree
-            # cd -
-            pwd
-          else
-            tree ./cypress/cypress/screenshots
-          fi
           cp ../paddlelabel.log ./cypress/cypress/
           echo ============= paddlelabel.log ==============
           cat ./cypress/cypress/paddlelabel.log
           echo ============= paddlelabel.log ==============
+
+      - uses: montudor/action-zip@v1
+        with:
+          working-directory: ./cypress/cypress/
+          args: zip -qq -r Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip *
 
       - name: Upload logs to transfer.sh
         if: always() && steps.test.outcome == 'failure'
         run: |
           cd ./cypress/cypress/
           zip_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip
-          zip -r $zip_name *
           curl --upload-file $zip_name https://transfer.sh/$zip_name
+          mv $zip_name ..
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

@@ -165,6 +165,7 @@ jobs:
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
         run: |
+          mkdir -p ./cypress/cypress/
           cp ../paddlelabel.log ./cypress/cypress/
           echo ============= paddlelabel.log ==============
           cat ./cypress/cypress/paddlelabel.log

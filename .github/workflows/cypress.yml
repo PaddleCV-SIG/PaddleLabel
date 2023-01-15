@@ -105,6 +105,7 @@ jobs:
       - name: Run test
         id: test
         run: |
+          cd cypress
 
           HOME=~/测试1/ paddlelabel --debug --port 1111 --lan &
 

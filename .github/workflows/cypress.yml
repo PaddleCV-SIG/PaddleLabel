@@ -111,18 +111,23 @@ jobs:
 
           HOME=~/测试2/ paddlelabel --debug --port 2222 --lan &
 
-          Xvfb :99 &
+          if [ ${{ matrix.os }} -ne windows-latest]
+          then
+            Xvfb :99 &
+          fi
+
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
           # Xvfb -screen 0 1024x768x24 :99 &
 
-          (
+          {
           HOME=~/测试1/ paddlelabel --debug --port 1111 --lan & ;
           DISPLAY=:99 npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
           --spec "e2e/6_Doc_Links.cy.ts" > 7.log 2>&1 ;
-          ) &
+          } &
+
           bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
           echo "=-=-=-=-=-=-=-=-=-=-=-==-"

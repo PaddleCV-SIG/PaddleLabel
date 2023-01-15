@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 40
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash
     strategy:
       matrix:
         node-version: ["19.x"]
@@ -34,15 +34,14 @@ jobs:
       - name: Checkout backend
         uses: actions/checkout@v3
 
-      - name: Setup mamba env ${{ matrix.python-version }}
-        uses: mamba-org/provision-with-micromamba@main
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          environment-file: false
-          environment-name: PaddleLabel
-          extra-specs: |
-            python=${{ matrix.python-version }}
-          cache-env: true
-          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      # - name: Random sleep up to 10 s
+      #   run: sleep $[$RANDOM % 10]
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
@@ -67,13 +66,15 @@ jobs:
           pwd
           ls
           } &
-          echo ========================================================
-          pip uninstall paddlelabel -y
-          echo ========================================================
+
           pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
           ls ~/测试路径/3rd_party/
+
+      - name: Start PaddleLabel
+        run: |
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -85,28 +86,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          # cache: "yarn"
-          # cache-dependency-path: "cypress/package.json"
+          cache: "yarn"
+          cache-dependency-path: "cypress/package.json"
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            **/node_modules
-            ./cypress/.cache/Cypress
-          key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
-
-      - name: Install packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+      - name: Install js deps
         run: |
           cd cypress
-          yarn add typescript
+          yarn --prefer-offline
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
@@ -120,19 +106,12 @@ jobs:
           if_no_artifact_found: ignore
 
       - name: Get failed tests, run them first later
-        if: always()
         run: |
           ls ../
 
       - name: Run test
         id: test
         run: |
-
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
-          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-
-          npx wait-port -t 40000 1111
-
           cd cypress
 
           # Xvfb :99 &
@@ -144,30 +123,28 @@ jobs:
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }}
+          --env os=${{ matrix.os }} \
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
         run: |
-          mkdir -p ./cypress/cypress/
-          cp ../paddlelabel.log ./cypress/cypress/
-          echo ============= paddlelabel.log ==============
+          if [ ${{ matrix.os }} == windows-latest ]
+          then
+            cd ./cypress/cypress/screenshots
+            cmd //c tree
+          else
+            tree ./cypress/cypress/screenshots
+          fi
+          cp ~/paddlelabel.log ./cypress/cypress/
           cat ./cypress/cypress/paddlelabel.log
-          echo ============= paddlelabel.log ==============
-
-      - uses: montudor/action-zip@v1
-        if: always() && steps.test.outcome == 'failure'
-        with:
-          working-directory: ./cypress/cypress/
-          args: zip -qq -r Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip *
 
       - name: Upload logs to transfer.sh
         if: always() && steps.test.outcome == 'failure'
         run: |
           cd ./cypress/cypress/
           zip_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip
+          zip -r $zip_name *
           curl --upload-file $zip_name https://transfer.sh/$zip_name
-          mv $zip_name ..
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

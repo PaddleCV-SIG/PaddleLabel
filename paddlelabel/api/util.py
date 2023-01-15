@@ -1,16 +1,19 @@
 import functools
 import time
+import logging
 
 import connexion
 import sqlalchemy as sa
 
 from paddlelabel.util import camel2snake
 
+logger = logging.getLogger("paddlelabel")
 # sa default to nullable=True
 nncol = functools.partial(sa.Column, nullable=False)
 
 # TODO: settle on how to use detail and title
 def abort(detail: str, status: int, title: str = ""):
+    logger.exception(detail)
     detail = detail.replace("\n", " ")
     title = title.replace("\n", " ")
     raise connexion.exceptions.ProblemException(

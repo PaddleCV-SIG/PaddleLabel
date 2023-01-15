@@ -10,7 +10,6 @@ from pathlib import Path
 import logging
 import base64
 
-import numpy as np
 import connexion
 
 from paddlelabel.config import db
@@ -31,7 +30,7 @@ from paddlelabel.task.util.file import (
 )
 import paddlelabel
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger("paddlelabel")
 
 
 def import_dataset(project, data_dir=None, label_format=None):
@@ -119,7 +118,7 @@ def import_additional_data(project_id):
 
 def pre_add(new_project, se):
     new_project.data_dir = expand_home(new_project.data_dir)
-
+    logger.info(f"importing dataset from {new_project.data_dir}")
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
     if not Path(new_project.data_dir).exists():
@@ -145,7 +144,7 @@ def post_add(new_project, se):
         db.session.delete(project)
         db.session.commit()
 
-        log.exception("Create project failed", exc_info=True)
+        logger.exception("Create project failed", exc_info=True)
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)

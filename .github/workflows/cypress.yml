@@ -37,10 +37,12 @@ jobs:
       - name: Setup mamba env ${{ matrix.python-version }}
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: env.yaml
+          environment-file: false
+          environment-name: PaddleLabel
           extra-specs: |
             python=${{ matrix.python-version }}
           cache-env: true
+          channels: conda-forge
 
       - name: Download PaddleLabel whl package
         uses: dawidd6/action-download-artifact@v2
@@ -72,10 +74,6 @@ jobs:
 
           wait
           ls ~/测试路径/3rd_party/
-
-      # - name: Start PaddleLabel
-      #   run: |
-      #     HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -112,11 +110,6 @@ jobs:
           cat package.json
           yarn
           yarn list
-
-      # - name: Install js deps
-      #   run: |
-      #     cd cypress
-      #     yarn --prefer-offline
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2

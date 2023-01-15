@@ -103,6 +103,7 @@ jobs:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           search_artifacts: true
           path: ../
+          if_no_artifact_found: ignore
 
       - name: Get failed tests, run them first later
         run: |

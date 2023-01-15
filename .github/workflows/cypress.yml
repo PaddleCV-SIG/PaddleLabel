@@ -164,9 +164,10 @@ jobs:
           mkdir -p ./cypress/cypress/screenshots
           if [ ${{ matrix.os }} == windows-latest ]
           then
-            cd ./cypress/cypress/screenshots
-            cmd //c tree
-            cd -
+            # cd ./cypress/cypress/screenshots
+            # cmd //c tree
+            # cd -
+            pwd
           else
             tree ./cypress/cypress/screenshots
           fi

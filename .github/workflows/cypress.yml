@@ -150,7 +150,7 @@ jobs:
 
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
-          yarn wait-port 1111
+          npx wait-port -t 10000 1111
 
           cd cypress
 

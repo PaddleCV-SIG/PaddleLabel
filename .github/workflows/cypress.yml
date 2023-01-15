@@ -22,10 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-12]
 
-        # python-version: ["3.11"]
+        python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -128,10 +128,10 @@ jobs:
         id: test
         run: |
 
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
 
-          npx wait-port -t 40000 1111
+          time npx wait-port -t 40000 1111
 
           cd cypress
 
@@ -155,19 +155,11 @@ jobs:
           cat ./cypress/cypress/paddlelabel.log
           echo ============= paddlelabel.log ==============
 
-      - uses: montudor/action-zip@v1
-        if: always() && steps.test.outcome == 'failure'
-        with:
-          working-directory: ./cypress/cypress/
-          args: zip -qq -r Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip *
-
-      - name: Upload logs to transfer.sh
-        if: always() && steps.test.outcome == 'failure'
-        run: |
           cd ./cypress/cypress/
-          zip_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip
-          curl --upload-file $zip_name https://transfer.sh/$zip_name
-          mv $zip_name ..
+          tar_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          tar czvf $tar_name *
+          curl --upload-file $zip_name https://transfer.sh/$tar_name
+          mv $tar_name ..
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'
@@ -175,4 +167,4 @@ jobs:
         with:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
-            ./cypress/cypress/
+            ./cypress/cypress/Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz

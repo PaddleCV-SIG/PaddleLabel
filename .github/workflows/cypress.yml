@@ -63,24 +63,6 @@ jobs:
           mkdir 测试路径/3rd_party
           cd 测试路径
           pwd
-      # - name: Download 3rd party test job
-      #   run: |
-      #     echo "
-      #       cd ~/测试路径/3rd_party/
-      #       pip install requests
-      #       python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
-      #       unzip -q paddlelabel_3rd_party_tests.zip
-      #     " >> down.sh
-      - name: Parallel - install paddlelabel, download 3rd party test
-        uses: sambacha/parallelish@v1.0.0
-        with:
-          cmd1: cat <<EOF | bash
-            cd ~/测试路径/3rd_party/
-            pip install requests
-            python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
-            unzip -q paddlelabel_3rd_party_tests.zip
-            EOF
-          cmd2: pip install ../paddlelabel-*-py3-none-any.whl
 
       # - name: Download 3rd party tests
       #   run: |
@@ -93,6 +75,19 @@ jobs:
       #   run: |
       #     pip uninstall paddlelabel
       #     pip install ../paddlelabel-*-py3-none-any.whl
+
+      - name: parallel
+        run: |
+          {
+          cd ~/测试路径/3rd_party/
+          pip install requests
+          python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+          unzip -q paddlelabel_3rd_party_tests.zip
+          } &
+
+          pip install ../paddlelabel-*-py3-none-any.whl
+
+          wait
 
       - name: Start PaddleLabel
         run: |

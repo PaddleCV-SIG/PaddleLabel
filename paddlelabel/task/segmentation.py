@@ -44,7 +44,7 @@ def draw_mask(data, mask_type="grayscale"):
         catg_mask = np.zeros((height, width))
         instance_mask = np.zeros((height, width))
     else:
-        abort(f"Unsupported mask type: {mask_type}", 500)
+        raise RuntimeError(f"Unsupported mask type: {mask_type}")
 
     for ann in data.annotations:
         if ann.type not in ["brush", "polygon", "points", "rubber"]:
@@ -289,7 +289,7 @@ class InstanceSegmentation(BaseTask):
             export_label_path = osp.join(export_label_dir, osp.basename(data_path).split(".")[0] + ".tiff")
 
             copy(data_path, export_data_dir)
-            height, width = map(int, data.size.split(",")[1:3])
+            # height, width = map(int, data.size.split(",")[1:3])
 
             mask = draw_mask(data, mask_type="instance")
             try:

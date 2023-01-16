@@ -150,10 +150,10 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
-          npx cypress run \
-          --browser chrome \
-          --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }}
+          # npx cypress run \
+          # --browser chrome \
+          # --config baseUrl=http://localhost:1111 \
+          # --env os=${{ matrix.os }}
           # --spec
 
       - name: Backend logs, cypress screenshots

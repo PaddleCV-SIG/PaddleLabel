@@ -125,6 +125,7 @@ jobs:
         run: |
           tar -xvf ../Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           ls ../
+          python cypress/order_tests.py
 
       - name: Run test
         id: test

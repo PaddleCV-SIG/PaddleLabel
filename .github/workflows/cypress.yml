@@ -124,7 +124,7 @@ jobs:
         if: always()
         run: |
           cd ..
-          tar -xvf ../Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           cd -
           echo "======"
           ls ../

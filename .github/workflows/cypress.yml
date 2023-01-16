@@ -26,8 +26,8 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-12]
 
         python-version: ["3.11"]
-        # os: [windows-latest]
-        os: [ubuntu-latest]
+        os: [windows-latest]
+        # os: [ubuntu-latest]
 
       fail-fast: false
 
@@ -62,15 +62,8 @@ jobs:
           {
           mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
-
-          # pip install requests
-          # python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
-
           curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
-          echo ======
-          ls
-          echo ======
-          unzip paddlelabel_3rd_party_tests.zip
+          unzip -q paddlelabel_3rd_party_tests.zip
           pwd
           ls
           } &
@@ -134,7 +127,10 @@ jobs:
         id: test_order
         run: |
           cd ..
-          tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          if [ -f Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz ]
+          then
+            tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          fi
           cd -
           echo "======"
           ls ../

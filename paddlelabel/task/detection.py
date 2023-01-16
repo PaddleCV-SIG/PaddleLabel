@@ -3,7 +3,8 @@ import os.path as osp
 from pathlib import Path
 import json
 from copy import deepcopy
-import logging
+
+# import logging
 from typing import List
 
 from pycocotoolse.coco import COCO
@@ -21,7 +22,7 @@ from paddlelabel.task.util import (
 )
 from paddlelabel.task.base import BaseTask
 
-log = logging.getLogger("PaddleLabel")
+# log = logging.getLogger("PaddleLabel")
 
 
 # TODO: move to io

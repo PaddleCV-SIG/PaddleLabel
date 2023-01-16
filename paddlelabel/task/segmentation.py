@@ -2,7 +2,8 @@ from __future__ import annotations
 import os.path as osp
 import json
 from copy import deepcopy
-import logging
+
+# import logging
 
 import tifffile as tif
 import numpy as np
@@ -18,7 +19,7 @@ from paddlelabel.api.model import Task, Label, Annotation
 from paddlelabel.api.util import abort
 from paddlelabel.api.rpc.seg import polygon2points
 
-log = logging.getLogger("PaddleLabel")
+# log = logging.getLogger("PaddleLabel")
 
 
 def draw_mask(data, mask_type="grayscale"):

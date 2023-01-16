@@ -70,9 +70,7 @@ def run():
     if not pyVerGt():
         print(pyVerWarning)
 
-    host = "0.0.0.0" if args.lan else "127.0.0.1"
-
-    # 3. configure logger and logging levels
+    # 3. configure logger
     logger = logging.getLogger("paddlelabel")
     logger.propagate = False
     ch = logging.StreamHandler()
@@ -82,27 +80,32 @@ def run():
     logger.addHandler(ch)
 
     if args.debug:
-        logging.getLogger("werkzeug").setLevel(logging.WARNING)
-        logger.setLevel(logging.DEBUG)
+        levels = (logging.WARNING, logging.DEBUG)
     elif args.verbose:
-        logging.getLogger("werkzeug").setLevel(logging.INFO)
-        logger.setLevel(logging.DEBUG)
+        levels = (logging.INFO, logging.DEBUG)
     else:
-        logging.getLogger("werkzeug").setLevel(logging.WARNING)
-        logger.setLevel(logging.INFO)
+        levels = (logging.WARNING, logging.INFO)
+
+    logging.getLogger("werkzeug").setLevel(levels[0])
+    logger.setLevel(levels[1])
+    for handler in logger.handlers:
+        handler.setLevel(levels[1])
+
+    host = "0.0.0.0" if args.lan else "127.0.0.1"
+
+    # 4. prepare and start
 
     logger.info(f"Version: {paddlelabel.version}")
-    # logger.debug("debug")
-    # logger.critical("ceritical")
+    logger.info(f"PaddleLabel is running at http://localhost:{args.port}")
 
-    # 4. run
+    # 4.1 create sample datasets
+    prep_samples()
+
+    # 4.2 open browser
     if not args.debug:
         webbrowser.open(f"http://localhost:{args.port}")
 
-    # 5. create sample datasets
-    prep_samples()
-
-    print(f"PaddleLabel is running at http://localhost:{args.port}")
+    # 4.3 start app
     connexion_app.run(host=host, port=args.port, debug=args.debug)
 
 

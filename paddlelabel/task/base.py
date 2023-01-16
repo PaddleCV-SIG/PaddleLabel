@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import logging
-import os
 import os.path as osp
 from collections import deque
-from typing import Set
 from pathlib import Path
 import cv2
 
@@ -16,8 +14,6 @@ from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
 """
 Base for import/export and other task specific operations.
 """
-
-log = logging.getLogger(__name__)
 
 
 # TODO: change data_dir to pathlib.path
@@ -48,6 +44,7 @@ class BaseTask:
             Project with given project_id not found.
         """
 
+        self.logger = logging.getLogger("paddlelabel")
         self.task_cache: list[Task] = []
 
         # 1. set project
@@ -197,7 +194,7 @@ class BaseTask:
                 task.annotations.append(ann)  # TODO: remove this, annotation should only be under data
                 data.annotations.append(ann)
                 total_anns += 1
-            log.info(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
+            self.logger.info(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
 
         self.task_cache.append(task)
 
@@ -206,7 +203,7 @@ class BaseTask:
         self.task_cache.sort(key=lambda k: k.datas[0].path)
         for task in self.task_cache:
             db.session.add(task)
-        log.info(
+        self.logger.info(
             f"{len(self.task_cache)} tasks and {sum(len(t.annotations) for t in self.task_cache)} annotations imported"
         )
         self.task_cache = []
@@ -429,7 +426,7 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                log.info(f"Adding label {label}")
+                self.logger.info(f"Adding label {label}")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]

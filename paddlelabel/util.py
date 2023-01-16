@@ -1,7 +1,6 @@
 import string
 import random
 import platform
-import logging
 import subprocess
 import sys
 import traceback
@@ -11,7 +10,7 @@ import connexion
 
 def rand_string(length):
     chars = string.ascii_letters + string.punctuation
-    return "".join(random.choice(chars) for x in range(20))
+    return "".join(random.choice(chars) for x in range(length))
 
 
 def camel2snake(string):
@@ -159,10 +158,10 @@ def version_check(name="paddlelabel", log=False):
     if latest_version != current_version:
         return True
     else:
-        if log:
-            logging.info(
-                f"Currently running {name}=={current_version}, a newer version {latest_version} is avaliable on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
-            )
+        # if log:
+        #     logging.info(
+        #         f"Currently running {name}=={current_version}, a newer version {latest_version} is avaliable on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
+        #     )
         return False
 
 

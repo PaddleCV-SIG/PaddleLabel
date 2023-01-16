@@ -22,11 +22,11 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
-        os: [ubuntu-latest, windows-latest, macos-12]
+        # python-version: ["3.11", "3.10", "3.9", "3.8"]
+        # os: [ubuntu-latest, windows-latest, macos-12]
 
-        # python-version: ["3.11"]
-        # os: [ubuntu-latest]
+        python-version: ["3.11"]
+        os: [windows-latest]
 
       fail-fast: false
 
@@ -61,8 +61,11 @@ jobs:
           {
           mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
-          pip install requests
-          python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+
+          # pip install requests
+          # python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+
+          curl -O https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           unzip -q paddlelabel_3rd_party_tests.zip
           pwd
           ls
@@ -122,16 +125,19 @@ jobs:
       - name: Get failed tests, run them first later
         if: always()
         run: |
+          tar -xvf ../Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           ls ../
 
       - name: Run test
         id: test
         run: |
 
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
 
-          npx wait-port -t 40000 1111
+
+          time npx wait-port -t 40000 1111
 
           cd cypress
 
@@ -145,6 +151,7 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }}
+          # --spec
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'
@@ -155,19 +162,13 @@ jobs:
           cat ./cypress/cypress/paddlelabel.log
           echo ============= paddlelabel.log ==============
 
-      - uses: montudor/action-zip@v1
-        if: always() && steps.test.outcome == 'failure'
-        with:
-          working-directory: ./cypress/cypress/
-          args: zip -qq -r Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip *
-
-      - name: Upload logs to transfer.sh
-        if: always() && steps.test.outcome == 'failure'
-        run: |
           cd ./cypress/cypress/
-          zip_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.zip
-          curl --upload-file $zip_name https://transfer.sh/$zip_name
-          mv $zip_name ..
+          tar_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          tar czvf $tar_name *
+          ls -lah $tar_name
+          echo https://transfer.sh/$tar_name
+          curl --upload-file "$zip_name" "https://transfer.sh/$tar_name"
+          mv $tar_name ..
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'
@@ -175,4 +176,4 @@ jobs:
         with:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
           path: |
-            ./cypress/cypress/
+            ./cypress/cypress/Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz

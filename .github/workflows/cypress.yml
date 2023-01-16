@@ -123,8 +123,12 @@ jobs:
       - name: Get failed tests, run them first later
         if: always()
         run: |
+          cd ..
           tar -xvf ../Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          cd -
+          echo "======"
           ls ../
+          echo "======"
           python cypress/order_tests.py
 
       - name: Run test

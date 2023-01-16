@@ -547,7 +547,7 @@ class SemanticSegmentation(InstanceSegmentation):
             "mask": self.mask_exporter,
             "coco": self.coco_exporter,
         }
-        self.default_importer = self.mask_importer
+        # self.default_importer = self.mask_importer
         self.default_exporter = self.mask_exporter
 
     def mask_importer(

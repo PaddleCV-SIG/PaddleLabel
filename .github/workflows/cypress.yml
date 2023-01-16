@@ -66,14 +66,15 @@ jobs:
           # python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
 
           curl -O https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
+          ls
           unzip -q paddlelabel_3rd_party_tests.zip
           pwd
           ls
           } &
-          echo ========================================================
-          pip uninstall paddlelabel -y
-          echo ========================================================
-          pip install ../paddlelabel-*-py3-none-any.whl
+          # echo ========================================================
+          # pip uninstall paddlelabel -y
+          # echo ========================================================
+          # pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
           ls ~/测试路径/3rd_party/

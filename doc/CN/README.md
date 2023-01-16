@@ -25,10 +25,9 @@
 
 - 【2023-01-17】 :fire: PaddleLabel 1.0 版本发布！
 
-  - 【OCR】
-  - 【数据集格式】
-  - 【导入/导出】
-  - 【文档】
+  - 【OCR】新增 OCR 项目标注能力，支持使用 [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/PP-OCRv3_introduction.md) 模型进行预标注
+  - 【数据集格式】新增 EISeg 格式导入，新增大量自动化测试，修复诸多导入导出 bug
+  - 【文档】更新，梳理文档，并和软件一同打包发布，进一步降低上手难度
 
 - 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
 

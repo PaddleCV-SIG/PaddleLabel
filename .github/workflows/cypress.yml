@@ -61,8 +61,11 @@ jobs:
           {
           mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
-          pip install requests
-          python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+
+          # pip install requests
+          # python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
+
+          curl -O https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           unzip -q paddlelabel_3rd_party_tests.zip
           pwd
           ls
@@ -122,6 +125,7 @@ jobs:
       - name: Get failed tests, run them first later
         if: always()
         run: |
+          tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           ls ../
 
       - name: Run test
@@ -129,8 +133,9 @@ jobs:
         run: |
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+
 
           time npx wait-port -t 40000 1111
 
@@ -145,7 +150,8 @@ jobs:
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }}
+          --env os=${{ matrix.os }} \
+          --spec
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

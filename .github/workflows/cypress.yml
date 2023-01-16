@@ -26,7 +26,8 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-12]
 
         python-version: ["3.11"]
-        os: [windows-latest]
+        # os: [windows-latest]
+        os: [ubuntu-latest]
 
       fail-fast: false
 
@@ -73,10 +74,10 @@ jobs:
           pwd
           ls
           } &
-          # echo ========================================================
-          # pip uninstall paddlelabel -y
-          # echo ========================================================
-          # pip install ../paddlelabel-*-py3-none-any.whl
+          echo ========================================================
+          pip uninstall paddlelabel -y
+          echo ========================================================
+          pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
           res=$?
@@ -130,6 +131,7 @@ jobs:
 
       - name: Get failed tests, run them first later
         if: always()
+        id: test_order
         run: |
           cd ..
           tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
@@ -137,7 +139,8 @@ jobs:
           echo "======"
           ls ../
           echo "======"
-          python cypress/order_tests.py
+          echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
+          # python cypress/order_tests.py
 
       - name: Run test
         id: test
@@ -146,7 +149,6 @@ jobs:
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
-
 
           time npx wait-port -t 40000 1111
 
@@ -158,11 +160,13 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
+          echo ${{ steps.test_order.tests }}
+
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }}
-          --spec e2e/1_Import_Samples.cy.ts
+          --spec ${{ steps.test_order.tests }}
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

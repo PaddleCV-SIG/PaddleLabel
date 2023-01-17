@@ -14,7 +14,7 @@ on:
 jobs:
   e2e_test:
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
+    # continue-on-error: true
     timeout-minutes: 40
     defaults:
       run:
@@ -124,6 +124,7 @@ jobs:
           yarn
           # yarn add typescript
 
+        # https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -131,7 +132,7 @@ jobs:
           workflow: cypress.yml
           workflow_conclusion: failure
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
-          search_artifacts: true
+          # search_artifacts: true
           path: ../
           if_no_artifact_found: ignore
 

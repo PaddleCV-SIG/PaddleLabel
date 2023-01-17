@@ -45,16 +45,23 @@ jobs:
           cache-env: true
           channels: conda-forge
 
+      # - name: Download PaddleLabel whl package
+      #   uses: dawidd6/action-download-artifact@v2
+      #   id: download_whl
+      #   with:
+      #     github_token: ${{secrets.GITHUB_TOKEN}}
+      #     workflow: build.yml
+      #     workflow_conclusion: success
+      #     name: PaddleLabel_built_package
+      #     search_artifacts: true
+      #     path: ../
+
       - name: Download PaddleLabel whl package
-        uses: dawidd6/action-download-artifact@v2
-        id: download_whl
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow: build.yml
-          workflow_conclusion: success
-          name: PaddleLabel_built_package
-          search_artifacts: true
-          path: ../
+        run: |
+          curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+          pwd
+          ls
+          unzip PaddleLabel_built_package.zip
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -70,7 +77,9 @@ jobs:
           echo ========================================================
           pip uninstall paddlelabel -y
           echo ========================================================
-          pip install ../paddlelabel-*-py3-none-any.whl
+          pwd
+          ls
+          pip install paddlelabel-*-py3-none-any.whl
 
           wait
           res=$?

@@ -174,13 +174,13 @@ jobs:
 
           echo ${{ steps.test_order.outputs.tests }}
 
-          python cypress/order_tests.py
+          python order_tests.py
 
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec $(python cypress/order_tests.py)
+          --spec $(python order_tests.py)
           # --spec ${{ steps.test_order.outputs.tests }}
           # --spec e2e/6_Doc_Links.cy.ts
 

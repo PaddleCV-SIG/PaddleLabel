@@ -102,15 +102,16 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             **/node_modules
-            ~/.cache/Cypress
-            ~/AppData\Local\Cypress\Cache
+            # ~/.cache/Cypress
+            # ~/AppData\Local\Cypress\Cache
           key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
 
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           cd cypress
-          yarn add typescript
+          yarn
+          # yarn add typescript
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
@@ -148,9 +149,9 @@ jobs:
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
 
-          time npx wait-port -t 40000 1111
-
           cd cypress
+
+          time npx wait-port -t 40000 1111
 
           # Xvfb :99 &
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb

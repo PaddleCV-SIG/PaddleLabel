@@ -14,6 +14,7 @@ on:
 jobs:
   e2e_test:
     runs-on: ${{ matrix.os }}
+    # continue-on-error: true
     timeout-minutes: 40
     defaults:
       run:
@@ -22,11 +23,11 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8"]
-        # os: [ubuntu-latest, windows-latest, macos-12]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
-        python-version: ["3.11"]
-        os: [windows-latest, ubuntu-latest]
+        # python-version: ["3.11"]
+        # os: [windows-latest, ubuntu-latest, macos-latest]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -45,16 +46,23 @@ jobs:
           cache-env: true
           channels: conda-forge
 
+      # - name: Download PaddleLabel whl package
+      #   uses: dawidd6/action-download-artifact@v2
+      #   id: download_whl
+      #   with:
+      #     github_token: ${{secrets.GITHUB_TOKEN}}
+      #     workflow: build.yml
+      #     workflow_conclusion: success
+      #     name: PaddleLabel_built_package
+      #     search_artifacts: true
+      #     path: ../
+
       - name: Download PaddleLabel whl package
-        uses: dawidd6/action-download-artifact@v2
-        id: download_whl
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow: build.yml
-          workflow_conclusion: success
-          name: PaddleLabel_built_package
-          search_artifacts: true
-          path: ../
+        run: |
+          curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+          pwd
+          ls
+          unzip PaddleLabel_built_package.zip
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -70,7 +78,9 @@ jobs:
           echo ========================================================
           pip uninstall paddlelabel -y
           echo ========================================================
-          pip install ../paddlelabel-*-py3-none-any.whl
+          pwd
+          ls
+          pip install paddlelabel-*-py3-none-any.whl
 
           wait
           res=$?
@@ -102,15 +112,19 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             **/node_modules
-            ./cypress/.cache/Cypress
+            ~/.cache/Cypress
+            ~/AppData/Local/Cypress/Cache
+            ~/Library/Caches/Cypress
           key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
 
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           cd cypress
-          yarn add typescript
+          yarn
+          # yarn add typescript
 
+        # https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -118,7 +132,7 @@ jobs:
           workflow: cypress.yml
           workflow_conclusion: failure
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
-          search_artifacts: true
+          # search_artifacts: true
           path: ../
           if_no_artifact_found: ignore
 
@@ -135,8 +149,10 @@ jobs:
           echo "======"
           ls ../
           echo "======"
-          echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
-          # python cypress/order_tests.py
+          python cypress/order_tests.py > test_order
+          cat test_order
+          echo "tests=$(cat test_order)" >> $GITHUB_OUTPUT
+          python -c "import platform; print(platform.system().lower())"
 
       - name: Run test
         id: test
@@ -144,11 +160,11 @@ jobs:
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
-
-          time npx wait-port -t 40000 1111
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
 
           cd cypress
+
+          time npx wait-port -t 40000 1111
 
           # Xvfb :99 &
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
@@ -156,13 +172,17 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
-          echo ${{ steps.test_order.tests }}
+          echo ${{ steps.test_order.outputs.tests }}
+
+          python order_tests.py
 
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }}
-          --spec ${{ steps.test_order.tests }}
+          --env os=${{ matrix.os }} \
+          --spec $(python order_tests.py)
+          # --spec ${{ steps.test_order.outputs.tests }}
+          # --spec e2e/6_Doc_Links.cy.ts
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

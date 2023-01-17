@@ -135,8 +135,9 @@ jobs:
           echo "======"
           ls ../
           echo "======"
-          echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
-          # python cypress/order_tests.py
+          python cypress/order_tests.py > test_order
+          cat test_order
+          echo "tests=$(cat test_order)" >> $GITHUB_OUTPUT
 
       - name: Run test
         id: test

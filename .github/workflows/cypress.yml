@@ -22,11 +22,11 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8"]
-        # os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
-        python-version: ["3.11"]
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        # python-version: ["3.11"]
+        # os: [windows-latest, ubuntu-latest, macos-latest]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -166,8 +166,8 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec e2e/6_Doc_Links.cy.ts
-          # --spec ${{ steps.test_order.outputs.tests }}
+          --spec ${{ steps.test_order.outputs.tests }}
+          # --spec e2e/6_Doc_Links.cy.ts
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

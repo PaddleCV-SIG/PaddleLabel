@@ -23,7 +23,7 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
         # python-version: ["3.11"]
@@ -199,7 +199,11 @@ jobs:
           ls -lah $tar_name
           echo https://transfer.sh/$tar_name
           curl --upload-file "$zip_name" "https://transfer.sh/$tar_name"
-          mv $tar_name ..
+          pwd
+          echo "++++"
+          ls
+          echo "++++"
+          # mv $tar_name ..
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

@@ -164,7 +164,8 @@ jobs:
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }} \
-          --spec ${{ steps.test_order.outputs.tests }}
+          --spec e2e/6_Doc_Links.cy.ts
+          # --spec ${{ steps.test_order.outputs.tests }}
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

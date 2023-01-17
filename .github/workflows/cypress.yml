@@ -145,7 +145,7 @@ jobs:
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
 
           time npx wait-port -t 40000 1111
 

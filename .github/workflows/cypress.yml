@@ -157,7 +157,7 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
-          echo ${{ steps.test_order.tests }}
+          echo ${{ steps.test_order.outputs.tests }}
 
           npx cypress run \
           --browser chrome \

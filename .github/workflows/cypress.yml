@@ -26,13 +26,14 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-12]
 
         python-version: ["3.11"]
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-latest]
+        # os: [ubuntu-latest]
 
       fail-fast: false
 
     steps:
-      - name: Checkout backend
-        uses: actions/checkout@v3
+      # - name: Checkout backend
+      #   uses: actions/checkout@v3
 
       - name: Setup mamba env ${{ matrix.python-version }}
         uses: mamba-org/provision-with-micromamba@main
@@ -61,11 +62,7 @@ jobs:
           {
           mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
-
-          # pip install requests
-          # python -c "import requests; file = requests.get('https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip'); open('paddlelabel_3rd_party_tests.zip', 'wb').write(file.content)"
-
-          curl -O https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
+          curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           unzip -q paddlelabel_3rd_party_tests.zip
           pwd
           ls
@@ -76,7 +73,12 @@ jobs:
           pip install ../paddlelabel-*-py3-none-any.whl
 
           wait
+          res=$?
           ls ~/测试路径/3rd_party/
+          if [ $res -ne 0 ]
+          then
+            exit $res
+          fi
 
       - name: Checkout frontend project
         uses: actions/checkout@v3
@@ -88,8 +90,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          # cache: "yarn"
-          # cache-dependency-path: "cypress/package.json"
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -124,9 +124,19 @@ jobs:
 
       - name: Get failed tests, run them first later
         if: always()
+        id: test_order
         run: |
-          tar -xvf ../Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          cd ..
+          if [ -f Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz ]
+          then
+            tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
+          fi
+          cd -
+          echo "======"
           ls ../
+          echo "======"
+          echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
+          # python cypress/order_tests.py
 
       - name: Run test
         id: test
@@ -135,7 +145,6 @@ jobs:
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 > ../paddlelabel.log  &
-
 
           time npx wait-port -t 40000 1111
 
@@ -147,11 +156,13 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
+          echo ${{ steps.test_order.tests }}
+
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
           --env os=${{ matrix.os }}
-          # --spec
+          --spec ${{ steps.test_order.tests }}
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

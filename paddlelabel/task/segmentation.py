@@ -68,7 +68,8 @@ def draw_mask(data, mask_type="grayscale"):
             print(result, "to float error, plz open an issue for this")
 
         # TODO: patch. [0,0,...] means points. to be changed
-        if result[0] == 0 and result[1] == 0:
+        # if result[0] == 0 and result[1] == 0:
+        if result[0] == 0:
             ann.type = "points"
 
         # TODO: patch. [not 0, 0] means brush. to be changed

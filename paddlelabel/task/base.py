@@ -194,7 +194,7 @@ class BaseTask:
                 task.annotations.append(ann)  # TODO: remove this, annotation should only be under data
                 data.annotations.append(ann)
                 total_anns += 1
-            self.logger.info(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
+            self.logger.debug(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
 
         self.task_cache.append(task)
 
@@ -426,7 +426,7 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                self.logger.info(f"Adding label {label}")
+                self.logger.debug(f"Adding label {label}")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]

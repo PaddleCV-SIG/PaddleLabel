@@ -1,4 +1,3 @@
-
 # 图像分类手动标注
 
 <!-- TOC -->
@@ -149,15 +148,15 @@ image/monkey.jpg monkey yellow black
 
 创建项目后会自动跳转到标注页面
 
-1. 您可以点击右侧标签列表下方“添加标签”按钮创建一个新类别
-   ![](/PaddleLabel/CN/assets/add_label.png)
-   ![](/PaddleLabel/CN/assets/test_label.png)
+1. 您可以点击右侧类别列表下方“添加类别”按钮创建一个新类别
+   ![](/doc/CN/assets/add_label.png)
+   ![](/doc/CN/assets/test_label.png)
 2. 您可以点击一个类别右侧的 x 删除该类别。注：如果有图片属于该类别，该类别不能被删除
-3. 点击类别进行标注，单分类项目仅允许选中一个类别，多分类项目可以同时选中多个类别。标注结果将自动保存
+3. 点击类别进行标注，单分类项目仅允许选中一个类别，多分类项目可以同时选中多个类别。每次选择后标注结果将自动保存，页面上方将提示“保存成功”
 4. 完成一张图片标注后点击画布左右 < > 按钮切换图片
 
 <video controls src="https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/clas_ann_demo.mp4" width="100%"></video>
 
 ## 下一步
 
-您可以继续浏览[自动预标注使用方法](/PaddleLabel/CN/ML/auto_inference.md)了解如何使用 PaddleLabel-ML 提高标注效率。
+您可以继续浏览[自动预标注使用方法](/doc/CN/ML/auto_inference.md)了解如何使用 PaddleLabel-ML 提高分类项目标注效率。

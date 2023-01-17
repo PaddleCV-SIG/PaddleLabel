@@ -162,8 +162,8 @@ jobs:
           npx cypress run \
           --browser chrome \
           --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }}
-          --spec ${{ steps.test_order.tests }}
+          --env os=${{ matrix.os }} \
+          --spec ${{ steps.test_order.outputs.tests }}
 
       - name: Backend logs, cypress screenshots
         if: always() && steps.test.outcome == 'failure'

@@ -33,8 +33,11 @@ jobs:
       fail-fast: false
 
     steps:
-      # - name: Checkout backend
-      #   uses: actions/checkout@v3
+      - name: test
+        run: |
+          where bash
+          bash --version
+          which bash
 
       - name: Setup mamba env ${{ matrix.python-version }}
         uses: mamba-org/provision-with-micromamba@main
@@ -158,7 +161,13 @@ jobs:
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
+          if [ ${{ matrix.os }} -eq windows-latest ]
+          then
+            Set-ADUser -Identity runneradmin -HomeDirectory ~/测试路径/
+          fi
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+
+          ls ~/测试路径/3rd_party/
 
           cd cypress
 

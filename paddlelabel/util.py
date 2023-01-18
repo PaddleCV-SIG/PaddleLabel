@@ -4,6 +4,7 @@ import platform
 import subprocess
 import sys
 import traceback
+import logging
 
 import connexion
 
@@ -145,35 +146,54 @@ class Resolver(connexion.resolver.RestyResolver):
         return self.resolve_operation_id_using_rest_semantics(operation)
 
 
-def can_update(name="paddlelabel", log=False):
-    latest_version = str(
-        subprocess.run([sys.executable, "-m", "pip", "install", f"{name}==", "--retries", "1"], capture_output=True)
-    )
-    version_start = "(from versions:"
-    latest_version = latest_version[latest_version.find(version_start) + len(version_start) :]
-    latest_version = latest_version[: latest_version.find(")")]
-    latest_version = latest_version.replace(" ", "").split(",")[-1]
-    print("latest_version", latest_version)
-    if latest_version == "none":
-        return False
+def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
+    """
+    Check pypi to see if a package can be updated
 
-    current_version = subprocess.run(
-        [sys.executable, "-m", "pip", "show", "{}".format(name)], capture_output=True
-    ).stdout.decode("utf8")
-    if len(current_version) == 0:
-        return False
-    print("current_version", current_version)
-    current_version = current_version[current_version.find("Version:") + 8 :]
-    current_version = current_version[: current_version.find("\\n")].replace(" ", "")
+    Parameters
+    ----------
+    name : str, optional
+        Package name. Defaults to "paddlelabel"
+    log : bool, optional
+        Whether to print a message to cmd if update is available. Defaults to False
 
-    if latest_version >= current_version:
-        # if log:
-        #     logging.info(
-        #         f"Currently running {name}=={current_version}, a newer version {latest_version} is avaliable on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
-        #     )
+    Returns
+    -------
+    bool
+        If the package is upgradeable from pypi
+    """
+    try:
+        latest_version = str(
+            subprocess.run([sys.executable, "-m", "pip", "install", f"{name}==", "--retries", "1"], capture_output=True)
+        )
+        version_start = "(from versions:"
+        latest_version = latest_version[latest_version.find(version_start) + len(version_start) :]
+        latest_version = latest_version[: latest_version.find(")")]
+        latest_version = latest_version.replace(" ", "").split(",")[-1]
+
+        if latest_version == "none":
+            return False
+
+        current_version = subprocess.run(
+            [sys.executable, "-m", "pip", "show", "{}".format(name)], capture_output=True
+        ).stdout.decode("utf8")
+        if len(current_version) == 0:
+            return False
+        current_version = current_version[current_version.find("Version:") + len("Version:") :]
+        current_version = current_version.split("\n")[0]
+
+        if latest_version > current_version:
+            if log:
+                logger = logging.getLogger("paddlelabel")
+                logger.info(
+                    f"Currently running {name}=={current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
+                )
+            return True
+        else:
+            return False
+    except:
+        logging.getLogger("paddlelabel").exception("Check for update failed")
         return False
-    else:
-        return True
 
 
 def backend_error(error):

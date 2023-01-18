@@ -68,9 +68,6 @@ paddlelabel
     if not pyVerGt():
         print(pyVerWarning)
 
-    # check for updates
-    can_update(log=True)
-
     # 3. configure logger
     logger = logging.getLogger("paddlelabel")
     logger.propagate = False
@@ -93,6 +90,9 @@ paddlelabel
         handler.setLevel(levels[1])
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"
+
+    # check for updates
+    can_update(log=True)
 
     # 4. prepare and start
 

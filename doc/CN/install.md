@@ -3,11 +3,11 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 
 <!-- /TOC -->
@@ -26,7 +26,7 @@ conda activate paddlelabel
 ### 通过 pip 安装
 
 ```shell
-pip install --upgrade paddlelabel
+pip install --upgrade paddlelabel # 更新和安装后升级 paddlelabel 都是用这行命令
 ```
 
 看到类似于 `Successfully installed paddlelabel-0.5.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
@@ -59,7 +59,7 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.5.0-py3-none-any.whl 
 ### 通过源码安装
 
 <details> <summary markdown='span'>详细步骤</summary>
-以下命令针对bash命令行，一些类似cp，mv指令可能无法在powershell或cmd.exe中执行。不过每步的作用都有说明，可以用文件管理器替代文件操作命令。
+以下命令针对bash命令行，一些类似cp，mv指令可能无法在powershell或cmd.exe中执行。不过每步的作用都有说明，可以在文件管理器中完成等效的操作。
 
 1. 首先将后端代码克隆到本地
 
@@ -105,21 +105,19 @@ paddlelabel  # 启动paddlelabel
 pdlabel # 缩写，和paddlelabel完全相同
 ```
 
-PaddleLabel 启动后会自动在浏览器中打开网页，推荐使用 Chrome。
+PaddleLabel 启动后会自动在浏览器中打开网页。
 
 ### 更多启动选项
 
 - -p, --port：指定运行端口。PaddleLabel 默认运行网址为[http://localhost:17995](http://localhost:17995)
-- -l, --lan：暴露服务到局域网。开启后可以在同一局域网下机器 A 运行 PaddleLabel，在电脑 B 或平板 C 上进行标注。在 docker 中运行时也需要添加 -l
-- --debug, -d：在命令行中显示更详细的 log，可用于观察导入导出过程中的行为，定位问题等
+- -l, --lan：暴露服务到局域网。开启后可以在同一局域网下机器 A 上运行 PaddleLabel，在电脑 B 或平板 C 上进行标注。在 docker 中运行时也需要添加 -l
+- -d， --debug：在命令行中显示更详细的 log，可用于观察导入导出过程中的行为，定位问题等
 
 ```shell
 paddlelabel --port 8000 --lan --debug # 在8000端口上运行，将服务暴露到局域网，显示详细log
 ```
 
 更多启动参数可以使用 `paddlelabel -h` 查看。
-
-<!-- TODO: 升级-->
 
 ## 下一步
 

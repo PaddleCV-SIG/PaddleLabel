@@ -51,9 +51,7 @@ def run():
     # 1. ensure port not in use
     if not args.debug and not args.verbose and portInUse(args.port):
         print(
-            f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}].".encode(
-                "utf-8"
-            ),
+            f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
         )
         exit()
 

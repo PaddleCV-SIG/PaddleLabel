@@ -61,6 +61,8 @@ jobs:
           pwd
           ls
           } &
+          bgid=$!
+          echo $bgid
 
           # download latest build
           curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
@@ -72,13 +74,13 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
 
           # start paddlelabel on *nux
-          if [ ${{ matrix.os != 'windows-latest' }} ]
+          if [ ${{ matrix.os }} -ne windows-latest ]
           then
             HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           fi
 
           # wait for bg job
-          wait
+          wait $bgid
           res=$?
           ls ~/测试路径/3rd_party/
           if [ $res -ne 0 ]
@@ -137,7 +139,6 @@ jobs:
           then
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
-
 
       - name: Run test, win
         id: test-win

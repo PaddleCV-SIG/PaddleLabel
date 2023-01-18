@@ -74,7 +74,7 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
 
           # start paddlelabel on *nux
-          if [ ${{ matrix.os != "windows-latest" }} ]
+          if [ ${{ matrix.os }} -ne windows-latest]
           then
             HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           fi
@@ -146,7 +146,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           pip install pythonw
-          cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>stderr.txt)
+          cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>stderr.txt
           # pythonw -m paddlelabel --debug --port 1111 --lan
 
           cd cypress

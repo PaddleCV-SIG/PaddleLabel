@@ -94,32 +94,32 @@ jobs:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
 
-      - name: Setup node env
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
+      # - name: Setup node env
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      # - name: Get yarn cache directory path
+      #   id: yarn-cache-dir-path
+      #   run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn dependencies
-        uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            **/node_modules
-            ~/.cache/Cypress
-            ~/AppData/Local/Cypress/Cache
-            ~/Library/Caches/Cypress
-          key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
+      # - name: Cache yarn dependencies
+      #   uses: actions/cache@v3
+      #   id: yarn-cache
+      #   with:
+      #     path: |
+      #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      #       **/node_modules
+      #       ~/.cache/Cypress
+      #       ~/AppData/Local/Cypress/Cache
+      #       ~/Library/Caches/Cypress
+      #     key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
 
-      - name: Install packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          cd cypress
-          yarn
+      # - name: Install packages
+      #   if: steps.yarn-cache.outputs.cache-hit != 'true'
+      #   run: |
+      #     cd cypress
+      #     yarn
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2

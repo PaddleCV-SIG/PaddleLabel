@@ -74,7 +74,7 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
 
           # start paddlelabel on *nux
-          if [ ${{ matrix.os }} -ne windows-latest]
+          if [ ${{ matrix.os }} -ne windows-latest ]
           then
             HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           fi

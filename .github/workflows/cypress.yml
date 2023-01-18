@@ -143,26 +143,6 @@ jobs:
 
           echo "tests=$(python order_tests.py)" >> $GITHUB_OUTPUT
 
-      # - name: Run test, win
-      #   id: test-win
-      #   shell: pwsh
-      #   if: ${{ matrix.os == 'windows-latest' }}
-      #   run: |
-      #     # paddlelabel --debug --port 1111 --lan
-      #     cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>paddlelabel.log
-
-      #     cd cypress
-
-      #     npx wait-port -t 40000 1111
-
-      #     npx cypress run `
-      #     --browser chrome `
-      #     --config baseUrl=http://localhost:1111 `
-      #     --env os=${{ matrix.os }} `
-      #     --spec $(python order_tests.py)
-
-      #     # --spec e2e/6_Doc_Links.cy.ts
-
       # - name: Run test, *nux
       #   id: test-nux
       #   if: ${{ matrix.os != 'windows-latest' }}
@@ -185,6 +165,11 @@ jobs:
       #     --env os=${{ matrix.os }} \
       #     --spec $(python order_tests.py)
       #     # --spec e2e/6_Doc_Links.cy.ts
+      - name: test
+        run: |
+          pwd
+          ls
+          echo ${{ steps.test_order.outputs.tests }}
 
       - name: Run tests
         uses: cypress-io/github-action@v5

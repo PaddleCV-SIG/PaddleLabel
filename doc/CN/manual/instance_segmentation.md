@@ -17,7 +17,7 @@
 {: .note }
 有关数据集[导入](../quick_start.html#导入数据集)，[导出](../quick_start.html#导出数据集)，[训练/验证/测试集划分](../quick_start.html#数据集划分)步骤请参快速开始文档
 
-PaddleLabel 将语义分割和实例分割视为为两种项目类型，目前二者之间不支持转换。在语义分割项目中，每个像素将有一个分类，表示其为背景或前景中的某一类别。实例分割项目在逐像素分类的基础上给每个像素一个实例 id，即不仅区分像素所属类别，而且区分同一类别下像素属于哪个实例。
+PaddleLabel 将语义分割和实例分割视为两种项目类型，目前二者之间不支持转换。在语义分割项目中，每个像素将有一个分类，表示其为背景或前景中的某一类别。实例分割项目在逐像素分类的基础上给每个像素一个实例 id，即不仅区分像素所属类别，而且区分同一类别下像素属于哪个实例。
 
 PaddleLabel 支持多种分割数据集格式，各种类型的数据集导入后都可以使用多边形和笔刷两种标注工具。数据集导出时
 
@@ -28,13 +28,12 @@ PaddleLabel 支持多种分割数据集格式，各种类型的数据集导入�
 
 ### 掩膜格式
 
-{: .label }
-v0.1.0+
+{: .label } v0.1.0+
 
 样例格式如下：
 
 ```shell
-Dataset Path
+数据集路径
 ├── Annotations
 │   ├── A0001.tif
 │   ├── B0001.tif
@@ -52,13 +51,12 @@ Dataset Path
 
 # labels.txt
 background -
-optic_disk - 128 0 0 // for pseudo color mask, color for each label must be specified
+optic_disk - 128 0 0 // 对于伪彩色掩膜，需要按此结构提供每个类别的颜色。灰度掩膜的id默认为从0开始依次递增
 ```
-
+<!-- TODO: 丰富 -->
 ### 多边形格式
 
-{: .label }
-v0.1.0+
+{: .label } v0.1.0+
 
 样例格式如下：
 
@@ -113,6 +111,7 @@ category{
  "color": str // this feature is specific to PP Label. It's not in the coco spec.
 }
 ```
+<!-- TODO: 丰富 -->
 
 ## 数据标注
 
@@ -134,8 +133,6 @@ category{
 
 <!-- _注意：① 在 PaddleLabel 中，右侧标签栏有标签和标注两种。在图像分割中，标签对应的是类别，而标注对应的是该类别的一个实例。实例分割每一个类别可以创建多个实例。② 多边形模式和掩膜模式不可同时使用，请在创建项目时确定使用某种格式。_ -->
 
-
-
 ## 下一步
 
-您可以继续浏览[交互式分割使用方法](/PaddleLabel/CN/ML/interactive_segmentation.md)了解如何使用 PaddleLabel-ML 提高语义分割标注效率。
+您可以继续浏览[交互式分割使用方法](/doc/CN/ML/interactive_segmentation.md)了解如何使用 PaddleLabel-ML 提高语义分割标注效率。

@@ -198,12 +198,17 @@ jobs:
           tar czvf $tar_name *
           ls -lah $tar_name
           echo https://transfer.sh/$tar_name
-          curl --upload-file "$zip_name" "https://transfer.sh/$tar_name"
+
+          curl --upload-file "$tar_name" "https://transfer.sh/$tar_name"
+
+          # pip install transfersh-cli
+          # transfersh
+
           pwd
           echo "++++"
           ls
           echo "++++"
-          # mv $tar_name ..
+
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

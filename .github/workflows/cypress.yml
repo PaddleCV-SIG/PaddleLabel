@@ -65,11 +65,11 @@ jobs:
           pip uninstall paddlelabel -y
           pip install paddlelabel-*-py3-none-any.whl
 
-          # start paddlelabel on *nux
-          if [ ${{ matrix.os }} != windows-latest ]
-          then
-            HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-          fi
+          # # start paddlelabel on *nux
+          # if [ ${{ matrix.os }} != windows-latest ]
+          # then
+          #   HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+          # fi
 
           # wait for bg job
           wait $bgid
@@ -89,33 +89,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
-      # - name: Setup node env
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-
-      # - name: Get yarn cache directory path
-      #   id: yarn-cache-dir-path
-      #   run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      # - name: Cache yarn dependencies
-      #   uses: actions/cache@v3
-      #   id: yarn-cache
-      #   with:
-      #     path: |
-      #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      #       **/node_modules
-      #       ~/.cache/Cypress
-      #       ~/AppData/Local/Cypress/Cache
-      #       ~/Library/Caches/Cypress
-      #     key: cypress-yarn-cache-${{ matrix.node-version }}-${{ matrix.os }}-${{ hashFiles('./cypress/yarn.lock') }}
-
-      # - name: Install packages
-      #   if: steps.yarn-cache.outputs.cache-hit != 'true'
-      #   run: |
-      #     cd cypress
-      #     yarn
 
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
@@ -141,34 +114,18 @@ jobs:
           ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
-      # - name: Run test, *nux
-      #   id: test-nux
-      #   if: ${{ matrix.os != 'windows-latest' }}
-      #   run: |
-
-      #     # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-      #     # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-      #     # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-
-      #     cd cypress
-
-      #     time npx wait-port -t 40000 1111
-
-      #     # python order_tests.py
-      #     # ls
-
-      #     npx cypress run \
-      #     --browser chrome \
-      #     --config baseUrl=http://localhost:1111 \
-      #     --env os=${{ matrix.os }} \
-      #     --spec $(python order_tests.py)
-      #     # --spec e2e/6_Doc_Links.cy.ts
-
       - name: test
         run: |
           pwd
           ls
           echo ${{ steps.test_order.outputs.tests }}
+
+      - name: path
+        shell: cmd
+        run: |
+          echo %HOMEPATH%
+          set HOMEPATH=%HOMEPATH%\测试路径
+          echo %HOMEPATH%
 
       - name: Run tests
         uses: cypress-io/github-action@v5
@@ -181,19 +138,12 @@ jobs:
           spec: ${{ steps.test_order.outputs.tests }}
           wait-on: "http://localhost:1111"
           wait-on-timeout: 40
-          # start-windows: C:\Users\runneradmin\micromamba-bin\micromamba.exe shell init -s cmd.exe -p C:\Users\runneradmin\micromamba-root & micromamba activate PaddleLabel & paddlelabel --debug --port 1111 --lan
           start-windows: yarn run test:win
+          start: HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
 
       - name: Backend logs, cypress screenshots
         if: failure()
         run: |
-          mkdir -p ./cypress/cypress/
-          ls ..
-          cp ../paddlelabel.log ./cypress/cypress/
-          echo ============= paddlelabel.log ==============
-          cat ./cypress/cypress/paddlelabel.log
-          echo ============= paddlelabel.log ==============
-
           cd ./cypress/cypress/
           tar_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           tar czvf $tar_name *

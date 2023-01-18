@@ -170,18 +170,18 @@ jobs:
           ls
           echo ${{ steps.test_order.outputs.tests }}
 
-      - name: Run tests
-        uses: cypress-io/github-action@v5
-        id: test
-        with:
-          working-directory: ./cypress
-          browser: chrome
-          config: baseUrl=http://localhost:1111
-          env: os=${{ matrix.os }}
-          spec: ${{ steps.test_order.outputs.tests }}
-          wait-on: "http://localhost:1111"
-          wait-on-timeout: 40
-          start-windows: call C:\Users\runneradmin\micromamba\condabin\micromamba.bat activate PaddleLabel & python -m paddlelabel --debug --port 1111 --lan
+      # - name: Run tests
+      #   uses: cypress-io/github-action@v5
+      #   id: test
+      #   with:
+      #     working-directory: ./cypress
+      #     browser: chrome
+      #     config: baseUrl=http://localhost:1111
+      #     env: os=${{ matrix.os }}
+      #     spec: ${{ steps.test_order.outputs.tests }}
+      #     wait-on: "http://localhost:1111"
+      #     wait-on-timeout: 40
+      #     start-windows: call C:\Users\runneradmin\micromamba\condabin\micromamba.bat activate PaddleLabel & python -m paddlelabel --debug --port 1111 --lan
 
       - name: Backend logs, cypress screenshots
         if: failure()

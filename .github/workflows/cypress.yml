@@ -181,7 +181,8 @@ jobs:
           spec: ${{ steps.test_order.outputs.tests }}
           wait-on: "http://localhost:1111"
           wait-on-timeout: 40
-          start-windows: C:\Users\runneradmin\micromamba-bin\micromamba.exe shell init -s cmd.exe -p C:\Users\runneradmin\micromamba-root -y & micromamba activate PaddleLabel & paddlelabel --debug --port 1111 --lan
+          # start-windows: C:\Users\runneradmin\micromamba-bin\micromamba.exe shell init -s cmd.exe -p C:\Users\runneradmin\micromamba-root & micromamba activate PaddleLabel & paddlelabel --debug --port 1111 --lan
+          start-windows: yarn run test:win
 
       - name: Backend logs, cypress screenshots
         if: failure()

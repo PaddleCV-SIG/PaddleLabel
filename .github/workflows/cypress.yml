@@ -121,7 +121,6 @@ jobs:
 
       - name: Get failed tests, run them first later
         if: always()
-        id: test_order
         run: |
           cd ..
           if [ -f Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz ]
@@ -130,40 +129,26 @@ jobs:
           fi
 
       - name: Run test, win
-        id: test
+        id: test-win
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-
-          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
           Start-Process -NoNewWindow paddlelabel --debug --port 1111 --lan
 
           cd cypress
 
-          # time npx wait-port -t 40000 1111
           npx wait-port -t 40000 1111
-
-          # Xvfb :99 &
-          # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
-          # Xvfb -screen 0 1024x768x24 :99 &
-          # DISPLAY=:99 npx cypress run \ ...
-          # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
-
-          # echo ${{ steps.test_order.outputs.tests }}
-
-          # python order_tests.py
 
           npx cypress run `
           --browser chrome `
           --config baseUrl=http://localhost:1111 `
           --env os=${{ matrix.os }} `
           --spec $(python order_tests.py)
-          # --spec ${{ steps.test_order.outputs.tests }}
+
           # --spec e2e/6_Doc_Links.cy.ts
 
       - name: Run test, *nux
-        id: test
+        id: test-nux
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
 
@@ -197,7 +182,7 @@ jobs:
           # --spec e2e/6_Doc_Links.cy.ts
 
       - name: Backend logs, cypress screenshots
-        if: always() && steps.test.outcome == 'failure'
+        if: always() && ( steps.test-win.outcome == 'failure' || steps.test-nux.outcome == 'failure' )
         run: |
           mkdir -p ./cypress/cypress/
           cp ../paddlelabel.log ./cypress/cypress/
@@ -216,10 +201,6 @@ jobs:
           # pip install transfersh-cli
           # transfersh
 
-          pwd
-          echo "++++"
-          ls
-          echo "++++"
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

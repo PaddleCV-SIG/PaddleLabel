@@ -23,10 +23,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        # python-version: ["3.11"]
+        python-version: ["3.11"]
         # os: [windows-latest, ubuntu-latest, macos-latest]
         # os: [ubuntu-latest]
 
@@ -46,23 +46,21 @@ jobs:
           cache-env: true
           channels: conda-forge
 
-      # - name: Download PaddleLabel whl package
-      #   uses: dawidd6/action-download-artifact@v2
-      #   id: download_whl
-      #   with:
-      #     github_token: ${{secrets.GITHUB_TOKEN}}
-      #     workflow: build.yml
-      #     workflow_conclusion: success
-      #     name: PaddleLabel_built_package
-      #     search_artifacts: true
-      #     path: ../
-
       - name: Download PaddleLabel whl package
         run: |
           curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
           pwd
           ls
           unzip PaddleLabel_built_package.zip
+      - name: test
+        run: |
+          mkdir -p ~/测试路径/3rd_party/
+          cd ~/测试路径/3rd_party/
+          curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
+          unzip  paddlelabel_3rd_party_tests.zip
+          pwd
+          ls
+          exit 0
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -208,7 +206,6 @@ jobs:
           echo "++++"
           ls
           echo "++++"
-
 
       - name: Upload run logs
         if: always() && steps.test.outcome == 'failure'

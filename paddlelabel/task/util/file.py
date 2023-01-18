@@ -173,10 +173,8 @@ def copycontent(src, dst):
 
 
 def expand_home(path: Path | str) -> Path:
-    print("before", path)
     path = str(Path(path).expanduser())
-    print("after", path)
-    return str(path)
+    return str(path)  # TODO: change to path obj
 
 
 def get_fname(path: str):

@@ -147,31 +147,22 @@ jobs:
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
           cd -
-          echo "======"
-          ls ../
-          echo "======"
-          python cypress/order_tests.py > test_order
-          cat test_order
-          echo "tests=$(cat test_order)" >> $GITHUB_OUTPUT
-          python -c "import platform; print(platform.system().lower())"
 
       - name: Run test
         id: test
+        shell: pwsh
         run: |
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-          if [ ${{ matrix.os }} -eq windows-latest ]
-          then
-            Set-ADUser -Identity runneradmin -HomeDirectory ~/测试路径/
-          fi
           HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
 
-          ls ~/测试路径/3rd_party/
+          # ls ~/测试路径/3rd_party/
 
-          cd cypress
+          # cd cypress
 
-          time npx wait-port -t 40000 1111
+          # time npx wait-port -t 40000 1111
+          npx wait-port -t 40000 1111
 
           # Xvfb :99 &
           # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
@@ -179,9 +170,9 @@ jobs:
           # DISPLAY=:99 npx cypress run \ ...
           # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
 
-          echo ${{ steps.test_order.outputs.tests }}
+          # echo ${{ steps.test_order.outputs.tests }}
 
-          python order_tests.py
+          # python order_tests.py
 
           npx cypress run \
           --browser chrome \

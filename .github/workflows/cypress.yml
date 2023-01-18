@@ -14,7 +14,6 @@ on:
 jobs:
   e2e_test:
     runs-on: ${{ matrix.os }}
-    # continue-on-error: true
     timeout-minutes: 40
     defaults:
       run:
@@ -42,13 +41,6 @@ jobs:
             python=${{ matrix.python-version }}
           cache-env: true
           channels: conda-forge
-
-      # - name: Download PaddleLabel whl package
-      #   run: |
-      #     curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-      #     pwd
-      #     ls
-      #     unzip PaddleLabel_built_package.zip
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -93,6 +85,10 @@ jobs:
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
           ref: paddlelablOcr
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
       # - name: Setup node env
       #   uses: actions/setup-node@v3
@@ -167,6 +163,7 @@ jobs:
       #     --env os=${{ matrix.os }} \
       #     --spec $(python order_tests.py)
       #     # --spec e2e/6_Doc_Links.cy.ts
+
       - name: test
         run: |
           pwd
@@ -177,16 +174,14 @@ jobs:
         uses: cypress-io/github-action@v5
         id: test
         with:
-          # project: ./cypress
           working-directory: ./cypress
           browser: chrome
           config: baseUrl=http://localhost:1111
           env: os=${{ matrix.os }}
           spec: ${{ steps.test_order.outputs.tests }}
-          wait-on: 'http://localhost:1111'
+          wait-on: "http://localhost:1111"
           wait-on-timeout: 40
-          start-windows: python -m paddlelabel --debug --port 1111 --lan
-
+          start-windows: call C:\Users\runneradmin\micromamba\condabin\micromamba.bat activate PaddleLabel & python -m paddlelabel --debug --port 1111 --lan
 
       - name: Backend logs, cypress screenshots
         if: failure()

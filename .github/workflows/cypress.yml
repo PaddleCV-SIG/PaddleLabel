@@ -74,7 +74,7 @@ jobs:
           pip install paddlelabel-*-py3-none-any.whl
 
           # start paddlelabel on *nux
-          if [ ${{ matrix.os }} == windows-latest ]
+          if [ ${{ matrix.os }} != windows-latest ]
           then
             HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           fi
@@ -145,7 +145,8 @@ jobs:
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          paddlelabel --debug --port 1111 --lan &
+          # paddlelabel --debug --port 1111 --lan
+          cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>paddlelabel.log
 
           cd cypress
 
@@ -186,6 +187,7 @@ jobs:
         if: always() && ( steps.test-win.outcome == 'failure' || steps.test-nux.outcome == 'failure' )
         run: |
           mkdir -p ./cypress/cypress/
+          ls ..
           cp ../paddlelabel.log ./cypress/cypress/
           echo ============= paddlelabel.log ==============
           cat ./cypress/cypress/paddlelabel.log

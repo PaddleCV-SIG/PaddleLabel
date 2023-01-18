@@ -132,14 +132,14 @@ jobs:
       - name: Run test, win
         id: test
         shell: pwsh
-        if: ${{ matrix.os == windows-latest }}
+        if: ${{ matrix.os == 'windows-latest' }}
         run: |
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
           Start-Process -NoNewWindow paddlelabel --debug --port 1111 --lan
 
-          # cd cypress
+          cd cypress
 
           # time npx wait-port -t 40000 1111
           npx wait-port -t 40000 1111
@@ -154,17 +154,17 @@ jobs:
 
           # python order_tests.py
 
-          npx cypress run \
-          --browser chrome \
-          --config baseUrl=http://localhost:1111 \
-          --env os=${{ matrix.os }} \
+          npx cypress run `
+          --browser chrome `
+          --config baseUrl=http://localhost:1111 `
+          --env os=${{ matrix.os }} `
           --spec $(python order_tests.py)
           # --spec ${{ steps.test_order.outputs.tests }}
           # --spec e2e/6_Doc_Links.cy.ts
 
       - name: Run test, *nux
         id: test
-        if: ${{ matrix.os != windows-latest }}
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &

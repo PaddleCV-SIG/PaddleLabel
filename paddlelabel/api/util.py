@@ -13,8 +13,7 @@ nncol = functools.partial(sa.Column, nullable=False)
 
 # TODO: settle on how to use detail and title
 def abort(detail: str, status: int, title: str = ""):
-    logger = logging.getLogger("paddlelabel")
-    logger.exception(detail)
+    logging.getLogger("paddlelabel").exception(detail)
     detail = detail.replace("\n", " ")
     title = title.replace("\n", " ")
     raise connexion.exceptions.ProblemException(

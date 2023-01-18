@@ -33,12 +33,6 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: test
-        run: |
-          where bash
-          bash --version
-          which bash
-
       - name: Setup mamba env ${{ matrix.python-version }}
         uses: mamba-org/provision-with-micromamba@main
         with:
@@ -55,15 +49,6 @@ jobs:
           pwd
           ls
           unzip PaddleLabel_built_package.zip
-      - name: test
-        run: |
-          mkdir -p ~/测试路径/3rd_party/
-          cd ~/测试路径/3rd_party/
-          curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
-          unzip  paddlelabel_3rd_party_tests.zip
-          pwd
-          ls
-          exit 0
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -123,9 +108,7 @@ jobs:
         run: |
           cd cypress
           yarn
-          # yarn add typescript
 
-        # https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
       - name: Download last run screenshots
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -133,7 +116,6 @@ jobs:
           workflow: cypress.yml
           workflow_conclusion: failure
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}
-          # search_artifacts: true
           path: ../
           if_no_artifact_found: ignore
 
@@ -146,11 +128,43 @@ jobs:
           then
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
-          cd -
 
-      - name: Run test
+      - name: Run test, win
         id: test
         shell: pwsh
+        if: ${{ matrix.os == windows-latest }}
+        run: |
+
+          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
+          Start-Process -NoNewWindow paddlelabel --debug --port 1111 --lan
+
+          # cd cypress
+
+          # time npx wait-port -t 40000 1111
+          npx wait-port -t 40000 1111
+
+          # Xvfb :99 &
+          # https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
+          # Xvfb -screen 0 1024x768x24 :99 &
+          # DISPLAY=:99 npx cypress run \ ...
+          # bgpid=$(jobs -l | grep cypress | awk '{print $2}')
+
+          # echo ${{ steps.test_order.outputs.tests }}
+
+          # python order_tests.py
+
+          npx cypress run \
+          --browser chrome \
+          --config baseUrl=http://localhost:1111 \
+          --env os=${{ matrix.os }} \
+          --spec $(python order_tests.py)
+          # --spec ${{ steps.test_order.outputs.tests }}
+          # --spec e2e/6_Doc_Links.cy.ts
+
+      - name: Run test, *nux
+        id: test
+        if: ${{ matrix.os != windows-latest }}
         run: |
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &

@@ -139,7 +139,7 @@ jobs:
           wait-on: "http://localhost:1111"
           wait-on-timeout: 40
           start-windows: yarn run test:win
-          start: HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
+          start: yarn run test:unix
 
       - name: Backend logs, cypress screenshots
         if: failure()

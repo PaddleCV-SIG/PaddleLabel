@@ -120,12 +120,12 @@ jobs:
           ls
           echo ${{ steps.test_order.outputs.tests }}
 
-      - name: path
-        shell: cmd
-        run: |
-          echo %HOMEPATH%
-          set HOMEPATH=%HOMEPATH%\测试路径
-          echo %HOMEPATH%
+      # - name: path
+      #   shell: cmd
+      #   run: |
+      #     echo %HOMEPATH%
+      #     set HOMEPATH=%HOMEPATH%\测试路径
+      #     echo %HOMEPATH%
 
       - name: Run tests
         uses: cypress-io/github-action@v5

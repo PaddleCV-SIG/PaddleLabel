@@ -141,7 +141,7 @@ jobs:
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
 
-          echo "tests=$(python order_tests.py)" >> $GITHUB_OUTPUT
+          echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
       # - name: Run test, *nux
       #   id: test-nux

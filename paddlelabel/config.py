@@ -14,10 +14,11 @@ basedir = osp.abspath(osp.dirname(__file__))
 
 # db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')}"  # TODO: make this Path
 db_path = Path.home() / ".paddlelabel" / "paddlelabel.db"  # TODO: make this Path
-db_path = str(db_path)
 
-if not osp.exists(osp.dirname(db_path)):
-    os.makedirs(osp.dirname(db_path))
+
+if not db_path.exists():
+    db_path.parent.mkdir()
+db_path = str(db_path)
 db_url = f"sqlite:///{db_path}"
 print(f"Database path: {db_url}")
 

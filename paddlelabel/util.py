@@ -4,6 +4,7 @@ import platform
 import subprocess
 import sys
 import traceback
+import logging
 
 import connexion
 
@@ -30,8 +31,8 @@ def camel2snake(string):
 
 def pyVerGt(version: str = "3.9.0") -> bool:
     pyVer = list(map(int, platform.python_version().split(".")))
-    version = list(map(int, version.split(".")))
-    return pyVer[1] >= version[1]
+    recVer = list(map(int, version.split(".")))
+    return pyVer[1] >= recVer[1]
 
 
 def portInUse(port: int) -> bool:
@@ -145,23 +146,55 @@ class Resolver(connexion.resolver.RestyResolver):
         return self.resolve_operation_id_using_rest_semantics(operation)
 
 
-def version_check(name="paddlelabel", log=False):
-    latest_version = str(subprocess.run([sys.executable, "-m", "pip", "install", f"{name}=="], capture_output=True))
-    latest_version = latest_version[latest_version.find("(from versions:") + 15 :]
-    latest_version = latest_version[: latest_version.find(")")]
-    latest_version = latest_version.replace(" ", "").split(",")[-1]
+def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
+    """
+    Check pypi to see if a package can be updated
 
-    current_version = str(subprocess.run([sys.executable, "-m", "pip", "show", "{}".format(name)], capture_output=True))
-    current_version = current_version[current_version.find("Version:") + 8 :]
-    current_version = current_version[: current_version.find("\\n")].replace(" ", "")
+    Parameters
+    ----------
+    name : str, optional
+        Package name. Defaults to "paddlelabel"
+    log : bool, optional
+        Whether to print a message to cmd if update is available. Defaults to False
 
-    if latest_version != current_version:
-        return True
-    else:
-        # if log:
-        #     logging.info(
-        #         f"Currently running {name}=={current_version}, a newer version {latest_version} is avaliable on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
-        #     )
+    Returns
+    -------
+    bool
+        If the package is upgradeable from pypi
+    """
+    try:
+        latest_version = str(
+            subprocess.run([sys.executable, "-m", "pip", "install", f"{name}==", "--retries", "1"], capture_output=True)
+        )
+        version_start = "(from versions:"
+        latest_version = latest_version[latest_version.find(version_start) + len(version_start) :]
+        latest_version = latest_version[: latest_version.find(")")]
+        latest_version = latest_version.replace(" ", "").split(",")[-1]
+
+        if latest_version == "none":
+            return False
+
+        current_version = subprocess.run(
+            [sys.executable, "-m", "pip", "show", "{}".format(name)], capture_output=True
+        ).stdout.decode("utf8")
+        if len(current_version) == 0:
+            return False
+        current_version = current_version[current_version.find("Version:") + len("Version:") :]
+        current_version = current_version.split("\n")[0].strip()
+
+        # TODO: zero pad every part of version num
+
+        if latest_version > current_version:
+            if log:
+                logger = logging.getLogger("paddlelabel")
+                logger.info(
+                    f"Currently running {name}=={current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
+                )
+            return True
+        else:
+            return False
+    except:
+        logging.getLogger("paddlelabel").exception("Check for update failed")
         return False
 
 

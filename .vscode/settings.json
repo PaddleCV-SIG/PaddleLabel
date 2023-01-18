@@ -37,9 +37,13 @@
         "supercategory",
         "werkzeug",
         "xlen",
+        "xmax",
         "xmid",
+        "xmin",
         "ylen",
+        "ymax",
         "ymid",
+        "ymin",
         "yolo"
     ],
     "python.analysis.diagnosticMode": "workspace",

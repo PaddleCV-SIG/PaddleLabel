@@ -1,8 +1,12 @@
 # build frontend and copy to backend folder
 # run from and will return to /path/to/PaddleLabel/
-echo "Building frontend"
+echo "Pulling update from github"
 
 cd ../PaddleLabel-Frontend/
+git pull
+
+echo "Building frontend"
+
 npx browserslist@latest --update-db
 yarn run build --trace-deprecation
 cd ../PaddleLabel

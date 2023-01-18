@@ -128,12 +128,15 @@ jobs:
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
 
+          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+
+
       - name: Run test, win
         id: test-win
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          Start-Process -NoNewWindow { paddlelabel --debug --port 1111 --lan }
+          # Start-Process -NoNewWindow { paddlelabel --debug --port 1111 --lan }
 
           cd cypress
 
@@ -154,14 +157,14 @@ jobs:
 
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
           # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+          # HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
 
           cd cypress
 
           time npx wait-port -t 40000 1111
 
-          python order_tests.py
-          ls
+          # python order_tests.py
+          # ls
 
           npx cypress run \
           --browser chrome \

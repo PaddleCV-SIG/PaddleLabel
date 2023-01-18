@@ -171,7 +171,8 @@ jobs:
 
           # echo ${{ steps.test_order.outputs.tests }}
 
-          # python order_tests.py
+          python order_tests.py
+          ls
 
           npx cypress run \
           --browser chrome \

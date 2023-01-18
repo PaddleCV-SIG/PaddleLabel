@@ -6,7 +6,7 @@ from pathlib import Path
 import paddlelabel
 from paddlelabel.serve import connexion_app
 from paddlelabel.api.controller.sample import prep_samples
-from paddlelabel.util import pyVerGt, portInUse
+from paddlelabel.util import pyVerGt, portInUse, can_update
 
 HERE = Path(__file__).parent.absolute()
 
@@ -45,17 +45,6 @@ def parse_args():
     return parser.parse_args()
 
 
-pyVerWarning = """
-It's recommended to run PaddleLabel with Python>=3.9.0. Please consider running PaddleLabel in a new virtual environment with:
-
-conda create -y -n paddlelabel python=3.11
-conda activate paddlelabel
-pip install --upgrade paddlelabel
-paddlelabel
-
-"""
-
-
 def run():
     args = parse_args()
 
@@ -69,8 +58,20 @@ def run():
         exit()
 
     # 2. warn if low py version
+    pyVerWarning = """
+It's recommended to run PaddleLabel with Python>=3.9.0. Please consider running PaddleLabel in a new virtual environment with:
+
+conda create -y -n paddlelabel python=3.11
+conda activate paddlelabel
+pip install --upgrade paddlelabel
+paddlelabel
+
+"""
     if not pyVerGt():
         print(pyVerWarning)
+
+    # check for updates
+    can_update(log=True)
 
     # 3. configure logger
     logger = logging.getLogger("paddlelabel")

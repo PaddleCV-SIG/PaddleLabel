@@ -27,7 +27,7 @@
 
   - 【OCR】新增 OCR 项目标注能力，支持使用 [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/PP-OCRv3_introduction.md) 模型进行预标注
   - 【数据集格式】新增 EISeg 格式导入，新增大量自动化测试，修复诸多导入导出 bug
-  - 【文档】更新，梳理文档，并和软件一同打包发布，进一步降低上手难度
+  - 【文档】更新文档，内容简洁清晰并和软件一同打包发布，进一步降低上手难度
 
 - 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
 
@@ -45,16 +45,16 @@
 
 ## 简介
 
-PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的特性提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见计算机视觉任务的数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
+PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的功能提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见的计算机视觉任务数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
 
-PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。 [PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend)是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML)是基于飞桨实现的自动和交互式深度学习辅助标注后端。
+PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。[PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend) 是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML) 是基于飞桨实现的自动和交互式深度学习辅助标注后端。
 
 ![demo720](https://user-images.githubusercontent.com/71769312/185099439-3230cf80-798d-4a81-bcae-b88bcb714daa.gif)
 
 ## 特性
 
-- **简单** 一行`pip install`安装，手动标注直观易操作，机器学习后端安装即用无需复杂配置，极易上手
-- **高效** 支持交互式分割和多种预标注，显著提升标注精度及效率
+- **简单** 一行 `pip install` 安装，手动标注直观易操作，机器学习后端安装即用无需复杂配置，极易上手
+- **高效** 支持交互式分割和多种预标注，显著提升标注效率和精度
 - **灵活** 分类支持单分类和多分类标注，分割支持多边形、笔刷及交互式分割等多种工具，方便您根据场景灵活选择标注方式
 - **全流程** 与飞桨其它套件紧密配合，帮助您高效完成数据标注、模型训练与导出等全流程操作
 
@@ -102,7 +102,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 参与开发
 
-我们十分欢迎感兴趣的大佬加入项目的开发和维护，如果您愿意参与项目建设，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
+我们十分欢迎感兴趣的大佬加入项目的开发和维护。如果您对参与项目建设感兴趣，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

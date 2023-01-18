@@ -12,11 +12,11 @@
 
 <!-- /TOC -->
 
-本文档将带领您快速了解 PaddleLabel 的主要功能及使用流程。
+本文档将带您快速了解 PaddleLabel 的主要功能及使用流程
 
 ## 创建样例项目
 
-为了方便您快速体验 PaddleLabel 功能，我们内置了一些样例项目。当 PaddleLabel 网页打开后，点击首页左上角“样例项目”按钮，即可进入样例选择页面。
+为了方便您快速体验 PaddleLabel，我们内置了一些样例项目。当 PaddleLabel 网页打开后，点击首页左上角“样例项目”按钮，即可进入样例选择页面。
 
 ![image](/doc/CN/assets/sample_button.png)
 
@@ -43,13 +43,13 @@
   ![1](https://user-images.githubusercontent.com/29757093/206072742-34c19214-463b-455e-bc46-25de0bf81096.png)
 - 导出数据集：将数据集中的图片和标注信息导出
   ![1](https://user-images.githubusercontent.com/29757093/206072833-18ebcfe7-e67f-4ff6-ae0a-91de56ba647a.png)
-- 自动推理设置：配置 PaddleLabel-ML 选项，使用自动推理模型在项目中进行预标注
+- 自动推理设置：配置 PaddleLabel-ML 选项，使用自动推理模型在项目中进行预标注。[预标注功能详细使用文档](/doc/CN/ML/auto_inference.md)
 ![image](/doc/CN/assets/auto_inference.png)
 </details>
 
 ## 标注页面
 
-五种类型的项目标注过程不尽相同，具体的操作方法将在各类型项目的文档页面介绍。本节主要对标注页面的结构进行简介。
+五种项目中具体标注工具的使用方法将在各类型项目的文档页面介绍。本节主要对标注页面的整体结构进行简介。
 
 在项目总览页面中，点击页面上方或任务右侧的去标注按钮可以跳转到标注页面。
 
@@ -107,7 +107,7 @@
 4. 选择一个跟待导入数据集最接近的项目类型/数据集格式。选择后右侧区域会显示样例数据集文件排布作为参考。如果待导入的数据集不包含标注信息，请选择“无标签”，这种情况下数据集路径下所有的图片文件都将被作为标注任务导入
    ![image](/doc/CN/assets/sample_structure.png)
 5. 填写“数据集路径”，该路径是到一个文件夹的绝对路径，为了避免导入过程中遇到问题，请将文件夹中的文件尽可能按右侧示例进行排布。点击右侧示例中的文件可以查看文件内容格式
-   ![](/doc/CN/assets/dataset_path.png)
+   ![image](/doc/CN/assets/dataset_path.png)
 6. 点击创建，成功后会跳转到标注页面
 
 ## 下一步

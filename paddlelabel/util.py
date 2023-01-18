@@ -180,7 +180,9 @@ def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
         if len(current_version) == 0:
             return False
         current_version = current_version[current_version.find("Version:") + len("Version:") :]
-        current_version = current_version.split("\n")[0]
+        current_version = current_version.split("\n")[0].strip()
+
+        # TODO: zero pad every part of version num
 
         if latest_version > current_version:
             if log:

@@ -177,7 +177,7 @@ jobs:
         uses: cypress-io/github-action@v5
         id: test
         with:
-          project: ./cypress
+          # project: ./cypress
           working-directory: ./cypress
           browser: chrome
           config: baseUrl=http://localhost:1111

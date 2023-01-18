@@ -43,12 +43,12 @@ jobs:
           cache-env: true
           channels: conda-forge
 
-      - name: Download PaddleLabel whl package
-        run: |
-          curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-          pwd
-          ls
-          unzip PaddleLabel_built_package.zip
+      # - name: Download PaddleLabel whl package
+      #   run: |
+      #     curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+      #     pwd
+      #     ls
+      #     unzip PaddleLabel_built_package.zip
 
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
@@ -61,13 +61,23 @@ jobs:
           pwd
           ls
           } &
+
+          # download latest build
+          curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+          unzip PaddleLabel_built_package.zip
+
+          # install latest build
           echo ========================================================
           pip uninstall paddlelabel -y
-          echo ========================================================
-          pwd
-          ls
           pip install paddlelabel-*-py3-none-any.whl
 
+          # start paddlelabel on *nux
+          if [ ${{ matrix.os == 'windows-latest' }} ]
+          then
+            HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
+          fi
+
+          # wait for bg job
           wait
           res=$?
           ls ~/测试路径/3rd_party/
@@ -128,15 +138,15 @@ jobs:
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
 
-          HOME=~/测试路径/ paddlelabel --debug --port 1111 --lan 2>&1 | tee ../paddlelabel.log  &
-
 
       - name: Run test, win
         id: test-win
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          # Start-Process -NoNewWindow { paddlelabel --debug --port 1111 --lan }
+          pip install pythonw
+          cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>stderr.txt)
+          # pythonw -m paddlelabel --debug --port 1111 --lan
 
           cd cypress
 

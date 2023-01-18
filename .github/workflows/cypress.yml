@@ -133,12 +133,15 @@ jobs:
 
       - name: Get failed tests, run them first later
         if: always()
+        id: test_order
         run: |
           cd ..
           if [ -f Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz ]
           then
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
+
+          echo "tests=$(python order_tests.py)" >> $GITHUB_OUTPUT
 
       # - name: Run test, win
       #   id: test-win
@@ -185,19 +188,21 @@ jobs:
 
       - name: Run tests
         uses: cypress-io/github-action@v5
+        id: test
         with:
           project: ./cypress
+          working-directory: ./cypress
           browser: chrome
           config: baseUrl=http://localhost:1111
           env: os=${{ matrix.os }}
-          spec: $(python order_tests.py)
+          spec: ${{ steps.test_order.outputs.tests }}
           wait-on: 'http://localhost:1111'
           wait-on-timeout: 40
           start-windows: paddlelabel --debug --port 1111 --lan
 
 
       - name: Backend logs, cypress screenshots
-        if: always() && ( steps.test-win.outcome == 'failure' || steps.test-nux.outcome == 'failure' )
+        if: failure()
         run: |
           mkdir -p ./cypress/cypress/
           ls ..
@@ -218,7 +223,7 @@ jobs:
           # transfersh
 
       - name: Upload run logs
-        if: always() && ( steps.test-win.outcome == 'failure' || steps.test-nux.outcome == 'failure' )
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}

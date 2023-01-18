@@ -145,9 +145,7 @@ jobs:
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          pip install pythonw
-          cmd /c pythonw.exe -m paddlelabel --debug --port 1111 --lan 1>stdout.txt 2>stderr.txt
-          # pythonw -m paddlelabel --debug --port 1111 --lan
+          paddlelabel --debug --port 1111 --lan &
 
           cd cypress
 

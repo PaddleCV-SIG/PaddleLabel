@@ -132,7 +132,6 @@ jobs:
           if_no_artifact_found: ignore
 
       - name: Get failed tests, run them first later
-        if: always()
         id: test_order
         run: |
           cd ..
@@ -140,7 +139,10 @@ jobs:
           then
             tar -xvf Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
           fi
+          cd -
 
+          pwd
+          ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
       # - name: Run test, *nux

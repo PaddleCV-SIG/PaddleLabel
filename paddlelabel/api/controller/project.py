@@ -16,7 +16,6 @@ from paddlelabel.config import db
 from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.controller.base import crud
-from paddlelabel.api.controller import label
 from paddlelabel.api.util import abort
 from paddlelabel.task.util import rand_hex_color
 from paddlelabel.util import camel2snake

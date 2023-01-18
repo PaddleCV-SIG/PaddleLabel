@@ -3,11 +3,11 @@ name: E2E Tests
 on:
   workflow_call:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Build PaddleLabel package"]
-    branches: [develop]
-    types:
-      - completed
+#   workflow_run:
+#     workflows: ["Build PaddleLabel package"]
+#     branches: [develop]
+#     types:
+#       - completed
   schedule:
     - cron: "0 12 * * *"
 

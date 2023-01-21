@@ -1,4 +1,5 @@
-"""v0.5.0 Make sure the size of all tasks are 1,h,w
+"""v1.0.0
+- Make sure the size of all tasks are 1,h,w
 
 Revision ID: f47b7f5b73b9
 Revises: a609821ce310
@@ -7,14 +8,9 @@ Create Date: 2023-01-09 18:31:50.399688
 """
 from pathlib import Path
 
-from alembic import op
-import sqlalchemy as sa
-import cv2
-import os.path as osp
-from PIL import Image
-
 from paddlelabel.api.model import Project, Task
 from paddlelabel.config import se
+from paddlelabel.io.image import getSize
 
 # revision identifiers, used by Alembic.
 revision = "f47b7f5b73b9"
@@ -31,9 +27,8 @@ def upgrade() -> None:
     tasks = Task.query.all()
     for task in tasks:
         data = task.datas[0]
-        img_path = osp.join(pjid2data_dir[task.project_id], data.path)
-        im = Image.open(img_path)
-        s = ",".join(map(str, (1,) + (im.size[::-1])))
+        img_path = Path(pjid2data_dir[task.project_id]) / data.path
+        s, _, _ = getSize(img_path)
         data.size = s
     se.commit()
 

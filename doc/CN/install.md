@@ -3,16 +3,16 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 - [安装 FAQ](#%E5%AE%89%E8%A3%85-faq)
-  - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
-  - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
-  - [中文路径问题](#%E4%B8%AD%E6%96%87%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98)
+    - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
+    - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
+    - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
 
 <!-- /TOC -->
 
@@ -172,11 +172,11 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
 
 ![](/doc/CN/assets/msvc.png)
 
-### 中文路径问题
+### 中文兼容问题
 
-团队在开发和测试的过程中已经尽最大努力发现和解决在 Windows 下的中文路径/字符编码问题。如果您依然遇到此类问题可以通过[Issue](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)向我们反馈
+团队在开发和测试的过程中已经尽最大努力发现和解决 Windows 下的中文路径/字符编码兼容问题。如果您依然遇到此类问题可以通过[Issue](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)向我们反馈
 
-这一类问题大概有三类原因
+这类问题大概有三种原因
 
 1. 用户名中包含中文导致 `~` 路径包含中文
 2. 数据集路径中包含中文
@@ -199,7 +199,7 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
      conda init
      ```
 
-     观察该命令输出是否有乱码，如果有，手动将乱码路径下的文件复制到正确的路径下。如下图中的 profile.ps1 应该复制到 `C:\Users\测试用户\Documents\WindowsPowerShell\` 文件夹中
+     观察该命令的输出是否有乱码，如果有，手动将乱码路径下的文件复制到正确的路径下。如下图中的 profile.ps1 应该复制到 `C:\Users\测试用户\Documents\WindowsPowerShell\` 文件夹中
      ![](/doc/CN/assets/miniconda_init_cn.png)
 
   3. 打开 powershell，用以下两行命令设置 conda 的 pip 包下载路径和环境保存路径分别为一个不含中文目录，注意两个路径不要相同
@@ -212,4 +212,4 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
 
 <!-- TODO: 实现这个 -->
 
-针对第二类问题建议您避免在导入数据集的路径中使用中文如将数据集文件夹放在类似 `E:\数据集文件夹\` 的位置
+针对第二类问题，建议您避免在导入数据集的路径中使用中文，如将数据集文件夹放在类似 `E:\数据集文件夹\` 的位置

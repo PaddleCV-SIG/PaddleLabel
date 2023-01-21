@@ -13,7 +13,7 @@ from paddlelabel.util import rand_string
 basedir = osp.abspath(osp.dirname(__file__))
 
 # db_path = f"{osp.join(os.path.expanduser('~'), '.paddlelabel', 'paddlelabel.db')}"  # TODO: make this Path
-print(Path.home())
+# print(Path.home())
 db_path = Path.home() / ".paddlelabel" / "paddlelabel.db"  # TODO: make this Path
 
 

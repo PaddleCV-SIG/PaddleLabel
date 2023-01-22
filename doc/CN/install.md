@@ -3,16 +3,16 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 - [安装 FAQ](#%E5%AE%89%E8%A3%85-faq)
-    - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
-    - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
-    - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
+  - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
+  - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
+  - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
 
 <!-- /TOC -->
 
@@ -208,7 +208,7 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
      conda config --add pkgs_dirs [不含中文路径2]
      ```
 
-- PaddleLabel 的数据库和样例数据集默认存放在 `~/.paddlelabel` 目录下。如果您的用户名中包含中文， PaddleLabel 在启动过程中就报错退出，可以通过在启动时传入 `-h, --home` 参数指定另一个路径存放 PaddleLabel 文件。如 `paddlelabel --home E:\paddlelabel\`
+- PaddleLabel 的数据库和样例数据集默认存放在 `~/.paddlelabel` 目录下。如果您的用户名中包含中文， PaddleLabel 在启动过程中就报错退出，可以通过在启动时传入 `--home` 参数指定另一个路径存放 PaddleLabel 文件。如 `paddlelabel --home E:\paddlelabel\`
 
 <!-- TODO: 实现这个 -->
 

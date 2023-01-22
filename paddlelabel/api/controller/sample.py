@@ -7,13 +7,14 @@ import flask
 import paddlelabel
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
-from paddlelabel.api.util import abort
-from paddlelabel.config import basedir
 from paddlelabel.task.util.file import copy, copycontent
+from paddlelabel import configs
 
 
-def prep_samples(sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")):
-    sample_source = osp.join(basedir, "sample")
+def prep_samples(
+    sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
+):  # FIXME: no code in func def
+    sample_source = str(configs.install_base / "sample")
     copycontent(sample_source, sample_dst)
 
     dsts = [

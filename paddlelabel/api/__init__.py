@@ -2,8 +2,8 @@ import time
 
 from flask import abort, session, request
 
-import paddlelabel
-from paddlelabel.config import app, request_id_timeout
+from paddlelabel import configs
+from paddlelabel.config import app
 
 from . import controller
 from .model import Project, Label, Task, Data, Annotation, TaskCategory
@@ -22,7 +22,7 @@ def check_request_id():
         return
     session["request_ids"] = list(
         filter(
-            lambda item: curr_time - item[0] < request_id_timeout,
+            lambda item: curr_time - item[0] < configs.request_id_timeout,
             session["request_ids"],
         )
     )

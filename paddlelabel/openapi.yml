@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: PaddleLabel API Specs
-  version: 0.5.0
+  version: 1.0.0
   description: Web backend APIs for PP-Label
   contact:
     name: PaddleLabel Team

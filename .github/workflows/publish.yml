@@ -29,12 +29,10 @@ jobs:
           ls
           tree .
 
-      - if: ${{ inputs.dry_run != true }}
-        run: echo here
-
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
-      #     verbose: true
+      - name: Publish to PyPI
+        if: ${{ inputs.dry_run != true }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PADDLELABEL_PUBLISH_API_TOKEN }}
+          verbose: true

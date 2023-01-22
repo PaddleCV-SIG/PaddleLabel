@@ -26,7 +26,7 @@ def draw_mask(data, mask_type="grayscale"):
     """Draw a segmentation mask
 
     Args:
-        data (data record): include data info, annotataion info and label info
+        data (data record): include data info, annotation info and label info
         mask_type (str, optional): mask type, pseudo, grayscale or instance. Defaults to "grayscale".
 
     Returns:
@@ -67,8 +67,7 @@ def draw_mask(data, mask_type="grayscale"):
             print(ann)
             print(result, "to float error, plz open an issue for this")
 
-        # TODO: patch. [0,0,...] means points. to be changed
-        # if result[0] == 0 and result[1] == 0:
+        # TODO: patch. [0,fid,...] means points. to be changed
         if result[0] == 0:
             ann.type = "points"
 
@@ -172,7 +171,7 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
         msg = f"Mask {annotation_path} contains unspecified labels {np.unique(ann)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label id?"
         abort(msg, 404)
 
-    s = [1] + list(ann.shape)
+    s = (1,) + tuple(ann.shape[:2])
     s = [str(s) for s in s]
     size = ",".join(s)
     return size, anns
@@ -212,7 +211,7 @@ def parse_instance_mask(annotation_path, labels, image_path=None):
                     "frontend_id": str(instance_id),
                 }
             )
-    s = [1] + list(instance_mask.shape)
+    s = (1,) + tuple(instance_mask.shape[:2])
     s = [str(s) for s in s]
     size = ",".join(s)
     return size, anns
@@ -230,7 +229,6 @@ class InstanceSegmentation(BaseTask):
             "mask": self.mask_exporter,
             "coco": self.coco_exporter,
         }
-        # self.default_importer = self.coco_importer
         self.default_exporter = self.coco_exporter  # TODO: remove, user must choose
 
     def mask_importer(
@@ -400,8 +398,7 @@ class InstanceSegmentation(BaseTask):
             # 4. add tasks
             for img_id, annotations in list(ann_by_task.items()):
                 data_path = coco.imgs[img_id]["img_path"]
-                size = "1," + coco.imgs[img_id]["size"]
-                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
+                self.add_task([{"path": data_path, "size": coco.imgs[img_id]["size"]}], [annotations], split=set)
             return data_paths, json.dumps({"info": info, "licenses": licenses})
 
         # 2. find all images under data_dir
@@ -552,7 +549,6 @@ class SemanticSegmentation(InstanceSegmentation):
             "mask": self.mask_exporter,
             "coco": self.coco_exporter,
         }
-        # self.default_importer = self.mask_importer
         self.default_exporter = self.mask_exporter
 
     def mask_importer(
@@ -589,8 +585,6 @@ class SemanticSegmentation(InstanceSegmentation):
                         if "_pseudo" in Path(p).name
                     }
                 )  # NOTE: EISeg pseudo color label export
-
-        # print(ann_dict)
 
         # 2. import records
         data_paths = listdir(data_dir, filters)

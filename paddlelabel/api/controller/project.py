@@ -5,10 +5,9 @@ import requests
 import os
 import os.path as osp
 import base64
-import traceback
 from pathlib import Path
 
-# import logging
+import logging
 import base64
 
 import connexion
@@ -30,7 +29,7 @@ from paddlelabel.task.util.file import (
 )
 import paddlelabel
 
-# logger = logging.getLogger("paddlelabel")
+logger = logging.getLogger("paddlelabel")
 
 
 def import_dataset(project, data_dir=None, label_format=None):
@@ -118,7 +117,7 @@ def import_additional_data(project_id):
 
 def pre_add(new_project, se):
     new_project.data_dir = expand_home(new_project.data_dir)
-    # logger.info(f"importing dataset from {new_project.data_dir}")
+    logger.info(f"importing dataset from {new_project.data_dir}")
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
     if not Path(new_project.data_dir).exists():
@@ -144,7 +143,7 @@ def post_add(new_project, se):
         db.session.delete(project)
         db.session.commit()
 
-        # logger.exception("Create project failed", exc_info=True)
+        logger.exception("Create project failed", exc_info=True)
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)
@@ -184,8 +183,7 @@ def export_dataset(project_id):
         exporter(**params)
 
     except Exception as e:
-        # logging.error("Export dataset failed")
-        # logging.error(traceback.format_exc())
+        logging.exception("Export dataset failed")
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)

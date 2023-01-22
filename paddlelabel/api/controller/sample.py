@@ -7,13 +7,14 @@ import flask
 import paddlelabel
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
-from paddlelabel.api.util import abort
-from paddlelabel.config import basedir
 from paddlelabel.task.util.file import copy, copycontent
+from paddlelabel import configs
 
 
-def prep_samples(sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")):
-    sample_source = osp.join(basedir, "sample")
+def prep_samples(
+    sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
+):  # FIXME: no code in func def
+    sample_source = str(configs.install_base / "sample")
     copycontent(sample_source, sample_dst)
 
     dsts = [
@@ -170,7 +171,6 @@ def load_sample(sample_family="bear"):
     )
 
     name = f"{sample_names[task_category.name]} 样例项目"
-    # print(data_dir)
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         return {"project_id": curr_project.project_id}, 200

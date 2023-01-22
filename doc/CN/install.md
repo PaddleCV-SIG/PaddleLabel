@@ -3,12 +3,16 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
+- [安装 FAQ](#%E5%AE%89%E8%A3%85-faq)
+  - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
+  - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
+  - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
 
 <!-- /TOC -->
 
@@ -59,7 +63,7 @@ pip install [解压出的.whl文件名，如 paddlelabel-0.5.0-py3-none-any.whl 
 ### 通过源码安装
 
 <details> <summary markdown='span'>详细步骤</summary>
-以下命令针对bash命令行，一些类似cp，mv指令可能无法在powershell或cmd.exe中执行。不过每步的作用都有说明，可以在文件管理器中完成等效的操作。
+如果使用Windows系统，推荐使用git bash或powershell执行以下命令。
 
 1. 首先将后端代码克隆到本地
 
@@ -122,3 +126,90 @@ paddlelabel --port 8000 --lan --debug # 在8000端口上运行，将服务暴露
 ## 下一步
 
 恭喜您成功运行 PaddleLabel！您可以继续浏览[快速开始](./quick_start.md)页面了解 PaddleLabel 的主要功能和使用流程。
+
+## 安装 FAQ
+
+<!-- TODO: 折叠，不用标题 -->
+
+<!-- ### Windows 下安装依赖软件
+
+推荐使用 [chocolatey](https://community.chocolatey.org/) 在 Windows 上进行依赖管理。chocolatey 的安装可以参考[官方文档](https://chocolatey.org/install)。一些 PaddleLabel 可能需要的依赖安装命令如下：
+
+```shell
+choco install python # python
+choco install miniconda3 # miniconda
+``` -->
+
+### Windows 下使用 msys2 运行
+
+如果您在 Windows 中使用 PaddleLabel 时遇到了不容易解决的问题，如无法使用中文，可以尝试在 Windows Linux 子系统或 msys2 环境中运行。以下为在 msys2 中运行方法
+
+- 访问 [msys2 官网](https://www.msys2.org/)下载安装 msys2，或使用 [chocolatey](https://chocolatey.org/install) 安装
+
+```shell
+choco install msys2
+```
+
+- 运行 msys2 msys，安装项目依赖
+
+```shell
+pacman -S python
+```
+
+### Microsoft Visual C++ 14.1 is required
+
+如果 `pip install paddlelabel` 命令报错，可以使用 `pip install numpy` 尝试单独安装 numpy。如果安装 numpy 时在命令行中看到如下报错说明缺少 msvc 依赖。
+
+```shell
+error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visual Studio"
+```
+
+- 访问命令行给出的网址下载 Microsoft Visual C++ 构建工具，下载完成后运行
+- 点击左侧 “使用 C++ 的桌面开发”
+- 选中一个最新的 MSVC
+- 根据 Windows 版本选中一个最新的 Windows 10/11 SDK
+- 点击右下角安装/修改
+
+![](/doc/CN/assets/msvc.png)
+
+### 中文兼容问题
+
+团队在开发和测试的过程中已经尽最大努力发现和解决 Windows 下的中文路径/字符编码兼容问题。如果您依然遇到此类问题可以通过[Issue](https://github.com/PaddleCV-SIG/PaddleLabel/issues/new)向我们反馈
+
+这类问题大概有三种原因
+
+1. 用户名中包含中文导致 `~` 路径包含中文
+2. 数据集路径中包含中文
+3. 数据集中的文件/项目使用的类别包含中文
+
+第一类问题可以通过打开 powershell 确认。如果下图选中部分中不包含中文则不存在这类问题
+
+![](/doc/CN/assets/cn_home.png)
+
+- home 路径存在中文很可能导致无法正常使用 conda。可以用如下方法解决
+
+  1. conda 安装过程中选择安装类型 “为所有用户安装”
+     ![](/doc/CN/assets/miniconda_install_type.png)
+     或者在下一步提供一个不带中文的目标文件夹
+     ![](/doc/CN/assets/miniconda_cn.png)
+  2. 安装完成后以管理员身份打开 Anaconda Prompt 在所有命令行初始化 conda
+
+     ```shell
+     # 在 Anaconda Prompt 中输入
+     conda init
+     ```
+
+     观察该命令的输出是否有乱码，如果有，手动将乱码路径下的文件复制到正确的路径下。如下图中的 profile.ps1 应该复制到 `C:\Users\测试用户\Documents\WindowsPowerShell\` 文件夹中
+     ![](/doc/CN/assets/miniconda_init_cn.png)
+
+  3. 打开 powershell，用以下两行命令设置 conda 的 pip 包下载路径和环境保存路径分别为一个不含中文目录，注意两个路径不要相同
+     ```shell
+     conda config --add envs_dirs [不含中文路径1]
+     conda config --add pkgs_dirs [不含中文路径2]
+     ```
+
+- PaddleLabel 的数据库和样例数据集默认存放在 `~/.paddlelabel` 目录下。如果您的用户名中包含中文， PaddleLabel 在启动过程中就报错退出，可以通过在启动时传入 `--home` 参数指定另一个路径存放 PaddleLabel 文件。如 `paddlelabel --home E:\paddlelabel\`
+
+<!-- TODO: 实现这个 -->
+
+针对第二类问题，建议您避免在导入数据集的路径中使用中文，如将数据集文件夹放在类似 `E:\数据集文件夹\` 的位置

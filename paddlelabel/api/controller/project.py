@@ -5,8 +5,8 @@ import requests
 import os
 import os.path as osp
 import base64
-import traceback
 from pathlib import Path
+
 import logging
 import base64
 
@@ -183,8 +183,7 @@ def export_dataset(project_id):
         exporter(**params)
 
     except Exception as e:
-        logging.error("Export dataset failed")
-        logging.error(traceback.format_exc())
+        logging.exception("Export dataset failed")
 
         if "detail" in dir(e):
             abort(e.detail, 500, e.title)

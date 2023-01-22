@@ -1,20 +1,21 @@
 from __future__ import annotations
 
 import logging
-import os.path as osp
+import os.path as osp  # TODO: remove
 from collections import deque
 from pathlib import Path
-import cv2
 
 from paddlelabel.api import Annotation, Data, Label, Project, Task
 from paddlelabel.config import db
 from paddlelabel.task.util import create_dir, image_extensions, listdir
 from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
+from paddlelabel.io.image import getSize
 
 """
 Base for import/export and other task specific operations.
 """
 
+logger = logging.getLogger("paddlelabel")
 
 # TODO: change data_dir to pathlib.path
 class BaseTask:
@@ -44,7 +45,6 @@ class BaseTask:
             Project with given project_id not found.
         """
 
-        self.logger = logging.getLogger("paddlelabel")
         self.task_cache: list[Task] = []
 
         # 1. set project
@@ -98,7 +98,7 @@ class BaseTask:
 
     def add_task(
         self,
-        datas: list[dict[str, str]],
+        datas: list[dict[str, str | None]],
         annotations: list[list[dict[str, str]]] | None = None,
         split: int | None = None,
     ):
@@ -111,7 +111,7 @@ class BaseTask:
         datas : list[dict]
             A list of dict, each dict representing a task. In the dict, path is required, specifying full path or relative path to project.data_dir. All other entries are optional.
             Example: [{"path": 'path1'}, {"path" : 'path2', "size": "1,1024,768"}, ...]
-            size is in format "slice count (1 for 2d images),height,width"
+            size is in format "slice count (1 for 2d images),height,width" no spaces in the str
         annotations : list[list[dict]] | None, optional
             Annotations corresponding to each data record. Defaults to None
             Example:
@@ -194,7 +194,7 @@ class BaseTask:
                 task.annotations.append(ann)  # TODO: remove this, annotation should only be under data
                 data.annotations.append(ann)
                 total_anns += 1
-            self.logger.debug(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
+            logger.debug(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
 
         self.task_cache.append(task)
 
@@ -203,7 +203,7 @@ class BaseTask:
         self.task_cache.sort(key=lambda k: k.datas[0].path)
         for task in self.task_cache:
             db.session.add(task)
-        self.logger.info(
+        logger.info(
             f"{len(self.task_cache)} tasks and {sum(len(t.annotations) for t in self.task_cache)} annotations imported"
         )
         self.task_cache = []
@@ -389,7 +389,7 @@ class BaseTask:
             if len(classes_path) == 0:
                 return
             if len(classes_path) > 1:
-                log.error(f"Found {len(classes_path)} files at {','.join(classes_path)}")
+                logger.error(f"Found {len(classes_path)} classes files at {','.join(classes_path)}")
                 return
             label_names_path = data_dir / classes_path[0]
         # 1.3 if label file doesn't exist, there's nothing to import
@@ -426,7 +426,7 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                self.logger.debug(f"Adding label {label}")
+                logger.debug(f"Adding label {label}")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]
@@ -485,14 +485,16 @@ class BaseTask:
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
         with_size: bool = True,  # TODO: after result format is changed, default to false
     ):
-        if data_dir is None:
-            data_dir = self.project.data_dir
+
+        data_dir = self.project.data_dir if data_dir is None else data_dir
+        assert data_dir is not None
 
         for data_path in listdir(data_dir, filters):
             if with_size:
-                img = cv2.imread(osp.join(data_dir, data_path))
-                size = [1] + list(img.shape[:2])
-                size = ",".join([str(s) for s in size])
+                # img = cv2.imread(osp.join(data_dir, data_path))
+                # size = [1] + list(img.shape[:2])
+                # size = ",".join([str(s) for s in size])
+                size, _, _ = getSize(Path(data_dir) / data_path)
             else:
                 size = None
             self.add_task([{"path": data_path, "size": size}])

@@ -1,10 +1,12 @@
-import os.path as osp
-import shutil
+from __future__ import annotations
+
 from pathlib import Path
+import os.path as osp  # TODO: remove this dep
+import shutil
 
 from paddlelabel.api import Task
-from .util import create_dir, listdir, copy, image_extensions
-from .base import BaseTask
+from paddlelabel.task.util import create_dir, listdir, copy, image_extensions
+from paddlelabel.task.base import BaseTask
 
 
 class Classification(BaseTask):
@@ -23,14 +25,11 @@ class Classification(BaseTask):
 
     def single_class_importer(
         self,
-        data_dir=None,
+        data_dir: Path | None = None,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
-        project = self.project
-        if data_dir is None:
-            data_dir = project.data_dir
-
+        data_dir = Path(self.project.data_dir if data_dir is None else data_dir)
         self.create_warning(data_dir)
 
         # 2. import all datas

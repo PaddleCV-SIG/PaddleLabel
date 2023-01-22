@@ -15,9 +15,9 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-import paddlelabel
+from paddlelabel import config as pdlabel_config
 
-target_metadata = paddlelabel.config.db.metadata
+target_metadata = pdlabel_config.db.metadata
 # target_metadata = None
 
 # other values from the config, defined by the needs of env.py,

@@ -1,6 +1,7 @@
 import functools
 import time
-import logging
+
+# import logging
 
 import connexion
 import sqlalchemy as sa
@@ -13,7 +14,7 @@ nncol = functools.partial(sa.Column, nullable=False)
 
 # TODO: settle on how to use detail and title
 def abort(detail: str, status: int, title: str = ""):
-    logging.getLogger("paddlelabel").exception(detail)
+    # logging.getLogger("paddlelabel").exception(detail)
     detail = detail.replace("\n", " ")
     title = title.replace("\n", " ")
     raise connexion.exceptions.ProblemException(

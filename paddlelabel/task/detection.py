@@ -1,11 +1,9 @@
 from __future__ import annotations
+
 import os.path as osp
 from pathlib import Path
 import json
 from copy import deepcopy
-
-# import logging
-from typing import List
 
 from pycocotoolse.coco import COCO
 import cv2
@@ -21,9 +19,7 @@ from paddlelabel.task.util import (
     break_path,
 )
 from paddlelabel.task.base import BaseTask
-
-# log = logging.getLogger("PaddleLabel")
-
+from paddlelabel.io.image import getSize
 
 # TODO: move to io
 def parse_voc_label(label_path):
@@ -193,7 +189,7 @@ class Detection(BaseTask):
                 body["entity_content"] = base64.b64encode(img).decode("utf-8")
             if len(task.annotations) != 0:
                 labels = []
-                w, h = list(map(int, data.size.split(",")))[1:3]
+                h, w = list(map(int, data.size.split(",")))[1:3]
                 h /= 2
                 w /= 2
                 for ann in task.annotations:
@@ -246,7 +242,11 @@ class Detection(BaseTask):
 
             print(finished, upload_trials, upload_trials / finished)
 
-    def yolo_importer(self, data_dir=None, filters={"exclude_prefix": ["."], "include_postfix": image_extensions}):
+    def yolo_importer(
+        self,
+        data_dir=None,
+        filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
+    ):
         # 1. set params
         project = self.project
         data_dir = Path(project.data_dir if data_dir is None else data_dir)
@@ -258,8 +258,8 @@ class Detection(BaseTask):
         )
         label_paths = [Path(p) for p in label_paths]
 
-        ensure_unique_base_name([data_dir / Path(p) for p in data_paths])
-        data_paths = map(Path, listdir(data_dir, filters=filters))
+        ensure_unique_base_name([data_dir / p for p in data_paths])
+        data_paths = map(Path, data_paths)
 
         label_dict = {}
         for label_path in label_paths:
@@ -267,10 +267,10 @@ class Detection(BaseTask):
 
         for data_path in data_paths:
             basename = data_path.name.split(".")[0]
-
-            s = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
-            height, width = s[:2]
-            size = ",".join(map(str, [1] + list(s[:2])))
+            # s = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
+            # height, width = s[:2]
+            # size = ",".join(map(str, [1] + list(s[:2])))
+            size, height, width = getSize(data_dir / data_path)
             ann_list = []
 
             if basename in label_dict.keys():
@@ -328,10 +328,9 @@ class Detection(BaseTask):
             copy(data_path, export_data_dir)
 
             height, width = map(int, data.size.split(",")[1:3])
-            # print(width, height)
             yolo_res = ""
             for ann in task.annotations:
-                r: List[float] = [float(t) for t in ann.result.split(",")]
+                r: list[float] = [float(t) for t in ann.result.split(",")]
                 res = [0.0 for _ in range(4)]
                 res[0] = r[0] / width + 0.5
                 res[1] = r[1] / height + 0.5
@@ -392,22 +391,22 @@ class Detection(BaseTask):
             """
             for idx, img in coco.imgs.items():
                 file_name = get_fname(img["file_name"])
-                full_path = list(filter(lambda p: str(p)[-len(file_name) :] == file_name, data_paths))
+                data_path = list(filter(lambda p: str(p)[-len(file_name) :] == file_name, data_paths))
                 # multiple match cause import failure
-                if len(full_path) > 1:
+                if len(data_path) > 1:
                     raise RuntimeError(f"Multiple image(s) with path ending with {file_name} found under {data_dir}")
                 # no matching record on disk, this image record will be skipped
-                if len(full_path) == 0:
+                if len(data_path) == 0:
                     continue
-                full_path = full_path[0]
-                data_paths.remove(full_path)
-                coco.imgs[idx]["full_path"] = full_path
-                s = [img.get("height", None), img.get("width", None)]
-                if s == [None, None]:
-                    s = cv2.imread(full_path).shape[:2]  # h, w
-                    coco.imgs[idx]["height"], coco.imgs[idx]["width"] = s
-                s = [str(t) for t in s]
-                coco.imgs[idx]["size"] = ",".join(s)
+                data_path = data_path[0]
+                data_paths.remove(data_path)
+                coco.imgs[idx]["data_path"] = data_path
+                # s = [img.get("height", None), img.get("width", None)]
+                # if s == [None, None]:
+                size, height, width = getSize(data_dir / data_path)
+                coco.imgs[idx]["height"], coco.imgs[idx]["width"] = height, width
+
+                coco.imgs[idx]["size"] = size
                 ann_by_task[img["id"]] = []
 
             # 3. get ann by image
@@ -446,9 +445,8 @@ class Detection(BaseTask):
 
             # 4. add tasks
             for img_id, annotations in list(ann_by_task.items()):
-                data_path = coco.imgs[img_id]["full_path"]
-                size = "1," + coco.imgs[img_id]["size"]
-                self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
+                data_path = coco.imgs[img_id]["data_path"]
+                self.add_task([{"path": data_path, "size": coco.imgs[img_id]["size"]}], [annotations], split=set)
             return data_paths, json.dumps({"info": info, "licenses": licenses})
 
         # 2. find all images under data_dir
@@ -464,11 +462,12 @@ class Detection(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            img = cv2.imread(osp.join(data_dir, data_path))
-            s = img.shape
-            size = [1, s[1], s[0]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
+            # img = cv2.imread(osp.join(data_dir, data_path))
+            # s = img.shape
+            # size = [1, s[1], s[0]]
+            # size = [str(s) for s in size]
+            # size = ",".join(size)
+            size, _, _ = getSize(Path(data_dir) / data_path)
             self.add_task([{"path": data_path, "size": size}])
 
         self.commit()
@@ -575,7 +574,6 @@ class Detection(BaseTask):
         # 1. set params
         project = self.project
         data_dir = Path(project.data_dir if data_dir is None else data_dir)
-        allow_missing_image = data_dir is not None
         self.create_warning(data_dir)
 
         # 2. get all data and label
@@ -594,27 +592,19 @@ class Detection(BaseTask):
             pairs = [list(map(break_path, p.strip().split(" "))) for p in pairs if len(p.strip()) != 0]
             list_mappings.update({Path(*p[1]): Path(*p[0]) for p in pairs})
 
-        # print(list_mappings)
-
         name_mappings = {}
         data_paths_m = {Path(p).name.split(".")[0]: Path(p) for p in data_paths}
         for label_path in label_paths:
             base_name = label_path.name.split(".")[0]
             name_mappings[label_path] = data_paths_m.get(base_name, None)
 
-        # print(name_mappings)
-
         for label_path in label_paths:
             data, labels = parse_voc_label(osp.join(data_dir, label_path))
-            # print(data['path'])
             data_path = list_mappings.get(label_path, None)
-            # print(data_path)
             if data_path is None:
                 data_path = name_mappings.get(label_path, None)
-            # print(data_path)
             if data_path is None:
                 data_path = Path(data["path"])
-            # print(data_path)
             data["path"] = str(data_path)
             data_path = data_dir / data_path
 
@@ -623,13 +613,16 @@ class Detection(BaseTask):
                     f"Image specified in label xml file {str(label_path)} not found at {str(data_path)}."
                 )
 
-            img = cv2.imread(str(data_path))
-            if img is not None:
-                data["size"] = ",".join(map(str, [1] + list(img.shape[:2])))
-            else:
-                raise RuntimeError(f"Load image {str(data_path)} failed.")
-                # log.error(f"Load image {data['path']} failed")
-                # size = "0,0,0"
+            # img = cv2.imread(str(data_path))
+            # if img is not None:
+            #     # data["size"] = ",".join(map(str, [1] + list(img.shape[:2])))
+            #     data["size"]
+            # else:
+            #     raise RuntimeError(f"Load image {str(data_path)} failed.")
+            #     # log.error(f"Load image {data['path']} failed")
+            #     # size = "0,0,0"
+
+            size, _, _ = getSize(data_path)
 
             # def wxh(size):
             #     return "x".join(size.split(",")[1:3])
@@ -645,11 +638,12 @@ class Detection(BaseTask):
             data_paths.remove(data["path"])  # TODO: change to Path
 
         for data_path in data_paths:
-            img = cv2.imread(osp.join(data_dir, data_path))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
+            size, _, _ = getSize(Path(data_dir) / data_path)
+            # img = cv2.imread(osp.join(data_dir, data_path))
+            # s = img.shape
+            # size = [1, s[1], s[0], s[2]]
+            # size = [str(s) for s in size]
+            # size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
         self.commit()

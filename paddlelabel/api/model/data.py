@@ -11,7 +11,7 @@ class Data(BaseModel):
     # task = db.relationship("Task", lazy="selectin")
     annotations = db.relationship("Annotation", lazy="selectin", cascade="all, delete-orphan")
     path = nncol(db.String())
-    size = db.Column(db.String())  # , seperated string. natural image: NHWC (C is optional)
+    size = db.Column(db.String())  # , separated string. natural image: 1,height,width
     predicted = db.Column(db.Boolean())
 
     _immutables = BaseModel._immutables + ["data_id", "task_id"]

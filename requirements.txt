@@ -1,5 +1,5 @@
 # Web related
-connexion[swagger-ui]
+connexion
 marshmallow_sqlalchemy
 
 ## currently required, but will be removed in a future version

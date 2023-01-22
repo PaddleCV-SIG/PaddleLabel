@@ -33,6 +33,8 @@ logger = logging.getLogger("paddlelabel")
 
 
 def import_dataset(project, data_dir=None, label_format=None):
+    logger.info(f"importing dataset from {data_dir}")
+
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
     # 1. create handler
@@ -117,7 +119,6 @@ def import_additional_data(project_id):
 
 def pre_add(new_project, se):
     new_project.data_dir = expand_home(new_project.data_dir)
-    logger.info(f"importing dataset from {new_project.data_dir}")
     if not osp.isabs(new_project.data_dir):
         abort("Dataset Path is not absolute path", 409)
     if not Path(new_project.data_dir).exists():

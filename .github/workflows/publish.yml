@@ -1,7 +1,13 @@
 name: Publishing latest built package to pypi
 
-on: [workflow_dispatch]
-
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Skip last publish step"
+        required: false
+        default: true
+        type: boolean
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -11,7 +17,7 @@ jobs:
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: pypi.yml
+          workflow: build.yml
           workflow_conclusion: success
           branch: develop
           name: PaddleLabel_built_package
@@ -22,6 +28,9 @@ jobs:
           pwd
           ls
           tree .
+
+      - if: ${{ inputs.dry_run != true }}
+        run: echo here
 
       # - name: Publish to PyPI
       #   uses: pypa/gh-action-pypi-publish@release/v1

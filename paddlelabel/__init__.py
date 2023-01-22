@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 
 print("Starting PaddleLabel")
 
@@ -16,6 +17,7 @@ class Configs:
     host: str = "127.0.0.1"
     port: int = 17995
     debug: bool = False  # if running in debug mode
+    log_level: int = logging.INFO
 
     # requests with the same request id arriving less than request_id_timeout s apart will be rejected
     request_id_timeout: float = 2
@@ -51,7 +53,8 @@ class Configs:
 
 configs = Configs()
 
-
+# 3. enable foreign key constraint for sqlite
+# TODO: run this conditionally based on db engine used
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 

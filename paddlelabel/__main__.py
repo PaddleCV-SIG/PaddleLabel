@@ -47,7 +47,7 @@ def parse_args():
         default=home,
         help=f"The folder to store paddlelabel files, like database and built in samples. Defaults to {home}",
     )
-    # TODO:  implement
+    # TODO: test implement
 
     return parser.parse_args()
 
@@ -67,12 +67,13 @@ def run():
         levels = (logging.WARNING, logging.INFO)
     logging.getLogger("werkzeug").setLevel(levels[0])
     logger.setLevel(levels[1])
+    configs.log_level = levels[1]
 
     from paddlelabel.util import pyVerGt, portInUse, can_update
 
     # 1.2 ensure port not in use
-    if not args.debug and not args.verbose and portInUse(args.port):
-        print(
+    if portInUse(args.port):
+        logging.error(
             f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
         )
         exit()
@@ -92,11 +93,6 @@ paddlelabel
 
     # 1.4 check for updates
     can_update(log=True)
-
-    # logger.debug("debug")
-    # logger.info("info")
-    # logger.error("error")
-    # logger.critical("critical")
 
     # 2. prepare and start
     # 2.1 import

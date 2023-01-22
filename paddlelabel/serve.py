@@ -1,6 +1,5 @@
 from pathlib import Path
 import shutil
-from datetime import datetime
 import logging
 
 from flask_cors import CORS  # TODO: custom middleware, dont use this package
@@ -57,6 +56,8 @@ with connexion_app.app.app_context():
 
     # need db upgrade
     if curr_db_v != db_head_version and db_exists:
+        from datetime import datetime
+
         back_up_path = (
             Path(configs.db_path).parent
             / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-paddlelabel.db.bk"
@@ -76,6 +77,8 @@ with connexion_app.app.app_context():
 
     if configs.debug:
         alembic.command.check(alembic_cfg)  # abort when model definition is changed and a new reversion is required
+
+logger.setLevel(configs.log_level)
 
 # 3. serve the app
 connexion_app.add_api(

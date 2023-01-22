@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-import os.path as osp
+import os.path as osp  # TODO: remove
 from collections import deque
 from pathlib import Path
 
@@ -15,6 +15,7 @@ from paddlelabel.io.image import getSize
 Base for import/export and other task specific operations.
 """
 
+logger = logging.getLogger("paddlelabel")
 
 # TODO: change data_dir to pathlib.path
 class BaseTask:
@@ -44,7 +45,6 @@ class BaseTask:
             Project with given project_id not found.
         """
 
-        self.logger = logging.getLogger("paddlelabel")
         self.task_cache: list[Task] = []
 
         # 1. set project
@@ -194,7 +194,7 @@ class BaseTask:
                 task.annotations.append(ann)  # TODO: remove this, annotation should only be under data
                 data.annotations.append(ann)
                 total_anns += 1
-            self.logger.debug(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
+            logger.debug(f"{data.path} with {total_anns} annotation(s) under set {split_idx} discovered")
 
         self.task_cache.append(task)
 
@@ -203,7 +203,7 @@ class BaseTask:
         self.task_cache.sort(key=lambda k: k.datas[0].path)
         for task in self.task_cache:
             db.session.add(task)
-        self.logger.info(
+        logger.info(
             f"{len(self.task_cache)} tasks and {sum(len(t.annotations) for t in self.task_cache)} annotations imported"
         )
         self.task_cache = []
@@ -389,7 +389,7 @@ class BaseTask:
             if len(classes_path) == 0:
                 return
             if len(classes_path) > 1:
-                log.error(f"Found {len(classes_path)} files at {','.join(classes_path)}")
+                logger.error(f"Found {len(classes_path)} classes files at {','.join(classes_path)}")
                 return
             label_names_path = data_dir / classes_path[0]
         # 1.3 if label file doesn't exist, there's nothing to import
@@ -426,7 +426,7 @@ class BaseTask:
             if len(label) not in valid_lengths:
                 raise RuntimeError(f"After split got {label}. It's not in valid lengths {valid_lengths}")
             if label[0] not in current_labels:
-                self.logger.debug(f"Adding label {label}")
+                logger.debug(f"Adding label {label}")
                 if len(label) == 5:
                     label[2] = rgb_to_hex(label[2:])
                     del label[3]

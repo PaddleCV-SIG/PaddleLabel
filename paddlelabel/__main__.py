@@ -1,7 +1,9 @@
 import argparse
 import logging
+import logging.config
 import webbrowser
 from pathlib import Path
+import logging
 
 from paddlelabel import __version__, configs
 
@@ -55,25 +57,16 @@ def run():
 
     # 1. pre run checks and setup
     # 1.1 configure logger
+    logging.config.fileConfig(fname=HERE / "alembic.ini", disable_existing_loggers=False)
     logger = logging.getLogger("paddlelabel")
-    logger.propagate = False
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter("%(levelname)s [paddlelabel.%(module)s.%(lineno)d]: %(message)s")
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-
     if args.debug:
         levels = (logging.WARNING, logging.DEBUG)
     elif args.verbose:
         levels = (logging.INFO, logging.DEBUG)
     else:
         levels = (logging.WARNING, logging.INFO)
-
     logging.getLogger("werkzeug").setLevel(levels[0])
     logger.setLevel(levels[1])
-    for handler in logger.handlers:
-        handler.setLevel(levels[1])
 
     from paddlelabel.util import pyVerGt, portInUse, can_update
 
@@ -100,12 +93,16 @@ paddlelabel
     # 1.4 check for updates
     can_update(log=True)
 
-    # 2. prepare and start
+    # logger.debug("debug")
+    # logger.info("info")
+    # logger.error("error")
+    # logger.critical("critical")
 
+    # 2. prepare and start
     # 2.1 import
     from paddlelabel import api, task
-    from paddlelabel.serve import connexion_app
     from paddlelabel.api.controller.sample import prep_samples
+    from paddlelabel.serve import connexion_app
 
     # 2.2 configs
     configs.host = "0.0.0.0" if args.lan else "127.0.0.1"

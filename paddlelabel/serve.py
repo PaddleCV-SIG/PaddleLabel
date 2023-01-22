@@ -63,7 +63,7 @@ with connexion_app.app.app_context():
         )
         shutil.copy(Path(configs.db_path), back_up_path)
         logger.warn(
-            f"Performing database update. Should anything goes wrong during update, you can find the old database at {str(back_up_path)}"
+            f"Performing database update. Should anything goes wrong during this update, you can find the old database at {str(back_up_path)}"
         )
 
     # v0.1.0: db exists but doesn't have version

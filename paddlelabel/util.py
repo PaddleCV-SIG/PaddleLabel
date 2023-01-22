@@ -84,7 +84,6 @@ class Resolver(connexion.resolver.RestyResolver):
 
             return self.collection_endpoint_name if is_collection_endpoint else method.lower()
 
-        # print(f"{get_controller_name()}.{get_function_name()}")
         return f"{get_controller_name()}.{get_function_name()}"
 
     # TODO: find a better way to resolve this
@@ -182,19 +181,17 @@ def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
         current_version = current_version[current_version.find("Version:") + len("Version:") :]
         current_version = current_version.split("\n")[0].strip()
 
-        # TODO: zero pad every part of version num
-
+        # TODO: zero pad every part of version num @lin
         if latest_version > current_version:
             if log:
-                logger = logging.getLogger("paddlelabel")
-                logger.info(
+                logging.getLogger("paddlelabel").info(
                     f"Currently running {name}=={current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
                 )
             return True
         else:
             return False
     except:
-        logging.getLogger("paddlelabel").exception("Check for update failed")
+        logging.getLogger("paddlelabel").exception("Check for update from pypi failed")
         return False
 
 

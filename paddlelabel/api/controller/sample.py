@@ -171,7 +171,6 @@ def load_sample(sample_family="bear"):
     )
 
     name = f"{sample_names[task_category.name]} 样例项目"
-    # print(data_dir)
     curr_project = Project._get(data_dir=data_dir)
     if curr_project is not None:
         return {"project_id": curr_project.project_id}, 200

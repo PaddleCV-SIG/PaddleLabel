@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 print("Starting PaddleLabel")
 
 # 1. get version

@@ -1,5 +1,6 @@
 from pathlib import Path
-import logging
+
+# import logging
 
 import connexion
 from flask_sqlalchemy import SQLAlchemy  # TODO: remove
@@ -9,7 +10,7 @@ from flask_cors import CORS
 from paddlelabel.util import rand_string
 from paddlelabel import configs
 
-logger = logging.getLogger("paddlelabel")
+# logger = logging.getLogger("paddlelabel")
 
 # basedir = Path(__file__).parent.absolute()  # TODO: remove
 HERE = Path(__file__).parent.absolute()
@@ -17,7 +18,7 @@ HERE = Path(__file__).parent.absolute()
 if not configs.db_path.parent.exists():
     configs.db_path.parent.mkdir()
 
-logger.info(f"Database path: {configs.db_url}")
+# logger.info(f"Database path: {configs.db_url}")
 
 connexion_app = connexion.App("PaddleLabel")
 app = connexion_app.app

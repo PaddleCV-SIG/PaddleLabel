@@ -2,8 +2,7 @@ from __future__ import annotations
 import os.path as osp
 import json
 from copy import deepcopy
-
-# import logging
+import logging
 
 import tifffile as tif
 import numpy as np
@@ -11,6 +10,7 @@ import cv2
 from pycocotoolse.coco import COCO
 from pathlib import Path
 
+from paddlelabel.io.image import getSize
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.task.util.color import hex_to_rgb
@@ -19,7 +19,7 @@ from paddlelabel.api.model import Task, Label, Annotation
 from paddlelabel.api.util import abort
 from paddlelabel.api.rpc.seg import polygon2points
 
-# log = logging.getLogger("PaddleLabel")
+log = logging.getLogger("paddlelabel")
 
 
 def draw_mask(data, mask_type="grayscale"):
@@ -262,9 +262,10 @@ class InstanceSegmentation(BaseTask):
                 size, anns = parse_instance_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
-                img = cv2.imread(data_path)
-                s = [1] + list(img.shape)
-                size = ",".join([str(s) for s in s])
+                # img = cv2.imread(data_path)
+                # s = [1] + list(img.shape)
+                # size = ",".join([str(s) for s in s])
+                size, _, _ = getSize(data_path)
 
             self.add_task([{"path": data_path, "size": size}], [anns])
         self.commit()
@@ -349,22 +350,23 @@ class InstanceSegmentation(BaseTask):
             # 2. get image full path and size
             for idx, img in coco.imgs.items():
                 file_name = img["file_name"]
-                full_path = filter(
+                img_path = filter(
                     lambda p: osp.normpath(p)[-len(osp.normpath(file_name)) :] == osp.normpath(file_name), data_paths
                 )
-                full_path = list(full_path)
-                if len(full_path) != 1:
+                img_path = list(img_path)
+                if len(img_path) != 1:
                     abort(
-                        detail=f"{'No' if len(full_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}",
+                        detail=f"{'No' if len(img_path) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}",
                         status=404,
                     )
 
-                full_path = full_path[0]
-                data_paths.remove(full_path)
-                coco.imgs[idx]["full_path"] = full_path
-                s = cv2.imread(osp.join(data_dir, full_path)).shape[:2]
-                s = [str(t) for t in s]
-                coco.imgs[idx]["size"] = ",".join(s)
+                img_path = img_path[0]
+                data_paths.remove(img_path)
+                coco.imgs[idx]["img_path"] = img_path
+                # s = cv2.imread(osp.join(data_dir, img_path)).shape[:2]
+                # s = [str(t) for t in s]
+                # coco.imgs[idx]["size"] = ",".join(s)
+                coco.imgs[idx]["size"], _, _ = getSize(Path(data_dir) / img_path)
                 ann_by_task[img["id"]] = []
 
             # 3. get ann by image
@@ -397,7 +399,7 @@ class InstanceSegmentation(BaseTask):
 
             # 4. add tasks
             for img_id, annotations in list(ann_by_task.items()):
-                data_path = coco.imgs[img_id]["full_path"]
+                data_path = coco.imgs[img_id]["img_path"]
                 size = "1," + coco.imgs[img_id]["size"]
                 self.add_task([{"path": data_path, "size": size}], [annotations], split=set)
             return data_paths, json.dumps({"info": info, "licenses": licenses})
@@ -416,8 +418,9 @@ class InstanceSegmentation(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            img = cv2.imread(str(data_dir / data_path))
-            size = ",".join(map(str, [1] + list(img.shape[:2])))
+            # img = cv2.imread(str(data_dir / data_path))
+            # size = ",".join(map(str, [1] + list(img.shape[:2])))
+            size, _, _ = getSize(data_dir / data_path)
             self.add_task([{"path": data_path, "size": size}])
 
         self.commit()
@@ -506,14 +509,15 @@ class InstanceSegmentation(BaseTask):
         json_paths = [Path(p) for p in json_paths]
 
         for data_path in data_paths:
-            s = cv2.imread(str(data_dir / data_path)).shape[:2]
-            size = ",".join(["1"] + [str(t) for t in s])
+            # s = cv2.imread(str(data_dir / data_path)).shape[:2]
+            # size = ",".join(["1"] + [str(t) for t in s])
+            size, height, width = getSize(data_dir / data_path)
             json_path = match_by_base_name(data_path, json_paths)
 
             if len(json_path) == 0:
                 self.add_task([{"path": data_path, "size": size}])
             else:
-                height, width = s
+                # height, width = s
                 json_path = json_path[0]
                 anns_d = json.loads((data_dir / json_path).read_text())
                 anns = []
@@ -601,9 +605,10 @@ class SemanticSegmentation(InstanceSegmentation):
                 size, anns = parse_semantic_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
-                img = cv2.imread(data_path)
-                s = [1] + list(img.shape)
-                size = ",".join([str(s) for s in s])
+                # img = cv2.imread(data_path)
+                # s = [1] + list(img.shape)
+                # size = ",".join([str(s) for s in s])
+                size, _, _ = getSize(Path(data_path))
 
             self.add_task([{"path": data_path, "size": size}], [anns])
         self.commit()

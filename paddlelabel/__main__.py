@@ -72,7 +72,7 @@ def run():
     from paddlelabel.util import pyVerGt, portInUse, can_update
 
     # 1.2 ensure port not in use
-    if portInUse(args.port):
+    if not args.debug and portInUse(args.port):  # port will be in use with cypress open
         logging.error(
             f"Port {args.port} is currently in use. Please identify and stop that process using port {args.port} or specify a different port with: paddlelabel -p [Port other than {args.port}]."
         )
@@ -95,16 +95,17 @@ paddlelabel
     can_update(log=True)
 
     # 2. prepare and start
-    # 2.1 import
-    from paddlelabel import api, task
-    from paddlelabel.api.controller.sample import prep_samples
-    from paddlelabel.serve import connexion_app
 
-    # 2.2 configs
+    # 2.1 set configs
     configs.host = "0.0.0.0" if args.lan else "127.0.0.1"
     configs.port = args.port
     configs.debug = args.debug
     configs.home = args.home
+
+    # 2.2 import
+    from paddlelabel import api, task
+    from paddlelabel.api.controller.sample import prep_samples
+    from paddlelabel.serve import connexion_app
 
     # 2.3 create sample projects
     prep_samples()

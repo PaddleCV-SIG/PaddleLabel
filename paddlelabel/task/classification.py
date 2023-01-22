@@ -29,9 +29,7 @@ class Classification(BaseTask):
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
-        data_dir = self.project.data_dir if data_dir is None else data_dir
-        data_dir = Path(data_dir)
-
+        data_dir = Path(self.project.data_dir if data_dir is None else data_dir)
         self.create_warning(data_dir)
 
         # 2. import all datas

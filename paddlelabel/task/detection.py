@@ -491,7 +491,7 @@ class Detection(BaseTask):
 
             size = data.size.split(",")
             export_path = osp.basename(data.path)
-            coco.addImage(export_path, int(size[1]), int(size[2]), data.data_id)
+            coco.addImage(export_path, int(size[2]), int(size[1]), data.data_id)
             copy(osp.join(project.data_dir, data.path), data_dir)
             split[task.set].add(data.data_id)
 

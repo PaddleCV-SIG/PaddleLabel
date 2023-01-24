@@ -126,7 +126,7 @@ class OpticalCharacterRecognition(BaseTask):
 
         for task in tasks:
             data = task.datas[0]
-            sizes[data.data_id] = list(map(int, data.size.split(",")))
+            sizes[data.data_id] = list(map(int, data.size.split(",")))[1:]
             copy(Path(project.data_dir) / data.path, data_dir)
             # data_info[data.data_id] = [task.set, Path(data.path).name.split(".")[0]]
             data_info[data.data_id] = [task.set, Path(data.path).name]
@@ -146,14 +146,11 @@ class OpticalCharacterRecognition(BaseTask):
                 ti = lambda v: int(float(v))
                 points = [list(map(ti, vs)) for vs in zip(r[:ridx:2], r[1:ridx:2])]
                 r = r[ridx + 1 :]
-
+                print(sizes[ann.data_id])
                 height, width = sizes[ann.data_id]
                 for pidx in range(len(points)):
                     points[pidx][0] = int(points[pidx][0] + width / 2)
                     points[pidx][1] = int(points[pidx][1] + height / 2)
-
-            # print(points)
-            # print(r)
 
             split, name = data_info[ann.data_id]
             ann_dicts[split][name].append(

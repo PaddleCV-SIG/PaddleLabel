@@ -189,7 +189,7 @@ def parse_instance_mask(annotation_path, labels, image_path=None):
         # img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
         # if img is None:
         #     raise RuntimeError(f"Read image {annotation_path} failed.")
-        img = Image.open(annotation_path)
+        img = Image.open(image_path)
         # TODO: remove two paths' common prefix
         if img.size[::-1] != mask.shape[1:]:
             abort(
@@ -267,6 +267,7 @@ class InstanceSegmentation(BaseTask):
             else:
                 anns = []
                 size, _, _ = getSize(data_path)
+                # mask = tif.imread(data_path)
 
             self.add_task([{"path": data_path, "size": size}], [anns])
         self.commit()

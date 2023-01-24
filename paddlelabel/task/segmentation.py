@@ -641,7 +641,7 @@ class SemanticSegmentation(InstanceSegmentation):
             export_label_paths.append([export_label_path])
 
         self.export_split(
-            export_dir,
+            Path(export_dir),
             tasks,
             export_data_paths,
             with_labels=False,

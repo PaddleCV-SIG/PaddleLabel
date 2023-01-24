@@ -4,8 +4,6 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-import cv2
-
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.task.util import copy
@@ -92,9 +90,6 @@ class OpticalCharacterRecognition(BaseTask):
                     if len(label_fname) == 0:
                         continue
                     label_fname = str(label_fname[0])
-                    # size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
-                    # height, width = size
-                    # size = ",".join(map(str, size))
                     size, height, width = getSize(data_dir / data_path)
 
                     # FIXME: after frontend shift to upperleft origion, simply remove below part
@@ -113,9 +108,6 @@ class OpticalCharacterRecognition(BaseTask):
                 data_paths -= imported_data_path
 
         for data_path in data_paths:
-            # size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
-            # height, width = size
-            # size = ",".join(map(str, size))
             size, _, _ = getSize(data_dir / data_path)
             self.add_task([{"path": str(data_path), "size": size}], split=0)
 
@@ -240,8 +232,6 @@ class OpticalCharacterRecognition(BaseTask):
 
                 img_path = img_paths[0]
                 data_paths.remove(img_path)
-                # size = cv2.imread(osp.join(data_dir, img_path)).shape[:2]
-                # size = ",".join(map(str, size))
                 size, _, _ = getSize(data_dir / img_path)
 
                 """
@@ -270,11 +260,6 @@ class OpticalCharacterRecognition(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            # img = cv2.imread(str(data_dir / data_path))
-            # s = img.shape
-            # size = [1, s[1], s[0], s[2]]
-            # size = [str(s) for s in size]
-            # size = ",".join(size)
             size, _, _ = getSize(data_dir / data_path)
             self.add_task([{"path": str(data_path), "size": size}])
 

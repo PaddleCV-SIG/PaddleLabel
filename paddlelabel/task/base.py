@@ -491,9 +491,6 @@ class BaseTask:
 
         for data_path in listdir(data_dir, filters):
             if with_size:
-                # img = cv2.imread(osp.join(data_dir, data_path))
-                # size = [1] + list(img.shape[:2])
-                # size = ",".join([str(s) for s in size])
                 size, _, _ = getSize(Path(data_dir) / data_path)
             else:
                 size = None

@@ -266,9 +266,6 @@ class Detection(BaseTask):
 
         for data_path in data_paths:
             basename = data_path.name.split(".")[0]
-            # s = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
-            # height, width = s[:2]
-            # size = ",".join(map(str, [1] + list(s[:2])))
             size, height, width = getSize(data_dir / data_path)
             ann_list = []
 
@@ -461,11 +458,6 @@ class Detection(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            # img = cv2.imread(osp.join(data_dir, data_path))
-            # s = img.shape
-            # size = [1, s[1], s[0]]
-            # size = [str(s) for s in size]
-            # size = ",".join(size)
             size, _, _ = getSize(Path(data_dir) / data_path)
             self.add_task([{"path": data_path, "size": size}])
 
@@ -612,15 +604,6 @@ class Detection(BaseTask):
                     f"Image specified in label xml file {str(label_path)} not found at {str(data_path)}."
                 )
 
-            # img = cv2.imread(str(data_path))
-            # if img is not None:
-            #     # data["size"] = ",".join(map(str, [1] + list(img.shape[:2])))
-            #     data["size"]
-            # else:
-            #     raise RuntimeError(f"Load image {str(data_path)} failed.")
-            #     # log.error(f"Load image {data['path']} failed")
-            #     # size = "0,0,0"
-
             size, _, _ = getSize(data_path)
 
             # def wxh(size):
@@ -638,11 +621,6 @@ class Detection(BaseTask):
 
         for data_path in data_paths:
             size, _, _ = getSize(Path(data_dir) / data_path)
-            # img = cv2.imread(osp.join(data_dir, data_path))
-            # s = img.shape
-            # size = [1, s[1], s[0], s[2]]
-            # size = [str(s) for s in size]
-            # size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
         self.commit()

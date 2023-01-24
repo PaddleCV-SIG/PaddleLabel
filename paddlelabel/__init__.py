@@ -24,7 +24,7 @@ class Configs:
 
     """ file position settings """
     _home: Path = Path().home().absolute() / ".paddlelabel"
-    install_base: Path = Path(__file__).absolute().parent
+    install_base: Path = Path(__file__).absolute().parent  # TODO: a better name?
 
     @property
     def home(self) -> Path:
@@ -36,6 +36,10 @@ class Configs:
         if not home_path.exists():
             home_path.mkdir(parents=True)  # TODO: catch no permission
         self._home = home_path
+
+    @property
+    def sample_dir(self) -> Path:
+        return self._home / "sample"
 
     # db settings
     db_engine: str = "sqlite"

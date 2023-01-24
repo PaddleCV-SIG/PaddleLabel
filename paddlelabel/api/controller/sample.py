@@ -5,14 +5,16 @@ from pathlib import Path
 import connexion
 import flask  # TODO: remove this
 
+import paddlelabel  # for eval later
+from paddlelabel import configs
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
 from paddlelabel.task.util.file import copy, copy_content
 from paddlelabel import configs
 
-# def reset_samples()
-def prep_samples(sample_dst: Path | None = None):
-    # if sample_dst is None:
+
+def prep_samples():
+    sample_dst = configs.sample_dir
 
     sample_source = str(configs.install_base / "sample")
     copy_content(sample_source, sample_dst)
@@ -137,6 +139,21 @@ def prep_samples(sample_dst: Path | None = None):
         dst = osp.join(sample_dst, dst)
         src = osp.join(img_fdr, osp.basename(dst))
         copy(src, dst, make_dir=True)
+
+
+def reset_samples():
+    """
+    reset files under the sample folder, will backup the current sample folder if exists
+    """
+    if configs.sample_dir.exists():
+        from datetime import datetime
+
+        back_up_path = (
+            Path(configs.sample_dir).parent
+            / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-sample_bk"
+        )
+        configs.sample_dir.rename(back_up_path)
+    prep_samples()
 
 
 def load_sample(sample_family="bear"):

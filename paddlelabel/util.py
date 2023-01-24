@@ -185,7 +185,10 @@ def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
         if latest_version > current_version:
             if log:
                 logging.getLogger("paddlelabel").info(
-                    f"Currently running {name}=={current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
+                    f"""
+Currently installed {name} version is {current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:
+    pip install --upgrade {name}
+You can visit to see more details about this update."""
                 )
             return True
         else:

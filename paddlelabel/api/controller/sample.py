@@ -1,21 +1,21 @@
 import os
 import os.path as osp
+from pathlib import Path
 
 import connexion
-import flask
+import flask  # TODO: remove this
 
-import paddlelabel
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
-from paddlelabel.task.util.file import copy, copycontent
+from paddlelabel.task.util.file import copy, copy_content
 from paddlelabel import configs
 
+# def reset_samples()
+def prep_samples(sample_dst: Path | None = None):
+    # if sample_dst is None:
 
-def prep_samples(
-    sample_dst: str = osp.join(osp.expanduser("~"), ".paddlelabel", "sample")
-):  # FIXME: no code in func def
     sample_source = str(configs.install_base / "sample")
-    copycontent(sample_source, sample_dst)
+    copy_content(sample_source, sample_dst)
 
     dsts = [
         "bear/placeholder/1/1.jpeg",

@@ -6,7 +6,6 @@ import json
 from copy import deepcopy
 
 from pycocotoolse.coco import COCO
-import cv2
 
 from paddlelabel.api import Task, Annotation, Label
 from paddlelabel.task.util import (

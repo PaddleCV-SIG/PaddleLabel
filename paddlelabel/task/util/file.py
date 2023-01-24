@@ -145,7 +145,7 @@ def copy(src, dst, make_dir=False):
     shutil.copy(src, dst)
 
 
-def copycontent(src, dst):
+def copy_content(src, dst):
     """
     Recursively copy everything in src to dst. Create dst if not exist.
 

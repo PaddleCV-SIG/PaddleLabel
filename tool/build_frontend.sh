@@ -1,8 +1,9 @@
 # build frontend and copy to backend folder
 # run from and will return to /path/to/PaddleLabel/
-echo "Pulling update from github"
-
 cd ../PaddleLabel-Frontend/
+echo "Current frontend branch: $(git branch --show-current)"
+
+echo "Pulling update from github"
 git pull
 
 echo "Building frontend"

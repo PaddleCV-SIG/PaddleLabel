@@ -9,6 +9,7 @@ import cv2
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
 from paddlelabel.task.base import BaseTask
 from paddlelabel.task.util import copy
+from paddlelabel.io.image import getSize
 from paddlelabel.api.model import Task, Annotation, Project
 from paddlelabel.api.util import abort
 
@@ -91,18 +92,18 @@ class OpticalCharacterRecognition(BaseTask):
                     if len(label_fname) == 0:
                         continue
                     label_fname = str(label_fname[0])
-                    size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
-                    height, width = size
-                    size = ",".join(map(str, size))
+                    # size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
+                    # height, width = size
+                    # size = ",".join(map(str, size))
+                    size, height, width = getSize(data_dir / data_path)
 
                     # FIXME: after frontend shift to upperleft origion, simply remove below part
                     labels_temp = labels_d[label_fname]
                     for idx, label in enumerate(labels_temp):
-                        # print(label, type(label))
                         temp = label["result"].split("|")
                         pidx = 0
                         while temp[pidx] != "":
-                            temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height/2)):.1f}"
+                            temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height / 2)):.1f}"
                             pidx += 1
                         labels_temp[idx]["result"] = "|".join(temp)
 
@@ -112,9 +113,10 @@ class OpticalCharacterRecognition(BaseTask):
                 data_paths -= imported_data_path
 
         for data_path in data_paths:
-            size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
-            height, width = size
-            size = ",".join(map(str, size))
+            # size = cv2.imread(str(Path(data_dir) / data_path)).shape[:2]
+            # height, width = size
+            # size = ",".join(map(str, size))
+            size, _, _ = getSize(data_dir / data_path)
             self.add_task([{"path": str(data_path), "size": size}], split=0)
 
         self.commit()
@@ -228,18 +230,19 @@ class OpticalCharacterRecognition(BaseTask):
             all_anns = json.loads(open(label_file_path, "r").read())
 
             for file_name, anns in all_anns.items():
-                full_paths = filter(lambda p: p.name == file_name or p.name.split(".")[0] == file_name, data_paths)
-                full_paths = list(full_paths)
-                if len(full_paths) != 1:
+                img_paths = filter(lambda p: p.name == file_name or p.name.split(".")[0] == file_name, data_paths)
+                img_paths = list(img_paths)
+                if len(img_paths) != 1:
                     abort(
-                        detail=f"{'No' if len(full_paths) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}",
+                        detail=f"{'No' if len(img_paths) == 0 else 'Multiple'} image(s) with path ending with {file_name} found under {data_dir}",
                         status=404,
                     )
 
-                full_path = full_paths[0]
-                data_paths.remove(full_path)
-                size = cv2.imread(osp.join(data_dir, full_path)).shape[:2]
-                size = ",".join(map(str, size))
+                img_path = img_paths[0]
+                data_paths.remove(img_path)
+                # size = cv2.imread(osp.join(data_dir, img_path)).shape[:2]
+                # size = ",".join(map(str, size))
+                size, _, _ = getSize(data_dir / img_path)
 
                 """
                 p1.w|p1.h|....|pn.w|pn.h|(固定为空，表示点结束)|transcription|illegibility(0/1)|language
@@ -255,7 +258,7 @@ class OpticalCharacterRecognition(BaseTask):
                     ann["frontend_id"] = idx + 1
                 anns = list(map(self.encode_ann, anns))
 
-                self.add_task([{"path": full_path, "size": size}], [anns], split=set)
+                self.add_task([{"path": img_path, "size": size}], [anns], split=set)
 
             return data_paths
 
@@ -267,12 +270,13 @@ class OpticalCharacterRecognition(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            img = cv2.imread(str(data_dir / data_path))
-            s = img.shape
-            size = [1, s[1], s[0], s[2]]
-            size = [str(s) for s in size]
-            size = ",".join(size)
-            self.add_task([{"path": data_path, "size": size}])
+            # img = cv2.imread(str(data_dir / data_path))
+            # s = img.shape
+            # size = [1, s[1], s[0], s[2]]
+            # size = [str(s) for s in size]
+            # size = ",".join(size)
+            size, _, _ = getSize(data_dir / data_path)
+            self.add_task([{"path": str(data_path), "size": size}])
 
         self.commit()
 

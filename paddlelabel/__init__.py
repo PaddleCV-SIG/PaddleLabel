@@ -23,7 +23,8 @@ class Configs:
     request_id_timeout: float = 2
 
     """ file position settings """
-    _home: Path = Path(str(Path().home().absolute()).strip()) / ".paddlelabel"
+    # _home: Path = Path(str(Path().home().absolute()).strip()) / ".paddlelabel"
+    _home: Path = Path().home().absolute() / ".paddlelabel"
     install_base: Path = Path(__file__).absolute().parent  # TODO: a better name?
 
     @property

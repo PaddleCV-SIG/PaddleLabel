@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
-          ref: paddlelablOcr
+          ref: develop
 
       - uses: actions/setup-node@v3
         with:
@@ -120,7 +120,7 @@ jobs:
           env: os=${{ matrix.os }}
           spec: ${{ steps.test_order.outputs.tests }}
           wait-on: "http://localhost:1111"
-          wait-on-timeout: 40
+          wait-on-timeout: 120
           start-windows: yarn run test:win
           start: yarn run test:unix
 

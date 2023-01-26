@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from paddlelabel.api.model import TaskCategory
 from .base import BaseSchema
 

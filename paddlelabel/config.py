@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TODO: move all functions in this file to serve.py
 from pathlib import Path
 import logging

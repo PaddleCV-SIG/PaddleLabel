@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from paddlelabel.config import db
 from ..util import nncol
 from .base import BaseModel

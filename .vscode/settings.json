@@ -2,6 +2,7 @@
     "autoDocstring.customTemplatePath": "docstring_format.mustache",
     "cSpell.words": [
         "anns",
+        "autofix",
         "bgid",
         "bndbox",
         "callouts",

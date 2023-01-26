@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .project import Project
 from .label import Label
 from .task import Task

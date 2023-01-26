@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from marshmallow import pre_load, fields
 
 from paddlelabel.api.model import User

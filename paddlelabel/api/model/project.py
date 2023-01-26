@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 
 from paddlelabel.config import db

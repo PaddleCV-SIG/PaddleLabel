@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """v0.1.3. Add annotation.predicted_by
 
 Revision ID: 61968cbf48e8

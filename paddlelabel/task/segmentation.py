@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 import os.path as osp
 import json
@@ -635,7 +636,8 @@ class SemanticSegmentation(InstanceSegmentation):
             copy(data_path, export_data_dir)
 
             mask = draw_mask(data, mask_type=seg_mask_type)
-            cv2.imwrite(export_label_path, mask)
+            mask_img = Image.fromarray(mask.astype("uint8"), "L")
+            mask_img.save(export_label_path)
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])

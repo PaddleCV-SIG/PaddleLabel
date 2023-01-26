@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """v1.0.0
 - Make sure the size of all tasks are 1,h,w
 

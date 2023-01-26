@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .base import BaseTask
 from .classification import Classification
 from .detection import Detection

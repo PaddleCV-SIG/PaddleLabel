@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os.path as osp
@@ -647,7 +648,7 @@ class Detection(BaseTask):
             copy(data_path, export_data_dir)
             id = osp.basename(data_path).split(".")[0]
             height, width = data.size.split(",")[1:3]
-            with open(osp.join(export_label_dir, f"{id}.xml"), "w") as f:
+            with open(osp.join(export_label_dir, f"{id}.xml"), "w", encoding="utf-8") as f:
                 print(
                     create_voc_label(export_path, width, height, data.annotations),
                     file=f,

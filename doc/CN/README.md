@@ -8,6 +8,8 @@
 
 <b> 飞桨智能标注，让标注快人一步 </b>
 
+<!-- TODO: can we make this 3.7+ -->
+
 <p>
 <img src="https://img.shields.io/badge/python-3.8+-blue.svg">
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
@@ -36,12 +38,8 @@
   - 【检测】新增 PicoDet 预训练模型，为检测功能提供预标注能力
   - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分实例; (2)新增根据类别或根据实例选择颜色显示模式; (3)修复交互式分割 localStorage 超限问题
 
-<details> <summary markdown="span">更多动态</summary>
-- 【2022-08-18】 :fire: PaddleLabel 0.1 版本发布！
-  - 【分类】支持单分类与多分类标注及标签的导入导出。简单灵活实现自定义数据集分类标注任务并导出供[PaddleClas](https://github.com/PaddlePaddle/PaddleClas)进行训练
-  - 【检测】支持检测框标注及标签的导入导出。快速上手生成自己的检测数据集并应用到[PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection)
-  - 【分割】支持多边形、笔刷及交互式等多种标注方式，支持标注语义分割与实例分割两种场景。多种分割标注方式可灵活选择，方便将导出数据应用在[PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg)获取个性化定制模型
-</details>
+[更多动态](./release_notes.md)
+
 
 ## 简介
 
@@ -81,6 +79,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 - [OCR](/doc/CN/manual/ocr.md)
 
 ### 深度学习辅助标注
+
 - [机器学习后端安装指南](/doc/CN/ML/install_ml.md)
 - [自动预标注使用方法](/doc/CN/ML/auto_inference.md)
 - [交互式分割使用方法](/doc/CN/ML/interactive_segmentation.md)

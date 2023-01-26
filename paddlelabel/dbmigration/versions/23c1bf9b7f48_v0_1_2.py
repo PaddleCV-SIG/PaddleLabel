@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """v0.1.2. Initial db
 
 Revision ID: 23c1bf9b7f48

@@ -94,6 +94,15 @@ jobs:
           path: |
             dist
 
+      - name: Set action summary
+        run: |
+          echo "
+            {# Build Summary}
+            branch: $(git branch)
+            version: $(cat paddlelabel/version)
+
+          " >> $GITHUB_STEP_SUMMARY
+
   # cypress_e2e_test:
   #   needs: build
   #   uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop

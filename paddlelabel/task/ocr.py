@@ -69,7 +69,7 @@ class OpticalCharacterRecognition(BaseTask):
             for label_file_path in label_file_paths[set_idx]:
                 if not label_file_path.exists():
                     continue
-                labels = label_file_path.read_text().split("\n")
+                labels = label_file_path.read_text(encoding="utf-8").split("\n")
                 labels_d = {}
                 for label in labels:
                     label = label.strip()
@@ -216,7 +216,7 @@ class OpticalCharacterRecognition(BaseTask):
         )
 
         def _polygon_importer(data_paths, label_file_path, set=0):
-            all_anns = json.loads(open(label_file_path, "r").read())
+            all_anns = json.loads(label_file_path.read_text(encoding="utf-8"))
 
             for file_name, anns in all_anns.items():
                 img_paths = filter(lambda p: p.name == file_name or p.name.split(".")[0] == file_name, data_paths)

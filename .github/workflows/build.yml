@@ -82,7 +82,9 @@ jobs:
           python setup.py sdist bdist_wheel
 
       - name: Bump version
+        id: bump_version
         run: |
+          echo "version=$(cat paddlelabel/version)" >> $GITHUB_OUTPUT
           python tool/bumpversion.py
           git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"
           git add paddlelabel/version; git commit -m "bump version"; git push
@@ -97,10 +99,9 @@ jobs:
       - name: Set action summary
         run: |
           echo "
-            {# Build Summary}
-            branch: $(git branch)
-            version: $(cat paddlelabel/version)
-
+            # Build Summary
+            branch: $(git branch --show-current)
+            version: ${{ steps.bump_version.version }}
           " >> $GITHUB_STEP_SUMMARY
 
   # cypress_e2e_test:

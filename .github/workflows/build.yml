@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
       - v*
   workflow_dispatch:
     inputs:
@@ -16,7 +18,7 @@ on:
 jobs:
   update_doc_build:
     # uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
-    uses:  ./.github/workflows/doc_to_pages.yml
+    uses: ./.github/workflows/doc_to_pages.yml
     with:
       baseurl: "/static/doc/"
       deploy: false
@@ -93,6 +95,7 @@ jobs:
 
       - name: Bump version
         id: bump_version
+        if: github.event_name == 'push'
         run: |
           python tool/bumpversion.py
           git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"

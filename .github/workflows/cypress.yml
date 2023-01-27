@@ -22,11 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        python-version: ["3.11"]
-        # os: [windows-latest, ubuntu-latest, macos-latest]
+        # python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -42,9 +41,14 @@ jobs:
           cache-env: true
           channels: conda-forge
 
+      - name: Download built paddlelabel package
+        uses: actions/download-artifact@v3
+        with:
+          name: PaddleLabel_built_package
+
       - name: Parallel - download 3rd party tests and install paddlelabel
         run: |
-          echo ${{ steps.download_whl.outputs }}
+          # echo ${{ steps.download_whl.outputs }}
           {
           mkdir -p ~/测试路径/3rd_party/
           cd ~/测试路径/3rd_party/
@@ -59,7 +63,7 @@ jobs:
           echo $bgid
 
           # download latest build
-          curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+          # curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
           unzip PaddleLabel_built_package.zip
 
           # install latest build

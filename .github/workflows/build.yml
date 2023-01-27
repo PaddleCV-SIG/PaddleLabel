@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - v*
   workflow_dispatch:
     inputs:
       force_regen_doc:
@@ -14,7 +15,8 @@ on:
 
 jobs:
   update_doc_build:
-    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
+    # uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml@develop
+    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/doc_to_pages.yml
     with:
       baseurl: "/static/doc/"
       deploy: false
@@ -81,10 +83,18 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
 
+      - name: Set action summary
+        run: |
+          echo "
+            # Build Summary
+            branch: $(git branch --show-current)
+            version: $(cat paddlelabel/version)
+          " >> $GITHUB_STEP_SUMMARY
+
       - name: Bump version
         id: bump_version
         run: |
-          echo "version=$(cat paddlelabel/version)" >> $GITHUB_OUTPUT
+          # echo "version=$(cat paddlelabel/version)" >> $GITHUB_OUTPUT
           python tool/bumpversion.py
           git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"
           git add paddlelabel/version; git commit -m "bump version"; git push
@@ -96,14 +106,7 @@ jobs:
           path: |
             dist
 
-      - name: Set action summary
-        run: |
-          echo "
-            # Build Summary
-            branch: $(git branch --show-current)
-            version: ${{ steps.bump_version.version }}
-          " >> $GITHUB_STEP_SUMMARY
-
-  # cypress_e2e_test:
-  #   needs: build
-  #   uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop
+  cypress_e2e_test:
+    needs: build
+    # uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml@develop
+    uses: PaddleCV-SIG/PaddleLabel/.github/workflows/cypress.yml

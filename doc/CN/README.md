@@ -11,7 +11,7 @@
 <!-- TODO: can we make this 3.7+ -->
 
 <p>
-<img src="https://img.shields.io/badge/python-3.8+-blue.svg">
+<img src="https://img.shields.io/badge/python-3.7+-blue.svg">
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
 <a href="https://github.com/PaddleCV-SIG/doc/blob/develop/LICENSE"> <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"/> </a>
 <a href="https://pypi.org/project/paddlelabel/"> <img src="https://img.shields.io/pypi/v/paddlelabel?color=blue"/> </a>
@@ -29,7 +29,7 @@
 
   - 【OCR】新增 OCR 项目标注能力，支持 [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/PP-OCRv3_introduction.md) 模型预标注
   - 【导入/导出】新增 EISeg 格式导入，新增大量[自动化测试](https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml)，修复诸多导入导出 bug
-  - 【文档】重新梳理后[文档](https://paddlecv-sig.github.io/PaddleLabel/)内容简洁清晰并和软件一同打包发布，进一步降低上手难度
+  - 【文档】对[文档](https://paddlecv-sig.github.io/PaddleLabel/)进行重新梳理，内容简洁清晰并和软件一同打包发布，进一步降低上手难度
 
 - 【2022-11-30】 :fire: PaddleLabel 0.5 版本发布！
 
@@ -38,14 +38,13 @@
   - 【检测】新增 PicoDet 预训练模型，为检测功能提供预标注能力
   - 【分割】(1)优化语义分割及实例分割关于实例的区分，实例分割通过'确认轮廓'来区分实例; (2)新增根据类别或根据实例选择颜色显示模式; (3)修复交互式分割 localStorage 超限问题
 
-[更多动态](./release_notes.md)
-
+[更多动态](/doc/CN/release_notes.md)
 
 ## 简介
 
-PaddleLabel 是基于飞桨 PaddlePaddle 各个套件的功能提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见的计算机视觉任务数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出用于飞桨提供的其他套件的训练。
+PaddleLabel 是基于飞桨 PaddlePaddle 各个套件功能提供的配套标注工具。目前支持对分类、检测、分割、OCR 四种常见的计算机视觉任务数据集进行标注和管理，除基础的手动标注功能外也支持深度学习辅助标注，可以有效地提升标注效率。您可以使用 PaddleLabel 快捷高效地标注自定义数据集，之后将其导出使用飞桨套件进行模型训练。
 
-PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。[PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend) 是基于 React 和 Ant Design 构建的 PaddleLabel 前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML) 是基于飞桨实现的自动和交互式深度学习辅助标注后端。
+PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 Web 后端实现。[PaddleLabel-Frontend](https://github.com/PaddleCV-SIG/PaddleLabel-Frontend) 是基于 React 和 Ant Design 构建的前端，[PaddleLabel-ML](https://github.com/PaddleCV-SIG/PaddleLabel-ML) 是基于飞桨实现的自动和交互式深度学习辅助标注后端。
 
 ![demo720](https://user-images.githubusercontent.com/71769312/185099439-3230cf80-798d-4a81-bcae-b88bcb714daa.gif)
 
@@ -106,7 +105,7 @@ PaddleLabel 的代码分布于三个项目中，本项目包含 PaddleLabel 的 
 
 ### 参与开发
 
-我们十分欢迎感兴趣的大佬加入项目的开发和维护。如果您对参与项目建设感兴趣，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
+PaddleLabel项目是团队合作的成果，我们十分欢迎感兴趣的大佬加入项目的开发和维护。如果您对参与项目建设感兴趣，请通过微信交流群联系开发团队。有关后端实现的详细信息，请参阅[开发者指南](/doc/CN/developers_guide.md)。
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
 

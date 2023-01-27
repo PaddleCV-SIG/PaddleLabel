@@ -3,16 +3,15 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 - [安装 FAQ](#%E5%AE%89%E8%A3%85-faq)
-  - [Windows 下使用 msys2 运行](#windows-%E4%B8%8B%E4%BD%BF%E7%94%A8-msys2-%E8%BF%90%E8%A1%8C)
-  - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
-  - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
+    - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
+    - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
 
 <!-- /TOC -->
 
@@ -30,10 +29,11 @@ conda activate paddlelabel
 ### 通过 pip 安装
 
 ```shell
-pip install --upgrade paddlelabel # 更新和安装后升级 paddlelabel 都是用这行命令
+pip install --upgrade paddlelabel
 ```
 
-看到类似于 `Successfully installed paddlelabel-0.5.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
+初次安装和安装后升级 PaddleLabel 都使用上述命令。
+当看到类似于 `Successfully installed paddlelabel-0.5.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
 
 {: .note }
 **以下两种安装方式主要针对二次开发场景**
@@ -140,9 +140,10 @@ choco install python # python
 choco install miniconda3 # miniconda
 ``` -->
 
-### Windows 下使用 msys2 运行
+<!-- TODO: 完善这块 -->
+<!-- ### Windows 下使用 msys2 运行
 
-如果您在 Windows 中使用 PaddleLabel 时遇到了不容易解决的问题，如无法使用中文，可以尝试在 Windows Linux 子系统或 msys2 环境中运行。以下为在 msys2 中运行方法
+如果您在 Windows 中使用 PaddleLabel 时遇到了不容易解决的问题，如无法使用中文路径，可以尝试在 Windows Linux 子系统或 msys2 环境中运行。以下为在 msys2 中运行方法
 
 - 访问 [msys2 官网](https://www.msys2.org/)下载安装 msys2，或使用 [chocolatey](https://chocolatey.org/install) 安装
 
@@ -154,7 +155,7 @@ choco install msys2
 
 ```shell
 pacman -S python
-```
+``` -->
 
 ### Microsoft Visual C++ 14.1 is required
 
@@ -192,7 +193,7 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
      ![](/doc/CN/assets/miniconda_install_type.png)
      或者在下一步提供一个不带中文的目标文件夹
      ![](/doc/CN/assets/miniconda_cn.png)
-  2. 安装完成后以管理员身份打开 Anaconda Prompt 在所有命令行初始化 conda
+  2. 安装完成后**以管理员身份**打开 Anaconda Prompt 在所有命令行初始化 conda
 
      ```shell
      # 在 Anaconda Prompt 中输入
@@ -208,8 +209,6 @@ error: Microsoft Visual C++ 14.1 is required. Get it with "Build Tools for Visua
      conda config --add pkgs_dirs [不含中文路径2]
      ```
 
-- PaddleLabel 的数据库和样例数据集默认存放在 `~/.paddlelabel` 目录下。如果您的用户名中包含中文， PaddleLabel 在启动过程中就报错退出，可以通过在启动时传入 `--home` 参数指定另一个路径存放 PaddleLabel 文件。如 `paddlelabel --home E:\paddlelabel\`
+- PaddleLabel 的数据库和样例数据集默认存放在 `~/.paddlelabel` 目录下。如果您的用户名中包含中文， 且 PaddleLabel 在启动过程中就报错退出，可以通过在启动时传入 `--home` 参数指定另一个路径存放 PaddleLabel 文件。如 `paddlelabel --home E:\paddlelabel\`
 
-<!-- TODO: 实现这个 -->
-
-针对第二类问题，建议您避免在导入数据集的路径中使用中文，如将数据集文件夹放在类似 `E:\数据集文件夹\` 的位置
+针对第二类数据集路径包含中文导致的问题，建议您避免在导入数据集的路径中使用中文，如将数据集文件夹放在类似 `E:\数据集文件夹\` 的位置

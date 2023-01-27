@@ -64,9 +64,7 @@ jobs:
 
           # download latest build
           # curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-          pwd
-          ls
-          unzip PaddleLabel_built_package.zip
+          # unzip PaddleLabel_built_package.zip
 
           # install latest build
           echo ========================================================

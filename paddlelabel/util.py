@@ -189,7 +189,7 @@ def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
                     f"""
 Currently installed {name} version is {current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:
     pip install --upgrade {name}
-You can visit to see more details about this update."""
+You can visit https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/doc/CN/release_notes.md to see more details about PaddleLabel updates."""
                 )
             return True
         else:

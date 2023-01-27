@@ -22,10 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        # python-version: ["3.11"]
+        python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -64,6 +64,8 @@ jobs:
 
           # download latest build
           # curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+          pwd
+          ls
           unzip PaddleLabel_built_package.zip
 
           # install latest build

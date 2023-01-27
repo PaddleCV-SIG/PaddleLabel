@@ -3,7 +3,7 @@ name: Build PaddleLabel package
 on:
   push:
     branches:
-      - staging
+      - develop
   workflow_dispatch:
     inputs:
       force_regen_doc:

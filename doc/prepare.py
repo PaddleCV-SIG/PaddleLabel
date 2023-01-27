@@ -20,14 +20,13 @@ layout: default
 title: 快速体验
 nav_order: 2
 """,
+    # 手动标注
     "CN/manual/manual.md": """---
 layout: default
 title: 手动标注
 nav_order: 3
 has_children: true
 """,
-    # permalink: docs/labeling
-    # 手动标注
     "CN/manual/classification.md": """---
 layout: default
 title: 图像分类
@@ -58,7 +57,7 @@ title: OCR
 parent: 手动标注
 nav_order: 5
 """,
-    # ML辅助
+    # ML辅助标注
     "CN/ML/ml.md": """---
 layout: default
 title: 机器学习辅助标注
@@ -90,17 +89,12 @@ nav_order: 4
 has_children: true
 permalink: docs/training
 """,
+    # 训练方式
     "CN/training/PdLabel_PdX.md": """---
 layout: default
 title: PaddleX 分类/检测/分割
 parent: 进行训练
-nav_order: 4
-""",
-    "CN/training/PdLabel_PdDet.md": """---
-layout: default
-title: PaddleDetection 道路标志检测
-parent: 进行训练
-nav_order: 2
+nav_order: 5
 """,
     "CN/training/PdLabel_PdClas.md": """---
 layout: default
@@ -108,11 +102,22 @@ title: PaddleClas 花朵分类
 parent: 进行训练
 nav_order: 1
 """,
+    "CN/training/PdLabel_PdDet.md": """---
+layout: default
+title: PaddleDetection 道路标志检测
+parent: 进行训练
+nav_order: 2
+""",
     "CN/training/PdLabel_PdSeg.md": """---
 layout: default
 title: PaddleSeg 图像分割
 parent: 进行训练
 nav_order: 3
+""",
+    "CN/release_notes.md": """---
+layout: default
+title: 版本历史
+nav_order: 6
 """,
     "EN/README.md": """---
 layout: home

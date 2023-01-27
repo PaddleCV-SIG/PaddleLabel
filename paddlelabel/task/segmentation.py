@@ -612,7 +612,7 @@ class SemanticSegmentation(InstanceSegmentation):
 
         # 1. set params
         project = self.project
-        other_settings = project._get_other_settings()
+        # other_settings = project._get_other_settings()
         # mask_type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")

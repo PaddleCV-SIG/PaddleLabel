@@ -36,9 +36,9 @@ permissions:
   id-token: write
 
 # Allow one concurrent deployment
-concurrency:
-  group: ${{ inputs.baseurl }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ inputs.baseurl }}
+#   cancel-in-progress: true
 
 jobs:
   # only rebuild if files under doc/ folder changed

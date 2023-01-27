@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from .file import (
     create_dir,
     listdir,
     copy,
-    copycontent,
+    copy_content,
     image_extensions,
     ensure_unique_base_name,
     get_fname,

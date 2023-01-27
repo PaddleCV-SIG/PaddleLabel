@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 import os
 import os.path as osp
@@ -145,7 +146,7 @@ def copy(src, dst, make_dir=False):
     shutil.copy(src, dst)
 
 
-def copycontent(src, dst):
+def copy_content(src, dst):
     """
     Recursively copy everything in src to dst. Create dst if not exist.
 

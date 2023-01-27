@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os.path as osp
@@ -6,7 +7,6 @@ import json
 from copy import deepcopy
 
 from pycocotoolse.coco import COCO
-import cv2
 
 from paddlelabel.api import Task, Annotation, Label
 from paddlelabel.task.util import (
@@ -267,9 +267,6 @@ class Detection(BaseTask):
 
         for data_path in data_paths:
             basename = data_path.name.split(".")[0]
-            # s = cv2.imread(str(data_dir / data_path), cv2.IMREAD_UNCHANGED).shape
-            # height, width = s[:2]
-            # size = ",".join(map(str, [1] + list(s[:2])))
             size, height, width = getSize(data_dir / data_path)
             ann_list = []
 
@@ -462,11 +459,6 @@ class Detection(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            # img = cv2.imread(osp.join(data_dir, data_path))
-            # s = img.shape
-            # size = [1, s[1], s[0]]
-            # size = [str(s) for s in size]
-            # size = ",".join(size)
             size, _, _ = getSize(Path(data_dir) / data_path)
             self.add_task([{"path": data_path, "size": size}])
 
@@ -500,7 +492,7 @@ class Detection(BaseTask):
 
             size = data.size.split(",")
             export_path = osp.basename(data.path)
-            coco.addImage(export_path, int(size[1]), int(size[2]), data.data_id)
+            coco.addImage(export_path, int(size[2]), int(size[1]), data.data_id)
             copy(osp.join(project.data_dir, data.path), data_dir)
             split[task.set].add(data.data_id)
 
@@ -613,15 +605,6 @@ class Detection(BaseTask):
                     f"Image specified in label xml file {str(label_path)} not found at {str(data_path)}."
                 )
 
-            # img = cv2.imread(str(data_path))
-            # if img is not None:
-            #     # data["size"] = ",".join(map(str, [1] + list(img.shape[:2])))
-            #     data["size"]
-            # else:
-            #     raise RuntimeError(f"Load image {str(data_path)} failed.")
-            #     # log.error(f"Load image {data['path']} failed")
-            #     # size = "0,0,0"
-
             size, _, _ = getSize(data_path)
 
             # def wxh(size):
@@ -639,11 +622,6 @@ class Detection(BaseTask):
 
         for data_path in data_paths:
             size, _, _ = getSize(Path(data_dir) / data_path)
-            # img = cv2.imread(osp.join(data_dir, data_path))
-            # s = img.shape
-            # size = [1, s[1], s[0], s[2]]
-            # size = [str(s) for s in size]
-            # size = ",".join(size)
             self.add_task([{"path": data_path, "size": size}])
 
         self.commit()
@@ -670,7 +648,7 @@ class Detection(BaseTask):
             copy(data_path, export_data_dir)
             id = osp.basename(data_path).split(".")[0]
             height, width = data.size.split(",")[1:3]
-            with open(osp.join(export_label_dir, f"{id}.xml"), "w") as f:
+            with open(osp.join(export_label_dir, f"{id}.xml"), "w", encoding="utf-8") as f:
                 print(
                     create_voc_label(export_path, width, height, data.annotations),
                     file=f,

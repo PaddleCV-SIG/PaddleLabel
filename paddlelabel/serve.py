@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import shutil
 import logging
@@ -54,7 +55,11 @@ with connexion_app.app.app_context():
     heads = script.get_revisions("heads")
     db_head_version = heads[0].revision
 
-    # need db upgrade
+    # v0.1.0: db exists but doesn't have version
+    if curr_db_v is None and db_exists:
+        alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
+
+    # need db backup
     if curr_db_v != db_head_version and db_exists:
         from datetime import datetime
 
@@ -67,9 +72,7 @@ with connexion_app.app.app_context():
             f"Performing database update. Should anything goes wrong during this update, you can find the old database at {str(back_up_path)}"
         )
 
-    # v0.1.0: db exists but doesn't have version
-    if curr_db_v is None and db_exists:
-        alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
+    # perform db upgrade
     alembic.command.upgrade(alembic_cfg, "head")
 
     # TODO:  move this to be managed by alembic @lin

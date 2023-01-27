@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import string
 import random
 import platform
@@ -185,7 +186,10 @@ def can_update(name: str = "paddlelabel", log: bool = False) -> bool:
         if latest_version > current_version:
             if log:
                 logging.getLogger("paddlelabel").info(
-                    f"Currently running {name}=={current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:\n\tpip install --upgrade {name}"
+                    f"""
+Currently installed {name} version is {current_version}, a newer version {latest_version} is available on pypi. Please consider updating {name} with:
+    pip install --upgrade {name}
+You can visit https://github.com/PaddleCV-SIG/PaddleLabel/blob/develop/doc/CN/release_notes.md to see more details about PaddleLabel updates."""
                 )
             return True
         else:

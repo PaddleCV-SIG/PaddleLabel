@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """v0.1.4. Add data.predicted
 
 Revision ID: a609821ce310

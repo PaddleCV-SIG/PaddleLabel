@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import math
 import random
 import json
@@ -33,8 +34,8 @@ logger = logging.getLogger("paddlelabel")
 
 
 def import_dataset(project, data_dir=None, label_format=None):
+    data_dir = project.data_dir if data_dir is None else data_dir
     logger.info(f"importing dataset from {data_dir}")
-
     task_category = TaskCategory._get(task_category_id=project.task_category_id)
 
     # 1. create handler

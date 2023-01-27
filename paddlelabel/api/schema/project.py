@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 
 from marshmallow import pre_load, post_dump, fields

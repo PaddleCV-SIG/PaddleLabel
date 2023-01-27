@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .project import ProjectSchema
 from .label import LabelSchema
 from .task import TaskSchema

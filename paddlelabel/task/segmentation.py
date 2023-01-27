@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 import os.path as osp
 import json
 from copy import deepcopy
 import logging
 
+from PIL import Image
 import tifffile as tif
 import numpy as np
 import cv2
@@ -117,17 +119,22 @@ def draw_mask(data, mask_type="grayscale"):
 
 
 def parse_semantic_mask(annotation_path, labels, image_path=None):
-    ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+    # ann = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+    ann_img = Image.open(annotation_path)
+    ann = np.array(ann_img.convert(mode=ann_img.mode))  # size is hwc
+    print(ann.shape)
+
     if image_path is not None:
-        img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
-        if img.shape[:3] != ann.shape[:3]:
+        # img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+        img = Image.open(annotation_path)
+        if img.size[::-1] != ann.shape[:2]:
             raise RuntimeError(
-                f"Image {img.shape[:3]} and annotation {ann.shape[:3]} has different shape, please check image {image_path} and annotation {annotation_path}",
+                f"Image ({img.size[::-1]}) and annotation ({ann.shape[:2]}) has different shapes, please check image {image_path} and annotation {annotation_path}",
             )
     frontend_id = 1
     anns = []
     if len(ann.shape) == 3:
-        ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
+        # ann = cv2.cvtColor(ann, cv2.COLOR_BGR2RGB)
         ann_gray = np.zeros(ann.shape[:2], dtype="uint8")
         for label in labels:
             color = hex_to_rgb(label.color)
@@ -137,7 +144,7 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
         if ann.sum() != 0:
             ann = ann.reshape((-1, ann.shape[-1]))
             raise RuntimeError(
-                f"Pesudo color mask {annotation_path} contains color that's not spedified in labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?"
+                f"Pseudo color mask {annotation_path} contains color that's not specified in labels {np.unique(ann, axis=0)[1:].tolist()} . Maybe you didn't include a background class in the first line of labels.txt or didn't specify label color?"
             )
         ann = ann_gray
 
@@ -180,13 +187,14 @@ def parse_semantic_mask(annotation_path, labels, image_path=None):
 def parse_instance_mask(annotation_path, labels, image_path=None):
     mask = tif.imread(annotation_path)
     if image_path is not None:
-        img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
-        if img is None:
-            raise RuntimeError(f"Read image {annotation_path} failed.")
+        # img = cv2.imread(annotation_path, cv2.IMREAD_UNCHANGED)
+        # if img is None:
+        #     raise RuntimeError(f"Read image {annotation_path} failed.")
+        img = Image.open(image_path)
         # TODO: remove two paths' common prefix
-        if img.shape[:3] != mask.shape[1:]:
+        if img.size[::-1] != mask.shape[1:]:
             abort(
-                f"Image {img.shape[:3]} and annotation {mask.shape[1:]} has different shape, please check image {image_path} and annotation {annotation_path}",
+                f"Image {img.size[::-1]} and annotation {mask.shape[1:]} has different shape, please check image {image_path} and annotation {annotation_path}",
                 500,
             )
 
@@ -201,8 +209,7 @@ def parse_instance_mask(annotation_path, labels, image_path=None):
             h, w = np.where(instance_mask == instance_id)
             result = ",".join([f"{w},{h}" for w, h in zip(w, h)])
             # result = f"{1},{instance_id}," + result
-            # TODO: patch. points format will be added
-            result = f"{0},{0}," + result
+            result = f"{0},{instance_id}," + result
             anns.append(
                 {
                     "label_name": label.name,
@@ -260,10 +267,8 @@ class InstanceSegmentation(BaseTask):
                 size, anns = parse_instance_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
-                # img = cv2.imread(data_path)
-                # s = [1] + list(img.shape)
-                # size = ",".join([str(s) for s in s])
                 size, _, _ = getSize(data_path)
+                # mask = tif.imread(data_path)
 
             self.add_task([{"path": data_path, "size": size}], [anns])
         self.commit()
@@ -361,9 +366,6 @@ class InstanceSegmentation(BaseTask):
                 img_path = img_path[0]
                 data_paths.remove(img_path)
                 coco.imgs[idx]["img_path"] = img_path
-                # s = cv2.imread(osp.join(data_dir, img_path)).shape[:2]
-                # s = [str(t) for t in s]
-                # coco.imgs[idx]["size"] = ",".join(s)
                 coco.imgs[idx]["size"], _, _ = getSize(Path(data_dir) / img_path)
                 ann_by_task[img["id"]] = []
 
@@ -415,8 +417,6 @@ class InstanceSegmentation(BaseTask):
 
         # 3. add tasks without label
         for data_path in data_paths:
-            # img = cv2.imread(str(data_dir / data_path))
-            # size = ",".join(map(str, [1] + list(img.shape[:2])))
             size, _, _ = getSize(data_dir / data_path)
             self.add_task([{"path": data_path, "size": size}])
 
@@ -501,20 +501,18 @@ class InstanceSegmentation(BaseTask):
         project = self.project
         if data_dir is None:
             data_dir = project.data_dir
+        data_dir = Path(data_dir)
         data_paths = [Path(p) for p in listdir(data_dir, filters=filters)]
         json_paths = listdir(data_dir, filters={"exclude_prefix": ["."], "include_postfix": [".json"]})
         json_paths = [Path(p) for p in json_paths]
 
         for data_path in data_paths:
-            # s = cv2.imread(str(data_dir / data_path)).shape[:2]
-            # size = ",".join(["1"] + [str(t) for t in s])
             size, height, width = getSize(data_dir / data_path)
             json_path = match_by_base_name(data_path, json_paths)
 
             if len(json_path) == 0:
-                self.add_task([{"path": data_path, "size": size}])
+                self.add_task([{"path": str(data_path), "size": size}])
             else:
-                # height, width = s
                 json_path = json_path[0]
                 anns_d = json.loads((data_dir / json_path).read_text())
                 anns = []
@@ -532,7 +530,7 @@ class InstanceSegmentation(BaseTask):
                             "frontend_id": len(anns),
                         }
                     )
-                self.add_task([{"path": data_path, "size": size}], [anns])
+                self.add_task([{"path": str(data_path), "size": size}], [anns])
                 json_paths.remove(json_path)
         self.commit()
 
@@ -599,9 +597,6 @@ class SemanticSegmentation(InstanceSegmentation):
                 size, anns = parse_semantic_mask(ann_path, project.labels, data_path)
             else:
                 anns = []
-                # img = cv2.imread(data_path)
-                # s = [1] + list(img.shape)
-                # size = ",".join([str(s) for s in s])
                 size, _, _ = getSize(Path(data_path))
 
             self.add_task([{"path": data_path, "size": size}], [anns])
@@ -617,7 +612,7 @@ class SemanticSegmentation(InstanceSegmentation):
 
         # 1. set params
         project = self.project
-        other_settings = project._get_other_settings()
+        # other_settings = project._get_other_settings()
         # mask_type = other_settings.get("segMaskType", "grayscale")
 
         export_data_dir = osp.join(export_dir, "JPEGImages")
@@ -641,13 +636,14 @@ class SemanticSegmentation(InstanceSegmentation):
             copy(data_path, export_data_dir)
 
             mask = draw_mask(data, mask_type=seg_mask_type)
-            cv2.imwrite(export_label_path, mask)
+            mask_img = Image.fromarray(mask.astype("uint8"), "L")
+            mask_img.save(export_label_path)
 
             export_data_paths.append([export_data_path])
             export_label_paths.append([export_label_path])
 
         self.export_split(
-            export_dir,
+            Path(export_dir),
             tasks,
             export_data_paths,
             with_labels=False,

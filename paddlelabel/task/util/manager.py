@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # apache 2
 
 import inspect

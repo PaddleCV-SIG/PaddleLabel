@@ -22,7 +22,7 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
         python-version: ["3.11"]
@@ -50,10 +50,10 @@ jobs:
           cd ~/测试路径/3rd_party/
           curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           echo ----------------------------------
-          ls
+          # ls
           unzip -q paddlelabel_3rd_party_tests.zip
-          pwd
-          ls
+          # pwd
+          # ls
           } &
           bgid=$!
           echo $bgid
@@ -70,7 +70,7 @@ jobs:
           # wait for bg job
           wait $bgid
           res=$?
-          ls ~/测试路径/3rd_party/
+          # ls ~/测试路径/3rd_party/
           if [ $res -ne 0 ]
           then
             exit $res
@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: PaddleCV-SIG/PaddleLabel-Frontend
-          ref: paddlelablOcr
+          ref: develop
 
       - uses: actions/setup-node@v3
         with:
@@ -106,8 +106,8 @@ jobs:
           fi
           cd -
 
-          pwd
-          ls
+          # pwd
+          # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
       - name: Run tests
@@ -120,7 +120,7 @@ jobs:
           env: os=${{ matrix.os }}
           spec: ${{ steps.test_order.outputs.tests }}
           wait-on: "http://localhost:1111"
-          wait-on-timeout: 40
+          wait-on-timeout: 120
           start-windows: yarn run test:win
           start: yarn run test:unix
 
@@ -129,7 +129,7 @@ jobs:
         run: |
           cd ./cypress/cypress/
           tar_name=Cypress_test_logs_${{ matrix.os }}_${{ matrix.python-version }}.tar.gz
-          tar czvf $tar_name *
+          tar -czvf $tar_name *
           ls -lah $tar_name
           echo https://transfer.sh/$tar_name
 

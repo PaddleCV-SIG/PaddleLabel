@@ -106,6 +106,7 @@ jobs:
     uses: ./.github/workflows/cypress.yml
 
   bump_version:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -117,7 +118,7 @@ jobs:
 
       - name: Bump version
         id: bump_version
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         run: |
           python tool/bumpversion.py
           git config --global user.email "bot@github.com" && git config --global user.name "Action Bot"

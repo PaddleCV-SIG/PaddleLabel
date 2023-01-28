@@ -72,8 +72,12 @@ jobs:
             unzip PaddleLabel_built_package.zip
           fi
 
+          pwd
+          ls
+
           # install latest build
           echo ========================================================
+          pip uninstall paddlelabel -y
           pip uninstall paddlelabel -y
           pip install paddlelabel-*-py3-none-any.whl
 

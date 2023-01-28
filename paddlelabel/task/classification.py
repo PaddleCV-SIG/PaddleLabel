@@ -154,3 +154,16 @@ class Classification(BaseTask):
 
         # 4. export split
         self.export_split(osp.join(export_dir), tasks, new_paths)
+
+
+class ProjectSubtypeSelector:
+    def add_q(
+        self,
+        question: str,
+        required: bool,
+        type: str,
+        choices: list[str],
+        tips: str,
+        depends_on: tuple[str, str],
+    ):
+        pass

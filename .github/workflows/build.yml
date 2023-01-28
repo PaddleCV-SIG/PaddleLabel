@@ -1,4 +1,4 @@
-name: Build PaddleLabel package
+name: Build & E2E Tests
 
 on:
   push:

@@ -8,8 +8,6 @@
 
 <b> 飞桨智能标注，让标注快人一步 </b>
 
-<!-- TODO: can we make this 3.7+ -->
-
 <p>
 <img src="https://img.shields.io/badge/python-3.7+-blue.svg">
 <img src="https://img.shields.io/badge/os-linux%2C%20windows%2C%20macos-blue.svg"/>
@@ -19,7 +17,7 @@
 <!-- <a href="https://github.com/PaddleCV-SIG/doc/network/members"> <img src="https://img.shields.io/github/forks/PaddleCV-SIG/PaddleLabel?color=blue"/></a> -->
 <a href="https://pypistats.org/packages/paddlelabel"><img src="https://img.shields.io/pypi/dm/paddlelabel?color=blue"/> </a>
 <a href="https://pepy.tech/project/paddlelabel"><img src="https://static.pepy.tech/personalized-badge/paddlelabel?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads"/></a>
-<a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/cypress.yml/badge.svg"></a>
+<a href="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/build.yml"><img src="https://github.com/PaddleCV-SIG/PaddleLabel/actions/workflows/build.yml/badge.svg"></a>
 </p>
 </div>
 

@@ -66,7 +66,7 @@ jobs:
           echo $bgid
 
           # download latest build
-          if [[ ${{ github.event_name }} != "workflow_call" ]]
+          if [[ ${{ github.event_name }} != "push" ]]
           then
             curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
             unzip PaddleLabel_built_package.zip

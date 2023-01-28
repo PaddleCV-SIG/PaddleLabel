@@ -57,10 +57,7 @@ jobs:
           cd ~/测试路径/3rd_party/
           curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           echo ----------------------------------
-          # ls
           unzip -q paddlelabel_3rd_party_tests.zip
-          # pwd
-          # ls
           } &
           bgid=$!
           echo $bgid
@@ -68,7 +65,10 @@ jobs:
           # download latest build
           if [[ ${{ github.event_name }} != "push" ]]
           then
+            echo "here"
             curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+            pwd
+            ls
             unzip PaddleLabel_built_package.zip
           fi
 
@@ -124,19 +124,35 @@ jobs:
           # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
-      - name: Run tests
-        uses: cypress-io/github-action@v5
+      - uses: Wandalen/wretry.action@master
         id: test
         with:
-          working-directory: ./cypress
-          browser: chrome
-          config: baseUrl=http://localhost:1111
-          env: os=${{ matrix.os }}
-          spec: ${{ steps.test_order.outputs.tests }}
-          wait-on: "http://localhost:1111"
-          wait-on-timeout: 120
-          start-windows: yarn run test:win
-          start: yarn run test:unix
+          action: cypress-io/github-action@v5
+          with: |
+            working-directory: ./cypress
+            browser: chrome
+            config: baseUrl=http://localhost:1111
+            env: os=${{ matrix.os }}
+            spec: ${{ steps.test_order.outputs.tests }}
+            wait-on: "http://localhost:1111"
+            wait-on-timeout: 120
+            start-windows: yarn run test:win
+            start: yarn run test:unix
+          attempt_limit: 2
+
+      # - name: Run tests
+      #   uses: cypress-io/github-action@v5
+      #   id: test
+      #   with:
+      #     working-directory: ./cypress
+      #     browser: chrome
+      #     config: baseUrl=http://localhost:1111
+      #     env: os=${{ matrix.os }}
+      #     spec: ${{ steps.test_order.outputs.tests }}
+      #     wait-on: "http://localhost:1111"
+      #     wait-on-timeout: 120
+      #     start-windows: yarn run test:win
+      #     start: yarn run test:unix
 
       - name: Backend logs, cypress screenshots
         if: failure()

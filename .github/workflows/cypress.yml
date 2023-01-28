@@ -42,6 +42,7 @@ jobs:
           channels: conda-forge
 
       - name: Download built paddlelabel package
+        if: github.event_name == 'workflow_call'
         uses: actions/download-artifact@v3
         with:
           name: PaddleLabel_built_package
@@ -63,8 +64,11 @@ jobs:
           echo $bgid
 
           # download latest build
-          # curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-          # unzip PaddleLabel_built_package.zip
+          if [ ${{ github.event_name }} -eq workflow_call ]
+          then
+            curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+            unzip PaddleLabel_built_package.zip
+          fi
 
           # install latest build
           echo ========================================================

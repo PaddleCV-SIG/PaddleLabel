@@ -14,7 +14,7 @@ import base64
 import connexion
 
 from paddlelabel.config import db
-from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label
+from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, TaskCategory
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.controller.base import crud
 from paddlelabel.api.util import abort
@@ -199,6 +199,42 @@ def pre_put(project, body, se):
     return project, body
 
 
+# TODO: move to label controller
+def create_label(project, label_name):
+    color = rand_hex_color([l.color for l in project.labels])
+    ids = [l.id for l in project.labels]
+    ids.append(0)
+    label = Label(
+        id=max(ids) + 1,
+        project_id=project.project_id,
+        name=label_name,
+        color=color,
+    )
+    project.labels.append(label)
+    db.session.commit()
+    return label
+
+
+def post_delete(project, se):
+    warning_path = Path(project.data_dir) / "paddlelabel.warning"
+    if warning_path.exists():
+        warning_path.unlink()
+
+
+get_all, get, post, put, delete = crud(
+    Project,
+    ProjectSchema,
+    triggers=[pre_add, post_add, pre_put, post_delete],
+)
+
+
+def to_easydata(project_id):
+    _, project = Project._exists(project_id)
+    task_category = TaskCategory._get(task_category_id=project.task_category_id)
+    handler = eval(task_category.handler)(project)
+    handler.to_easydata(project_id=project_id, **{k: connexion.request.json[k] for k in ["access_token", "dataset_id"]})
+
+
 def split_dataset(project_id):
     Project._exists(project_id)
     split = connexion.request.json
@@ -237,22 +273,6 @@ def split_dataset(project_id):
         "val": split[2] - split[1],
         "test": split[3] - split[2],
     }, 200
-
-
-# TODO: move to label controller
-def create_label(project, label_name):
-    color = rand_hex_color([l.color for l in project.labels])
-    ids = [l.id for l in project.labels]
-    ids.append(0)
-    label = Label(
-        id=max(ids) + 1,
-        project_id=project.project_id,
-        name=label_name,
-        color=color,
-    )
-    project.labels.append(label)
-    db.session.commit()
-    return label
 
 
 def predict(project_id):
@@ -305,21 +325,8 @@ def predict(project_id):
     return "finished"
 
 
-def to_easydata(project_id):
-    _, project = Project._exists(project_id)
-    task_category = TaskCategory._get(task_category_id=project.task_category_id)
-    handler = eval(task_category.handler)(project)
-    handler.to_easydata(project_id=project_id, **{k: connexion.request.json[k] for k in ["access_token", "dataset_id"]})
-
-
-def post_delete(project, se):
-    warning_path = osp.join(project.data_dir, "paddlelabel.warning")
-    if osp.exists(warning_path):
-        os.remove(warning_path)
-
-
-get_all, get, post, put, delete = crud(
-    Project,
-    ProjectSchema,
-    triggers=[pre_add, post_add, pre_put, post_delete],
-)
+def import_options(project_type):
+    all_catgs = TaskCategory._get(many=True)
+    assert project_type in [c.name for c in all_catgs], f"Project type specified {project_type} isn't supported"
+    selector = eval(f"paddlelabel.task.{project_type}.ProjectSubtypeSelector")()
+    print(selector.questions)

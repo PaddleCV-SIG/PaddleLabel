@@ -2,5 +2,6 @@
 from .base import BaseTask
 from .classification import Classification
 from .detection import Detection
-from .segmentation import InstanceSegmentation, SemanticSegmentation
-from .ocr import OpticalCharacterRecognition
+from .semantic_segmentation import SemanticSegmentation
+from .instance_segmentation import InstanceSegmentation
+from .optical_character_recognition import OpticalCharacterRecognition

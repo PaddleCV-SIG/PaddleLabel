@@ -1,0 +1,16 @@
+[
+    {
+        "_id": "d7b67eda-f60d-4050-905a-e0f1612c44b0",
+        "created": "2023-01-28T14:40:04.587Z",
+        "data": [
+            {
+                "name": "host",
+                "value": "http://localhost:17995/api"
+            }
+        ],
+        "default": true,
+        "modified": "2023-01-28T14:40:04.587Z",
+        "name": "PaddleLabel",
+        "sortNum": 10000
+    }
+]

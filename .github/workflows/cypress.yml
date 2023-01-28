@@ -22,10 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        python-version: ["3.11"]
+        # python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -41,7 +41,10 @@ jobs:
           cache-env: true
           channels: conda-forge
 
+      - run: echo ${{ github.event_name }}
+
       - name: Download built paddlelabel package
+        if: github.event_name == 'push'
         uses: actions/download-artifact@v3
         with:
           name: PaddleLabel_built_package
@@ -54,20 +57,27 @@ jobs:
           cd ~/测试路径/3rd_party/
           curl -LO https://github.com/linhandev/static/releases/download/PaddleLabel%E7%9B%B8%E5%85%B3/paddlelabel_3rd_party_tests.zip
           echo ----------------------------------
-          # ls
           unzip -q paddlelabel_3rd_party_tests.zip
-          # pwd
-          # ls
           } &
           bgid=$!
           echo $bgid
 
           # download latest build
-          # curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-          # unzip PaddleLabel_built_package.zip
+          if [[ ${{ github.event_name }} != "push" ]]
+          then
+            echo "here"
+            curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
+            pwd
+            ls
+            unzip PaddleLabel_built_package.zip
+          fi
+
+          pwd
+          ls
 
           # install latest build
           echo ========================================================
+          pip uninstall paddlelabel -y
           pip uninstall paddlelabel -y
           pip install paddlelabel-*-py3-none-any.whl
 
@@ -113,6 +123,22 @@ jobs:
           # pwd
           # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
+
+      # - uses: Wandalen/wretry.action@master
+      #   id: test
+      #   with:
+      #     action: cypress-io/github-action@v5
+      #     with: |
+      #       working-directory: ./cypress
+      #       browser: chrome
+      #       config: baseUrl=http://localhost:1111
+      #       env: os=${{ matrix.os }}
+      #       spec: ${{ steps.test_order.outputs.tests }}
+      #       wait-on: "http://localhost:1111"
+      #       wait-on-timeout: 120
+      #       start-windows: yarn run test:win
+      #       start: yarn run test:unix
+      #     attempt_limit: 2
 
       - name: Run tests
         uses: cypress-io/github-action@v5

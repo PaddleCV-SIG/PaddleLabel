@@ -1,0 +1,22 @@
+[
+    {
+        "_id": "771fb38b-ad2d-4d33-ae4e-fffd90edbaaa",
+        "colId": "f8fe5699-a721-439d-be48-4d18b9cd9672",
+        "containerId": "",
+        "created": "2023-01-28T14:41:11.511Z",
+        "headers": [],
+        "method": "GET",
+        "modified": "2023-01-28T14:42:38.399Z",
+        "name": "import_settings",
+        "params": [
+            {
+                "isPath": true,
+                "name": "project_type",
+                "value": "classification"
+            }
+        ],
+        "sortNum": 10000,
+        "tests": [],
+        "url": "{{host}}/projects/importOptions/{project_type}"
+    }
+]

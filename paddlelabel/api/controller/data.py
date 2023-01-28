@@ -8,12 +8,11 @@ import cv2
 import flask
 import tempfile
 
-from paddlelabel.config import db
 from .base import crud
 from ..model import Data, Project, Task
 from ..schema import DataSchema
 from paddlelabel.api.util import abort
-from paddlelabel.task.segmentation import draw_mask
+from paddlelabel.task.instance_segmentation import draw_mask
 
 get_all, get, post, put, delete = crud(Data, DataSchema)
 

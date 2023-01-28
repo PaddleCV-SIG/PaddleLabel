@@ -55,7 +55,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       operationId: create
-  /projects/import_options:
+  '/projects/importOptions/{project_type}':
     parameters:
       - name: request_id
         in: header
@@ -64,6 +64,11 @@ paths:
           type: integer
           maxLength: 30
         description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
+      - schema:
+          type: string
+        name: project_type
+        in: path
+        required: true
     get:
       tags:
         - Project

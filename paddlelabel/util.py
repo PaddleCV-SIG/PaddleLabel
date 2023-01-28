@@ -92,6 +92,7 @@ class Resolver(connexion.resolver.RestyResolver):
         # TODO: auto resolve /collection/{item}/collection
 
         special = {
+            "/projects/importOptions/{project_type} getImportOptions": "paddlelabel.api.controller.project.import_options",
             "/projects/{project_id}/tasks getTasks": "paddlelabel.api.controller.task.get_by_project",
             "/projects/{project_id}/tasks setAll": "paddlelabel.api.controller.task.set_all_by_project",
             "/projects/{project_id}/labels getLabels": "paddlelabel.api.controller.label.get_by_project",

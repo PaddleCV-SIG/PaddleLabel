@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+from functools import partial
 
 from pathlib import Path
 import os.path as osp  # TODO: remove this dep
@@ -157,13 +158,37 @@ class Classification(BaseTask):
 
 
 class ProjectSubtypeSelector:
+    def __init__(self):
+        self.import_questions = []
+        self.export_questions = []
+        iq = partial(self.add_q, self.import_questions)
+        eq = partial(self.add_q, self.export_questions)
+        iq(
+            "clasSubCags",
+            True,
+            "choice",
+            ["singleClass", "multiClass"],
+            None,
+            None,
+        )
+
     def add_q(
         self,
+        question_set: list,
         question: str,
         required: bool,
         type: str,
         choices: list[str],
-        tips: str,
-        depends_on: tuple[str, str],
+        tips: str | None,
+        show_after: tuple[str, str] | None,
     ):
-        pass
+        question_set.append(
+            {
+                "question": question,
+                "required": required,
+                "type": type,
+                "choices": choices,
+                "tips": tips,
+                # "show_after"
+            }
+        )

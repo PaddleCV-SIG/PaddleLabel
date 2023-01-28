@@ -124,35 +124,35 @@ jobs:
           # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
-      - uses: Wandalen/wretry.action@master
-        id: test
-        with:
-          action: cypress-io/github-action@v5
-          with: |
-            working-directory: ./cypress
-            browser: chrome
-            config: baseUrl=http://localhost:1111
-            env: os=${{ matrix.os }}
-            spec: ${{ steps.test_order.outputs.tests }}
-            wait-on: "http://localhost:1111"
-            wait-on-timeout: 120
-            start-windows: yarn run test:win
-            start: yarn run test:unix
-          attempt_limit: 2
-
-      # - name: Run tests
-      #   uses: cypress-io/github-action@v5
+      # - uses: Wandalen/wretry.action@master
       #   id: test
       #   with:
-      #     working-directory: ./cypress
-      #     browser: chrome
-      #     config: baseUrl=http://localhost:1111
-      #     env: os=${{ matrix.os }}
-      #     spec: ${{ steps.test_order.outputs.tests }}
-      #     wait-on: "http://localhost:1111"
-      #     wait-on-timeout: 120
-      #     start-windows: yarn run test:win
-      #     start: yarn run test:unix
+      #     action: cypress-io/github-action@v5
+      #     with: |
+      #       working-directory: ./cypress
+      #       browser: chrome
+      #       config: baseUrl=http://localhost:1111
+      #       env: os=${{ matrix.os }}
+      #       spec: ${{ steps.test_order.outputs.tests }}
+      #       wait-on: "http://localhost:1111"
+      #       wait-on-timeout: 120
+      #       start-windows: yarn run test:win
+      #       start: yarn run test:unix
+      #     attempt_limit: 2
+
+      - name: Run tests
+        uses: cypress-io/github-action@v5
+        id: test
+        with:
+          working-directory: ./cypress
+          browser: chrome
+          config: baseUrl=http://localhost:1111
+          env: os=${{ matrix.os }}
+          spec: ${{ steps.test_order.outputs.tests }}
+          wait-on: "http://localhost:1111"
+          wait-on-timeout: 120
+          start-windows: yarn run test:win
+          start: yarn run test:unix
 
       - name: Backend logs, cypress screenshots
         if: failure()

@@ -7,6 +7,9 @@ info:
     name: PaddleLabel Developers
     url: 'https://github.com/PaddleCV-SIG/PaddleLabel/issues'
     email: me@linhan.email
+  license:
+    name: Apache License 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
 servers:
   - url: /api
     description: Same origion
@@ -52,6 +55,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       operationId: create
+  /projects/import_options:
+    parameters:
+      - name: request_id
+        in: header
+        required: false
+        schema:
+          type: integer
+          maxLength: 30
+        description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
+    get:
+      tags:
+        - Project
+      summary: 'Read all projects, sort by last modify date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      operationId: getImportOptions
+      parameters: []
   '/projects/{project_id}':
     parameters:
       - $ref: '#/components/parameters/project_id'

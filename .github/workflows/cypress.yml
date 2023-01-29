@@ -66,10 +66,7 @@ jobs:
           # download latest build
           if [[ ${{ github.event_name }} != push ]]
           then
-            echo "here"
             curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-            pwd
-            ls
             unzip PaddleLabel_built_package.zip
           fi
 
@@ -137,10 +134,7 @@ jobs:
             start-windows: yarn run test:win
             start: yarn run test:unix
 
-
-
       # spec: ${{ steps.test_order.outputs.tests }}
-
 
       # - name: Run tests
       #   uses: cypress-io/github-action@v5

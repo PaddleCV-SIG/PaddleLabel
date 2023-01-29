@@ -123,7 +123,7 @@ jobs:
 
       - name: Run tests
         uses: Wandalen/wretry.action@master
-        id: test
+        # id: test
         with:
           action: cypress-io/github-action@v5
           attempt_limit: 2
@@ -132,7 +132,7 @@ jobs:
             browser: chrome
             config: baseUrl=http://localhost:1111
             env: os=${{ matrix.os }}
-            spec: ${{ steps.test_order.outputs.tests }}
+            # spec: ${{ steps.test_order.outputs.tests }}
             wait-on: "http://localhost:1111"
             wait-on-timeout: 120
             start-windows: yarn run test:win

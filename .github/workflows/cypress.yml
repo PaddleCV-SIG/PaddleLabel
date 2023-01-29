@@ -73,6 +73,7 @@ jobs:
           # install latest build
           echo ========================================================
           pip uninstall paddlelabel -y
+          pip uninstall paddlelabel -y
           pip install paddlelabel-*-py3-none-any.whl
 
           # wait for bg job
@@ -157,8 +158,7 @@ jobs:
       #     start: yarn run test:unix
 
       - name: Uninstall PaddleLabel
-        if: ${{ matrix.os }} != windows-latest
-        run: pip uninstall -y paddlelabel
+        run: pip uninstall -y paddlelabel || echo "Can't uninstall paddlelabel"
 
       - name: Backend logs, cypress screenshots
         if: failure()

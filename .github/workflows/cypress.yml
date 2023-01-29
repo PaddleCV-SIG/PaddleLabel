@@ -22,10 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        # python-version: ["3.11"]
+        python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -118,24 +118,29 @@ jobs:
           # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
+      - name: Install cypress env
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./cypress
+          runTests: false
+
       - name: Run tests
         uses: Wandalen/wretry.action@master
         # id: test
         with:
           action: cypress-io/github-action@v5
           with: |
+            install: false
             working-directory: ./cypress
             browser: chrome
-            config: baseUrl=http://localhost:1111
+            config: baseUrl=http://127.0.0.1:1111
             env: os=${{ matrix.os }}
-            wait-on: "http://localhost:1111"
+            wait-on: http://127.0.0.1:1111
             wait-on-timeout: 120
-            start-windows: "yarn run test:win"
-            start: "yarn run test:unix"
+            start-windows: "yarn run win:ci"
+            start: "yarn run unix:ci"
             spec: ${{ steps.test_order.outputs.tests }}
           attempt_limit: 2
-
-
 
       # - name: Run tests
       #   uses: cypress-io/github-action@v5

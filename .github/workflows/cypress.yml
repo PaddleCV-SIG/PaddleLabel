@@ -130,8 +130,8 @@ jobs:
             env: os=${{ matrix.os }}
             wait-on: "http://localhost:1111"
             wait-on-timeout: 120
-            start-windows: yarn run test:win
-            start: yarn run test:unix
+            start-windows: "yarn run test:win"
+            start: "yarn run test:unix"
           attempt_limit: 2
 
       # spec: ${{ steps.test_order.outputs.tests }}

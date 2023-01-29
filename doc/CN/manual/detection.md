@@ -3,9 +3,9 @@
 <!-- TOC -->
 
 - [数据集格式](#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F)
-    - [PASCAL VOC](#pascal-voc)
-    - [COCO](#coco)
-    - [YOLO](#yolo)
+  - [PASCAL VOC](#pascal-voc)
+  - [COCO](#coco)
+  - [YOLO](#yolo)
 - [数据标注](#%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 
@@ -22,7 +22,8 @@ PaddleLabel 目前支持 **PASCAL VOC**，**COCO** 和 **YOLO** 三种目标检�
 
 ### PASCAL VOC
 
-{: .label } v0.1.0+
+{: .label }
+v0.1.0+
 
 PASCAL VOC 格式的标注信息保存在 xml 格式文件中，每张图片对应一个 xml 文件。您可以通过列表文件，相同文件名或 xml 文件内容三种方式将图片和标注 xml 对应起来，该规则细节将在后文描述
 
@@ -48,7 +49,8 @@ PASCAL VOC 格式的标注信息保存在 xml 格式文件中，每张图片对�
 
 PaddleLabel 目前导入/导出用到的 VOC 格式 xml 文件内容如下
 
-{: .note} 此处没有列出的节点在导入时不会被考虑，导出时也不会被包含
+{: .note}
+此处没有列出的节点在导入时不会被考虑，导出时也不会被包含
 
 ```xml
 <annotation>
@@ -95,13 +97,16 @@ JPEGImages/0002.jpg Annotations/0002.xml
 
 ### COCO
 
-{: .label } v0.1.0+
+{: .label }
+v0.1.0+
 
 COCO 格式将整个数据集的所有标注信息存在一个（或少数几个）`json`文件中。这里列出了 COCO 和检测相关的部分格式，更多细节请访问[COCO 官网](https://cocodataset.org/#format-data)查看。
 
-{: .note} 下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性
+{: .note}
+下文没有列出的项不会在导入时被保存到数据库中和最终导出，比如图像的 date_captured 属性
 
-{: .note} 所有 COCO 格式的项目都不支持在导入时以 train/val/test_list.txt 指定数据集划分和使用 labels.txt 文件创建分类
+{: .note}
+所有 COCO 格式的项目都不支持在导入时以 train/val/test_list.txt 指定数据集划分和使用 labels.txt 文件创建分类
 
 样例格式如下：
 
@@ -157,7 +162,8 @@ category{
 
 ### YOLO
 
-{: .label } v0.5.0+
+{: .label }
+v0.5.0+
 
 YOLO 格式每张图像对应一个 txt 格式的标注信息文件，二者文件名除拓展名部分相同。
 

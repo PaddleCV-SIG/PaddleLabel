@@ -22,10 +22,10 @@ jobs:
       matrix:
         node-version: ["19.x"]
 
-        # python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
+        python-version: ["3.11", "3.10", "3.9", "3.8", "3.7"]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
-        python-version: ["3.11"]
+        # python-version: ["3.11"]
         # os: [ubuntu-latest]
 
       fail-fast: false
@@ -132,9 +132,10 @@ jobs:
             wait-on-timeout: 120
             start-windows: "yarn run test:win"
             start: "yarn run test:unix"
+            spec: ${{ steps.test_order.outputs.tests }}
           attempt_limit: 2
 
-      # spec: ${{ steps.test_order.outputs.tests }}
+
 
       # - name: Run tests
       #   uses: cypress-io/github-action@v5

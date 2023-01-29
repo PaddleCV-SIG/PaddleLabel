@@ -126,7 +126,7 @@ jobs:
 
       - name: Run tests
         uses: Wandalen/wretry.action@master
-        # id: test
+        id: test
         with:
           action: cypress-io/github-action@v5
           with: |
@@ -157,7 +157,7 @@ jobs:
       #     start: yarn run test:unix
 
       - name: Uninstall PaddleLabel
-        if: always()
+        if: matrix.os != windows-latest
         run: pip uninstall -y paddlelabel
 
       - name: Backend logs, cypress screenshots

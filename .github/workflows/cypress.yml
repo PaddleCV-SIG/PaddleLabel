@@ -157,7 +157,7 @@ jobs:
       #     start: yarn run test:unix
 
       - name: Uninstall PaddleLabel
-        if: matrix.os != windows-latest
+        if: matrix.os != "windows-latest"
         run: pip uninstall -y paddlelabel
 
       - name: Backend logs, cypress screenshots

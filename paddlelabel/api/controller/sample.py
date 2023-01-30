@@ -80,6 +80,10 @@ def prep_samples():
         "bear/opticalCharacterRecognition/txt/09.jpg",
         "bear/opticalCharacterRecognition/txt/10.jpg",
         "bear/opticalCharacterRecognition/txt/11.png",
+        "bear/point/labelme/JPEGImages/1.jpeg",
+        "bear/point/labelme/JPEGImages/2.jpeg",
+        "bear/point/labelme/JPEGImages/3.jpeg",
+        "bear/point/labelme/JPEGImages/4.jpeg",
         "fruit/classification/multiClass/image/1.jpeg",
         "fruit/classification/multiClass/image/2.jpeg",
         "fruit/classification/multiClass/image/3.jpeg",
@@ -168,6 +172,7 @@ def load_sample(sample_family="bear"):
         "semantic_segmentation": ["semanticSegmentation", "mask"],
         "instance_segmentation": ["instanceSegmentation", "coco"],
         "optical_character_recognition": ["opticalCharacterRecognition", "txt"],
+        "point": ["point", "labelme"],
     }
     label_formats = {
         "classification": "single_class",
@@ -175,6 +180,7 @@ def load_sample(sample_family="bear"):
         "semantic_segmentation": "mask",
         "instance_segmentation": "coco",
         "optical_character_recognition": "txt",
+        "point": "labelme",
     }
     sample_names = {
         "classification": "分类",
@@ -182,6 +188,7 @@ def load_sample(sample_family="bear"):
         "semantic_segmentation": "语义分割",
         "instance_segmentation": "实例分割",
         "optical_character_recognition": "字符识别",
+        "point": "点标注",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
     data_dir = osp.join(
@@ -211,7 +218,7 @@ def load_sample(sample_family="bear"):
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
-    handler.importers[label_formats[task_category.name]]()
+    handler.importers[label_formats[task_category.name]](data_dir=data_dir)
 
     return {"project_id": handler.project.project_id}, 200
 

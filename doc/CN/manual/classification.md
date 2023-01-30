@@ -23,8 +23,7 @@ PaddleLabel 支持**单分类**和**多分类**两种图像分类项目。其中
 
 ### ImageNet
 
-{: .label }
-v0.1.0+
+v0.1.0+ {: .label }
 
 ImageNet 格式数据集中，图像所在文件夹名称即为图像类别。
 
@@ -66,8 +65,7 @@ ImageNet 格式仅以图像所在文件夹判断图像分类，train/val/test_li
 
 ### ImageNet-txt
 
-{: .label }
-v1.0.0+
+v1.0.0+ {: .label }
 
 ImageNet-txt 格式的数据集在 train/val/test_list.txt 文件中记录图像的类别。
 
@@ -111,8 +109,7 @@ labels.txt 的处理同 ImageNet 格式。在三个列表文件中，每行使�
 
 ### ImageNet-txt
 
-{: .label }
-v0.1.0+
+v0.1.0+ {: .label }
 
 多分类的 ImageNet-txt 格式和单分类的基本相同，唯一区别是多分类的三个列表文件中，每行文件名后面可以跟多个空格分隔的表示类别的数字或字符串。
 

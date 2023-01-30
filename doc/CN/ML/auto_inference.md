@@ -25,11 +25,14 @@ PaddleLabel 基于 [PaddleClas](https://github.com/PaddlePaddle/PaddleClas)，[P
 PaddleLabel 目前支持的模型和使用各模型所需的 PaddleLabel-ML 版本如下
 
 - 分类
-  - [PP-LCNetV2](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/models/ImageNet1k/PP-LCNetV2.md) v0.5.0+ {: .label}
+  - [PP-LCNetV2](https://github.com/PaddlePaddle/PaddleClas/blob/release/2.5/docs/zh_CN/models/ImageNet1k/PP-LCNetV2.md)
+    v0.5.0+ {: .label }
 - 检测
-  - [PP-PicoDet](https://github.com/PaddlePaddle/PaddleDetection/tree/release/2.5/configs/picodet) v0.5.0+ {: .label}
+  - [PP-PicoDet](https://github.com/PaddlePaddle/PaddleDetection/tree/release/2.5/configs/picodet)
+    v0.5.0+ {: .label }
 - OCR
-  - [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/PP-OCRv3_introduction.md) v0.5.0+ {: .label}
+  - [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/PP-OCRv3_introduction.md)
+    v0.5.0+ {: .label }
 
 ## 前置步骤
 

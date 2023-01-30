@@ -47,6 +47,7 @@
         "pycocotoolse",
         "pypi",
         "regen",
+        "rget",
         "SQLALCHEMY",
         "supercategory",
         "vcbuildtools",

@@ -4,11 +4,25 @@ import os
 import os.path as osp
 import shutil
 from pathlib import Path
+from typing import Iterator
 
 
 # TODO: switch to pathlib
 
 image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
+
+
+def rget_by_ext(data_dir: Path, exts: list[str] = image_extensions, case_sensitive: bool = False) -> Iterator[Path]:
+    all_files = data_dir.rglob("**/*")
+    for f in all_files:
+        if not f.is_file() or f.name[0] == ".":
+            continue
+        f = Path(osp.normpath(f))
+        name = f.name if case_sensitive else f.name.lower()
+        for ext in exts:
+            if name[-len(ext) :] == ext:
+                yield f
+                break
 
 
 def break_path(path: str) -> list[str]:
@@ -25,7 +39,7 @@ def match_by_base_name(data_path, ann_paths, allow_empty=True, allow_multiple=Fa
     ann_path = list(ann_path)
     if not allow_multiple and len(ann_path) > 1:
         ann_path = [str(p) for p in ann_path]
-        raise RuntimeError(f"Multiple annotation files {','.join(ann_path)} matche image file {str(data_path)}")
+        raise RuntimeError(f"Multiple annotation files {','.join(ann_path)} match image file {str(data_path)}")
     if not allow_empty and len(ann_path) == 0:
         raise RuntimeError(f"No annotation file matches image file {str(data_path)}")
     return ann_path

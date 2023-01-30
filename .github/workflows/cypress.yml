@@ -3,13 +3,13 @@ name: E2E Tests
 on:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *"
   # workflow_run:
   #   workflows: ["Build PaddleLabel package"]
   #   branches: [develop]
   #   types:
   #     - completed
-  schedule:
-    - cron: "0 12 * * *"
 
 jobs:
   e2e_test:
@@ -41,7 +41,8 @@ jobs:
           cache-env: true
           channels: conda-forge
 
-      - run: echo ${{ github.event_name }}
+      - name: Event type is ${{ github.event_name }}
+        run: echo ${{ github.event_name }}
 
       - name: Download built paddlelabel package
         if: github.event_name == 'push'
@@ -63,17 +64,11 @@ jobs:
           echo $bgid
 
           # download latest build
-          if [[ ${{ github.event_name }} != "push" ]]
+          if [[ ${{ github.event_name }} != push ]]
           then
-            echo "here"
             curl -LO https://nightly.link/PaddleCV-SIG/PaddleLabel/workflows/build/develop/PaddleLabel_built_package.zip
-            pwd
-            ls
             unzip PaddleLabel_built_package.zip
           fi
-
-          pwd
-          ls
 
           # install latest build
           echo ========================================================
@@ -124,35 +119,46 @@ jobs:
           # ls
           echo "tests=$(python cypress/order_tests.py)" >> $GITHUB_OUTPUT
 
-      # - uses: Wandalen/wretry.action@master
-      #   id: test
-      #   with:
-      #     action: cypress-io/github-action@v5
-      #     with: |
-      #       working-directory: ./cypress
-      #       browser: chrome
-      #       config: baseUrl=http://localhost:1111
-      #       env: os=${{ matrix.os }}
-      #       spec: ${{ steps.test_order.outputs.tests }}
-      #       wait-on: "http://localhost:1111"
-      #       wait-on-timeout: 120
-      #       start-windows: yarn run test:win
-      #       start: yarn run test:unix
-      #     attempt_limit: 2
-
-      - name: Run tests
+      - name: Install cypress env
         uses: cypress-io/github-action@v5
-        id: test
         with:
           working-directory: ./cypress
-          browser: chrome
-          config: baseUrl=http://localhost:1111
-          env: os=${{ matrix.os }}
-          spec: ${{ steps.test_order.outputs.tests }}
-          wait-on: "http://localhost:1111"
-          wait-on-timeout: 120
-          start-windows: yarn run test:win
-          start: yarn run test:unix
+          runTests: false
+
+      - name: Run tests
+        uses: Wandalen/wretry.action@master
+        id: test
+        with:
+          action: cypress-io/github-action@v5
+          with: |
+            install: false
+            working-directory: ./cypress
+            browser: chrome
+            config: baseUrl=http://127.0.0.1:1111
+            env: os=${{ matrix.os }}
+            wait-on: http://127.0.0.1:1111
+            wait-on-timeout: 120
+            start-windows: "yarn run win:ci"
+            start: "yarn run unix:ci"
+            spec: ${{ steps.test_order.outputs.tests }}
+          attempt_limit: 2
+
+      # - name: Run tests
+      #   uses: cypress-io/github-action@v5
+      #   id: test
+      #   with:
+      #     working-directory: ./cypress
+      #     browser: chrome
+      #     config: baseUrl=http://localhost:1111
+      #     env: os=${{ matrix.os }}
+      #     spec: ${{ steps.test_order.outputs.tests }}
+      #     wait-on: "http://localhost:1111"
+      #     wait-on-timeout: 120
+      #     start-windows: yarn run test:win
+      #     start: yarn run test:unix
+
+      - name: Uninstall PaddleLabel
+        run: pip uninstall -y paddlelabel || echo "Can't uninstall paddlelabel"
 
       - name: Backend logs, cypress screenshots
         if: failure()

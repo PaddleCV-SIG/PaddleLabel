@@ -5,3 +5,4 @@ from .detection import Detection
 from .semantic_segmentation import SemanticSegmentation
 from .instance_segmentation import InstanceSegmentation
 from .optical_character_recognition import OpticalCharacterRecognition
+from .point import Point

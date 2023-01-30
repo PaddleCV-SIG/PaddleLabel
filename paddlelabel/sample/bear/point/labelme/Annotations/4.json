@@ -1,0 +1,273 @@
+{
+    "flags": {},
+    "imageHeight": 1008,
+    "imagePath": "../JPEGImages/4.jpeg",
+    "imageWidth": 756,
+    "shapes": [
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    403,
+                    299
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    434,
+                    313
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    214,
+                    300
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    190,
+                    328
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    432,
+                    515
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    439,
+                    549
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    152,
+                    708
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    168,
+                    734
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    421,
+                    236
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    483,
+                    267
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    463,
+                    495
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    501,
+                    563
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    177,
+                    696
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    210,
+                    745
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    467,
+                    120
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    552,
+                    177
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    603,
+                    471
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    610,
+                    570
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    296,
+                    631
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    324,
+                    730
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    346,
+                    399
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    266,
+                    461
+                ]
+            ],
+            "shape_type": "point"
+        }
+    ],
+    "version": "5.1.1"
+}

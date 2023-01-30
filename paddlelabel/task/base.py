@@ -305,7 +305,7 @@ class BaseTask:
                     )
                 else:
                     annotation_path = new_path.replace("JPEGImages", "Annotations")
-                    annotation_path = annotation_path[: -annotation_path[::-1].find(".")] + annotation_ext
+                    annotation_path = annotation_path[: annotation_path.rfind(".") + 1] + annotation_ext
                     print(new_path + delimiter + annotation_path, file=set_files[task.set])
 
         for f in set_files:

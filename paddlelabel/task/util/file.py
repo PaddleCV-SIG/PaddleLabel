@@ -15,9 +15,8 @@ image_extensions = [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".webp"]
 def rget_by_ext(data_dir: Path, exts: list[str] = image_extensions, case_sensitive: bool = False) -> Iterator[Path]:
     all_files = data_dir.rglob("**/*")
     for f in all_files:
-        if not f.is_file():
+        if not f.is_file() or f.name[0] == ".":
             continue
-        # f = f.resolve()
         f = Path(osp.normpath(f))
         name = f.name if case_sensitive else f.name.lower()
         for ext in exts:

@@ -28,6 +28,10 @@
             "7": [
                 "optical_character_recognition",
                 "paddlelabel.task.OpticalCharacterRecognition"
+            ],
+            "8": [
+                "point",
+                "paddlelabel.task.Point"
             ]
         }
     }

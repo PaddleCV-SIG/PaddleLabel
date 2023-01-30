@@ -18,5 +18,24 @@
         "sortNum": 10000,
         "tests": [],
         "url": "{{host}}/projects/importOptions/{project_type}"
+    },
+    {
+        "_id": "8027bc1d-6cba-45f8-a748-2827098334fd",
+        "body": {
+            "form": [],
+            "raw": "{\n\t\"name\": \"Points - labelme format\",\n  \"data_dir\": \"~/3rd_party/3rd_party/labelme/point/\",\n  \"task_category_id\": 8,\n  \"label_format\": \"labelme\"\n}",
+            "type": "json"
+        },
+        "colId": "f8fe5699-a721-439d-be48-4d18b9cd9672",
+        "containerId": "34a30cd1-b515-4d22-bdd9-52e4b6762385",
+        "created": "2023-01-29T21:33:11.773Z",
+        "headers": [],
+        "method": "POST",
+        "modified": "2023-01-29T21:37:25.570Z",
+        "name": "point",
+        "params": [],
+        "sortNum": 20000,
+        "tests": [],
+        "url": "{{host}}/projects"
     }
 ]

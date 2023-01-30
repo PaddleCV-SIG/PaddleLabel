@@ -1,0 +1,81 @@
+{
+    "flags": {},
+    "imageHeight": 1008,
+    "imagePath": "../JPEGImages/1.jpeg",
+    "imageWidth": 756,
+    "shapes": [
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    471,
+                    418
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "ear",
+            "points": [
+                [
+                    482,
+                    551
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    311,
+                    461
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "hand",
+            "points": [
+                [
+                    339,
+                    552
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    267,
+                    497
+                ]
+            ],
+            "shape_type": "point"
+        },
+        {
+            "flags": {},
+            "group_id": null,
+            "label": "foot",
+            "points": [
+                [
+                    275,
+                    537
+                ]
+            ],
+            "shape_type": "point"
+        }
+    ],
+    "version": "5.1.1"
+}

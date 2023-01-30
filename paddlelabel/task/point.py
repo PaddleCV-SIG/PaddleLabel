@@ -20,10 +20,7 @@ class Point(BaseTask):
             "labelme": self.labelme_exporter,
         }
 
-    def labelme_importer(
-        self,
-        data_dir: Path,
-    ):
+    def labelme_importer(self, data_dir: Path):
         # 1. set params
         data_dir = Path(data_dir)
         self.create_warning(data_dir)

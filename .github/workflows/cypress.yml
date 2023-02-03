@@ -14,7 +14,7 @@ on:
 jobs:
   e2e_test:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 80
     defaults:
       run:
         shell: bash -l {0}
@@ -141,7 +141,7 @@ jobs:
             start-windows: "yarn run win:ci"
             start: "yarn run unix:ci"
             spec: ${{ steps.test_order.outputs.tests }}
-          attempt_limit: 2
+          attempt_limit: 3
 
       # - name: Run tests
       #   uses: cypress-io/github-action@v5

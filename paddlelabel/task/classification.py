@@ -171,16 +171,24 @@ class ProjectSubtypeSelector:
             None,
             None,
         )
+        iq(
+            "singleClassType",
+            True,
+            "choice",
+            ["singleClassFolder", "singleClassList"],
+            None,
+            ("clasSubCags", "singleClass"),
+        )
 
     def add_q(
         self,
         question_set: list,
         question: str,
         required: bool,
-        type: str,
-        choices: list[str],
+        type: str,  # "choice", "input"
+        choices: list[str] | None,
         tips: str | None,
-        show_after: tuple[str, str] | None,
+        show_after: list[tuple[str, str]] | None,
     ):
         question_set.append(
             {
@@ -189,6 +197,6 @@ class ProjectSubtypeSelector:
                 "type": type,
                 "choices": choices,
                 "tips": tips,
-                # "show_after"
+                "show_after": show_after,
             }
         )

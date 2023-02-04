@@ -33,6 +33,7 @@
         "numpy",
         "ondelete",
         "onupdate",
+        "openapi",
         "outcoco",
         "pacman",
         "paddlelabel",

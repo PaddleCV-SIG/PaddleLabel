@@ -125,6 +125,7 @@ class Resolver(connexion.resolver.RestyResolver):
             "/samples loadSample": "paddlelabel.api.controller.sample.load_sample",
             "/samples/structure getStructure": "paddlelabel.api.controller.sample.sample_folder_structure",
             "/samples/file getFile": "paddlelabel.api.controller.sample.serve_sample_file",
+            "/samples/reset resetAll": "paddlelabel.api.controller.sample.reset_samples",
         }
         opid = None
 

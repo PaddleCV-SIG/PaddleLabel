@@ -90,7 +90,7 @@ connexion_app.add_api(
     # request with undefined param returns error, dont enforce body
     strict_validation=True,
     pythonic_params=True,
-    options={"swagger_ui": configs.debug},
+    options={"swagger_ui": configs.debug, "serve_spec": False},
 )
 connexion_app.add_error_handler(Exception, backend_error)
 

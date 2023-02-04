@@ -9,6 +9,7 @@
         "ms-python.isort",
         "yzhang.markdown-all-in-one",
         "ms-python.vscode-pylance",
-        "ms-python.python"
+        "ms-python.python",
+        "rangav.vscode-thunder-client"
     ]
 }

@@ -12,6 +12,7 @@ from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.model import TaskCategory, Project
 from paddlelabel.task.util.file import copy, copy_content
 from paddlelabel import configs
+from paddlelabel.config import db
 
 
 def prep_samples():
@@ -162,7 +163,7 @@ def reset_samples():
 
 
 def load_sample(sample_family="bear"):
-    prep_samples()
+    # prep_samples()
 
     task_category_id = connexion.request.json.get("task_category_id")
 
@@ -218,7 +219,13 @@ def load_sample(sample_family="bear"):
     else:
         handler = eval(task_category.handler)(project, data_dir=data_dir)
 
-    handler.importers[label_formats[task_category.name]](data_dir=data_dir)
+    try:
+        handler.importers[label_formats[task_category.name]](data_dir=data_dir)
+    except Exception as e:
+        project = Project.query.filter(Project.project_id == handler.project.project_id).one()
+        db.session.delete(project)
+        db.session.commit()
+        raise e
 
     return {"project_id": handler.project.project_id}, 200
 

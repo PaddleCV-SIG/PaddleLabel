@@ -52,6 +52,7 @@
         "rget",
         "SQLALCHEMY",
         "supercategory",
+        "tifffile",
         "vcbuildtools",
         "vcredist",
         "venv",

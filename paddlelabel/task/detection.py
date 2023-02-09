@@ -8,7 +8,7 @@ from copy import deepcopy
 
 from pycocotoolse.coco import COCO
 
-from paddlelabel.api import Task, Annotation, Label
+from paddlelabel.api import Task, Annotation, Label, Project
 from paddlelabel.task.util import (
     create_dir,
     listdir,
@@ -18,7 +18,7 @@ from paddlelabel.task.util import (
     get_fname,
     break_path,
 )
-from paddlelabel.task.base import BaseTask
+from paddlelabel.task.base import BaseTask, BaseSubtypeSelector
 from paddlelabel.io.image import getSize
 
 # TODO: move to io
@@ -656,3 +656,29 @@ class Detection(BaseTask):
             export_paths.append([export_path])
 
         self.export_split(export_dir, tasks, export_paths, with_labels=False, annotation_ext=".xml")
+
+
+class ProjectSubtypeSelector(BaseSubtypeSelector):
+    def __init__(self):
+        super(ProjectSubtypeSelector, self).__init__()
+
+        self.iq(
+            label="labelFormat",
+            required=True,
+            type="choice",
+            choices=[("coco", None), ("voc", None), ("yolo", None)],
+            tips=None,
+            show_after=None,
+        )
+
+    def get_handler(self, answers: dict | None, project: Project):
+        return Detection(project=project, is_export=False)
+
+    def get_importer(self, answers: dict | None, project: Project):
+        handler = self.get_handler(answers, project)
+        if answers is None:
+            return handler.importers["coco"]
+        label_format = answers["labelFormat"]
+        if label_format == "noLabel":
+            return handler.default_importer
+        return handler.importers[label_format]

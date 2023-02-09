@@ -5,9 +5,12 @@ import logging
 import os.path as osp  # TODO: remove
 from collections import deque
 from pathlib import Path
+from functools import partial
 
+from pydantic import validate_arguments
+
+# from paddlelabel.api.controller import project
 from paddlelabel.api import Annotation, Data, Label, Project, Task
-from paddlelabel.api.controller import project
 from paddlelabel.config import db
 from paddlelabel.task.util import create_dir, image_extensions, listdir
 from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
@@ -220,6 +223,7 @@ class BaseTask:
         if label_id is not None:
             label_id = int(label_id)
             for label in self.project.labels:
+                print(label.label_id, type(label.label_id))
                 if label.label_id == label_id:
                     return label
             return None
@@ -526,7 +530,7 @@ class BaseTask:
                     continue
                 if mode == "labels":
                     res[Path(parts[0])] = {
-                        "labels": list(map(lambda label_id: self.get_label(label_id=int(label_id)), parts[1:])),
+                        "labels": list(map(lambda label_id: self.get_label(label_id=int(label_id) + 1), parts[1:])),
                         "split_idx": split_idx,
                     }
         return res
@@ -644,3 +648,36 @@ class BaseTask:
                         color=color,
                     )
             db.session.commit()
+
+
+class BaseSubtypeSelector:
+    __persist__: list[str] = []
+
+    def __init__(self):
+        self.import_questions = []
+        self.export_questions = []
+        self.iq = partial(self.add_q, self.import_questions)
+        self.eq = partial(self.add_q, self.export_questions)
+
+    @validate_arguments
+    def add_q(
+        self,
+        question_set: list,
+        label: str,  # can have duplicates. Maybe same question, different choices
+        required: bool,
+        type: str,  # "choice", "input"
+        choices: list[tuple[str, str | None]] | None,
+        tips: str | None,
+        show_after: list[tuple[str, str]] | None,
+        is_arg: bool = False,
+    ):
+        question_set.append(
+            {
+                "label": label,
+                "required": required,
+                "type": type,
+                "choices": choices,
+                "tips": tips,
+                "show_after": [] if show_after is None else show_after,
+            }
+        )

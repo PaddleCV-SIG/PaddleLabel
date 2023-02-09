@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from functools import partial
 
 from pathlib import Path
 import os.path as osp  # TODO: remove this dep
 import shutil
 
-from pydantic import validate_arguments
-
 from paddlelabel.api.model import Task, Project
 from paddlelabel.task.util import create_dir, listdir, copy, image_extensions
-from paddlelabel.task.base import BaseTask
+from paddlelabel.task.base import BaseTask, BaseSubtypeSelector
 
 
 class SingleClass(BaseTask):
@@ -22,7 +19,7 @@ class SingleClass(BaseTask):
         }
         self.exporters = {
             "singleClassFolder": self.folder_exporter,
-            "singleClassList": self.list_exporter,
+            "singleClassList": self.folder_exporter,
         }
 
     def list_importer(
@@ -37,16 +34,14 @@ class SingleClass(BaseTask):
         # 2. import all datas
         data_paths = [Path(p) for p in listdir(data_dir, filters)]
         list_infos = self.parse_lists(mode="labels")
-        # for data_path in data_paths:
-
-        # for data_path in data_paths:
-        #     label_name = data_path.parent.name
-        #     self.add_task([{"path": str(data_path)}], [[{"label_name": label_name}]])
+        for data_path in data_paths:
+            if data_path in list_infos:
+                print(list_infos[data_path])
+                self.add_task([{"path": str(data_path)}], [[{"label_name": list_infos[data_path]["labels"][0].name}]])
+            else:
+                self.add_task([{"path": str(data_path)}])
 
         self.commit()
-
-    def list_exporter(self, export_dir: Path):
-        pass
 
     def folder_importer(
         self,
@@ -102,12 +97,12 @@ class SingleClass(BaseTask):
 class MultiClass(BaseTask):
     def __init__(self, project, is_export=False):
         super(MultiClass, self).__init__(project, data_dir=project.data_dir, is_export=is_export)
-        self.importers = {}
-        self.exporters = {}
+        self.importers = {"multiClassList": self.list_importer}
+        self.exporters = {"multiClassList": self.list_exporter}
 
     def list_importer(
         self,
-        data_dir=None,
+        data_dir: Path,
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
     ):
         # 1. set params
@@ -187,14 +182,11 @@ class MultiClass(BaseTask):
         self.export_split(osp.join(export_dir), tasks, new_paths)
 
 
-class ProjectSubtypeSelector:
+class ProjectSubtypeSelector(BaseSubtypeSelector):
     __persist__: list[str] = ["clasSubCatg"]
 
     def __init__(self):
-        self.import_questions = []
-        self.export_questions = []
-        self.iq = partial(self.add_q, self.import_questions)
-        self.eq = partial(self.add_q, self.export_questions)
+        super(ProjectSubtypeSelector, self).__init__()
 
         self.iq(
             label="clasSubCatg",
@@ -237,26 +229,3 @@ class ProjectSubtypeSelector:
         if label_format == "noLabel":
             return handler.default_importer
         return handler.importers[label_format]
-
-    @validate_arguments
-    def add_q(
-        self,
-        question_set: list,
-        label: str,  # can have duplicates. Maybe same question, different choices
-        required: bool,
-        type: str,  # "choice", "input"
-        choices: list[tuple[str, str | None]] | None,
-        tips: str | None,
-        show_after: list[tuple[str, str]] | None,
-        is_arg: bool = False,
-    ):
-        question_set.append(
-            {
-                "label": label,
-                "required": required,
-                "type": type,
-                "choices": choices,
-                "tips": tips,
-                "show_after": [] if show_after is None else show_after,
-            }
-        )

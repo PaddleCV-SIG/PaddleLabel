@@ -6,7 +6,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
-from paddlelabel.task.base import BaseTask
+from paddlelabel.task.base import BaseSubtypeSelector, BaseTask
 from paddlelabel.task.util import copy
 from paddlelabel.io.image import getSize
 from paddlelabel.api.model import Task, Annotation, Project
@@ -23,7 +23,6 @@ class OpticalCharacterRecognition(BaseTask):
         super().__init__(project, skip_label_import=True, data_dir=data_dir, is_export=is_export)
         self.importers = {"json": self.json_importer, "txt": self.txt_importer}
         self.exporters = {"json": self.json_exporter, "txt": self.txt_exporter}
-        self.default_exporter = self.txt_exporter
         # NOTE: ocr doesn't need a label but label is required field for annotation. thus use a dummy label
         self.dummy_label_name = "OCR Dummy Label"
 
@@ -65,7 +64,6 @@ class OpticalCharacterRecognition(BaseTask):
         )
 
         data_paths = set(Path(p) for p in listdir(data_dir, filters=filters))
-        # print(data_paths)
         for set_idx in label_file_paths:
             for label_file_path in label_file_paths[set_idx]:
                 if not label_file_path.exists():
@@ -305,3 +303,29 @@ class OpticalCharacterRecognition(BaseTask):
         names = ["train.json", "val.json", "test.json"]
         for d, name in zip(ann_dicts, names):
             print(json.dumps(d), file=open(export_dir / name, "w"))
+
+
+class ProjectSubtypeSelector(BaseSubtypeSelector):
+    def __init__(self):
+        super(ProjectSubtypeSelector, self).__init__()
+
+        self.iq(
+            label="labelFormat",
+            required=True,
+            type="choice",
+            choices=[("json", None), ("txt", None)],
+            tips=None,
+            show_after=None,
+        )
+
+    def get_handler(self, answers: dict | None, project: Project):
+        return OpticalCharacterRecognition(project=project, is_export=False)
+
+    def get_importer(self, answers: dict | None, project: Project):
+        handler = self.get_handler(answers, project)
+        if answers is None:
+            return handler.importers["txt"]
+        label_format = answers["labelFormat"]
+        if label_format == "noLabel":
+            return handler.default_importer
+        return handler.importers[label_format]

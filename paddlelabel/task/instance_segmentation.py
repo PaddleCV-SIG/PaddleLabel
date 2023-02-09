@@ -13,13 +13,13 @@ from pycocotoolse.coco import COCO
 from pathlib import Path
 
 from paddlelabel.io.image import getSize
-from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name
-from paddlelabel.task.base import BaseTask
+from paddlelabel.task.util import create_dir, listdir, image_extensions, match_by_base_name, copy
+from paddlelabel.task.base import BaseTask, BaseSubtypeSelector
 from paddlelabel.task.util.color import hex_to_rgb
-from paddlelabel.task.util import copy
 from paddlelabel.api.model import Task, Label, Annotation
 from paddlelabel.api.util import abort
 from paddlelabel.api.rpc.seg import polygon2points
+from paddlelabel.api import Project
 
 log = logging.getLogger("paddlelabel")
 
@@ -467,3 +467,29 @@ class InstanceSegmentation(BaseTask):
                 self.add_task([{"path": str(data_path), "size": size}], [anns])
                 json_paths.remove(json_path)
         self.commit()
+
+
+class ProjectSubtypeSelector(BaseSubtypeSelector):
+    def __init__(self):
+        super(ProjectSubtypeSelector, self).__init__()
+
+        self.iq(
+            label="labelFormat",
+            required=True,
+            type="choice",
+            choices=[("mask", None), ("coco", None), ("eiseg", None)],
+            tips=None,
+            show_after=None,
+        )
+
+    def get_handler(self, answers: dict | None, project: Project):
+        return InstanceSegmentation(project=project, is_export=False)
+
+    def get_importer(self, answers: dict | None, project: Project):
+        handler = self.get_handler(answers, project)
+        if answers is None:
+            return handler.importers["coco"]
+        label_format = answers["labelFormat"]
+        if label_format == "noLabel":
+            return handler.default_importer
+        return handler.importers[label_format]

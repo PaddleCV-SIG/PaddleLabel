@@ -168,7 +168,7 @@ def load_sample(sample_family="bear"):
 
     sample_folder = {
         "classification": ["classification", "singleClass"],
-        "detection": ["detection", "voc"],
+        "detection": ["detection", "coco"],
         "semantic_segmentation": ["semanticSegmentation", "mask"],
         "instance_segmentation": ["instanceSegmentation", "coco"],
         "optical_character_recognition": ["opticalCharacterRecognition", "txt"],
@@ -176,7 +176,7 @@ def load_sample(sample_family="bear"):
     }
     label_formats = {
         "classification": "single_class",
-        "detection": "voc",
+        "detection": "coco",
         "semantic_segmentation": "mask",
         "instance_segmentation": "coco",
         "optical_character_recognition": "txt",

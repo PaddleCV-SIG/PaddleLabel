@@ -62,5 +62,24 @@
         "sortNum": 20000,
         "tests": [],
         "url": "{{host}}/projects/{project_id}/export"
+    },
+    {
+        "_id": "abd9812a-d907-4a8f-b635-7ffa4713a027",
+        "body": {
+            "form": [],
+            "raw": "{\n    \"name\": \"clas single folder\",\n    \"task_category_id\": 1,\n    \"data_dir\": \"~/.paddlelabel/sample/bear/classification/singleClass/\",\n    \"all_options\": {\n        \"clasSubCatg\": \"singleClass\",\n        \"labelFormat\": \"singleClassFolder\"\n    }\n}\n",
+            "type": "json"
+        },
+        "colId": "f8fe5699-a721-439d-be48-4d18b9cd9672",
+        "containerId": "34a30cd1-b515-4d22-bdd9-52e4b6762385",
+        "created": "2023-02-09T07:20:37.933Z",
+        "headers": [],
+        "method": "POST",
+        "modified": "2023-02-09T07:22:39.436Z",
+        "name": "clas single folder",
+        "params": [],
+        "sortNum": 30000,
+        "tests": [],
+        "url": "{{host}}/projects"
     }
 ]

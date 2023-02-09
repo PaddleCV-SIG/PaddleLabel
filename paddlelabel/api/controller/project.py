@@ -16,7 +16,7 @@ from paddlelabel.config import db
 from paddlelabel.api.model import Project, Task, TaskCategory, Annotation, Label, TaskCategory
 from paddlelabel.api.schema import ProjectSchema
 from paddlelabel.api.controller.base import crud
-from paddlelabel.api.util import abort
+from paddlelabel.api.util import abort, camel2snake
 from paddlelabel.task.util import rand_hex_color
 from paddlelabel.task.util.file import (
     image_extensions,
@@ -26,7 +26,7 @@ from paddlelabel.task.util.file import (
     copy,
     expand_home,
 )
-import paddlelabel
+import paddlelabel  # for eval later
 
 logger = logging.getLogger("paddlelabel")
 
@@ -39,10 +39,16 @@ def import_dataset(project, data_dir=None, label_format=None):
     assert task_category is not None, f"invalid task category id {project.task_category_id}"
 
     selector = eval(f"paddlelabel.task.{task_category.name}.ProjectSubtypeSelector")()
-    importer = selector.get_importer(connexion.request.json.get("all_options", {}), project=project)
-
-    # 3. run import
+    answers = connexion.request.json.get("all_options", {})
+    importer = selector.get_importer(answers, project=project)
     importer(data_dir)
+    persists = selector.__persist__
+    if len(persists) != 0:
+        other_settings = project._get_other_settings()
+        for field in persists:
+            other_settings[field] = answers[field]
+        project.other_settings = json.dumps(other_settings)
+        db.session.commit()
 
 
 def import_additional_data(project_id):
@@ -107,13 +113,6 @@ def pre_add(new_project, se):
     if not Path(new_project.data_dir).exists():
         abort(f"Dataset Path {new_project.data_dir} doesn't exist", 404)
 
-    # new_project.label_format = camel2snake(new_project.label_format)
-    # new_labels = new_project.labels
-    # rets, unique = label.unique_within_project(new_project.project_id, new_labels)
-    # print(unique)
-    # if not np.all(unique):
-    #     # TODO: return the not unique field
-    #     abort("Project labels are not unique", 409)
     return new_project
 
 
@@ -308,7 +307,9 @@ def predict(project_id):
 
 
 def import_options(project_type):
+    project_type = camel2snake(project_type)
     all_catgs = TaskCategory._get(many=True)
+    # print(project_type, [c.name for c in all_catgs])
     assert project_type in [c.name for c in all_catgs], f"Project type specified {project_type} isn't supported"
     selector = eval(f"paddlelabel.task.{project_type}.ProjectSubtypeSelector")()
     return selector.import_questions

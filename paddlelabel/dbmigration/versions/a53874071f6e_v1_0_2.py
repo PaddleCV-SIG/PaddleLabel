@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """v1_0_2
 
+- remove unused columns from project table
+- change rectangle and polygon coords from center origin to upper left origin
+
 Revision ID: a53874071f6e
 Revises: e660f34b820d
 Create Date: 2023-02-08 23:23:59.709127

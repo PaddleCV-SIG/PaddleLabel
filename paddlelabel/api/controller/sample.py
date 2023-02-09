@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import os.path as osp
 from pathlib import Path
@@ -13,6 +14,16 @@ from paddlelabel.api.model import TaskCategory, Project
 from paddlelabel.task.util.file import copy, copy_content
 from paddlelabel import configs
 from paddlelabel.config import db
+
+# TODO: move this to be registered in sub category selector
+sample_folders = {
+    "classification": ["classification", "singleClass"],
+    "detection": ["detection", "coco"],
+    "semantic_segmentation": ["semanticSegmentation", "mask"],
+    "instance_segmentation": ["instanceSegmentation", "coco"],
+    "optical_character_recognition": ["opticalCharacterRecognition", "txt"],
+    "point": ["point", "labelme"],
+}
 
 
 def prep_samples():
@@ -149,9 +160,11 @@ def prep_samples():
 
 def reset_samples():
     """
-    reset files under the sample folder, will backup the current sample folder if exists
+    - reset files under the sample folder
+    - delete all already created sample projects
+    - will backup the current sample folder if exists
     """
-    # TODO: delete already created sample projects
+
     if configs.sample_dir.exists():
         from datetime import datetime
 
@@ -160,28 +173,13 @@ def reset_samples():
             / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-sample_bk"
         )
         configs.sample_dir.rename(back_up_path)
+
     prep_samples()
 
 
 def load_sample(sample_family="bear"):
     task_category_id = connexion.request.json.get("task_category_id")
 
-    sample_folder = {
-        "classification": ["classification", "singleClass"],
-        "detection": ["detection", "coco"],
-        "semantic_segmentation": ["semanticSegmentation", "mask"],
-        "instance_segmentation": ["instanceSegmentation", "coco"],
-        "optical_character_recognition": ["opticalCharacterRecognition", "txt"],
-        "point": ["point", "labelme"],
-    }
-    label_formats = {
-        "classification": "single_class",
-        "detection": "coco",
-        "semantic_segmentation": "mask",
-        "instance_segmentation": "coco",
-        "optical_character_recognition": "txt",
-        "point": "labelme",
-    }
     sample_names = {
         "classification": "分类",
         "detection": "检测",
@@ -191,7 +189,7 @@ def load_sample(sample_family="bear"):
         "point": "点标注",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
-    data_dir = osp.join(configs.home, "sample", sample_family, *sample_folder[task_category.name])
+    data_dir = osp.join(configs.home, "sample", sample_family, *sample_folders[task_category.name])
 
     name = f"{sample_names[task_category.name]} 样例项目"
     curr_project = Project._get(data_dir=data_dir)
@@ -207,6 +205,7 @@ def load_sample(sample_family="bear"):
         "description": f"PaddleLabel内置 {sample_names[task_category.name]} 样例项目",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,
+        "other_settings": {"isSample": True},
     }
     project = ProjectSchema().load(project)
 

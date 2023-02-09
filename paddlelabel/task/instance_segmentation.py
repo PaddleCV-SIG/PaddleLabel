@@ -316,9 +316,9 @@ class InstanceSegmentation(BaseTask):
                     coco.imgs[ann["image_id"]].get("width", None),
                     coco.imgs[ann["image_id"]].get("height", None),
                 )
-                for idx in range(0, len(res), 2):
-                    res[idx] -= width / 2
-                    res[idx + 1] -= height / 2
+                # for idx in range(0, len(res), 2):
+                #     res[idx] -= width / 2
+                #     res[idx + 1] -= height / 2
 
                 res = [str(r) for r in res]
                 res = ",".join(res)

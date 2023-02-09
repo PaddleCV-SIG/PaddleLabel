@@ -27,6 +27,7 @@ from paddlelabel.task.util.file import (
     expand_home,
 )
 import paddlelabel  # for eval later
+from paddlelabel.task import *
 
 logger = logging.getLogger("paddlelabel")
 

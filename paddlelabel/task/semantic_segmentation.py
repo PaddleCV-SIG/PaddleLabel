@@ -14,7 +14,7 @@ from paddlelabel.task.base import BaseSubtypeSelector
 from paddlelabel.task.instance_segmentation import InstanceSegmentation, draw_mask
 from paddlelabel.task.util import create_dir, listdir, image_extensions, copy
 from paddlelabel.task.util.color import hex_to_rgb
-from paddlelabel.api.model import Task
+from paddlelabel.api.model import Task, Project
 
 
 def parse_semantic_mask(annotation_path, labels, image_path=None):
@@ -211,12 +211,12 @@ class ProjectSubtypeSelector(BaseSubtypeSelector):
         )
 
     def get_handler(self, answers: dict | None, project: Project):
-        return InstanceSegmentation(project=project, is_export=False)
+        return SemanticSegmentation(project=project, is_export=False)
 
     def get_importer(self, answers: dict | None, project: Project):
         handler = self.get_handler(answers, project)
         if answers is None:
-            return handler.importers["coco"]
+            return handler.importers["mask"]
         label_format = answers["labelFormat"]
         if label_format == "noLabel":
             return handler.default_importer

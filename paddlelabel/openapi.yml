@@ -1390,9 +1390,53 @@ components:
   schemas:
     Project:
       type: object
-      x-examples: {}
+      x-examples:
+        Example 1:
+          created: '2023-02-09T17:12:26.576325'
+          data_dir: /home/lin/3rd_party/3rd_party/labelme/point
+          description: null
+          labels:
+            - color: '#C2939E'
+              comment: null
+              created: '2023-02-09T17:12:26.602183'
+              id: 1
+              label_id: 1
+              modified: '2023-02-09T17:12:26.602186'
+              name: ear
+              project_id: 1
+              super_category_id: null
+            - color: '#FAD858'
+              comment: null
+              created: '2023-02-09T17:12:26.607238'
+              id: 2
+              label_id: 2
+              modified: '2023-02-09T17:12:26.607243'
+              name: hand
+              project_id: 1
+              super_category_id: null
+            - color: '#3BC3F4'
+              comment: null
+              created: '2023-02-09T17:12:26.613080'
+              id: 3
+              label_id: 3
+              modified: '2023-02-09T17:12:26.613086'
+              name: foot
+              project_id: 1
+              super_category_id: null
+          modified: '2023-02-09T17:12:26.576336'
+          name: Points - labelme format
+          other_settings: null
+          project_id: 1
+          task_category:
+            created: '2023-02-09T07:46:12.059813'
+            handler: paddlelabel.task.Point
+            modified: '2023-02-09T07:46:12.059818'
+            name: point
+            task_category_id: 8
+          task_category_id: 8
+          upid: 952ecbc1a5fc73a3dc7e
       additionalProperties: false
-      description: 项目基本信息和设置
+      description: project info and settings
       properties:
         project_id:
           type: integer
@@ -1411,15 +1455,14 @@ components:
           description: Optional project description
           maxLength: 256
           example: This project is very cool
+        data_dir:
+          type: string
+          description: Absolute directory path where all the data file is stored
         task_category_id:
           type: integer
           description: 'Top level annotation task category, see TODO for int <-> category map'
         task_category:
-          type: string
-          readOnly: true
-        data_dir:
-          type: string
-          description: Absolute directory path where all the data file is stored
+          $ref: '#/components/schemas/TaskCategory'
         labels:
           type: array
           items:
@@ -1486,8 +1529,11 @@ components:
               type: string
             lang:
               type: string
+            isSample:
+              type: boolean
         all_options:
           type: object
+          description: This property is only used for passing project create/export options around more easilly. It's discarded after the project is created or exported.
     Task:
       title: Task
       type: object
@@ -1684,6 +1730,31 @@ components:
       required:
         - label
         - required
+    TaskCategory:
+      title: TaskCategory
+      x-stoplight:
+        id: dcukxtsw0qjz2
+      type: object
+      properties:
+        name:
+          type: string
+        task_category_id:
+          type: integer
+          format: int32
+        handler:
+          type: string
+          deprecated: true
+        created:
+          type: string
+        modified:
+          type: string
+      x-examples:
+        Example 1:
+          name: point
+          task_category_id: 8
+          handler: paddlelabel.task.Point
+          created: '2023-02-09T07:46:12.059813'
+          modified: '2023-02-09T07:46:12.059818'
   parameters:
     request_id:
       name: request_id

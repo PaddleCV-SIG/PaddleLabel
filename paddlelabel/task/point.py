@@ -5,8 +5,8 @@ from pathlib import Path
 import shutil
 
 from paddlelabel.task.util.labelme import get_matching, parse_ann, write_ann
-from paddlelabel.api import Task
-from paddlelabel.task.base import BaseTask
+from paddlelabel.api import Task, Project
+from paddlelabel.task.base import BaseSubtypeSelector, BaseTask
 from paddlelabel.io.image import getSize
 
 
@@ -65,3 +65,29 @@ class Point(BaseTask):
 
         # 3. write split files
         self.export_split(export_dir, tasks, new_paths, with_labels=False, annotation_ext=".json")
+
+
+class ProjectSubtypeSelector(BaseSubtypeSelector):
+    def __init__(self):
+        super(ProjectSubtypeSelector, self).__init__()
+
+        self.iq(
+            label="labelFormat",
+            required=True,
+            type="choice",
+            choices=[("labelme", None)],
+            tips=None,
+            show_after=None,
+        )
+
+    def get_handler(self, answers: dict | None, project: Project):
+        return Point(project=project, is_export=False)
+
+    def get_importer(self, answers: dict | None, project: Project):
+        handler = self.get_handler(answers, project)
+        if answers is None:
+            return handler.importers["labelme"]
+        label_format = answers["labelFormat"]
+        if label_format == "noLabel":
+            return handler.default_importer
+        return handler.importers[label_format]

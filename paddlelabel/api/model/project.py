@@ -17,7 +17,6 @@ class Project(BaseModel):
     task_category_id = db.Column(db.Integer(), db.ForeignKey("taskCategory.task_category_id"))
     task_category = db.relationship("TaskCategory")
     data_dir = nncol(db.String(), unique=True)
-    # label_dir = db.Column(db.String(), unique=True)  # TODO: remove
     labels = db.relationship(
         "Label",
         lazy="selectin",
@@ -25,8 +24,10 @@ class Project(BaseModel):
     )
     tasks = db.relationship("Task", lazy="noload", cascade="all, delete-orphan")
     annotations = db.relationship("Annotation", lazy="noload", cascade="all, delete-orphan")
-    # label_format = db.Column(db.String())
     other_settings = db.Column(db.String())
+
+    label_format = db.Column(db.String())  # TODO: remove
+    label_dir = db.Column(db.String())  # TODO: remove
 
     _immutables = BaseModel._immutables + ["project_id", "task_category_id"]
 

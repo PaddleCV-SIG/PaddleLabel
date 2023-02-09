@@ -20,7 +20,8 @@ PaddleLabel 目前支持 PaddleOCR txt 格式的数据集导入导出。
 
 ### PaddleOCR txt
 
-{: .label } v1.0.0+
+{: .label }
+v1.0.0+
 
 PaddleOCR txt 格式中，所有标注数据存储在 Label.txt 文件中。
 

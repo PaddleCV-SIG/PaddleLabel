@@ -3,15 +3,15 @@
 <!-- TOC -->
 
 - [安装方式](#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F)
-    - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
-    - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
-    - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
+  - [通过 pip 安装](#%E9%80%9A%E8%BF%87-pip-%E5%AE%89%E8%A3%85)
+  - [下载最新开发版](#%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E5%BC%80%E5%8F%91%E7%89%88)
+  - [通过源码安装](#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85)
 - [启动](#%E5%90%AF%E5%8A%A8)
-    - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
+  - [更多启动选项](#%E6%9B%B4%E5%A4%9A%E5%90%AF%E5%8A%A8%E9%80%89%E9%A1%B9)
 - [下一步](#%E4%B8%8B%E4%B8%80%E6%AD%A5)
 - [安装 FAQ](#%E5%AE%89%E8%A3%85-faq)
-    - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
-    - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
+  - [Microsoft Visual C++ 14.1 is required](#microsoft-visual-c-141-is-required)
+  - [中文兼容问题](#%E4%B8%AD%E6%96%87%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98)
 
 <!-- /TOC -->
 
@@ -33,7 +33,7 @@ pip install --upgrade paddlelabel
 ```
 
 初次安装和安装后升级 PaddleLabel 都使用上述命令。
-当看到类似于 `Successfully installed paddlelabel-0.5.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
+当看到类似于 `Successfully installed paddlelabel-1.0.0` 的命令行输出即为安装成功，您可以直接继续浏览[启动](#%E5%90%AF%E5%8A%A8)章节。
 
 {: .note }
 **以下两种安装方式主要针对二次开发场景**
@@ -114,14 +114,17 @@ PaddleLabel 启动后会自动在浏览器中打开网页。
 ### 更多启动选项
 
 - -p, \-\-port：指定运行端口。PaddleLabel 默认运行网址为[http://localhost:17995](http://localhost:17995)
-- -l, \-\-lan：暴露服务到局域网。开启后可以在同一局域网下机器 A 上运行 PaddleLabel，在电脑 B 或平板 C 上进行标注。在 docker 中运行时也需要添加 -l
+- -l, \-\-lan：暴露服务到局域网。开启后可以在同一局域网下机器 A 上运行 PaddleLabel，在电脑 B 或平板 C 上进行标注。配合路由器的 NAT 或在有公网 ip 的服务器上部署可以实现从公网访问。此外在 docker 中运行时也需要添加 -l
+- \-\-home：指定一个文件夹作存储 PaddleLabel 的数据库和样例数据集等文件，主要用于 Windows 下 HOME 路径带中文导致启动失败的情况
 - -d， \-\-debug：在命令行中显示更详细的 log，可用于观察导入导出过程中的行为，定位问题等
+- -v， \-\-verbose：显示 Flask 服务的详细 log，一般不是很有用
+- -h， \-\-help：显示所有 PaddleLabel 支持的命令行参数及解释
 
 ```shell
 paddlelabel --port 8000 --lan --debug # 在8000端口上运行，将服务暴露到局域网，显示详细log
 ```
 
-更多启动参数可以使用 `paddlelabel -h` 查看。
+更多启动参数可以使用 `paddlelabel -h` 查看
 
 ## 下一步
 

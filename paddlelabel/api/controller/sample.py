@@ -158,8 +158,12 @@ def prep_samples():
         copy(src, dst, make_dir=True)
 
 
-def reset_samples():
-    """
+def reset_samples(remove_current_sample_projects: bool = True):
+    """_summary_
+
+    Args:
+        remove_current_sample_projects (bool, optional): Whether to remove sample projects in db. This will only be true when user clicks on reset sample button in frontend. Defaults to True.
+
     - reset files under the sample folder
     - delete all already created sample projects
     - will backup the current sample folder if exists
@@ -173,13 +177,12 @@ def reset_samples():
             / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-sample_bk"
         )
         configs.sample_dir.rename(back_up_path)
-
+    # TODO: remove all current samples
     prep_samples()
 
 
 def load_sample(sample_family="bear"):
     task_category_id = connexion.request.json.get("task_category_id")
-
     sample_names = {
         "classification": "分类",
         "detection": "检测",

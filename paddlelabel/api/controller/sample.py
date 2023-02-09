@@ -151,6 +151,7 @@ def reset_samples():
     """
     reset files under the sample folder, will backup the current sample folder if exists
     """
+    # TODO: delete already created sample projects
     if configs.sample_dir.exists():
         from datetime import datetime
 
@@ -163,8 +164,6 @@ def reset_samples():
 
 
 def load_sample(sample_family="bear"):
-    # prep_samples()
-
     task_category_id = connexion.request.json.get("task_category_id")
 
     sample_folder = {
@@ -192,9 +191,7 @@ def load_sample(sample_family="bear"):
         "point": "点标注",
     }
     task_category = TaskCategory._get(task_category_id=task_category_id)
-    data_dir = osp.join(
-        osp.expanduser("~"), ".paddlelabel", "sample", sample_family, *sample_folder[task_category.name]
-    )
+    data_dir = osp.join(configs.home, "sample", sample_family, *sample_folder[task_category.name])
 
     name = f"{sample_names[task_category.name]} 样例项目"
     curr_project = Project._get(data_dir=data_dir)
@@ -210,17 +207,15 @@ def load_sample(sample_family="bear"):
         "description": f"PaddleLabel内置 {sample_names[task_category.name]} 样例项目",
         "task_category_id": str(task_category_id),
         "data_dir": data_dir,
-        "label_format": label_formats[task_category.name],
     }
     project = ProjectSchema().load(project)
 
-    if task_category is None:
-        handler = paddlelabel.task.BaseTask(project)
-    else:
-        handler = eval(task_category.handler)(project, data_dir=data_dir)
+    selector = eval(f"paddlelabel.task.{task_category.name}.ProjectSubtypeSelector")()
+    handler = selector.get_handler(None, project)
+    importer = selector.get_importer(None, project)
 
     try:
-        handler.importers[label_formats[task_category.name]](data_dir=data_dir)
+        importer(data_dir=data_dir)
     except Exception as e:
         project = Project.query.filter(Project.project_id == handler.project.project_id).one()
         db.session.delete(project)

@@ -4,5 +4,6 @@ black
 pre-commit
 jake
 
+pydantic
 types-Pillow
 types-Flask-Cors

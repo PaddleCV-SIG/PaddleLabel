@@ -1,36 +1,35 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.json
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
   title: PaddleLabel API Specs
   version: 1.0.2
   description: Web backend APIs for PaddleLabel
   contact:
     name: PaddleLabel Developers
-    url: "https://github.com/PaddleCV-SIG/PaddleLabel/issues"
+    url: 'https://github.com/PaddleCV-SIG/PaddleLabel/issues'
     email: me@linhan.email
   license:
     name: Apache License 2.0
-    url: "http://www.apache.org/licenses/LICENSE-2.0"
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
 servers:
   - url: /api
     description: Same origin
 paths:
   /projects:
     parameters:
-      - $ref: "#/components/parameters/request_id"
+      - $ref: '#/components/parameters/request_id'
     get:
       tags:
         - Project
-      summary: "Read all projects, sort by last modify date"
+      summary: 'Read all projects, sort by last modify date'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Project"
+                  $ref: '#/components/schemas/Project'
       operationId: getAll
       parameters:
         - schema:
@@ -41,22 +40,22 @@ paths:
       tags:
         - Project
       summary: Create a new project
-      description: ""
+      description: ''
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Project"
+              $ref: '#/components/schemas/Project'
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
+                $ref: '#/components/schemas/Project'
       operationId: create
-  "/projects/importOptions/{project_type}":
+  '/projects/importOptions/{project_type}':
     parameters:
       - name: request_id
         in: header
@@ -64,7 +63,7 @@ paths:
         schema:
           type: integer
           maxLength: 30
-        description: "Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times"
+        description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
       - schema:
           type: string
         name: project_type
@@ -73,35 +72,35 @@ paths:
     get:
       tags:
         - Project
-      summary: "Read all projects, sort by last modify date"
+      summary: 'Read all projects, sort by last modify date'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: '#/components/schemas/ImportOption'
       operationId: getImportOptions
       parameters: []
-  "/projects/{project_id}":
+  '/projects/{project_id}':
     parameters:
-      - $ref: "#/components/parameters/project_id"
-      - $ref: "#/components/parameters/request_id"
+      - $ref: '#/components/parameters/project_id'
+      - $ref: '#/components/parameters/request_id'
     get:
       tags:
         - Project
       summary: Get info of a specific project
-      description: ""
+      description: ''
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
-        "404":
+                $ref: '#/components/schemas/Project'
+        '404':
           description: Project not fond
       operationId: get
     delete:
@@ -110,9 +109,9 @@ paths:
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: No project with such project id
       operationId: remove
     put:
@@ -125,18 +124,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Project"
+              $ref: '#/components/schemas/Project'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
-        "404":
-          description: "Project with project id not fond, or project dont have requested property"
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: 'Project with project id not fond, or project dont have requested property'
       operationId: update
-  "/projects/{project_id}/tasks":
+  '/projects/{project_id}/tasks':
     parameters:
       - name: project_id
         in: path
@@ -149,28 +148,28 @@ paths:
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
       operationId: getTasks
-      description: ""
+      description: ''
       parameters:
         - schema:
             type: string
           in: query
           name: order_by
     put:
-      summary: ""
+      summary: ''
       tags:
         - Project
       operationId: setAll
       responses:
-        "200":
+        '200':
           description: OK
       requestBody:
         content:
@@ -180,100 +179,100 @@ paths:
               properties:
                 data_predicted:
                   type: boolean
-  "/projects/{project_id}/labels":
+  '/projects/{project_id}/labels':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Get all labels under a project
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Label"
+                  $ref: '#/components/schemas/Label'
       operationId: getLabels
-      description: ""
+      description: ''
     post:
-      summary: "Set all labels under a project, will delete previous labels"
+      summary: 'Set all labels under a project, will delete previous labels'
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Label"
+                  $ref: '#/components/schemas/Label'
       operationId: setLabels
-      description: ""
+      description: ''
       requestBody:
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Label"
+                $ref: '#/components/schemas/Label'
     delete:
       summary: Delete all labels under a project
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
       operationId: removeLabels
-      description: ""
-  "/projects/{project_id}/annotations":
+      description: ''
+  '/projects/{project_id}/annotations':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Get all annotations under a project
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
-      description: ""
-  "/projects/{project_id}/tags":
+      description: ''
+  '/projects/{project_id}/tags':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Get all tags under a project
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Tag"
+                  $ref: '#/components/schemas/Tag'
       operationId: getTags
-      description: ""
-  "/projects/{project_id}/progress":
+      description: ''
+  '/projects/{project_id}/progress':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     get:
       summary: Get project progress
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -285,16 +284,16 @@ paths:
                   total:
                     type: integer
       operationId: getProgress
-      description: ""
-  "/projects/{project_id}/split":
+      description: ''
+  '/projects/{project_id}/split':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
-      summary: "Split this project's data into train, validation and test dataset."
+      summary: 'Split this project''s data into train, validation and test dataset.'
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
@@ -308,7 +307,7 @@ paths:
                   test:
                     type: integer
       operationId: splitDataset
-      description: ""
+      description: ''
       requestBody:
         content:
           application/json:
@@ -321,10 +320,10 @@ paths:
                   type: integer
                 test:
                   type: integer
-        description: ""
-  "/projects/{project_id}/export":
+        description: ''
+  '/projects/{project_id}/export':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
       summary: Export dataset to specified directory
       tags:
@@ -344,20 +343,20 @@ paths:
               required:
                 - export_dir
       responses:
-        "200":
+        '200':
           description: success
       operationId: exportDataset
-      description: ""
-  "/projects/{project_id}/import":
+      description: ''
+  '/projects/{project_id}/import':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
-      summary: ""
+      summary: ''
       operationId: importDataset
       tags:
         - Project
       responses:
-        "200":
+        '200':
           description: OK
       requestBody:
         content:
@@ -370,10 +369,10 @@ paths:
                 import_format:
                   type: string
                   nullable: true
-        description: ""
-  "/projects/{project_id}/predict":
+        description: ''
+  '/projects/{project_id}/predict':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
       summary: Run prediction on all data in the dataset
       tags:
@@ -400,20 +399,20 @@ paths:
                 - ml_backend_url
                 - model
       responses:
-        "200":
+        '200':
           description: success
       operationId: predict
-      description: ""
-  "/projects/{project_id}/toEasydata":
+      description: ''
+  '/projects/{project_id}/toEasydata':
     parameters:
-      - $ref: "#/components/parameters/project_id"
+      - $ref: '#/components/parameters/project_id'
     post:
-      summary: ""
+      summary: ''
       tags:
         - Project
       operationId: toEasydata
       responses:
-        "200":
+        '200':
           description: OK
       requestBody:
         content:
@@ -432,16 +431,16 @@ paths:
     get:
       tags:
         - Label
-      summary: "Get all labels, sort by last modify"
+      summary: 'Get all labels, sort by last modify'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Label"
+                  $ref: '#/components/schemas/Label'
       operationId: getAll
     post:
       tags:
@@ -454,39 +453,39 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Label"
+                $ref: '#/components/schemas/Label'
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Label"
+                  $ref: '#/components/schemas/Label'
       parameters:
-        - $ref: "#/components/parameters/request_id"
+        - $ref: '#/components/parameters/request_id'
         - schema:
             type: boolean
           in: header
           name: remove_duplicate_by_name
           description: 是否根据标签名去重，标签名如果存在不会创建
       operationId: create
-  "/labels/{label_id}":
+  '/labels/{label_id}':
     parameters:
-      - $ref: "#/components/parameters/label_id"
+      - $ref: '#/components/parameters/label_id'
     get:
       tags:
         - Label
       summary: Get info about a specific label
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Label"
-        "404":
+                $ref: '#/components/schemas/Label'
+        '404':
           description: Label not fond
       operationId: get
     delete:
@@ -495,9 +494,9 @@ paths:
       tags:
         - Label
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The label specified is not found
       operationId: remove
     put:
@@ -510,16 +509,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Label"
+              $ref: '#/components/schemas/Label'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Label"
-        "404":
-          description: "Label with specified label id not fond, or project dont have requested property"
+                $ref: '#/components/schemas/Label'
+        '404':
+          description: 'Label with specified label id not fond, or project dont have requested property'
       operationId: update
   /tasks:
     get:
@@ -527,14 +526,14 @@ paths:
       tags:
         - Task
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
       operationId: getAll
       parameters:
         - schema:
@@ -546,16 +545,16 @@ paths:
         - Task
       summary: Create a new task
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
+                $ref: '#/components/schemas/Task'
       operationId: create
-  "/tasks/{task_id}":
+  '/tasks/{task_id}':
     parameters:
-      - $ref: "#/components/parameters/task_id"
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Task
@@ -568,13 +567,13 @@ paths:
             type: integer
           required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "404":
+                $ref: '#/components/schemas/Task'
+        '404':
           description: Task not fond
       operationId: get
     delete:
@@ -590,9 +589,9 @@ paths:
             type: integer
           required: true
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The task specified is not found
       operationId: remove
     put:
@@ -612,51 +611,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Task"
+              $ref: '#/components/schemas/Task'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "404":
-          description: "Task with task id not fond, or task dont have requested property"
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: 'Task with task id not fond, or task dont have requested property'
       operationId: update
-  "/tasks/{task_id}/tags":
+  '/tasks/{task_id}/tags':
     parameters:
-      - $ref: "#/components/parameters/task_id"
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Task
       summary: Get all tags of the task
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Tag"
+                  $ref: '#/components/schemas/Tag'
       operationId: getTags
-      description: ""
+      description: ''
     post:
       tags:
         - Task
       summary: Add a new tag to the task
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Tag"
+                  $ref: '#/components/schemas/Tag'
       parameters:
-        - $ref: "#/components/parameters/request_id"
-      description: "Add a tag to a task, the tag has to exist."
+        - $ref: '#/components/parameters/request_id'
+      description: 'Add a tag to a task, the tag has to exist.'
       requestBody:
         content:
           application/json:
@@ -667,54 +666,54 @@ paths:
                 tag_id:
                   type: integer
       operationId: addTag
-  "/tasks/{task_id}/datas":
+  '/tasks/{task_id}/datas':
     parameters:
-      - $ref: "#/components/parameters/task_id"
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Task
       summary: Get all datas of a task
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Data"
+                  $ref: '#/components/schemas/Data'
       operationId: getDatas
-      description: ""
-  "/tasks/{task_id}/annotations":
+      description: ''
+  '/tasks/{task_id}/annotations':
     parameters:
-      - $ref: "#/components/parameters/task_id"
+      - $ref: '#/components/parameters/task_id'
     get:
       tags:
         - Task
       summary: Get all annotations of a task
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
-      description: ""
+      description: ''
   /datas/:
     get:
       tags:
         - Data
-      summary: "Get all data, sort by last modified"
+      summary: 'Get all data, sort by last modified'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Data"
+                $ref: '#/components/schemas/Data'
       operationId: getAll
     post:
       tags:
@@ -725,41 +724,41 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Data"
+              $ref: '#/components/schemas/Data'
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Data"
+                $ref: '#/components/schemas/Data'
       operationId: create
-  "/datas/{data_id}/":
+  '/datas/{data_id}/':
     parameters:
-      - $ref: "#/components/parameters/data_id"
+      - $ref: '#/components/parameters/data_id'
     get:
       tags:
         - Data
       summary: Get info of a specific data record
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Data"
-        "404":
+                $ref: '#/components/schemas/Data'
+        '404':
           description: Data record not fond
       operationId: get
     delete:
       summary: Delete a data record
-      description: "Delete a data record, file on file system will not be deleted"
+      description: 'Delete a data record, file on file system will not be deleted'
       tags:
         - Data
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The data record specified is not found
       operationId: remove
     put:
@@ -772,18 +771,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Data"
+              $ref: '#/components/schemas/Data'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Data"
-        "404":
-          description: "Data record with data id not fond, or data dont have requested property"
+                $ref: '#/components/schemas/Data'
+        '404':
+          description: 'Data record with data id not fond, or data dont have requested property'
       operationId: update
-  "/datas/{data_id}/image":
+  '/datas/{data_id}/image':
     parameters:
       - name: data_id
         in: path
@@ -796,7 +795,7 @@ paths:
       tags:
         - Data
       responses:
-        "200":
+        '200':
           description: success
       operationId: getImage
       parameters:
@@ -804,7 +803,7 @@ paths:
             type: string
           in: query
           name: sault
-  "/datas/{data_id}/mask":
+  '/datas/{data_id}/mask':
     parameters:
       - schema:
           type: string
@@ -816,10 +815,10 @@ paths:
       tags:
         - Data
       responses:
-        "200":
+        '200':
           description: OK
       operationId: getMask
-  "/datas/{data_id}/annotations":
+  '/datas/{data_id}/annotations':
     parameters:
       - name: data_id
         in: path
@@ -832,14 +831,14 @@ paths:
       tags:
         - Data
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       operationId: getAnnotations
     delete:
       summary: Delete all annotations of a data record
@@ -847,7 +846,7 @@ paths:
         - Data
       operationId: deleteAnnotations
       responses:
-        "200":
+        '200':
           description: OK
     post:
       summary: Set the annotations of a data record
@@ -855,35 +854,35 @@ paths:
         - Data
       operationId: setAnnotations
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       requestBody:
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Annotation"
+                $ref: '#/components/schemas/Annotation'
   /annotations/:
     get:
       tags:
         - Annotation
-      summary: "Get all annotations, sort by last modified"
+      summary: 'Get all annotations, sort by last modified'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       operationId: getAll
     post:
       tags:
@@ -896,25 +895,25 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Annotation"
+                $ref: '#/components/schemas/Annotation'
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
       parameters:
-        - $ref: "#/components/parameters/request_id"
+        - $ref: '#/components/parameters/request_id'
         - schema:
             type: boolean
           in: header
           name: deduplicate
           description: 是否进行去重操作
       operationId: create
-  "/annotations/{annotation_id}":
+  '/annotations/{annotation_id}':
     get:
       tags:
         - Annotation
@@ -927,13 +926,13 @@ paths:
             type: integer
           required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Annotation"
-        "404":
+                $ref: '#/components/schemas/Annotation'
+        '404':
           description: Annotation not fond
       operationId: get
     delete:
@@ -949,9 +948,9 @@ paths:
             type: integer
           required: true
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The annotation record specified is not found
       operationId: remove
     put:
@@ -971,16 +970,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Annotation"
+              $ref: '#/components/schemas/Annotation'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Annotation"
-        "404":
-          description: "Annotation record with data id not fond, or data dont have requested property"
+                $ref: '#/components/schemas/Annotation'
+        '404':
+          description: 'Annotation record with data id not fond, or data dont have requested property'
       operationId: update
     parameters:
       - name: annotation_id
@@ -993,16 +992,16 @@ paths:
     get:
       tags:
         - Tag
-      summary: "Get all tags, sort by last modify date"
+      summary: 'Get all tags, sort by last modify date'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Tag"
+                  $ref: '#/components/schemas/Tag'
       operationId: getAll
     post:
       tags:
@@ -1013,33 +1012,33 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Tag"
+              $ref: '#/components/schemas/Tag'
       responses:
-        "201":
+        '201':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tag"
+                $ref: '#/components/schemas/Tag'
       parameters:
-        - $ref: "#/components/parameters/request_id"
-      description: ""
+        - $ref: '#/components/parameters/request_id'
+      description: ''
       operationId: create
-  "/tags/{tag_id}":
+  '/tags/{tag_id}':
     parameters:
-      - $ref: "#/components/parameters/tag_id"
+      - $ref: '#/components/parameters/tag_id'
     get:
       tags:
         - Tag
       summary: Get info of a specific tag
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tag"
-        "404":
+                $ref: '#/components/schemas/Tag'
+        '404':
           description: Tag not fond
       operationId: get
     delete:
@@ -1048,9 +1047,9 @@ paths:
       tags:
         - Tag
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The tag specified is not found
       operationId: remove
     put:
@@ -1063,16 +1062,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Tag"
+              $ref: '#/components/schemas/Tag'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tag"
-        "404":
-          description: "Tag with tag id not fond, or tag dont have requested property"
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: 'Tag with tag id not fond, or tag dont have requested property'
       operationId: update
   /users:
     get:
@@ -1080,45 +1079,45 @@ paths:
       tags:
         - User
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: '#/components/schemas/User'
       operationId: getAll
     post:
       tags:
         - User
       summary: Add a new user
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-      description: ""
+                $ref: '#/components/schemas/User'
+      description: ''
       operationId: create
-  "/users/{uuid}":
+  '/users/{uuid}':
     parameters:
-      - $ref: "#/components/parameters/uuid"
+      - $ref: '#/components/parameters/uuid'
     get:
       tags:
         - User
       summary: Get info of a specific user
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
+                $ref: '#/components/schemas/User'
+        '404':
           description: User not fond
-      description: ""
+      description: ''
       operationId: get
     delete:
       summary: Delete a user
@@ -1126,9 +1125,9 @@ paths:
       tags:
         - User
       responses:
-        "200":
+        '200':
           description: OK
-        "404":
+        '404':
           description: The task specified is not found
       operationId: remove
     put:
@@ -1141,16 +1140,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
-        "200":
+        '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: "Use with user id not fond, or user dont have requested property"
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Use with user id not fond, or user dont have requested property'
       operationId: update
   /users/login:
     post:
@@ -1159,7 +1158,7 @@ paths:
       summary: Login and get JWT
       operationId: paddlelabel.api.controller.user.login
       responses:
-        "200":
+        '200':
           description: OK
       requestBody:
         content:
@@ -1176,12 +1175,12 @@ paths:
                 - password
   /rpc/folders:
     post:
-      summary: ""
+      summary: ''
       tags:
         - rpc
       operationId: getFolders
       responses:
-        "200":
+        '200':
           description: OK
       requestBody:
         content:
@@ -1193,12 +1192,12 @@ paths:
                   type: string
   /rpc/seg/polygon2points:
     post:
-      summary: ""
+      summary: ''
       tags:
         - rpc
       operationId: polygon2points
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1214,12 +1213,12 @@ paths:
                   type: string
   /rpc/seg/points2polygon:
     post:
-      summary: ""
+      summary: ''
       operationId: points2polygon
       tags:
         - rpc
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1235,7 +1234,7 @@ paths:
               properties:
                 points:
                   type: string
-        description: ""
+        description: ''
   /version:
     get:
       summary: Get backend version
@@ -1243,7 +1242,7 @@ paths:
         - manage
       operationId: getVersion
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1264,7 +1263,7 @@ paths:
                 task_category_id:
                   type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1279,7 +1278,7 @@ paths:
       tags:
         - sample
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1301,7 +1300,7 @@ paths:
       tags:
         - sample
       responses:
-        "200":
+        '200':
           description: OK
       operationId: getFile
       parameters:
@@ -1316,11 +1315,11 @@ paths:
       tags:
         - sample
       responses:
-        "200":
+        '200':
           description: OK
       operationId: resetAll
-      description: ""
-  "/debug/printid/{debug_id}":
+      description: ''
+  '/debug/printid/{debug_id}':
     parameters:
       - schema:
           type: string
@@ -1332,17 +1331,17 @@ paths:
       tags:
         - rpc
       responses:
-        "200":
+        '200':
           description: OK
       operationId: printDebugId
   /rpc/cache:
     post:
-      summary: ""
+      summary: ''
       tags:
         - rpc
       operationId: createCache
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1359,7 +1358,7 @@ paths:
               properties:
                 content:
                   type: string
-  "/rpc/cache/{cache_id}":
+  '/rpc/cache/{cache_id}':
     parameters:
       - schema:
           type: string
@@ -1371,7 +1370,7 @@ paths:
       tags:
         - rpc
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1393,7 +1392,6 @@ components:
       type: object
       x-examples: {}
       additionalProperties: false
-      title: ""
       description: 项目基本信息和设置
       properties:
         project_id:
@@ -1415,24 +1413,17 @@ components:
           example: This project is very cool
         task_category_id:
           type: integer
-          description: "Top level annotation task category, see TODO for int <-> category map"
+          description: 'Top level annotation task category, see TODO for int <-> category map'
         task_category:
           type: string
           readOnly: true
         data_dir:
           type: string
           description: Absolute directory path where all the data file is stored
-        label_dir:
-          type: string
-          description: Absolute directory path where all the label files are stored
-          deprecated: true
         labels:
           type: array
           items:
-            $ref: "#/components/schemas/Label"
-        label_format:
-          type: string
-          description: "eg: single_class/multi_class for classification"
+            $ref: '#/components/schemas/Label'
         created:
           type: string
           description: Project creation timestamp in UTC
@@ -1453,8 +1444,8 @@ components:
           properties:
             mlBackendUrl:
               type: string
-              description: "ML后端地址，一般是 http://localhost:1234"
-              example: "http://localhost:1234"
+              description: 'ML后端地址，一般是 http://localhost:1234'
+              example: 'http://localhost:1234'
             perviousModel:
               type: string
               deprecated: true
@@ -1495,6 +1486,8 @@ components:
               type: string
             lang:
               type: string
+        all_options:
+          type: object
     Task:
       title: Task
       type: object
@@ -1513,9 +1506,9 @@ components:
         annotations:
           type: array
           items:
-            $ref: "#/components/schemas/Annotation"
+            $ref: '#/components/schemas/Annotation'
         project:
-          $ref: "#/components/schemas/Project"
+          $ref: '#/components/schemas/Project'
         set:
           type: integer
         modified:
@@ -1540,7 +1533,7 @@ components:
         size:
           type: string
         task:
-          $ref: "#/components/schemas/Task"
+          $ref: '#/components/schemas/Task'
         created:
           type: string
           readOnly: true
@@ -1554,7 +1547,7 @@ components:
     Annotation:
       type: object
       title: Annotation
-      description: ""
+      description: ''
       additionalProperties: false
       properties:
         annotation_id:
@@ -1567,7 +1560,7 @@ components:
         label_id:
           type: integer
         label:
-          $ref: "#/components/schemas/Label"
+          $ref: '#/components/schemas/Label'
         project_id:
           type: integer
           deprecated: true
@@ -1593,7 +1586,7 @@ components:
     Label:
       title: Label
       type: object
-      description: ""
+      description: ''
       properties:
         label_id:
           type: integer
@@ -1644,7 +1637,7 @@ components:
     User:
       title: User
       type: object
-      description: ""
+      description: ''
       properties:
         user_id:
           type: integer
@@ -1658,6 +1651,39 @@ components:
           type: string
         role_id:
           type: integer
+    ImportOption:
+      title: ImportOption
+      x-stoplight:
+        id: 8vydxmsc4b0z8
+      type: object
+      properties:
+        label:
+          type: string
+        required:
+          type: boolean
+        type:
+          type: string
+        choices:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: string
+        tips:
+          type: string
+        show_after:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: string
+      required:
+        - label
+        - required
   parameters:
     request_id:
       name: request_id
@@ -1666,7 +1692,7 @@ components:
       schema:
         type: integer
         maxLength: 30
-      description: "Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times"
+      description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
     project_id:
       name: project_id
       in: path

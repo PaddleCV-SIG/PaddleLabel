@@ -7,6 +7,7 @@ from collections import deque
 from pathlib import Path
 
 from paddlelabel.api import Annotation, Data, Label, Project, Task
+from paddlelabel.api.controller import project
 from paddlelabel.config import db
 from paddlelabel.task.util import create_dir, image_extensions, listdir
 from paddlelabel.task.util.color import name_to_hex, rand_hex_color, rgb_to_hex
@@ -215,6 +216,14 @@ class BaseTask:
         self.task_cache = []
         db.session.commit()
 
+    def get_label(self, label_id: int | None = None, id: int | None = None, name: str | None = None):
+        if label_id is not None:
+            label_id = int(label_id)
+            for label in self.project.labels:
+                if label.label_id == label_id:
+                    return label
+            return None
+
     # TODO: change following three to get_label_by_xx
     def label_id2name(self, label_id: int | float):
         """
@@ -381,7 +390,9 @@ class BaseTask:
         self.label_max_id = max(current_ids)
         return label
 
-    def import_labels(self, delimiter: str = " ", ignore_first: bool = False):
+    def import_labels(
+        self, delimiter: str = " ", ignore_first: bool = False
+    ):  # TODO: a list of label file names, try to find the first
         # 1. set params
         label_names_path = None
         project = self.project
@@ -484,6 +495,41 @@ class BaseTask:
                     curr_id += 1
 
         return id_mapping
+
+    def parse_lists(
+        self,
+        list_file_names: list[tuple[str, int]] = [
+            ("train_list.txt", 0),
+            ("val_list.txt", 1),
+            ("test_list.txt", 2),
+        ],
+        delimiter: str = " ",
+        mode: str = "matching",
+    ) -> dict[Path, dict]:
+        data_dir = Path(self.project.data_dir)
+        res = {}
+
+        for list_file_name, split_idx in list_file_names:
+            list_path: Path = data_dir / list_file_name
+            if not list_path.exists():
+                continue
+            lines = list_path.read_text(encoding="utf-8").split("\n")
+            for line_idx, line in enumerate(lines):
+                if len(line) == 0:
+                    continue
+                parts = line.split(delimiter)
+                data_path: Path = data_dir / parts[0]
+                if not data_path.exists():
+                    logger.error(
+                        f"Image path {str(data_path)} specified at line {line_idx} of list file {list_path.name} isn't found on disk, skipping this record."
+                    )
+                    continue
+                if mode == "labels":
+                    res[Path(parts[0])] = {
+                        "labels": list(map(lambda label_id: self.get_label(label_id=int(label_id)), parts[1:])),
+                        "split_idx": split_idx,
+                    }
+        return res
 
     def default_importer(
         self,

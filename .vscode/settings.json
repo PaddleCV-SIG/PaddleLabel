@@ -46,6 +46,7 @@
         "popleft",
         "PPLC",
         "pycocotoolse",
+        "pydantic",
         "pypi",
         "regen",
         "rget",
@@ -66,7 +67,9 @@
         "yolo"
     ],
     "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.importFormat": "absolute",
     "python.analysis.typeCheckingMode": "basic",
     "python.formatting.provider": "black",
-    "python.languageServer": "Pylance"
+    "python.languageServer": "Pylance",
+    "thunder-client.saveToWorkspace": true
 }

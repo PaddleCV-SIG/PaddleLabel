@@ -1,6 +1,8 @@
 # Web related
 connexion
 marshmallow_sqlalchemy
+pydantic
+sqlalchemy==1.4.46
 
 ## currently required, but will be removed in a future version
 flask_sqlalchemy
@@ -9,6 +11,7 @@ flask_cors
 
 # Task related
 opencv-python
+Pillow
 numpy
 pycocotoolse
 tqdm

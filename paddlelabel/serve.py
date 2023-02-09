@@ -56,11 +56,11 @@ with connexion_app.app.app_context():
     db_head_version = heads[0].revision
 
     # v0.1.0: db exists but doesn't have version
-    if curr_db_v is None and db_exists:
+    if db_exists and curr_db_v is None:
         alembic.command.stamp(alembic_cfg, revision="23c1bf9b7f48")
 
     # need db backup
-    if curr_db_v != db_head_version and db_exists:
+    if db_exists and curr_db_v != db_head_version:
         from datetime import datetime
 
         back_up_path = (

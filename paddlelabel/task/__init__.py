@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from .base import BaseTask
-from .classification import Classification
+from .classification import SingleClass
 from .detection import Detection
 from .semantic_segmentation import SemanticSegmentation
 from .instance_segmentation import InstanceSegmentation

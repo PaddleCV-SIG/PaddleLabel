@@ -307,10 +307,12 @@ def predict(project_id):
     return "finished"
 
 
-def import_options(project_type):
+def get_options(im_or_export: str, project_type: str):
     project_type = camel2snake(project_type)
     all_catgs = TaskCategory._get(many=True)
-    # print(project_type, [c.name for c in all_catgs])
     assert project_type in [c.name for c in all_catgs], f"Project type specified {project_type} isn't supported"
     selector = eval(f"paddlelabel.task.{project_type}.ProjectSubtypeSelector")()
-    return selector.import_questions
+    if im_or_export == "import":
+        return selector.import_questions
+    else:
+        return selector.export_questions

@@ -183,10 +183,13 @@ class MultiClass(BaseTask):
 
 
 class ProjectSubtypeSelector(BaseSubtypeSelector):
-    __persist__: list[str] = ["clasSubCatg"]
+    __persist__: dict[str, str] = {"clasSubCatg": "singleClass"}
 
     def __init__(self):
-        super(ProjectSubtypeSelector, self).__init__()
+        super(ProjectSubtypeSelector, self).__init__(
+            default_handler=SingleClass,
+            default_format="singleClassFolder",
+        )
 
         self.iq(
             label="clasSubCatg",
@@ -220,12 +223,3 @@ class ProjectSubtypeSelector(BaseSubtypeSelector):
         if clas_sub_catg == "singleClass":
             return SingleClass(project=project, is_export=False)
         return MultiClass(project=project, is_export=False)
-
-    def get_importer(self, answers: dict | None, project: Project):
-        handler = self.get_handler(answers, project)
-        if answers is None:
-            return handler.importers["singleClassFolder"]
-        label_format = answers["labelFormat"]
-        if label_format == "noLabel":
-            return handler.default_importer
-        return handler.importers[label_format]

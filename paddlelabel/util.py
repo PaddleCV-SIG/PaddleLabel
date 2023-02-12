@@ -15,12 +15,11 @@ def rand_string(length):
     return "".join(random.choice(chars) for x in range(length))
 
 
-def camel2snake(string):
+def camel2snake(string: str):
     """
     convert camel case to snake case
     """
-    if string is None:
-        return None
+    assert string is not None, f"camel2snake got None string input"
     new_string = ""
     for c in string:
         if c >= "A" and c <= "Z":
@@ -92,7 +91,7 @@ class Resolver(connexion.resolver.RestyResolver):
         # TODO: auto resolve /collection/{item}/collection
 
         special = {
-            "/projects/importOptions/{project_type} getImportOptions": "paddlelabel.api.controller.project.import_options",
+            "/projects/options/{im_or_export}/{project_type} getOptions": "paddlelabel.api.controller.project.get_options",
             "/projects/{project_id}/tasks getTasks": "paddlelabel.api.controller.task.get_by_project",
             "/projects/{project_id}/tasks setAll": "paddlelabel.api.controller.task.set_all_by_project",
             "/projects/{project_id}/labels getLabels": "paddlelabel.api.controller.label.get_by_project",

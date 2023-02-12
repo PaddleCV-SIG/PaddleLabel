@@ -34,5 +34,4 @@ class Project(BaseModel):
     def _get_other_settings(self):
         if self.other_settings is None:
             return {}
-        print("asdf", type(json.loads(self.other_settings)), self.other_settings)
         return json.loads(self.other_settings)

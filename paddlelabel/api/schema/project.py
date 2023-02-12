@@ -13,20 +13,19 @@ class ProjectSchema(BaseSchema):
         model = Project
         # include_relationships = True
 
-    # label_dir = fields.String(allow_none=True)
     task_category = fields.Nested("TaskCategorySchema")
     labels = fields.List(fields.Nested("LabelSchema"))
     all_options = fields.Dict()
 
+    # TODO: fix these, shouldn't need a _get_other_settings
+    # to object
     @pre_load
     def pre_load_action(self, data, **kwargs):
-        # if "label_dir" in data.keys() and data["label_dir"] == "":
-        #     data["label_dir"] = None
-
         if "other_settings" in data.keys():
             data["other_settings"] = json.dumps(data["other_settings"])
         return data
 
+    # to string
     @post_dump
     def pre_dump_action(self, project, **kwargs):
         if "other_settings" in project.keys() and project["other_settings"] is not None:

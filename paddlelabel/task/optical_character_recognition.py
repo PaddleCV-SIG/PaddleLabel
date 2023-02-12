@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import os.path as osp
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -93,13 +92,13 @@ class OpticalCharacterRecognition(BaseTask):
 
                     # FIXME: after frontend shift to upperleft origion, simply remove below part
                     labels_temp = labels_d[label_fname]
-                    for idx, label in enumerate(labels_temp):
-                        temp = label["result"].split("|")
-                        pidx = 0
-                        while temp[pidx] != "":
-                            temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height / 2)):.1f}"
-                            pidx += 1
-                        labels_temp[idx]["result"] = "|".join(temp)
+                    # for idx, label in enumerate(labels_temp):
+                    #     temp = label["result"].split("|")
+                    #     pidx = 0
+                    #     while temp[pidx] != "":
+                    #         temp[pidx] = f"{float(temp[pidx]) - ((width / 2) if pidx %2 ==0 else (height / 2)):.1f}"
+                    #         pidx += 1
+                    #     labels_temp[idx]["result"] = "|".join(temp)
 
                     self.add_task([{"path": str(data_path), "size": size}], [labels_temp], split=set_idx)
                     imported_data_path.add(data_path)
@@ -210,7 +209,7 @@ class OpticalCharacterRecognition(BaseTask):
         self.create_warning(data_dir)
         self.add_label(
             self.dummy_label_name,
-            comment="Dummy label for ocr project, added for compatability, don't delete.",
+            comment="Dummy label for ocr project, added for compatibility, don't delete.",
             commit=True,
         )
 
@@ -307,7 +306,10 @@ class OpticalCharacterRecognition(BaseTask):
 
 class ProjectSubtypeSelector(BaseSubtypeSelector):
     def __init__(self):
-        super(ProjectSubtypeSelector, self).__init__()
+        super(ProjectSubtypeSelector, self).__init__(
+            default_handler=OpticalCharacterRecognition,
+            default_format="txt",
+        )
 
         self.iq(
             label="labelFormat",
@@ -317,15 +319,3 @@ class ProjectSubtypeSelector(BaseSubtypeSelector):
             tips=None,
             show_after=None,
         )
-
-    def get_handler(self, answers: dict | None, project: Project):
-        return OpticalCharacterRecognition(project=project, is_export=False)
-
-    def get_importer(self, answers: dict | None, project: Project):
-        handler = self.get_handler(answers, project)
-        if answers is None:
-            return handler.importers["txt"]
-        label_format = answers["labelFormat"]
-        if label_format == "noLabel":
-            return handler.default_importer
-        return handler.importers[label_format]

@@ -53,6 +53,7 @@
         "SQLALCHEMY",
         "supercategory",
         "tifffile",
+        "upid",
         "vcbuildtools",
         "vcredist",
         "venv",

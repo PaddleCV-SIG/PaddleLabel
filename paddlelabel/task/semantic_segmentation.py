@@ -199,7 +199,10 @@ class SemanticSegmentation(InstanceSegmentation):
 
 class ProjectSubtypeSelector(BaseSubtypeSelector):
     def __init__(self):
-        super(ProjectSubtypeSelector, self).__init__()
+        super(ProjectSubtypeSelector, self).__init__(
+            default_handler=SemanticSegmentation,
+            default_format="mask",
+        )
 
         self.iq(
             label="labelFormat",
@@ -209,15 +212,3 @@ class ProjectSubtypeSelector(BaseSubtypeSelector):
             tips=None,
             show_after=None,
         )
-
-    def get_handler(self, answers: dict | None, project: Project):
-        return SemanticSegmentation(project=project, is_export=False)
-
-    def get_importer(self, answers: dict | None, project: Project):
-        handler = self.get_handler(answers, project)
-        if answers is None:
-            return handler.importers["mask"]
-        label_format = answers["labelFormat"]
-        if label_format == "noLabel":
-            return handler.default_importer
-        return handler.importers[label_format]

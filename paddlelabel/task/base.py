@@ -651,9 +651,11 @@ class BaseTask:
 
 
 class BaseSubtypeSelector:
-    __persist__: list[str] = []
+    __persist__: dict[str, str] = {}
 
-    def __init__(self):
+    def __init__(self, default_handler=None, default_format: str | None = None):
+        self.default_handler = default_handler
+        self.default_format = default_format
         self.import_questions = []
         self.export_questions = []
         self.iq = partial(self.add_q, self.import_questions)
@@ -666,11 +668,14 @@ class BaseSubtypeSelector:
         label: str,  # can have duplicates. Maybe same question, different choices
         required: bool,
         type: str,  # "choice", "input"
-        choices: list[tuple[str, str | None]] | None,
+        choices: list[tuple[str, str | None]] | None,  # [(choice, tips)]
         tips: str | None,
         show_after: list[tuple[str, str]] | None,
-        is_arg: bool = False,
     ):
+        if label == "labelFormat":
+            assert choices is not None, f"labelFormat choices can't be None"
+            choices.insert(0, ("noLabel", None))
+
         question_set.append(
             {
                 "label": label,
@@ -679,5 +684,27 @@ class BaseSubtypeSelector:
                 "choices": choices,
                 "tips": tips,
                 "show_after": [] if show_after is None else show_after,
+                "allow_edit": label in self.__persist__.keys(),
             }
         )
+
+    def get_handler(self, answers: dict | None, project: Project):
+        assert self.default_handler is not None, f"self.default_handler is None"
+        return self.default_handler(project=project, is_export=False)
+
+    def get_importer(self, answers: dict | None, project: Project):
+        if len(self.__persist__) != 0:
+            oss = project.other_settings.strip()
+            if answers is None:
+                oss = oss[:-1] + "".join(f', "{k}": "{v}"' for k, v in self.__persist__.items()) + "}"
+            else:
+                oss = oss[:-1] + "".join(f', "{k}": "{answers[k]}"' for k in self.__persist__.keys()) + "}"
+            project.other_settings = oss
+        print("project.other_settings", project.other_settings)
+        handler = self.get_handler(answers, project)
+        if answers is None:
+            return handler.importers[self.default_format]
+        label_format = answers["labelFormat"]
+        if label_format == "noLabel":
+            return handler.default_importer
+        return handler.importers[label_format]

@@ -219,7 +219,8 @@ def load_sample(sample_family="bear"):
     try:
         importer(data_dir=data_dir)
     except Exception as e:
-        project = Project.query.filter(Project.project_id == handler.project.project_id).one()
+        # TODO: make sure half created project is deleted here on error
+        project = Project.get(project_id=handler.project.project_id)
         db.session.delete(project)
         db.session.commit()
         raise e

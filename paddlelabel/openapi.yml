@@ -55,8 +55,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       operationId: create
-  '/projects/importOptions/{project_type}':
+  '/projects/options/{im_or_export}/{project_type}':
     parameters:
+      - schema:
+          type: string
+        name: project_type
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: im_or_export
+        in: path
+        required: true
       - name: request_id
         in: header
         required: false
@@ -64,11 +74,6 @@ paths:
           type: integer
           maxLength: 30
         description: 'Assign a unique random string each request, backend will reject requests with same request_id within several seconds. Prevent critical operations (mostly post) from executing multiple times'
-      - schema:
-          type: string
-        name: project_type
-        in: path
-        required: true
     get:
       tags:
         - Project
@@ -82,7 +87,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ImportOption'
-      operationId: getImportOptions
+      operationId: getOptions
       parameters: []
   '/projects/{project_id}':
     parameters:
@@ -1495,9 +1500,6 @@ components:
             models:
               type: object
               deprecated: true
-            segMaskType:
-              type: string
-              deprecated: true
             modelName:
               type: string
               description: 正在使用的模型名称
@@ -1531,6 +1533,8 @@ components:
               type: string
             isSample:
               type: boolean
+            clasSubCatg:
+              type: string
         all_options:
           type: object
           description: This property is only used for passing project create/export options around more easilly. It's discarded after the project is created or exported.
@@ -1727,9 +1731,14 @@ components:
             maxItems: 2
             items:
               type: string
+        allow_edit:
+          type: boolean
       required:
         - label
         - required
+        - type
+        - show_after
+        - allow_edit
     TaskCategory:
       title: TaskCategory
       x-stoplight:

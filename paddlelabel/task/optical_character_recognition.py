@@ -144,11 +144,11 @@ class OpticalCharacterRecognition(BaseTask):
                 ti = lambda v: int(float(v))
                 points = [list(map(ti, vs)) for vs in zip(r[:ridx:2], r[1:ridx:2])]
                 r = r[ridx + 1 :]
-                print(sizes[ann.data_id])
+                # print(sizes[ann.data_id])
                 height, width = sizes[ann.data_id]
-                for pidx in range(len(points)):
-                    points[pidx][0] = int(points[pidx][0] + width / 2)
-                    points[pidx][1] = int(points[pidx][1] + height / 2)
+                # for pidx in range(len(points)):
+                #     points[pidx][0] = int(points[pidx][0] + width / 2)
+                #     points[pidx][1] = int(points[pidx][1] + height / 2)
 
             split, name = data_info[ann.data_id]
             ann_dicts[split][name].append(

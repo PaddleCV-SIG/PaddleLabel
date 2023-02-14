@@ -172,12 +172,12 @@
             "color": "#05AF56",
             "id": 1,
             "name": "xiaoduxiong",
-            "supercategory": "toy"
+            "supercategory": "玩具"
         },
         {
             "color": "#64F3BE",
             "id": 2,
-            "name": "toy",
+            "name": "玩具",
             "supercategory": "none"
         }
     ],

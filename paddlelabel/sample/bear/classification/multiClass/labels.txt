@@ -1,4 +1,4 @@
 red
-gray
-blue
+灰色
+蓝色
 yellow

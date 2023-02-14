@@ -22,13 +22,13 @@
             "color": "#FF0000",
             "id": 1,
             "name": "xiaoduxiong",
-            "supercategory": "toy"
+            "supercategory": "玩具"
         },
         {
             "color": "#00FF00",
             "id": 2,
-            "name": "toy",
-            "supercategory": "none"
+            "name": "玩具",
+            "supercategory": "null"
         }
     ],
     "images": [

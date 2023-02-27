@@ -22,6 +22,7 @@ Base for import/export and other task specific operations.
 
 logger = logging.getLogger("paddlelabel")
 
+
 # TODO: change data_dir to pathlib.path
 class BaseTask:
     def __init__(
@@ -223,8 +224,12 @@ class BaseTask:
         if label_id is not None:
             label_id = int(label_id)
             for label in self.project.labels:
-                print(label.label_id, type(label.label_id))
                 if label.label_id == label_id:
+                    return label
+            return None
+        if name is not None:
+            for label in self.project.labels:
+                if label.name == name:
                     return label
             return None
 
@@ -333,7 +338,7 @@ class BaseTask:
         color: str | None = None,
         super_category_id: int | None = None,
         comment: str | None = None,
-        commit=False,
+        commit=True,
     ):
         """
         Add one label to current project
@@ -541,7 +546,6 @@ class BaseTask:
         filters={"exclude_prefix": ["."], "include_postfix": image_extensions},
         with_size: bool = True,  # TODO: after result format is changed, default to false
     ):
-
         data_dir = self.project.data_dir if data_dir is None else data_dir
         assert data_dir is not None
 
@@ -608,7 +612,8 @@ class BaseTask:
         catgs = deque()
 
         for catg in labels:
-            catgs.append(catg)
+            if self.get_label(name=catg["name"]) is not None:
+                catgs.append(catg)
 
         tried_names = []  # guard against invalid dependency graph
         for _ in range(len(catgs) * 2):

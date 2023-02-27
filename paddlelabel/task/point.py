@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 
 from paddlelabel.task.util.labelme import get_matching, parse_ann, write_ann
-from paddlelabel.api import Task, Project
+from paddlelabel.api import Task
 from paddlelabel.task.base import BaseSubtypeSelector, BaseTask
 from paddlelabel.io.image import getSize
 

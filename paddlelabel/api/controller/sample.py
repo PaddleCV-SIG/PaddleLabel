@@ -177,7 +177,13 @@ def reset_samples(remove_current_sample_projects: bool = True):
             / f"{str(datetime.now()).split('.')[0].replace(' ', '_').replace(':', '_')}-sample_bk"
         )
         configs.sample_dir.rename(back_up_path)
-    # TODO: remove all current samples
+    for project in Project._get(many=True):
+        if project._get_other_settings()["isSample"]:
+            db.session.delete(project)
+    db.session.commit()
+
+    # TODO: remove all current samples projects
+    # BUG: images on disk are missing
     prep_samples()
 
 
@@ -220,7 +226,7 @@ def load_sample(sample_family="bear"):
         importer(data_dir=data_dir)
     except Exception as e:
         # TODO: make sure half created project is deleted here on error
-        project = Project.get(project_id=handler.project.project_id)
+        project = Project._get(project_id=handler.project.project_id)
         db.session.delete(project)
         db.session.commit()
         raise e

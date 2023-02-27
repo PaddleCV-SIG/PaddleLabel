@@ -21,6 +21,7 @@ from paddlelabel.task.util import (
 from paddlelabel.task.base import BaseTask, BaseSubtypeSelector
 from paddlelabel.io.image import getSize
 
+
 # TODO: move to io
 def parse_voc_label(label_path):
     from xml.dom import minidom

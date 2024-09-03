@@ -46,7 +46,7 @@ jobs:
 
       - name: Download built paddlelabel package
         if: github.event_name == 'push'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: PaddleLabel_built_package
 

@@ -49,7 +49,7 @@ jobs:
           search_artifacts: true
 
       - name: Download built doc static site
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         # uses: dawidd6/action-download-artifact@v2
         with:
           # workflow_conclusion: ""

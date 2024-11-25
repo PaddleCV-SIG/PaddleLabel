@@ -96,7 +96,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Download last run screenshots
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: cypress.yml
